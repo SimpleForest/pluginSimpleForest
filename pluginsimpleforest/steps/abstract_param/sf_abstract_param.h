@@ -30,7 +30,7 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
-#include "cloud/sf_point.h"
+#include "pcl/sf_point.h"
 
 
 
@@ -44,7 +44,7 @@ struct SF_Param_CT{
 
 
 struct SF_Param_Cloud: public SF_Param_CT{
-    PointCloudSF::Ptr _cloud_in;
+    SF_Cloud::Ptr _cloud_in;
 };
 
 struct SF_Param_Filter: public SF_Param_Cloud{

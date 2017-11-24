@@ -27,7 +27,7 @@
 *****************************************************************************/
 #ifndef SF_ABSTRACT_PCL_STEP_H
 #define SF_ABSTRACT_PCL_STEP_H
-#include <cloud/sf_point.h>
+#include "pcl/sf_point.h"
 #include <steps/abstract_step/sf_abstract_step.h>
 
 #include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>

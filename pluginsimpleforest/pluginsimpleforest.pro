@@ -7,7 +7,7 @@ exists(../../computreev5) {
 
 MUST_USE_PCL = 1
 MUST_USE_OPENCV = 1
-
+QT += concurrent
 COMPUTREE += ctlibpcl
 
 include($${CT_PREFIX}/shared.pri)
