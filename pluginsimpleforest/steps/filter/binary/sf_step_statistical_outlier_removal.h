@@ -35,20 +35,23 @@
 
 
 class SF_Step_Statistical_Outlier_Removal:  public SF_Abstract_PCL_Step<SF_Point>
+//        class SF_Step_Statistical_Outlier_Removal:  public CT_AbstractStep
 {
     Q_OBJECT
 public:
     SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init);
 
-    virtual QString getStepDescription() const;
+    ~SF_Step_Statistical_Outlier_Removal();
 
-    virtual QString getStepDetailledDescription() const;
+    QString getStepDescription() const;
 
-    virtual QString getStepURL() const;
+    QString getStepDetailledDescription() const;
+
+    QString getStepURL() const;
 
     CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &data_init);
 
-    QStringList getPluginRISCitationList() const;
+    QStringList getStepRISCitations() const;
 
     QList<SF_Param_Statistical_Outlier_Filter> _param_list;
 
@@ -60,13 +63,13 @@ public:
     
 protected:
 
-    virtual void createInResultModelListProtected();
+    void createInResultModelListProtected();
 
     void createPostConfigurationDialog();
 
-    virtual  void createOutResultModelListProtected();
+    void createOutResultModelListProtected();
 
-    virtual  void compute();
+    void compute();
 
 private:
 
@@ -82,7 +85,7 @@ private:
 
     CT_AutoRenameModels _out_cloud;
 
-    virtual void create_param_list(CT_ResultGroup *out_result);
+    void create_param_list(CT_ResultGroup *out_result);
 
 };
 

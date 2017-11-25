@@ -32,6 +32,9 @@
 #include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
 #include <pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h>
 
+
+#include <QDebug>
+
 class SF_Step_Statistical_Outlier_Removal_Adapter
 {
 public:

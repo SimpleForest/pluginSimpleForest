@@ -30,8 +30,13 @@
 
 #include <QtConcurrent/QtConcurrent>
 #include <steps/filter/binary/sf_step_statistical_outlier_removal_adapter.h>
+SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): SF_Abstract_PCL_Step<SF_Point>(data_init)
+//SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): CT_AbstractStep(data_init)
+{
 
-SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): SF_Abstract_PCL_Step(data_init)
+}
+
+SF_Step_Statistical_Outlier_Removal::~SF_Step_Statistical_Outlier_Removal()
 {
 
 }
@@ -57,7 +62,7 @@ CT_VirtualAbstractStep* SF_Step_Statistical_Outlier_Removal::createNewInstance(C
     return new SF_Step_Statistical_Outlier_Removal(dataInit);
 }
 
-QStringList SF_Step_Statistical_Outlier_Removal::getPluginRISCitationList() const
+QStringList SF_Step_Statistical_Outlier_Removal::getStepRISCitations() const
 {
     QStringList _RIS_citation_list;
     _RIS_citation_list.append(QString("TY  - JOUR\n"
@@ -116,11 +121,14 @@ void SF_Step_Statistical_Outlier_Removal::createPostConfigurationDialog()
 
 void SF_Step_Statistical_Outlier_Removal::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroupToCopyPossibilities *res_model = createNewOutResultModelToCopy(DEF_IN_RESULT);
-    assert(res_model != NULL);
-    res_model->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(),tr("statistical outlier removal"));
-    res_model->addItemModel(_out_grp, _out_noise, new CT_Scene(), "noise");
-    res_model->addItemModel(_out_grp, _out_cloud, new CT_Scene(), "filtered cloud");
+    CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
+
+    if(res_modelw != NULL)
+    {
+        res_modelw->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(), tr ("statistical outlier removal") );
+        res_modelw->addItemModel(_out_grp, _out_cloud, new CT_Scene(), tr("filtered cloud"));
+        res_modelw->addItemModel(_out_grp, _out_noise, new CT_Scene(), tr("noise"));
+    }
 }
 
 
@@ -160,9 +168,9 @@ void SF_Step_Statistical_Outlier_Removal::compute()
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
-    setProgress(5);
+    setProgress(4);
     create_param_list(out_result);
-    setProgress(10);
+    setProgress(7);
     QFuture<void> future = QtConcurrent::map(_param_list,SF_Step_Statistical_Outlier_Removal_Adapter());
     set_progress_by_future(future,10,85);
     write_output(out_result);

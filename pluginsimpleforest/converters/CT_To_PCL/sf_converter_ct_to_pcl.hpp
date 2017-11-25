@@ -58,7 +58,7 @@ pcl::PointCloud<PointType>::Ptr SF_Converter_CT_To_PCL<PointType>::get_cloud_tra
 }
 
 template <typename PointType>
-void SF_Converter_CT_To_PCL<PointType>::convert_point(CT_PointIterator it)
+void SF_Converter_CT_To_PCL<PointType>::convert_point(CT_PointIterator& it)
 {
     const CT_Point &internalPoint = it.next().currentPoint();
     PointType origin(internalPoint[0],internalPoint[1],internalPoint[2]);
@@ -73,7 +73,7 @@ void SF_Converter_CT_To_PCL<PointType>::iterate_cloud_and_convert(const CT_Abstr
     CT_PointIterator it(index);
     while(it.hasNext())
     {
-        convert_point(index);
+        convert_point(it);
     }
 }
 

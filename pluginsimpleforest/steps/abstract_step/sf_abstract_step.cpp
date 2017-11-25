@@ -49,6 +49,7 @@ void SF_Abstract_Step::set_progress_by_future(QFuture<void> &future, float perce
     float progress_size = future.progressMaximum()-progress_min;
     while(!future.isFinished())
     {
+//        Sleep(uint(1000));
         setProgress(percentage_interval_start + (percentage_interval_size*(future.progressValue() - progress_min)/progress_size ));
     }
 }

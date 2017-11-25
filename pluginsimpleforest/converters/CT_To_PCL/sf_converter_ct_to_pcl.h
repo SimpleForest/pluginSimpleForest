@@ -52,7 +52,7 @@ private:
 
     void iterate_cloud_and_convert(const CT_AbstractPointCloudIndex *index);
 
-    void convert_point(CT_PointIterator it);
+    void convert_point(CT_PointIterator &it);
 
     void convert();
 
