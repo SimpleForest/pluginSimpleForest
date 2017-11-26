@@ -61,10 +61,6 @@ protected:
 
     virtual void compute() = 0;
 
-    void identify_corrupted_scenes(CT_ResultGroup* out_result);
-
-    void remove_corrupted_scenes();
-
     QList<SF_Param_CT> _param_list;
 
     virtual void create_param_list(CT_ResultGroup *out_result) = 0;
@@ -73,15 +69,30 @@ protected:
 
     void create_output_indices(std::vector<CT_PointCloudIndexVector*> &index_vectors, const std::vector<int> &indices, const CT_AbstractItemDrawableWithPointCloud *item_cpy_cloud_in);
 
-public:
-    SF_Abstract_Step(CT_StepInitializeData & data_init);
+    void identify_and_remove_corrupted_scenes(CT_ResultGroup* out_result);
 
+    void create_output_index(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, size_t counter, CT_PointIterator &point_it);
+
+public:
+
+    SF_Abstract_Step(CT_StepInitializeData & data_init);
 
     virtual CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit) = 0;
 
 private:
 
     QList<CT_AbstractItemGroup*> _groups_to_be_removed;
+
+    void check_is_empty(CT_StandardItemGroup* group, const CT_AbstractItemDrawableWithPointCloud* ct_cloud);
+
+    void check_is_null_or_empty(const CT_AbstractItemDrawableWithPointCloud* ct_cloud, CT_StandardItemGroup* group);
+
+    void check_grp_and_cloud(CT_StandardItemGroup* group);
+
+    void identify_corrupted_scenes(CT_ResultGroup* out_result, int progress = 4);
+
+    void remove_corrupted_scenes(int progress = 7);
+
 
 
 

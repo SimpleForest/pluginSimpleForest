@@ -28,17 +28,18 @@
 #ifndef SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
 #define SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
 
-#include "steps/abstract_step/pcl/sf_abstract_pcl_step.h"
+#include "steps/abstract_step/filter/binary/sf_abstract_filter_binary_step.h"
 
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
 
-class SF_Step_Statistical_Outlier_Removal:  public SF_Abstract_PCL_Step<SF_Point>
-//        class SF_Step_Statistical_Outlier_Removal:  public CT_AbstractStep
+class SF_Step_Statistical_Outlier_Removal:  public SF_Abstract_Filter_Binary_Step
 {
     Q_OBJECT
+
 public:
+
     SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init);
 
     ~SF_Step_Statistical_Outlier_Removal();
@@ -53,14 +54,6 @@ public:
 
     QStringList getStepRISCitations() const;
 
-    QList<SF_Param_Statistical_Outlier_Filter> _param_list;
-
-    void identify_and_remove_corrupted_scenes(CT_ResultGroup* out_result);
-
-    void write_output_per_scence(CT_ResultGroup* out_result, size_t i);
-    
-    void write_output(CT_ResultGroup* out_result);
-    
 protected:
 
     void createInResultModelListProtected();
@@ -71,6 +64,8 @@ protected:
 
     void compute();
 
+    QList<SF_Param_Statistical_Outlier_Filter> _param_list;
+
 private:
 
     double _std_mult = 3.0;
@@ -79,11 +74,9 @@ private:
 
     int _k = 2;
 
-    CT_AutoRenameModels _out_grp;
+    void write_output_per_scence(CT_ResultGroup* out_result, size_t i);
 
-    CT_AutoRenameModels _out_noise;
-
-    CT_AutoRenameModels _out_cloud;
+    void write_output(CT_ResultGroup* out_result);
 
     void create_param_list(CT_ResultGroup *out_result);
 

@@ -49,47 +49,70 @@ void SF_Abstract_Step::set_progress_by_future(QFuture<void> &future, float perce
     float progress_size = future.progressMaximum()-progress_min;
     while(!future.isFinished())
     {
-//        Sleep(uint(1000));
         setProgress(percentage_interval_start + (percentage_interval_size*(future.progressValue() - progress_min)/progress_size ));
     }
 }
+
+void SF_Abstract_Step::identify_and_remove_corrupted_scenes(CT_ResultGroup* out_result)
+{
+    identify_corrupted_scenes(out_result);
+    remove_corrupted_scenes();
+}
+
 
 SF_Abstract_Step::SF_Abstract_Step(CT_StepInitializeData &data_init): CT_AbstractStep(data_init)
 {
 
 }
-void SF_Abstract_Step::identify_corrupted_scenes( CT_ResultGroup* out_result)
+void SF_Abstract_Step::check_is_empty(CT_StandardItemGroup* group, const CT_AbstractItemDrawableWithPointCloud* ct_cloud)
+{
+    if(ct_cloud->getPointCloudIndex()->size() <=  0)
+    {
+        _groups_to_be_removed.push_back(group);
+    }
+}
+
+void SF_Abstract_Step::check_is_null_or_empty(const CT_AbstractItemDrawableWithPointCloud* ct_cloud, CT_StandardItemGroup* group)
+{
+    if(ct_cloud!= NULL)
+    {
+        check_is_empty(group, ct_cloud);
+    } else {
+        _groups_to_be_removed.push_back(group);
+    }
+}
+
+void SF_Abstract_Step::check_grp_and_cloud(CT_StandardItemGroup* group)
+{
+    if(group!=NULL)
+    {
+        const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
+        check_is_null_or_empty(ct_cloud, group);
+    } else {
+        _groups_to_be_removed.push_back(group);
+    }
+}
+
+void SF_Abstract_Step::identify_corrupted_scenes( CT_ResultGroup* out_result, int progress)
 {
     _groups_to_be_removed.clear();
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
     while(!isStopped() && out_res_it.hasNext())
     {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
-        if(group!=NULL)
-        {
-            const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
-            if(ct_cloud!= NULL)
-            {
-                if(ct_cloud->getPointCloudIndex()->size() <=  0)
-                {
-                    _groups_to_be_removed.push_back(group);
-                }
-            } else {
-                _groups_to_be_removed.push_back(group);
-            }
-        } else {
-            _groups_to_be_removed.push_back(group);
-        }
-    }
+        check_grp_and_cloud(group);
+    }    
+    setProgress(progress);
 }
 
-void SF_Abstract_Step::remove_corrupted_scenes()
+void SF_Abstract_Step::remove_corrupted_scenes(int progress)
 {
     while(!_groups_to_be_removed.isEmpty())
     {
         CT_AbstractItemGroup *group = _groups_to_be_removed.takeLast();
         recursive_remove_if_empty(group->parentGroup(), group);
-    }
+    }    
+    setProgress(progress);
 }
 
 
@@ -104,6 +127,14 @@ std::vector<CT_PointCloudIndexVector *> SF_Abstract_Step::create_output_vectors(
     return result;
 }
 
+void SF_Abstract_Step::create_output_index(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, size_t counter, CT_PointIterator & point_it)
+{
+    point_it.next();
+    size_t index_ct = point_it.currentGlobalIndex();
+    size_t index_cloud = indices.at(counter);
+    index_vectors[index_cloud]->addIndex(index_ct);
+}
+
 void SF_Abstract_Step::create_output_indices(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, const CT_AbstractItemDrawableWithPointCloud * item_cpy_cloud_in)
 {
     const CT_AbstractPointCloudIndex * point_cloud_index = item_cpy_cloud_in->getPointCloudIndex();
@@ -111,11 +142,7 @@ void SF_Abstract_Step::create_output_indices(std::vector<CT_PointCloudIndexVecto
     size_t counter = 0;
     while(point_it.hasNext())
     {
-        point_it.next();
-        size_t index_ct = point_it.currentGlobalIndex();
-        size_t index_cloud = indices.at(counter);
-        counter++;
-        index_vectors[index_cloud]->addIndex(index_ct);
+        create_output_index(index_vectors, indices, counter++, point_it);
     }
 }
 

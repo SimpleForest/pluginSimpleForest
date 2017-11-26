@@ -45,18 +45,15 @@ void  SF_Statistical_Outlier_Filter<PointType>::compute(const SF_Param_Statistic
     SF_Statistical_Outlier_Filter<PointType>::create_indices();
 }
 
-#include <QDebug>
 template <typename PointType>
 void SF_Statistical_Outlier_Filter<PointType>::statistical_outlier_filter(SF_Param_Statistical_Outlier_Filter std_params,typename pcl::PointCloud<PointType>::Ptr cloud)
 {
     SF_Statistical_Outlier_Filter<PointType>::_cloud_out_filtered.reset(new  pcl::PointCloud<PointType>());
     pcl::StatisticalOutlierRemoval<PointType> sor;
-    qDebug()<< "in " << cloud->points.size();
     sor.setInputCloud (cloud);
     sor.setMeanK (std_params._k);
     sor.setStddevMulThresh (std_params._std_mult);
     sor.filter (*SF_Statistical_Outlier_Filter<PointType>::_cloud_out_filtered);
-    qDebug()<< "out " << _cloud_out_filtered->points.size();
 }
 
 template <typename PointType>

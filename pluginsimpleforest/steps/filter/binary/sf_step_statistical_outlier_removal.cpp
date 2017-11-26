@@ -30,7 +30,7 @@
 
 #include <QtConcurrent/QtConcurrent>
 #include <steps/filter/binary/sf_step_statistical_outlier_removal_adapter.h>
-SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): SF_Abstract_PCL_Step<SF_Point>(data_init)
+SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init)
 //SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): CT_AbstractStep(data_init)
 {
 
@@ -126,32 +126,26 @@ void SF_Step_Statistical_Outlier_Removal::createOutResultModelListProtected()
     if(res_modelw != NULL)
     {
         res_modelw->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(), tr ("statistical outlier removal") );
-        res_modelw->addItemModel(_out_grp, _out_cloud, new CT_Scene(), tr("filtered cloud"));
-        res_modelw->addItemModel(_out_grp, _out_noise, new CT_Scene(), tr("noise"));
+        res_modelw->addGroupModel(_out_grp, _out_grp_cloud, new CT_StandardItemGroup(), tr ("filtered") );
+        res_modelw->addGroupModel(_out_grp, _out_grp_noise, new CT_StandardItemGroup(), tr ("noise") );
+        res_modelw->addItemModel(_out_grp_cloud, _out_cloud, new CT_Scene(), tr("cloud"));
+        res_modelw->addItemModel(_out_grp_noise, _out_noise, new CT_Scene(), tr("cloud"));
     }
 }
 
 
 
-void SF_Step_Statistical_Outlier_Removal::identify_and_remove_corrupted_scenes(CT_ResultGroup* out_result)
-{
-    identify_corrupted_scenes(out_result);
-    remove_corrupted_scenes();
-}
 
 void SF_Step_Statistical_Outlier_Removal::write_output_per_scence(CT_ResultGroup* out_result, size_t i)
 {
     SF_Param_Statistical_Outlier_Filter param = _param_list.at(i);
     std::vector<CT_PointCloudIndexVector *> output_index_list = create_output_vectors(param._size_output);
     create_output_indices(output_index_list, param._output_indices, param._itemCpy_cloud_in);
-    CT_StandardItemGroup* cloud_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
-    param._grpCpy_grp->addGroup(cloud_grp);
-    CT_Scene* outScene = new CT_Scene(_out_cloud.completeName(), out_result, PS_REPOSITORY->registerPointCloudIndex(output_index_list[0]));
-    outScene->updateBoundingBox();
-    cloud_grp->addItemDrawable(outScene);
-    CT_Scene* outNoise = new CT_Scene(_out_noise.completeName(), out_result, PS_REPOSITORY->registerPointCloudIndex(output_index_list[1]));
-    outNoise->updateBoundingBox();
-    cloud_grp->addItemDrawable(outNoise);
+
+    CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
+    param._grpCpy_grp->addGroup(filter_grp);
+    add_scene_in_subgrp_to_grp(filter_grp, _out_cloud.completeName(),_out_grp_cloud.completeName(), out_result, output_index_list[0]);
+    add_scene_in_subgrp_to_grp(filter_grp, _out_noise.completeName(), _out_grp_noise.completeName(), out_result, output_index_list[1]);
 }
 
 void SF_Step_Statistical_Outlier_Removal::write_output(CT_ResultGroup* out_result)
@@ -168,9 +162,7 @@ void SF_Step_Statistical_Outlier_Removal::compute()
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
-    setProgress(4);
     create_param_list(out_result);
-    setProgress(7);
     QFuture<void> future = QtConcurrent::map(_param_list,SF_Step_Statistical_Outlier_Removal_Adapter());
     set_progress_by_future(future,10,85);
     write_output(out_result);

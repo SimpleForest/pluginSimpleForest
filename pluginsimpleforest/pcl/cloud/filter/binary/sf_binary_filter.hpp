@@ -42,7 +42,7 @@ void Sf_Binary_Filter<PointType>::create_index(PointType point,
     if(Sf_Binary_Filter<PointType>::equals_by_sqrt_distance(sqrd_distance))
     {_indices.push_back(0);}
     else
-    {_indices.push_back(1);qDebug() << "bar";
+    {_indices.push_back(1);
         _cloud_out_filtered_noise->points.push_back(point);}
 }
 
@@ -63,7 +63,6 @@ void Sf_Binary_Filter<PointType>::search_kd_tree(size_t index,
     std::vector<int> pointIdxNKNSearch(1);
     std::vector<float> pointNKNSquaredDistance(1);
     kdtree.nearestKSearch (point, 1, pointIdxNKNSearch, pointNKNSquaredDistance);
-   // assert ( kdtree.nearestKSearch (point, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 );
     create_index(point, pointNKNSquaredDistance[0]);
 }
 

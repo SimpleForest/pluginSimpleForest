@@ -38,7 +38,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     converters/sf_abstract_converter.h \
     steps/abstract_step/pcl/sf_abstract_pcl_step.h \
     steps/abstract_step/pcl/sf_abstract_pcl_step.hpp \
-    steps/filter/binary/sf_step_statistical_outlier_removal_adapter.h
+    steps/filter/binary/sf_step_statistical_outlier_removal_adapter.h \
+    steps/abstract_step/filter/sf_abstract_filter_step.h \
+    steps/abstract_step/filter/binary/sf_abstract_filter_binary_step.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -49,7 +51,9 @@ SOURCES += \
     steps/filter/binary/sf_step_statistical_outlier_removal.cpp \
     converters/sf_abstract_converter.cpp \
     steps/abstract_step/pcl/sf_abstract_pcl_step.cpp \
-    steps/filter/binary/sf_step_statistical_outlier_removal_adapter.cpp
+    steps/filter/binary/sf_step_statistical_outlier_removal_adapter.cpp \
+    steps/abstract_step/filter/sf_abstract_filter_step.cpp \
+    steps/abstract_step/filter/binary/sf_abstract_filter_binary_step.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts
