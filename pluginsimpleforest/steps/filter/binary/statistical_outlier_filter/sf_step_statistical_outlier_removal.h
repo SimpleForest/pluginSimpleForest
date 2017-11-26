@@ -28,7 +28,7 @@
 #ifndef SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
 #define SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
 
-#include "steps/abstract_step/filter/binary/sf_abstract_filter_binary_step.h"
+#include "steps/filter/binary/sf_abstract_filter_binary_step.h"
 
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"

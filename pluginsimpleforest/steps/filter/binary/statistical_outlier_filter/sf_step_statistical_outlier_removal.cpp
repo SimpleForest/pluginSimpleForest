@@ -29,7 +29,7 @@
 
 
 #include <QtConcurrent/QtConcurrent>
-#include <steps/filter/binary/sf_step_statistical_outlier_removal_adapter.h>
+#include <steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal_adapter.h>
 SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init)
 //SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): CT_AbstractStep(data_init)
 {

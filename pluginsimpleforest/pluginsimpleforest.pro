@@ -21,9 +21,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/sf_model_abstract_segment.h \
     qsm/sf_model_abstract_buildingbrick.h \
     pcl/sf_point.h \
-    steps/abstract_step/sf_abstract_step.h \
-    steps/abstract_param/sf_abstract_param.h \
-    steps/abstract_step/sf_template_step.h \
     pcl/cloud/filter/sf_abstract_filter.h \
     pcl/cloud/filter/binary/sf_binary_filter.h \
     pcl/cloud/sf_abstract_cloud.hpp \
@@ -32,28 +29,26 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/filter/binary/sf_binary_filter.hpp \
     pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h \
     pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.hpp \
-    steps/filter/binary/sf_step_statistical_outlier_removal.h \
+    steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.h \
+    steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal_adapter.h \
     converters/CT_To_PCL/sf_converter_ct_to_pcl.h \
     converters/CT_To_PCL/sf_converter_ct_to_pcl.hpp \
     converters/sf_abstract_converter.h \
-    steps/abstract_step/pcl/sf_abstract_pcl_step.h \
-    steps/abstract_step/pcl/sf_abstract_pcl_step.hpp \
-    steps/filter/binary/sf_step_statistical_outlier_removal_adapter.h \
-    steps/abstract_step/filter/sf_abstract_filter_step.h \
-    steps/abstract_step/filter/binary/sf_abstract_filter_binary_step.h
+    steps/param/sf_abstract_param.h \
+    steps/sf_abstract_step.h \
+    steps/filter/sf_abstract_filter_step.h \
+    steps/filter/binary/sf_abstract_filter_binary_step.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
     qsm/sf_model_abstract_segment.cpp \
     qsm/sf_model_abstract_buildingbrick.cpp \
-    steps/abstract_step/sf_abstract_step.cpp \
-    steps/abstract_step/sf_template_step.cpp \
-    steps/filter/binary/sf_step_statistical_outlier_removal.cpp \
     converters/sf_abstract_converter.cpp \
-    steps/abstract_step/pcl/sf_abstract_pcl_step.cpp \
-    steps/filter/binary/sf_step_statistical_outlier_removal_adapter.cpp \
-    steps/abstract_step/filter/sf_abstract_filter_step.cpp \
-    steps/abstract_step/filter/binary/sf_abstract_filter_binary_step.cpp
+    steps/sf_abstract_step.cpp \
+    steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal_adapter.cpp \
+    steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.cpp \
+    steps/filter/sf_abstract_filter_step.cpp \
+    steps/filter/binary/sf_abstract_filter_binary_step.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

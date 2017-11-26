@@ -25,30 +25,22 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_STEP_STATISTICAL_OUTLIER_REMOVAL_ADAPTER_H
-#define SF_STEP_STATISTICAL_OUTLIER_REMOVAL_ADAPTER_H
+#ifndef SF_ABSTRACT_FILTER_STEP_H
+#define SF_ABSTRACT_FILTER_STEP_H
+#include <steps/sf_abstract_step.h>
 
-#include <steps/abstract_param/sf_abstract_param.h>
-#include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
-#include <pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h>
-
-
-#include <QDebug>
-
-class SF_Step_Statistical_Outlier_Removal_Adapter
+class SF_Abstract_Filter_Step: public SF_Abstract_Step
 {
 public:
-    SF_Step_Statistical_Outlier_Removal_Adapter();
 
-    virtual void operator()(SF_Param_Statistical_Outlier_Filter & params)
-    {
-        SF_Converter_CT_To_PCL<SF_Point> converter( params._itemCpy_cloud_in);
-        converter.compute();
-        params._cloud_in = converter.get_cloud_translated();
-        SF_Statistical_Outlier_Filter<SF_Point> filter (params._cloud_in);
-        filter.compute(params);
-        params._output_indices = filter.get_indices();
-    }
+    SF_Abstract_Filter_Step(CT_StepInitializeData & data_init);
+
+protected:
+    void add_scene_to_grp(CT_StandardItemGroup* cloud_grp, const QString & out_cloud_complete_name, CT_PointCloudIndexVector *ct_point_cloud_index, CT_ResultGroup* out_result);
+
+    void add_scene_in_subgrp_to_grp(CT_StandardItemGroup* filter_grp, const QString &out_cloud_complete_name, const QString &sub_grp_complete_name, CT_ResultGroup* out_result,
+                                    CT_PointCloudIndexVector * ct_point_cloud_index);
+
 };
 
-#endif // SF_STEP_STATISTICAL_OUTLIER_REMOVAL_ADAPTER_H
+#endif // SF_ABSTRACT_FILTER_STEP_H

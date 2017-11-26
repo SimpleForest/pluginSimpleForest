@@ -7,7 +7,7 @@
 #include "ct_reader/ct_standardreaderseparator.h"
 #include "ct_actions/abstract/ct_abstractaction.h"
 
-#include "steps/filter/binary/sf_step_statistical_outlier_removal.h"
+#include "steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.h"
 
 // Inclure ici les entetes des classes definissant des Ã©tapes/actions/exporters ou readers
 

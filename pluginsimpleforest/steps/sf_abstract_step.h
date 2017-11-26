@@ -28,7 +28,7 @@
 #ifndef SF_ABSTRACT_STEP_H
 #define SF_ABSTRACT_STEP_H
 
-#include <steps/abstract_param/sf_abstract_param.h>
+#include <steps/param/sf_abstract_param.h>
 #include <ct_step/abstract/ct_abstractstep.h>
 #include <ct_itemdrawable/ct_grid3d_sparse.h>
 #include <ct_result/model/inModel/ct_inresultmodelgrouptocopy.h>

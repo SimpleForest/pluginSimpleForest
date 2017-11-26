@@ -25,9 +25,30 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#include "sf_template_step.h"
+#ifndef SF_STEP_STATISTICAL_OUTLIER_REMOVAL_ADAPTER_H
+#define SF_STEP_STATISTICAL_OUTLIER_REMOVAL_ADAPTER_H
 
-//SF_Template_Step::SF_Template_Step(CT_StepInitializeData &data_ini)
-//{
+#include <steps/param/sf_abstract_param.h>
+#include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
+#include <pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h>
 
-//}
+
+#include <QDebug>
+
+class SF_Step_Statistical_Outlier_Removal_Adapter
+{
+public:
+    SF_Step_Statistical_Outlier_Removal_Adapter();
+
+    virtual void operator()(SF_Param_Statistical_Outlier_Filter & params)
+    {
+        SF_Converter_CT_To_PCL<SF_Point> converter( params._itemCpy_cloud_in);
+        converter.compute();
+        params._cloud_in = converter.get_cloud_translated();
+        SF_Statistical_Outlier_Filter<SF_Point> filter (params._cloud_in);
+        filter.compute(params);
+        params._output_indices = filter.get_indices();
+    }
+};
+
+#endif // SF_STEP_STATISTICAL_OUTLIER_REMOVAL_ADAPTER_H

@@ -25,4 +25,28 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#include "sf_abstract_pcl_step.h"
+#ifndef SF_ABSTRACT_FILTER_BINARY_STEP_H
+#define SF_ABSTRACT_FILTER_BINARY_STEP_H
+
+#include <steps/filter/sf_abstract_filter_step.h>
+
+class SF_Abstract_Filter_Binary_Step: public SF_Abstract_Filter_Step
+{
+public:
+
+    SF_Abstract_Filter_Binary_Step(CT_StepInitializeData & data_init);
+
+protected:
+
+    CT_AutoRenameModels _out_grp;
+
+    CT_AutoRenameModels _out_grp_noise;
+
+    CT_AutoRenameModels _out_noise;
+
+    CT_AutoRenameModels _out_grp_cloud;
+
+    CT_AutoRenameModels _out_cloud;
+};
+
+#endif // SF_ABSTRACT_FILTER_BINARY_STEP_H

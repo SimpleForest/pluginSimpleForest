@@ -29,7 +29,7 @@
 #define SF_ABRACT_CLOUD_H
 
 #include <pcl/sf_point.h>
-#include <steps/abstract_param/sf_abstract_param.h>
+#include <steps/param/sf_abstract_param.h>
 
 template <typename PointType>
 class SF_Abstract_Cloud
