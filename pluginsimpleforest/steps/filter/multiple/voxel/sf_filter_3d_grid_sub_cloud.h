@@ -25,24 +25,19 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
-#define SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
-
-#include "steps/filter/binary/sf_abstract_filter_binary_step.h"
-
-#include "ct_view/ct_stepconfigurabledialog.h"
-#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
-
-
-class SF_Step_Statistical_Outlier_Removal:  public SF_Abstract_Filter_Binary_Step
+#ifndef SF_FILTER_3D_GRID_SUB_CLOUD_H
+#define SF_FILTER_3D_GRID_SUB_CLOUD_H
+#include <QObject>
+#include "steps/filter/multiple/sf_abstract_filter_multiple_step.h"
+class SF_Filter_3d_Grid_Sub_Cloud: public SF_Abstract_Filter_Multiple_Step
 {
     Q_OBJECT
 
 public:
 
-    SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init);
+    SF_Filter_3d_Grid_Sub_Cloud(CT_StepInitializeData &data_init);
 
-    ~SF_Step_Statistical_Outlier_Removal();
+    ~SF_Filter_3d_Grid_Sub_Cloud();
 
     QString getStepDescription() const;
 
@@ -54,6 +49,8 @@ public:
 
     QStringList getStepRISCitations() const;
 
+
+
 protected:
 
     void createInResultModelListProtected();
@@ -64,22 +61,24 @@ protected:
 
     void compute();
 
-    QList<SF_Param_Statistical_Outlier_Filter<SF_Point> > _param_list;
 
 private:
 
-    double _std_mult = 3.0;
+    double _voxel_size = 3.0;
 
-    int _iterations = 5;
+    CT_Grid3D_Sparse<int> * create_grid3d_from_scene(const CT_Scene* ct_cloud, double voxel_size);
 
-    int _k = 2;
+    void add_point_to_grid_cluster(CT_Grid3D_Sparse<int>* hit_grid,
+                                   std::vector<CT_PointCloudIndexVector *> &clusters, CT_PointIterator & it);
 
-    void write_output_per_scence(CT_ResultGroup* out_result, size_t i);
+    void create_grid_cluster(int &val, std::vector<CT_PointCloudIndexVector *> &clusters, const CT_Point &point, CT_Grid3D_Sparse<int>* hit_grid);
 
-    void write_output(CT_ResultGroup* out_result);
+    void create_grid_cluster_if_needed(int &val, std::vector<CT_PointCloudIndexVector *> &clusters, const CT_Point &point, CT_Grid3D_Sparse<int>* hit_grid);
 
-    void create_param_list(CT_ResultGroup *out_result);
+    void add_cloud_to_grid_cluster(const CT_Scene* ct_cloud, std::vector<CT_PointCloudIndexVector *> &clusters);
+
+
+
 
 };
-
-#endif // SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
+#endif // SF_FILTER_3D_GRID_SUB_CLOUD_H

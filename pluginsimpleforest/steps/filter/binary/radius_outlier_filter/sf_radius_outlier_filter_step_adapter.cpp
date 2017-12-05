@@ -25,20 +25,5 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_HPP
-#define SF_ABSTRACT_FILTER_HPP
+#include "sf_radius_outlier_filter_step_adapter.h"
 
-#include "sf_abstract_filter.h"
-
-
-
-template <typename PointType>
-SF_Abstract_Filter<PointType>::SF_Abstract_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in):
-    SF_Abstract_Cloud<PointType>(cloud_in)
-{
-
-}
-
-
-
-#endif // SF_ABSTRACT_FILTER_HPP

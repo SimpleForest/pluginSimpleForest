@@ -27,7 +27,3 @@
 *****************************************************************************/
 #include "sf_step_statistical_outlier_removal_adapter.h"
 
-SF_Step_Statistical_Outlier_Removal_Adapter::SF_Step_Statistical_Outlier_Removal_Adapter()
-{
-
-}

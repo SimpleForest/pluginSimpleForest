@@ -42,20 +42,27 @@ struct SF_Param_CT{
     CT_ResultGroup* _resCpy_res;
 };
 
-
+template <typename PointType>
 struct SF_Param_Cloud: public SF_Param_CT{
-    SF_Cloud::Ptr _cloud_in;
+    typename pcl::PointCloud<PointType>::Ptr _cloud_in;
 };
-
-struct SF_Param_Filter: public SF_Param_Cloud{
+template <typename PointType>
+struct SF_Param_Filter: public SF_Param_Cloud<PointType>{
     int _size_output;
     std::vector<int> _output_indices;
 };
-
-struct SF_Param_Statistical_Outlier_Filter : public SF_Param_Filter{
+template <typename PointType>
+struct SF_Param_Statistical_Outlier_Filter : public SF_Param_Filter<PointType>{
     int _k;
     float _std_mult;
     int _iterations;
+};
+template <typename PointType>
+struct SF_Param_Radius_Outlier_Filter : public SF_Param_Filter<PointType>{
+    int _min_Pts;
+    double _radius;
+
+
 };
 
 #endif // SF_ABSTRACT_PARAM_H

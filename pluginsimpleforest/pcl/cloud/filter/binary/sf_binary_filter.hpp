@@ -32,6 +32,7 @@
 template <typename PointType>
 Sf_Binary_Filter<PointType>::Sf_Binary_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in): SF_Abstract_Filter<PointType>(cloud_in)
 {
+
     reset();
 }
 
@@ -79,9 +80,20 @@ void Sf_Binary_Filter<PointType>::iterate_over_cloud(pcl::KdTreeFLANN<PointType>
 template <typename PointType>
 void Sf_Binary_Filter<PointType>::create_indices()
 {
+    if(_cloud_out_filtered->points.size()>0)
+    {
     pcl::KdTreeFLANN<PointType> kdtree;
     kdtree.setInputCloud (_cloud_out_filtered);
     iterate_over_cloud(kdtree);
+    }
+    else
+    {
+        size_t size = Sf_Binary_Filter<PointType>::_cloud_in->size();
+        for(size_t i = 0; i < size; i++)
+        {
+            _indices.push_back(1);
+        }
+    }
 }
 
 

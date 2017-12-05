@@ -25,20 +25,26 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_HPP
-#define SF_ABSTRACT_FILTER_HPP
+#include "sf_abstract_filter_multiple_step.h"
 
-#include "sf_abstract_filter.h"
-
-
-
-template <typename PointType>
-SF_Abstract_Filter<PointType>::SF_Abstract_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in):
-    SF_Abstract_Cloud<PointType>(cloud_in)
+SF_Abstract_Filter_Multiple_Step::SF_Abstract_Filter_Multiple_Step(CT_StepInitializeData &data_init):
+    SF_Abstract_Filter_Step(data_init)
 {
 
 }
 
+void SF_Abstract_Filter_Multiple_Step::write_output_per_scence(CT_ResultGroup* out_result,CT_PointCloudIndexVector * output_cluster,  CT_StandardItemGroup* group)
+{
+    CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
+    group->addGroup(filter_grp);
+    add_scene_in_subgrp_to_grp(filter_grp, _out_cloud_cluster.completeName(),_out_grp_cluster.completeName(), out_result, output_cluster);
+}
 
-
-#endif // SF_ABSTRACT_FILTER_HPP
+void SF_Abstract_Filter_Multiple_Step::write_output(CT_ResultGroup* out_result, std::vector<CT_PointCloudIndexVector *> cluster_vec,  CT_StandardItemGroup* group )
+{
+    size_t size = cluster_vec.size();
+    for(size_t i = 0; i < size; i ++)
+    {
+        write_output_per_scence(out_result, cluster_vec.at(i), group);
+    }
+}

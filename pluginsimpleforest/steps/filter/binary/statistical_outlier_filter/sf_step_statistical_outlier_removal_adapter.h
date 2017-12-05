@@ -33,19 +33,19 @@
 #include <pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h>
 
 
-#include <QDebug>
 
+template <typename PointType>
 class SF_Step_Statistical_Outlier_Removal_Adapter
 {
 public:
     SF_Step_Statistical_Outlier_Removal_Adapter();
 
-    virtual void operator()(SF_Param_Statistical_Outlier_Filter & params)
+    virtual void operator()(SF_Param_Statistical_Outlier_Filter<PointType> & params)
     {
-        SF_Converter_CT_To_PCL<SF_Point> converter( params._itemCpy_cloud_in);
+        SF_Converter_CT_To_PCL<PointType> converter( params._itemCpy_cloud_in);
         converter.compute();
         params._cloud_in = converter.get_cloud_translated();
-        SF_Statistical_Outlier_Filter<SF_Point> filter (params._cloud_in);
+        SF_Statistical_Outlier_Filter<PointType> filter (params._cloud_in);
         filter.compute(params);
         params._output_indices = filter.get_indices();
     }

@@ -63,8 +63,6 @@ protected:
 
     QList<SF_Param_CT> _param_list;
 
-    virtual void create_param_list(CT_ResultGroup *out_result) = 0;
-
     std::vector<CT_PointCloudIndexVector*> create_output_vectors(size_t number_output);
 
     void create_output_indices(std::vector<CT_PointCloudIndexVector*> &index_vectors, const std::vector<int> &indices, const CT_AbstractItemDrawableWithPointCloud *item_cpy_cloud_in);
@@ -72,6 +70,12 @@ protected:
     void identify_and_remove_corrupted_scenes(CT_ResultGroup* out_result);
 
     void create_output_index(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, size_t counter, CT_PointIterator &point_it);
+
+
+
+    Eigen::Vector3f get_min(const CT_Scene* ct_cloud);
+
+    Eigen::Vector3f get_max(const CT_Scene* ct_cloud);
 
 public:
 

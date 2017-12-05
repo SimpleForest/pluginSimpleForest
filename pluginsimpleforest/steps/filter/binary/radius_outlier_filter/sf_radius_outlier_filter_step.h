@@ -25,8 +25,10 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
-#define SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
+#ifndef SF_RADIUS_OUTLIER_FILTER_STEP_H
+#define SF_RADIUS_OUTLIER_FILTER_STEP_H
+
+
 
 #include "steps/filter/binary/sf_abstract_filter_binary_step.h"
 
@@ -34,15 +36,15 @@
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
 
-class SF_Step_Statistical_Outlier_Removal:  public SF_Abstract_Filter_Binary_Step
+class SF_Radius_Outlier_Filter_Step:  public SF_Abstract_Filter_Binary_Step
 {
     Q_OBJECT
 
 public:
 
-    SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init);
+    SF_Radius_Outlier_Filter_Step(CT_StepInitializeData &data_init);
 
-    ~SF_Step_Statistical_Outlier_Removal();
+    ~SF_Radius_Outlier_Filter_Step();
 
     QString getStepDescription() const;
 
@@ -64,15 +66,13 @@ protected:
 
     void compute();
 
-    QList<SF_Param_Statistical_Outlier_Filter<SF_Point> > _param_list;
+    QList<SF_Param_Radius_Outlier_Filter<SF_Point> > _param_list;
 
 private:
 
-    double _std_mult = 3.0;
+    double _radius = 0.03;
 
-    int _iterations = 5;
-
-    int _k = 2;
+    int _min_Pts = 5;
 
     void write_output_per_scence(CT_ResultGroup* out_result, size_t i);
 
@@ -81,5 +81,4 @@ private:
     void create_param_list(CT_ResultGroup *out_result);
 
 };
-
-#endif // SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H
+#endif // SF_RADIUS_OUTLIER_FILTER_STEP_H

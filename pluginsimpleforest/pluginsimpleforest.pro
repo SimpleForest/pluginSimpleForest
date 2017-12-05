@@ -37,7 +37,13 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/param/sf_abstract_param.h \
     steps/sf_abstract_step.h \
     steps/filter/sf_abstract_filter_step.h \
-    steps/filter/binary/sf_abstract_filter_binary_step.h
+    steps/filter/binary/sf_abstract_filter_binary_step.h \
+    steps/filter/multiple/sf_abstract_filter_multiple_step.h \
+    steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.h \
+    steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.h \
+    pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h \
+    pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.hpp \
+    steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step_adapter.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -48,7 +54,11 @@ SOURCES += \
     steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal_adapter.cpp \
     steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.cpp \
     steps/filter/sf_abstract_filter_step.cpp \
-    steps/filter/binary/sf_abstract_filter_binary_step.cpp
+    steps/filter/binary/sf_abstract_filter_binary_step.cpp \
+    steps/filter/multiple/sf_abstract_filter_multiple_step.cpp \
+    steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.cpp \
+    steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.cpp \
+    steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step_adapter.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

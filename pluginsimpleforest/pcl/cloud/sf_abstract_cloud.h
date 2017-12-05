@@ -36,8 +36,6 @@ class SF_Abstract_Cloud
 {
 protected:
 
-//    virtual void operator()(const SF_Param_CT &params) = 0;
-
     const float _MIN_DISTANCE = 0.0001;
 
     const float _MIN_SQUARED_DISTANCE = _MIN_DISTANCE*_MIN_DISTANCE;
@@ -49,9 +47,8 @@ protected:
     virtual void reset() = 0;
 
 public:
-    SF_Abstract_Cloud(typename pcl::PointCloud<PointType>::Ptr cloud_in);
 
-   // virtual void compute(const SF_Param_CT &params) = 0;
+    SF_Abstract_Cloud(typename pcl::PointCloud<PointType>::Ptr cloud_in);
 
 };
 

@@ -25,20 +25,29 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_HPP
-#define SF_ABSTRACT_FILTER_HPP
+#ifndef SF_RADIUS_OUTLIER_FILTER_STEP_ADAPTER_H
+#define SF_RADIUS_OUTLIER_FILTER_STEP_ADAPTER_H
 
-#include "sf_abstract_filter.h"
-
+#include <steps/param/sf_abstract_param.h>
+#include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
+#include <pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h>
 
 
 template <typename PointType>
-SF_Abstract_Filter<PointType>::SF_Abstract_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in):
-    SF_Abstract_Cloud<PointType>(cloud_in)
+class SF_Radius_Outlier_Filter_Step_Adapter
 {
+public:
+    SF_Radius_Outlier_Filter_Step_Adapter();
 
-}
+    virtual void operator()(SF_Param_Radius_Outlier_Filter<PointType> & params)
+    {
+        SF_Converter_CT_To_PCL<PointType> converter( params._itemCpy_cloud_in);
+        converter.compute();
+        params._cloud_in = converter.get_cloud_translated();
+        SF_Radius_Outlier_Filter<PointType> filter (params._cloud_in);
+        filter.compute(params);
+        params._output_indices = filter.get_indices();
+    }
+};
 
-
-
-#endif // SF_ABSTRACT_FILTER_HPP
+#endif // SF_RADIUS_OUTLIER_FILTER_STEP_ADAPTER_H

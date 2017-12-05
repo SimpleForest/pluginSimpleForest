@@ -58,7 +58,7 @@ protected:
     virtual void reset();
 public:
 
-    Sf_Binary_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+    Sf_Binary_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in3);
 
     typename pcl::PointCloud<PointType>::Ptr get_cloud_out_filtered() const;
 

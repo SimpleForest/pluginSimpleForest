@@ -34,7 +34,13 @@ template <typename PointType>
 class SF_Abstract_Filter: public  SF_Abstract_Cloud<PointType>
 {
 public:
-    SF_Abstract_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+
+    SF_Abstract_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in) ;
+
+protected:
+
+    std::vector<typename pcl::PointCloud<PointType>::Ptr > _sub_clouds;
+
 
 
 };

@@ -53,6 +53,24 @@ void SF_Abstract_Step::set_progress_by_future(QFuture<void> &future, float perce
     }
 }
 
+Eigen::Vector3f SF_Abstract_Step::get_min(const CT_Scene* ct_cloud)
+{
+    Eigen::Vector3f min;
+    min(0) = ct_cloud->minX();
+    min(1) = ct_cloud->minY();
+    min(2) = ct_cloud->minZ();
+    return min;
+}
+
+Eigen::Vector3f SF_Abstract_Step::get_max(const CT_Scene *ct_cloud)
+{
+    Eigen::Vector3f max;
+    max(0) = ct_cloud->maxX();
+    max(1) = ct_cloud->maxY();
+    max(2) = ct_cloud->maxZ();
+    return max;
+}
+
 void SF_Abstract_Step::identify_and_remove_corrupted_scenes(CT_ResultGroup* out_result)
 {
     identify_corrupted_scenes(out_result);
