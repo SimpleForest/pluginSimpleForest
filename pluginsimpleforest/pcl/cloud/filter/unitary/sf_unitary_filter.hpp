@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,5 +25,29 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#include "sf_radius_outlier_filter_step_adapter.h"
+#ifndef SF_UNITARY_FILTER_HPP
+#define SF_UNITARY_FILTER_HPP
+#include "sf_unitary_filter.h"
+template <typename PointType>
+SF_Unitary_Filter<PointType>::SF_Unitary_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in):
+    SF_Abstract_Filter<PointType>(cloud_in) {
+    reset();
+}
 
+template<typename PointType>
+void SF_Unitary_Filter<PointType>::reset() {
+    SF_Abstract_Filter<PointType>::_cloud_out_filtered.reset(new pcl::PointCloud<PointType>);
+    SF_Abstract_Filter<PointType>::_indices.clear();
+}
+
+template<typename PointType>
+void SF_Unitary_Filter<PointType>::create_index(PointType point,
+                                                float sqrd_distance)
+{
+    if(SF_Unitary_Filter<PointType>::equals_by_sqrt_distance(sqrd_distance))
+    {SF_Abstract_Cloud<PointType>::_indices.push_back(0);}
+    else
+    {SF_Abstract_Cloud<PointType>::_indices.push_back(-1);}
+}
+
+#endif // SF_UNITARY_FILTER_HPP

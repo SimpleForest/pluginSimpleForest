@@ -134,32 +134,31 @@ void SF_Abstract_Step::remove_corrupted_scenes(int progress)
 }
 
 
-std::vector<CT_PointCloudIndexVector *> SF_Abstract_Step::create_output_vectors(size_t number_output)
-{
+std::vector<CT_PointCloudIndexVector *> SF_Abstract_Step::create_output_vectors(size_t number_output) {
     std::vector<CT_PointCloudIndexVector *> result;
-    for(size_t i = 0; i < number_output; i++)
-    {
+    for(size_t i = 0; i < number_output; i++) {
         CT_PointCloudIndexVector * vec = new CT_PointCloudIndexVector();
         result.push_back(vec);
     }
     return result;
 }
 
-void SF_Abstract_Step::create_output_index(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, size_t counter, CT_PointIterator & point_it)
-{
+void SF_Abstract_Step::create_output_index(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, size_t counter, CT_PointIterator & point_it) {
     point_it.next();
     size_t index_ct = point_it.currentGlobalIndex();
     size_t index_cloud = indices.at(counter);
-    index_vectors[index_cloud]->addIndex(index_ct);
+    if(index_cloud>=0&&index_cloud<index_vectors.size()) {
+        index_vectors[index_cloud]->addIndex(index_ct);
+    } else {
+        qDebug() << "TODO void SF_Abstract_Step::create_output_index";
+    }
 }
 
-void SF_Abstract_Step::create_output_indices(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, const CT_AbstractItemDrawableWithPointCloud * item_cpy_cloud_in)
-{
+void SF_Abstract_Step::create_output_indices(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, const CT_AbstractItemDrawableWithPointCloud * item_cpy_cloud_in) {
     const CT_AbstractPointCloudIndex * point_cloud_index = item_cpy_cloud_in->getPointCloudIndex();
     CT_PointIterator point_it(point_cloud_index);
     size_t counter = 0;
-    while(point_it.hasNext())
-    {
+    while(point_it.hasNext()) {
         create_output_index(index_vectors, indices, counter++, point_it);
     }
 }

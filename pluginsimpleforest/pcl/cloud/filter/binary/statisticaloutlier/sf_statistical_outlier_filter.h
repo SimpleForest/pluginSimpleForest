@@ -40,10 +40,6 @@ class SF_Statistical_Outlier_Filter: public Sf_Binary_Filter<PointType>
 
     void iterate(SF_Param_Statistical_Outlier_Filter<PointType> params, typename pcl::PointCloud<PointType>::Ptr cloud);
 
-protected:
-
-    virtual void reset();
-
 public:
 
     SF_Statistical_Outlier_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);

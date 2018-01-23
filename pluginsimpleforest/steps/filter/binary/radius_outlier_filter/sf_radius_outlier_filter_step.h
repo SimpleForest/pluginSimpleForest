@@ -36,6 +36,7 @@
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
 
+
 class SF_Radius_Outlier_Filter_Step:  public SF_Abstract_Filter_Binary_Step
 {
     Q_OBJECT

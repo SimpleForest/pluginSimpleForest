@@ -32,34 +32,26 @@
 #include <pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h>
 template <typename PointType>
 SF_Radius_Outlier_Filter<PointType>::SF_Radius_Outlier_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in):
-    Sf_Binary_Filter<PointType>(cloud_in)
-{
-    SF_Radius_Outlier_Filter<PointType>::reset();
+    Sf_Binary_Filter<PointType>(cloud_in) {
+    Sf_Binary_Filter<PointType>::reset();
 }
 
 
 template <typename PointType>
-void  SF_Radius_Outlier_Filter<PointType>::compute(const SF_Param_Radius_Outlier_Filter<PointType> &params)
-{
-    SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(params);
+void  SF_Radius_Outlier_Filter<PointType>::compute(const SF_Param_Radius_Outlier_Filter<PointType> &params) {
+    if(SF_Abstract_Cloud<PointType>::_cloud_in->points.size() >= 20) {
+        SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(params);
+    }
     SF_Radius_Outlier_Filter<PointType>::create_indices();
 }
 
 template <typename PointType>
-void SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(SF_Param_Radius_Outlier_Filter<PointType> std_params)
-{
-    SF_Radius_Outlier_Filter<PointType>::_cloud_out_filtered.reset(new  pcl::PointCloud<PointType>());
+void SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(SF_Param_Radius_Outlier_Filter<PointType> std_params) {
     pcl::RadiusOutlierRemoval<PointType> outrem;
-    outrem.setInputCloud (SF_Radius_Outlier_Filter<PointType>::_cloud_in);
+    outrem.setInputCloud (SF_Abstract_Cloud<PointType>::_cloud_in);
     outrem.setRadiusSearch(std_params._radius);
     outrem.setMinNeighborsInRadius( std_params._min_Pts);
-    outrem.filter (*(SF_Radius_Outlier_Filter<PointType>::_cloud_out_filtered));
+    outrem.filter (*SF_Abstract_Filter<PointType>::_cloud_out_filtered);
 }
 
-
-template<typename PointType>
-void SF_Radius_Outlier_Filter<PointType>::reset()
-{
-    Sf_Binary_Filter<PointType>::reset();
-}
 #endif // SF_RADIUS_OUTLIER_FILTER_HPP

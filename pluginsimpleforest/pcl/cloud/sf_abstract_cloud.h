@@ -36,6 +36,8 @@ class SF_Abstract_Cloud
 {
 protected:
 
+    std::vector<int> _indices;
+
     const float _MIN_DISTANCE = 0.0001;
 
     const float _MIN_SQUARED_DISTANCE = _MIN_DISTANCE*_MIN_DISTANCE;
@@ -46,9 +48,21 @@ protected:
 
     virtual void reset() = 0;
 
+    virtual void create_index(PointType point,
+                         float sqrd_distance) = 0;
+
+    void search_kd_tree(size_t index, typename
+                        pcl::KdTreeFLANN<PointType> &kdtree);
+
+    void iterate_over_cloud(pcl::KdTreeFLANN<PointType> &kdtree);
+
+    virtual void create_indices() = 0;
+
 public:
 
     SF_Abstract_Cloud(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+
+    std::vector<int> get_indices() const;
 
 };
 

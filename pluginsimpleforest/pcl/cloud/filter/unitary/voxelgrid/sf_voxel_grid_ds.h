@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,24 +25,28 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_RADIUS_OUTLIER_FILTER_H
-#define SF_RADIUS_OUTLIER_FILTER_H
+#ifndef SF_VOXEL_GRID_DS_H
+#define SF_VOXEL_GRID_DS_H
 
-#include <pcl/cloud/filter/binary/sf_binary_filter.h>
+#include <pcl/cloud/filter/unitary/sf_unitary_filter.h>
+#include "pcl/filters/voxel_grid.h"
 
 template <typename PointType>
-class SF_Radius_Outlier_Filter: public Sf_Binary_Filter<PointType>
+class SF_Voxel_Grid_DS: public SF_Unitary_Filter<PointType>
 {
 
-    void radius_outlier_filter(SF_Param_Radius_Outlier_Filter<PointType> std_params);
+    void voxel_grid_downscale(SF_Param_Voxel_Grid_Downscale<PointType> std_params);
 
 public:
 
-    SF_Radius_Outlier_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+    SF_Voxel_Grid_DS(typename pcl::PointCloud<PointType>::Ptr cloud_in);
 
-    virtual void compute(const SF_Param_Radius_Outlier_Filter<PointType> &params);
+    virtual void compute(const SF_Param_Voxel_Grid_Downscale<PointType> &params);
+
+    void set_leaf_size(typename pcl::VoxelGrid<pcl::PointCloud<PointType> > &sor);
 
 };
-#include <pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.hpp>
 
-#endif // SF_RADIUS_OUTLIER_FILTER_H
+#include "sf_voxel_grid_ds.hpp"
+
+#endif // SF_VOXEL_GRID_DS_H

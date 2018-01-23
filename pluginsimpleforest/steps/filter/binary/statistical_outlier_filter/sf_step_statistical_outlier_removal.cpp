@@ -26,10 +26,9 @@
 
 *****************************************************************************/
 #include "sf_step_statistical_outlier_removal.h"
-
+#include "steps/filter/binary/statistical_outlier_filter/sf_statistical_outlier_removal_adapter.h"
 
 #include <QtConcurrent/QtConcurrent>
-#include <steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal_adapter.h>
 SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init)
 //SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): CT_AbstractStep(data_init)
 {
@@ -122,7 +121,6 @@ void SF_Step_Statistical_Outlier_Removal::createPostConfigurationDialog()
 void SF_Step_Statistical_Outlier_Removal::createOutResultModelListProtected()
 {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
-
     if(res_modelw != NULL)
     {
         res_modelw->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(), tr ("statistical outlier removal") );
@@ -141,7 +139,6 @@ void SF_Step_Statistical_Outlier_Removal::write_output_per_scence(CT_ResultGroup
     SF_Param_Statistical_Outlier_Filter<SF_Point> param = _param_list.at(i);
     std::vector<CT_PointCloudIndexVector *> output_index_list = create_output_vectors(param._size_output);
     create_output_indices(output_index_list, param._output_indices, param._itemCpy_cloud_in);
-
     CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
     param._grpCpy_grp->addGroup(filter_grp);
     add_scene_in_subgrp_to_grp(filter_grp, _out_cloud.completeName(),_out_grp_cloud.completeName(), out_result, output_index_list[0]);
@@ -163,7 +160,7 @@ void SF_Step_Statistical_Outlier_Removal::compute()
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
     create_param_list(out_result);
-    QFuture<void> future = QtConcurrent::map(_param_list,SF_Step_Statistical_Outlier_Removal_Adapter<SF_Point>());
+    QFuture<void> future = QtConcurrent::map(_param_list,SF_Statistical_Outlier_Removal_Adapter() );
     set_progress_by_future(future,10,85);
     write_output(out_result);
 }

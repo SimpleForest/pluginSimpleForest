@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,5 +25,24 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#include "sf_step_statistical_outlier_removal_adapter.h"
+#ifndef SF_NORMAL_HPP
+#define SF_NORMAL_HPP
+#include "sf_normal.h"
+#include <pcl/features/normal_3d.h>
+template <typename PointType, typename FeatureType>
+SF_Normal<PointType, FeatureType>::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in):
+    _cloud_in(cloud_in) {
 
+}
+template <typename PointType, typename FeatureType>
+void compute_feature() {
+    pcl::NormalEstimation<PointType, FeatureType> ne;
+    ne.setInputCloud (_cloud_in);
+    pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType> ());
+    ne.setSearchMethod (tree);
+    pcl::PointCloud<FeatureType>::Ptr cloud_normals (new pcl::PointCloud<FeatureType>);
+    ne.setRadiusSearch (0.03);
+    ne.compute (*cloud_normals);;
+}
+
+#endif // SF_NORMAL_HPP

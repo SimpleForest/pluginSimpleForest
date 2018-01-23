@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,29 +25,26 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_RADIUS_OUTLIER_FILTER_STEP_ADAPTER_H
-#define SF_RADIUS_OUTLIER_FILTER_STEP_ADAPTER_H
+#ifndef SF_UNITARY_FILTER_H
+#define SF_UNITARY_FILTER_H
 
-#include <steps/param/sf_abstract_param.h>
-#include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
-#include <pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h>
-
-
+#include "pcl/cloud/filter/sf_abstract_filter.h"
+#include <pcl/cloud/sf_abstract_cloud.h>
 template <typename PointType>
-class SF_Radius_Outlier_Filter_Step_Adapter
+class SF_Unitary_Filter: public  SF_Abstract_Filter<PointType>
 {
+protected:
+
+    virtual void reset();
+
+    virtual void create_index(PointType point,
+                      float sqrd_distance);
+
 public:
-    SF_Radius_Outlier_Filter_Step_Adapter();
 
-    virtual void operator()(SF_Param_Radius_Outlier_Filter<PointType> & params)
-    {
-        SF_Converter_CT_To_PCL<PointType> converter( params._itemCpy_cloud_in);
-        converter.compute();
-        params._cloud_in = converter.get_cloud_translated();
-        SF_Radius_Outlier_Filter<PointType> filter (params._cloud_in);
-        filter.compute(params);
-        params._output_indices = filter.get_indices();
-    }
+    SF_Unitary_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+
+
 };
-
-#endif // SF_RADIUS_OUTLIER_FILTER_STEP_ADAPTER_H
+#include "sf_unitary_filter.hpp"
+#endif // SF_UNITARY_FILTER_H

@@ -39,6 +39,40 @@ SF_Abstract_Filter<PointType>::SF_Abstract_Filter(typename  pcl::PointCloud<Poin
 
 }
 
+template<typename PointType>
+void SF_Abstract_Filter<PointType>::write_empty()
+{
+    size_t size = SF_Abstract_Filter<PointType>::_cloud_in->size();
+    for(size_t i = 0; i < size; i++)
+    {
+        SF_Abstract_Cloud<PointType>::_indices.push_back(-1);
+    }
+}
+
+template<typename PointType>
+void SF_Abstract_Filter<PointType>::iterate()
+{
+    pcl::KdTreeFLANN<PointType> kdtree;
+    kdtree.setInputCloud (_cloud_out_filtered);
+    SF_Abstract_Cloud<PointType>::iterate_over_cloud(kdtree);
+}
+
+template <typename PointType>
+void SF_Abstract_Filter<PointType>::create_indices()
+{
+    if(_cloud_out_filtered->points.size()>0) {
+        iterate();
+    } else {
+        write_empty();
+    }
+}
+
+template <typename PointType>
+typename pcl::PointCloud<PointType>::Ptr SF_Abstract_Filter<PointType>::get_cloud_out_filtered() const {
+    return _cloud_out_filtered;
+}
+
+
 
 
 #endif // SF_ABSTRACT_FILTER_HPP

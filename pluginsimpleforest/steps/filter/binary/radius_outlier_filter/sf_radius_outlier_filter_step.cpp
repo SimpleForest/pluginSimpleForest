@@ -26,44 +26,34 @@
 
 *****************************************************************************/
 #include "sf_radius_outlier_filter_step.h"
-
-
-
+#include "steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_adapter.h"
 #include <QtConcurrent/QtConcurrent>
-#include <steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step_adapter.h>
-SF_Radius_Outlier_Filter_Step::SF_Radius_Outlier_Filter_Step(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init)
-//SF_Radius_Outlier_Filter_Step::SF_Radius_Outlier_Filter_Step(CT_StepInitializeData &data_init): CT_AbstractStep(data_init)
-{
+
+SF_Radius_Outlier_Filter_Step::SF_Radius_Outlier_Filter_Step(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init) {
 
 }
 
-SF_Radius_Outlier_Filter_Step::~SF_Radius_Outlier_Filter_Step()
-{
+SF_Radius_Outlier_Filter_Step::~SF_Radius_Outlier_Filter_Step() {
 
 }
 
-QString SF_Radius_Outlier_Filter_Step::getStepDescription() const
-{
+QString SF_Radius_Outlier_Filter_Step::getStepDescription() const {
     return tr("Radius Outlier Removal");
 }
 
-QString SF_Radius_Outlier_Filter_Step::getStepDetailledDescription() const
-{
+QString SF_Radius_Outlier_Filter_Step::getStepDetailledDescription() const {
     return tr("Radius Outlier Removal - Frontend to PCL filter. Points with not enough neighbors in a supported range are eliminated.");
 }
 
-QString SF_Radius_Outlier_Filter_Step::getStepURL() const
-{
+QString SF_Radius_Outlier_Filter_Step::getStepURL() const {
     return tr("http://pointclouds.org/documentation/tutorials/remove_outliers.php");
 }
 
-CT_VirtualAbstractStep* SF_Radius_Outlier_Filter_Step::createNewInstance(CT_StepInitializeData &dataInit)
-{
+CT_VirtualAbstractStep* SF_Radius_Outlier_Filter_Step::createNewInstance(CT_StepInitializeData &dataInit) {
     return new SF_Radius_Outlier_Filter_Step(dataInit);
 }
 
-QStringList SF_Radius_Outlier_Filter_Step::getStepRISCitations() const
-{
+QStringList SF_Radius_Outlier_Filter_Step::getStepRISCitations() const {
     QStringList _RIS_citation_list;
     _RIS_citation_list.append(QString("TY  - JOUR\n"
                                       "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
@@ -97,8 +87,7 @@ QStringList SF_Radius_Outlier_Filter_Step::getStepRISCitations() const
                                       "ER  - \n"));
     return _RIS_citation_list;
 }
-void SF_Radius_Outlier_Filter_Step::createInResultModelListProtected()
-{
+void SF_Radius_Outlier_Filter_Step::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     assert(res_model != NULL);
     res_model->setZeroOrMoreRootGroup();
@@ -106,22 +95,15 @@ void SF_Radius_Outlier_Filter_Step::createInResultModelListProtected()
     res_model->addItemModel(DEF_IN_GRP, DEF_IN_CLOUD, CT_Scene::staticGetType(), tr("Point Cloud"));
 }
 
-void SF_Radius_Outlier_Filter_Step::createPostConfigurationDialog()
-{
+void SF_Radius_Outlier_Filter_Step::createPostConfigurationDialog() {
     CT_StepConfigurableDialog *config_dialogue = newStandardPostConfigurationDialog();
     config_dialogue->addDouble("Looks for each point at its numbers of neighbors in range ", "",0.01,0.1,3,_radius );
     config_dialogue->addInt("A point is eliminated if it contains less than.", " Points",  2, 1000,_min_Pts);
 }
 
-
-
-
-void SF_Radius_Outlier_Filter_Step::createOutResultModelListProtected()
-{
+void SF_Radius_Outlier_Filter_Step::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
-
-    if(res_modelw != NULL)
-    {
+    if(res_modelw != NULL) {
         res_modelw->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(), tr ("radius outlier removal") );
         res_modelw->addGroupModel(_out_grp, _out_grp_cloud, new CT_StandardItemGroup(), tr ("filtered") );
         res_modelw->addGroupModel(_out_grp, _out_grp_noise, new CT_StandardItemGroup(), tr ("noise") );
@@ -130,50 +112,36 @@ void SF_Radius_Outlier_Filter_Step::createOutResultModelListProtected()
     }
 }
 
-
-
-
-void SF_Radius_Outlier_Filter_Step::write_output_per_scence(CT_ResultGroup* out_result, size_t i)
-{
+void SF_Radius_Outlier_Filter_Step::write_output_per_scence(CT_ResultGroup* out_result, size_t i) {
     SF_Param_Radius_Outlier_Filter<SF_Point> param = _param_list.at(i);
     std::vector<CT_PointCloudIndexVector *> output_index_list = create_output_vectors(param._size_output);
     create_output_indices(output_index_list, param._output_indices, param._itemCpy_cloud_in);
-
     CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
     param._grpCpy_grp->addGroup(filter_grp);
     add_scene_in_subgrp_to_grp(filter_grp, _out_cloud.completeName(),_out_grp_cloud.completeName(), out_result, output_index_list[0]);
     add_scene_in_subgrp_to_grp(filter_grp, _out_noise.completeName(), _out_grp_noise.completeName(), out_result, output_index_list[1]);
 }
 
-void SF_Radius_Outlier_Filter_Step::write_output(CT_ResultGroup* out_result)
-{
+void SF_Radius_Outlier_Filter_Step::write_output(CT_ResultGroup* out_result) {
     size_t size = _param_list.size();
-    for(size_t i = 0; i < size; i ++)
-    {
+    for(size_t i = 0; i < size; i ++) {
         write_output_per_scence(out_result, i);
     }
 }
 
-void SF_Radius_Outlier_Filter_Step::compute()
-{
+void SF_Radius_Outlier_Filter_Step::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
     create_param_list(out_result);
-    SF_Radius_Outlier_Filter_Step_Adapter<SF_Point> adapter;
-    QFuture<void> future = QtConcurrent::map(_param_list, adapter.operator ()<SF_Point> );/*
-    for(size_t i = 0; i < _param_list.size(); i++)
-    {
-        SF_Param_Radius_Outlier_Filter<SF_Point> param = _param_list.at(i);
-    }*/
+    QFuture<void> future = QtConcurrent::map(_param_list, SF_Radius_Outlier_Filter_Adapter() );
     set_progress_by_future(future,10,85);
     write_output(out_result);
 }
-void SF_Radius_Outlier_Filter_Step::create_param_list(CT_ResultGroup * out_result)
-{
+
+void SF_Radius_Outlier_Filter_Step::create_param_list(CT_ResultGroup * out_result) {
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
-    while(!isStopped() && out_res_it.hasNext())
-    {
+    while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
         SF_Param_Radius_Outlier_Filter<SF_Point> param;

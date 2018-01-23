@@ -52,6 +52,22 @@ struct SF_Param_Filter: public SF_Param_Cloud<PointType>{
     std::vector<int> _output_indices;
 };
 template <typename PointType>
+struct SF_Param_Voxel_Grid_Downscale: public SF_Param_Cloud<PointType>{
+    float voxel_size = 0.01f;
+    float voxel_size_x = 0.01f;
+    float voxel_size_y = 0.01f;
+    float voxel_size_z = 0.01f;
+    bool is_even = true;
+};
+
+template <typename PointType, typename FeatureType>
+struct SF_Param_Normals: public SF_Param_Cloud<PointType>{
+    bool use_radius = true;
+    float radius = 0.03f;
+    int k = 25;
+};
+
+template <typename PointType>
 struct SF_Param_Statistical_Outlier_Filter : public SF_Param_Filter<PointType>{
     int _k;
     float _std_mult;

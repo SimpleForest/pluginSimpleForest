@@ -29,7 +29,9 @@
 #define SF_ABSTRACT_FILTER_MULTIPLE_STEP_H
 
 #include <steps/filter/sf_abstract_filter_step.h>
-
+inline bool sf_compare_CT_Clouds_Cy_Size(CT_PointCloudIndexVector * cloud1, CT_PointCloudIndexVector * cloud2){
+    return(cloud1->size()>cloud2->size());
+}
 class SF_Abstract_Filter_Multiple_Step: public SF_Abstract_Filter_Step
 {
 public:

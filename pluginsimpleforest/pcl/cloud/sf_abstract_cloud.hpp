@@ -32,18 +32,38 @@
 
 template <typename PointType>
 SF_Abstract_Cloud<PointType>::SF_Abstract_Cloud(typename pcl::PointCloud<PointType>::Ptr cloud_in):
-     _cloud_in(cloud_in)
-{
+     _cloud_in(cloud_in) {
 
 }
+
 template <typename PointType>
-bool SF_Abstract_Cloud<PointType>::equals_by_sqrt_distance(float sqrt_distance)
-{
+bool SF_Abstract_Cloud<PointType>::equals_by_sqrt_distance(float sqrt_distance) {
     if(sqrt_distance <_MIN_SQUARED_DISTANCE)
         return true;
     return false;
 }
 
+template<typename PointType>
+void SF_Abstract_Cloud<PointType>::search_kd_tree(size_t index,
+                                                 pcl::KdTreeFLANN<PointType> & kdtree) {
+    PointType point = SF_Abstract_Cloud<PointType>::_cloud_in->at(index);
+    std::vector<int> pointIdxNKNSearch(1);
+    std::vector<float> pointNKNSquaredDistance(1);
+    kdtree.nearestKSearch (point, 1, pointIdxNKNSearch, pointNKNSquaredDistance);
+    create_index(point, pointNKNSquaredDistance[0]);
+}
 
+template<typename PointType>
+void SF_Abstract_Cloud<PointType>::iterate_over_cloud(pcl::KdTreeFLANN<PointType> &kdtree) {
+    size_t size = SF_Abstract_Cloud<PointType>::_cloud_in->size();
+    for(size_t i = 0; i < size; i++)
+    {
+        search_kd_tree(i,kdtree);
+    }
+}
 
+template <typename PointType>
+std::vector<int> SF_Abstract_Cloud<PointType>::get_indices() const {
+   return _indices;
+}
 #endif // SF_ABSTRACT_CLOUD_HPP

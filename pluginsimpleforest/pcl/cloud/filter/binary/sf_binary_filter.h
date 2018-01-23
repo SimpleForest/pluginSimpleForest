@@ -29,7 +29,6 @@
 #define SF_BINARY_FILTER_H
 
 #include "pcl/cloud/filter/sf_abstract_filter.h"
-
 #include <pcl/cloud/sf_abstract_cloud.h>
 
 
@@ -39,35 +38,18 @@ class Sf_Binary_Filter: public  SF_Abstract_Filter<PointType>
 {
 protected:
 
-    typename pcl::PointCloud<PointType>::Ptr _cloud_out_filtered;
-
     typename pcl::PointCloud<PointType>::Ptr _cloud_out_filtered_noise;
 
-    std::vector<int> _indices;
-
-    void create_index(PointType point,
-                      float sqrd_distance);
-
-    void search_kd_tree(size_t index, typename
-                        pcl::KdTreeFLANN<PointType> &kdtree);
-
-    void iterate_over_cloud(pcl::KdTreeFLANN<PointType> &kdtree);
-
-    void create_indices();
-
     virtual void reset();
+
+    virtual void create_index(PointType point,
+                      float sqrd_distance);
 public:
 
-    Sf_Binary_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in3);
-
-    typename pcl::PointCloud<PointType>::Ptr get_cloud_out_filtered() const;
+    Sf_Binary_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
 
     typename pcl::PointCloud<PointType>::Ptr get_cloud_out_filtered_noise() const;
 
-    std::vector<int> get_indices() const;/*
-    {
-        return _indices;
-    }*/
 };
 
 #include "sf_binary_filter.hpp"

@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,24 +25,18 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_RADIUS_OUTLIER_FILTER_H
-#define SF_RADIUS_OUTLIER_FILTER_H
-
-#include <pcl/cloud/filter/binary/sf_binary_filter.h>
-
-template <typename PointType>
-class SF_Radius_Outlier_Filter: public Sf_Binary_Filter<PointType>
-{
-
-    void radius_outlier_filter(SF_Param_Radius_Outlier_Filter<PointType> std_params);
-
+#ifndef SF_ABSTRACT_FEATURE_H
+#define SF_ABSTRACT_FEATURE_H
+#include "pcl/cloud/sf_abstract_cloud.h"
+template <typename PointType, typename FeatureType>
+class SF_Abstract_Feature: public  SF_Abstract_Cloud<PointType> {
+    pcl::PointCloud<FeatureType> _features;
 public:
-
-    SF_Radius_Outlier_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
-
-    virtual void compute(const SF_Param_Radius_Outlier_Filter<PointType> &params);
-
+    SF_Abstract_Feature(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+    virtual void compute_feature() = 0;
+    pcl::PointCloud<FeatureType> get_features() const {
+        return _features;
+    }
 };
-#include <pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.hpp>
-
-#endif // SF_RADIUS_OUTLIER_FILTER_H
+#include "sf_abstract_feature.hpp"
+#endif // SF_ABSTRACT_FEATURE_H

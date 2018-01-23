@@ -30,91 +30,34 @@
 #include"sf_binary_filter.h"
 
 template <typename PointType>
-Sf_Binary_Filter<PointType>::Sf_Binary_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in): SF_Abstract_Filter<PointType>(cloud_in)
-{
-
+Sf_Binary_Filter<PointType>::Sf_Binary_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in): SF_Abstract_Filter<PointType>(cloud_in) {
     reset();
 }
 
 template<typename PointType>
-void Sf_Binary_Filter<PointType>::create_index(PointType point,
-                                               float sqrd_distance)
-{
-    if(Sf_Binary_Filter<PointType>::equals_by_sqrt_distance(sqrd_distance))
-    {_indices.push_back(0);}
-    else
-    {_indices.push_back(1);
-        _cloud_out_filtered_noise->points.push_back(point);}
-}
-
-template<typename PointType>
-void Sf_Binary_Filter<PointType>::reset()
-{
-    _cloud_out_filtered.reset(new pcl::PointCloud<PointType>);
+void Sf_Binary_Filter<PointType>::reset() {
+    SF_Abstract_Filter<PointType>::_cloud_out_filtered.reset(new pcl::PointCloud<PointType>);
     _cloud_out_filtered_noise.reset(new pcl::PointCloud<PointType>);
-    _indices.clear();
-}
-
-
-template<typename PointType>
-void Sf_Binary_Filter<PointType>::search_kd_tree(size_t index,
-                                                 pcl::KdTreeFLANN<PointType> & kdtree)
-{
-    PointType point = Sf_Binary_Filter<PointType>::_cloud_in->at(index);
-    std::vector<int> pointIdxNKNSearch(1);
-    std::vector<float> pointNKNSquaredDistance(1);
-    kdtree.nearestKSearch (point, 1, pointIdxNKNSearch, pointNKNSquaredDistance);
-    create_index(point, pointNKNSquaredDistance[0]);
-}
-
-template<typename PointType>
-void Sf_Binary_Filter<PointType>::iterate_over_cloud(pcl::KdTreeFLANN<PointType> &kdtree)
-{
-    size_t size = Sf_Binary_Filter<PointType>::_cloud_in->size();
-    for(size_t i = 0; i < size; i++)
-    {
-        search_kd_tree(i,kdtree);
-    }
+    SF_Abstract_Cloud<PointType>::_indices.clear();
 }
 
 template <typename PointType>
-void Sf_Binary_Filter<PointType>::create_indices()
-{
-    if(_cloud_out_filtered->points.size()>0)
-    {
-    pcl::KdTreeFLANN<PointType> kdtree;
-    kdtree.setInputCloud (_cloud_out_filtered);
-    iterate_over_cloud(kdtree);
-    }
-    else
-    {
-        size_t size = Sf_Binary_Filter<PointType>::_cloud_in->size();
-        for(size_t i = 0; i < size; i++)
-        {
-            _indices.push_back(1);
-        }
-    }
-}
-
-
-template <typename PointType>
-typename pcl::PointCloud<PointType>::Ptr Sf_Binary_Filter<PointType>::get_cloud_out_filtered_noise() const
-{
+typename pcl::PointCloud<PointType>::Ptr Sf_Binary_Filter<PointType>::get_cloud_out_filtered_noise() const {
     return _cloud_out_filtered_noise;
 }
 
-
-template <typename PointType>
-typename pcl::PointCloud<PointType>::Ptr Sf_Binary_Filter<PointType>::get_cloud_out_filtered() const
-{
-    return _cloud_out_filtered;
+template<typename PointType>
+void Sf_Binary_Filter<PointType>::create_index(PointType point,
+                                               float sqrd_distance) {
+    if(Sf_Binary_Filter<PointType>::equals_by_sqrt_distance(sqrd_distance)) {
+        SF_Abstract_Cloud<PointType>::_indices.push_back(0);
+    } else {
+        SF_Abstract_Cloud<PointType>::_indices.push_back(1);
+        _cloud_out_filtered_noise->points.push_back(point);
+    }
 }
 
-template <typename PointType>
-std::vector<int> Sf_Binary_Filter<PointType>::get_indices() const
-{
-   return _indices;
-}
+
 
 
 
