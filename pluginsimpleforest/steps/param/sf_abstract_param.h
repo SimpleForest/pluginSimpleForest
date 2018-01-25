@@ -33,50 +33,129 @@
 #include "pcl/sf_point.h"
 
 
-
+//TODO Check standard parameters.
 
 
 struct SF_Param_CT{
     CT_StandardItemGroup* _grpCpy_grp;
+    LogInterface* _log;
     const CT_AbstractItemDrawableWithPointCloud* _itemCpy_cloud_in;
     CT_ResultGroup* _resCpy_res;
+    virtual QString to_string() {
+        QString str;
+        return str;
+    }
+
+    virtual void log_import() {
+        QString str = to_string_import();
+        _log->addMessage(LogInterface::info, LogInterface::step, str);
+    }
+
+private:
+
+    virtual QString to_string_import() {
+        QString str = "A cloud with ";
+        str.append(QString::number(_itemCpy_cloud_in->getPointCloudIndex()->size()));
+        str.append(" points was successfully converted.");
+        return str;
+    }
 };
 
 template <typename PointType>
 struct SF_Param_Cloud: public SF_Param_CT{
+
     typename pcl::PointCloud<PointType>::Ptr _cloud_in;
+
+    virtual void log_filter(double percentage) {
+        QString str = to_string_filter(percentage);
+        _log->addMessage(LogInterface::info, LogInterface::step, str);
+    }
+
+private:
+
+    virtual QString to_string_filter(double percentage) {
+        QString str = "From the cloud with ";
+        str.append(QString::number(_cloud_in->points.size()));
+        str.append(" points remain after filtering ");
+        str.append(QString::number(percentage, 'f', 2));
+        str.append(" percent remain.");
+        return str;
+    }
 };
+
 template <typename PointType>
 struct SF_Param_Filter: public SF_Param_Cloud<PointType>{
     int _size_output;
     std::vector<int> _output_indices;
 };
+
 template <typename PointType>
 struct SF_Param_Voxel_Grid_Downscale: public SF_Param_Cloud<PointType>{
-    float voxel_size = 0.01f;
+    float voxel_size   = 0.01f;
     float voxel_size_x = 0.01f;
     float voxel_size_y = 0.01f;
     float voxel_size_z = 0.01f;
-    bool is_even = true;
+    virtual QString to_string() {
+        QString str = "The voxelgrid downscale filter with parameters (cell_size_x = ";
+        str.append(QString::number(voxel_size_x));
+        str.append("; cell_size_y = ");
+        str.append(QString::number(voxel_size_y));
+        str.append("; cell_size_z = ");
+        str.append(QString::number(voxel_size_z));
+        str.append(") is started.");
+        return str;
+    }
 };
 
 template <typename PointType, typename FeatureType>
-struct SF_Param_Normals: public SF_Param_Cloud<PointType>{
-    bool use_radius = true;
-    float radius = 0.03f;
-    int k = 25;
+struct SF_Param_Normals: public SF_Param_Cloud<PointType> {
+    bool _use_radius = true;
+    float _radius = 0.03f;
+    int _kn = 25;
+    virtual QString to_string() {
+        QString str = "The normal estimtion with a neighborhood size of ";
+        if(_use_radius) {
+            str.append(QString::number(_radius));
+            str.append(" m ");
+        } else {
+            str.append(QString::number(_kn));
+            str.append(" nearest neighbors ");
+        }
+        str.append("is started.");
+        return str;
+    }
 };
 
 template <typename PointType>
-struct SF_Param_Statistical_Outlier_Filter : public SF_Param_Filter<PointType>{
-    int _k;
-    float _std_mult;
-    int _iterations;
+struct SF_Param_Statistical_Outlier_Filter : public SF_Param_Filter<PointType> {
+    int _k = 25;
+    float _std_mult = 3.5;
+    int _iterations = 15;
+    virtual QString to_string() {
+        QString str = "The statistical outlier filter with parameters (kn = ";
+        str.append(QString::number(_k));
+        str.append("; std_mult = ");
+        str.append(QString::number(_std_mult));
+        str.append("; iterations = ");
+        str.append(QString::number(_iterations));
+        str.append("; iterations = ");
+        str.append(") is started.");
+        return str;
+    }
 };
+
 template <typename PointType>
-struct SF_Param_Radius_Outlier_Filter : public SF_Param_Filter<PointType>{
-    int _min_Pts;
-    double _radius;
+struct SF_Param_Radius_Outlier_Filter : public SF_Param_Filter<PointType> {
+    int _min_Pts = 15;
+    double _radius = 10;
+    virtual QString to_string() {
+        QString str = "The radius outlier filter with parameters (_min_pts = ";
+        str.append(QString::number(_min_Pts));
+        str.append("; radius = ");
+        str.append(QString::number(_radius));
+        str.append(") is started.");
+        return str;
+    }
 
 
 };

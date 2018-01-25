@@ -69,7 +69,18 @@ protected:
 
     QList<SF_Param_Radius_Outlier_Filter<SF_Point> > _param_list;
 
+    virtual void write_logger();
+
+    void adapt_parameters_to_expert_level();
+
 private:
+    QString _less = "less";
+
+    QString _intermediate = "intermediate";
+
+    QString _many         = "many";
+
+    QString _choice       = _intermediate;
 
     double _radius = 0.03;
 

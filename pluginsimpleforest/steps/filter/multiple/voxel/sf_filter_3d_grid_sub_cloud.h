@@ -57,7 +57,11 @@ protected:
 
     void createPostConfigurationDialog();
 
+    void createPreConfigurationDialog(){}
+
     void createOutResultModelListProtected();
+
+    void adapt_parameters_to_expert_level(){}
 
     void compute();
 

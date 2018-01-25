@@ -34,32 +34,34 @@
 
 template <typename PointType>
 SF_Abstract_Filter<PointType>::SF_Abstract_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in):
-    SF_Abstract_Cloud<PointType>(cloud_in)
-{
+    SF_Abstract_Cloud<PointType>(cloud_in) {
 
 }
 
+template <typename PointType>
+void SF_Abstract_Filter<PointType>::reset() {
+    _percentage_remaining = 0;
+    SF_Abstract_Filter<PointType>::_cloud_out_filtered.reset(new pcl::PointCloud<PointType> ());
+    SF_Abstract_Filter<PointType>::_indices.clear();
+}
+
 template<typename PointType>
-void SF_Abstract_Filter<PointType>::write_empty()
-{
+void SF_Abstract_Filter<PointType>::write_empty() {
     size_t size = SF_Abstract_Filter<PointType>::_cloud_in->size();
-    for(size_t i = 0; i < size; i++)
-    {
-        SF_Abstract_Cloud<PointType>::_indices.push_back(-1);
+    for(size_t i = 0; i < size; i++) {
+        SF_Abstract_Cloud<PointType>::_indices.push_back(1);
     }
 }
 
 template<typename PointType>
-void SF_Abstract_Filter<PointType>::iterate()
-{
+void SF_Abstract_Filter<PointType>::iterate() {
     pcl::KdTreeFLANN<PointType> kdtree;
     kdtree.setInputCloud (_cloud_out_filtered);
     SF_Abstract_Cloud<PointType>::iterate_over_cloud(kdtree);
 }
 
 template <typename PointType>
-void SF_Abstract_Filter<PointType>::create_indices()
-{
+void SF_Abstract_Filter<PointType>::create_indices() {
     if(_cloud_out_filtered->points.size()>0) {
         iterate();
     } else {

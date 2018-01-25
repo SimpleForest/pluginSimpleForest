@@ -31,8 +31,7 @@
 #include <pcl/cloud/sf_abstract_cloud.h>
 
 template <typename PointType>
-class SF_Abstract_Filter: public  SF_Abstract_Cloud<PointType>
-{
+class SF_Abstract_Filter: public  SF_Abstract_Cloud<PointType> {
 public:
 
     SF_Abstract_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in) ;
@@ -40,6 +39,10 @@ public:
     typename pcl::PointCloud<PointType>::Ptr get_cloud_out_filtered() const;
 
 protected:
+
+    void reset();
+
+    int _percentage_remaining;
 
     typename pcl::PointCloud<PointType>::Ptr _cloud_out_filtered;
 
@@ -50,5 +53,6 @@ protected:
     virtual void create_indices();
 
 };
+
 #include <pcl/cloud/filter/sf_abstract_filter.hpp>
 #endif // SF_ABSTRACT_FILTER_H

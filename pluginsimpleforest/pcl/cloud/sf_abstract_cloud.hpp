@@ -56,8 +56,7 @@ void SF_Abstract_Cloud<PointType>::search_kd_tree(size_t index,
 template<typename PointType>
 void SF_Abstract_Cloud<PointType>::iterate_over_cloud(pcl::KdTreeFLANN<PointType> &kdtree) {
     size_t size = SF_Abstract_Cloud<PointType>::_cloud_in->size();
-    for(size_t i = 0; i < size; i++)
-    {
+    for(size_t i = 0; i < size; i++) {
         search_kd_tree(i,kdtree);
     }
 }

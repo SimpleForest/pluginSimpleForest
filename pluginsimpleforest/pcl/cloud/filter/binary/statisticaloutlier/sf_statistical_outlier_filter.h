@@ -31,8 +31,7 @@
 #include <pcl/cloud/filter/binary/sf_binary_filter.h>
 
 template <typename PointType>
-class SF_Statistical_Outlier_Filter: public Sf_Binary_Filter<PointType>
-{
+class SF_Statistical_Outlier_Filter: public Sf_Binary_Filter<PointType> {
 
     void statistical_outlier_filter_iteratively(SF_Param_Statistical_Outlier_Filter<PointType> std_params);
 

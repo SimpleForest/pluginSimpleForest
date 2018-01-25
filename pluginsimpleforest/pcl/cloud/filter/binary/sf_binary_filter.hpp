@@ -36,14 +36,23 @@ Sf_Binary_Filter<PointType>::Sf_Binary_Filter(typename  pcl::PointCloud<PointTyp
 
 template<typename PointType>
 void Sf_Binary_Filter<PointType>::reset() {
-    SF_Abstract_Filter<PointType>::_cloud_out_filtered.reset(new pcl::PointCloud<PointType>);
+    SF_Abstract_Filter<PointType>::reset();
     _cloud_out_filtered_noise.reset(new pcl::PointCloud<PointType>);
-    SF_Abstract_Cloud<PointType>::_indices.clear();
 }
 
 template <typename PointType>
 typename pcl::PointCloud<PointType>::Ptr Sf_Binary_Filter<PointType>::get_cloud_out_filtered_noise() const {
     return _cloud_out_filtered_noise;
+}
+
+template<typename PointType>
+double Sf_Binary_Filter<PointType>::get_percentage() {
+    double in = SF_Abstract_Cloud<PointType>::_cloud_in->points.size();
+    double out = SF_Abstract_Filter<PointType>::_cloud_out_filtered->points.size()*100.0;
+    if(in==0) {
+        return 0;
+    }
+    return (out/in);
 }
 
 template<typename PointType>
@@ -56,10 +65,5 @@ void Sf_Binary_Filter<PointType>::create_index(PointType point,
         _cloud_out_filtered_noise->points.push_back(point);
     }
 }
-
-
-
-
-
 
 #endif // SF_BINARY_FILTER_HPP

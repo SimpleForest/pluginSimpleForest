@@ -41,11 +41,13 @@ public:
     void operator()(SF_Param_Statistical_Outlier_Filter<SF_Point> & params) {
             SF_Converter_CT_To_PCL<SF_Point> converter( params._itemCpy_cloud_in);
             converter.compute();
-            params._cloud_in = converter.get_cloud_translated();            
+            params._cloud_in = converter.get_cloud_translated();
+            params.log_import();
             qDebug() << " a" << params._cloud_in->points.size(); //TODO
             SF_Statistical_Outlier_Filter<SF_Point> filter (params._cloud_in);
             filter.compute(params);
             params._output_indices = filter.get_indices();
+            params.log_filter(filter.get_percentage());
     }
 };
 

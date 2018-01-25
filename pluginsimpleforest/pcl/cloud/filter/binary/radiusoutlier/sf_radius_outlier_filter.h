@@ -31,8 +31,7 @@
 #include <pcl/cloud/filter/binary/sf_binary_filter.h>
 
 template <typename PointType>
-class SF_Radius_Outlier_Filter: public Sf_Binary_Filter<PointType>
-{
+class SF_Radius_Outlier_Filter: public Sf_Binary_Filter<PointType> {
 
     void radius_outlier_filter(SF_Param_Radius_Outlier_Filter<PointType> std_params);
 
@@ -43,6 +42,7 @@ public:
     virtual void compute(const SF_Param_Radius_Outlier_Filter<PointType> &params);
 
 };
+
 #include <pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.hpp>
 
 #endif // SF_RADIUS_OUTLIER_FILTER_H

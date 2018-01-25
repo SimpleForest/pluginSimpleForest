@@ -29,8 +29,10 @@
 #include "steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_adapter.h"
 #include <QtConcurrent/QtConcurrent>
 
-SF_Radius_Outlier_Filter_Step::SF_Radius_Outlier_Filter_Step(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init) {
-
+SF_Radius_Outlier_Filter_Step::SF_Radius_Outlier_Filter_Step(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init) {    
+    _non_expert_level.append(_less);
+    _non_expert_level.append(_intermediate);
+    _non_expert_level.append(_many);
 }
 
 SF_Radius_Outlier_Filter_Step::~SF_Radius_Outlier_Filter_Step() {
@@ -96,9 +98,15 @@ void SF_Radius_Outlier_Filter_Step::createInResultModelListProtected() {
 }
 
 void SF_Radius_Outlier_Filter_Step::createPostConfigurationDialog() {
-    CT_StepConfigurableDialog *config_dialogue = newStandardPostConfigurationDialog();
-    config_dialogue->addDouble("Looks for each point at its numbers of neighbors in range ", "",0.01,0.1,3,_radius );
-    config_dialogue->addInt("A point is eliminated if it contains less than.", " Points",  2, 1000,_min_Pts);
+    CT_StepConfigurableDialog *config_dialog = newStandardPostConfigurationDialog();
+    if(!_is_expert) {
+        config_dialog->addStringChoice("Choose how many points should be removed","",_non_expert_level, _choice);
+        config_dialog->addText("Low resulted clouds are affected more.");
+    } else {
+        config_dialog->addDouble("Looks for each point at its numbers of neighbors in range ", "",0.01,0.1,3,_radius );
+        config_dialog->addInt("A point is eliminated if it contains less than.", " Points",  2, 1000,_min_Pts);
+    }
+
 }
 
 void SF_Radius_Outlier_Filter_Step::createOutResultModelListProtected() {
@@ -134,17 +142,40 @@ void SF_Radius_Outlier_Filter_Step::compute() {
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
     create_param_list(out_result);
+    write_logger();
     QFuture<void> future = QtConcurrent::map(_param_list, SF_Radius_Outlier_Filter_Adapter() );
     set_progress_by_future(future,10,85);
     write_output(out_result);
 }
 
+void SF_Radius_Outlier_Filter_Step::write_logger() {
+    if(!_param_list.empty()) {
+        QString str = _param_list[0].to_string();
+        PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);
+    }
+}
+
+void SF_Radius_Outlier_Filter_Step::adapt_parameters_to_expert_level() {
+    if(!_is_expert) {
+        _radius = 0.03;
+        if(_choice == _less) {
+            _min_Pts = 5;
+        } else if(_choice == _intermediate) {
+            _min_Pts= 18;
+        } else {
+            _min_Pts = 40;
+        }
+    }
+}
+
 void SF_Radius_Outlier_Filter_Step::create_param_list(CT_ResultGroup * out_result) {
+    adapt_parameters_to_expert_level();
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
         SF_Param_Radius_Outlier_Filter<SF_Point> param;
+        param._log = PS_LOG;
         param._radius = _radius;
         param._min_Pts = _min_Pts;
         param._size_output = 2;

@@ -59,11 +59,11 @@ protected:
 
     virtual void createOutResultModelListProtected() = 0;
 
+    virtual void adapt_parameters_to_expert_level() = 0;
+
+    void createPreConfigurationDialog();
+
     virtual void compute() = 0;
-
-    QList<SF_Param_CT> _param_list;
-
-    std::vector<CT_PointCloudIndexVector*> create_output_vectors(size_t number_output);
 
     void create_output_indices(std::vector<CT_PointCloudIndexVector*> &index_vectors, const std::vector<int> &indices, const CT_AbstractItemDrawableWithPointCloud *item_cpy_cloud_in);
 
@@ -71,11 +71,21 @@ protected:
 
     void create_output_index(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, size_t counter, CT_PointIterator &point_it);
 
-
+    virtual void write_logger();
 
     Eigen::Vector3f get_min(const CT_Scene* ct_cloud);
 
     Eigen::Vector3f get_max(const CT_Scene* ct_cloud);
+
+    std::vector<CT_PointCloudIndexVector*> create_output_vectors(size_t number_output);
+
+
+
+    QList<SF_Param_CT> _param_list;
+
+    bool _is_expert = true;
+
+    QStringList _non_expert_level;
 
 public:
 

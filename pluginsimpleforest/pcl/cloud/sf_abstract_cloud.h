@@ -32,8 +32,7 @@
 #include <steps/param/sf_abstract_param.h>
 
 template <typename PointType>
-class SF_Abstract_Cloud
-{
+class SF_Abstract_Cloud {
 protected:
 
     std::vector<int> _indices;

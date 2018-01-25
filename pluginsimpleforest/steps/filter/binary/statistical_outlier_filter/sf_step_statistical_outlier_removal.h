@@ -84,11 +84,23 @@ protected:
 
     void createOutResultModelListProtected();
 
+    void adapt_parameters_to_expert_level();
+
     void compute();
 
     QList<SF_Param_Statistical_Outlier_Filter<SF_Point> > _param_list;
 
+    virtual void write_logger();
+
 private:
+
+    QString _less = "less";
+
+    QString _intermediate = "intermediate";
+
+    QString _many         = "many";
+
+    QString _choice       = _intermediate;
 
     double _std_mult = 3.0;
 

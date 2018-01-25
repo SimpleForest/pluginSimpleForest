@@ -34,8 +34,7 @@
 
 
 template <typename PointType>
-class Sf_Binary_Filter: public  SF_Abstract_Filter<PointType>
-{
+class Sf_Binary_Filter: public  SF_Abstract_Filter<PointType> {
 protected:
 
     typename pcl::PointCloud<PointType>::Ptr _cloud_out_filtered_noise;
@@ -49,6 +48,8 @@ public:
     Sf_Binary_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
 
     typename pcl::PointCloud<PointType>::Ptr get_cloud_out_filtered_noise() const;
+
+    double get_percentage();
 
 };
 
