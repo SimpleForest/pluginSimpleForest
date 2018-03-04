@@ -35,11 +35,11 @@
 class SF_Abstract_Converter
 {
 public:
-    SF_Abstract_Converter(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in);
-
-    
+    SF_Abstract_Converter();    
 
     Eigen::Vector3d get_translation_matrix() const;
+
+    void set_itemCpy_cloud_in(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in);
 
 protected:
     void sum_vector(CT_PointIterator &it);

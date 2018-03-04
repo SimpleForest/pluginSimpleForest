@@ -30,8 +30,7 @@
 
 #include "sf_voxel_grid_ds.h"
 template <typename PointType>
-SF_Voxel_Grid_DS<PointType>::SF_Voxel_Grid_DS(typename pcl::PointCloud<PointType>::Ptr cloud_in):
-    SF_Unitary_Filter<PointType>(cloud_in) {
+SF_Voxel_Grid_DS<PointType>::SF_Voxel_Grid_DS() {
     SF_Unitary_Filter<PointType>::reset();
 }
 

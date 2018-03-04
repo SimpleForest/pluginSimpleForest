@@ -39,7 +39,7 @@ class SF_Voxel_Grid_DS: public SF_Unitary_Filter<PointType>
 
 public:
 
-    SF_Voxel_Grid_DS(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+    SF_Voxel_Grid_DS();
 
     virtual void compute(const SF_Param_Voxel_Grid_Downscale<PointType> &params);
 

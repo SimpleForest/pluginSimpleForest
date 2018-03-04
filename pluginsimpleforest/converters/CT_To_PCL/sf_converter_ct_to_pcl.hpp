@@ -30,15 +30,12 @@
 #include "sf_converter_ct_to_pcl.h"
 
 template <typename PointType>
-SF_Converter_CT_To_PCL<PointType>:: SF_Converter_CT_To_PCL(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in):
-    SF_Abstract_Converter(itemCpy_cloud_in)
-{
+SF_Converter_CT_To_PCL<PointType>:: SF_Converter_CT_To_PCL() {
     reset();
 }
 
 template <typename PointType>
-void SF_Converter_CT_To_PCL<PointType>::reset()
-{
+void SF_Converter_CT_To_PCL<PointType>::reset() {
     _cloud_original.reset(new pcl::PointCloud<PointType>);
     _cloud_translated.reset(new pcl::PointCloud<PointType>);
 
@@ -46,20 +43,18 @@ void SF_Converter_CT_To_PCL<PointType>::reset()
 
 template <typename PointType>
 typename
-pcl::PointCloud<PointType>::Ptr SF_Converter_CT_To_PCL<PointType>::get_cloud_original() const
-{
+pcl::PointCloud<PointType>::Ptr SF_Converter_CT_To_PCL<PointType>::get_cloud_original() const {
     return _cloud_original;
 }
+
 template <typename PointType>
 typename
-pcl::PointCloud<PointType>::Ptr SF_Converter_CT_To_PCL<PointType>::get_cloud_translated() const
-{
+pcl::PointCloud<PointType>::Ptr SF_Converter_CT_To_PCL<PointType>::get_cloud_translated() const {
     return _cloud_translated;
 }
 
 template <typename PointType>
-void SF_Converter_CT_To_PCL<PointType>::convert_point(CT_PointIterator& it)
-{
+void SF_Converter_CT_To_PCL<PointType>::convert_point(CT_PointIterator& it) {
     const CT_Point &internalPoint = it.next().currentPoint();
     PointType origin(internalPoint[0],internalPoint[1],internalPoint[2]);
     PointType translated(internalPoint[0]-_center_of_mass[0],internalPoint[1]-_center_of_mass[1],internalPoint[2]-_center_of_mass[2]);
@@ -68,25 +63,21 @@ void SF_Converter_CT_To_PCL<PointType>::convert_point(CT_PointIterator& it)
 }
 
 template <typename PointType>
-void SF_Converter_CT_To_PCL<PointType>::iterate_cloud_and_convert(const CT_AbstractPointCloudIndex* index )
-{
+void SF_Converter_CT_To_PCL<PointType>::iterate_cloud_and_convert(const CT_AbstractPointCloudIndex* index ) {
     CT_PointIterator it(index);
-    while(it.hasNext())
-    {
+    while(it.hasNext()) {
         convert_point(it);
     }
 }
 
 template <typename PointType>
-void SF_Converter_CT_To_PCL<PointType>::compute()
-{
+void SF_Converter_CT_To_PCL<PointType>::compute() {
     compute_translation_to_origin();
     convert();
 }
 
 template <typename PointType>
-void SF_Converter_CT_To_PCL<PointType>::convert()
-{
+void SF_Converter_CT_To_PCL<PointType>::convert() {
     const CT_AbstractPointCloudIndex* index =_itemCpy_cloud_in->getPointCloudIndex();
     assert( index->size() > 0);
     iterate_cloud_and_convert(index);

@@ -37,7 +37,7 @@ class SF_Radius_Outlier_Filter: public Sf_Binary_Filter<PointType> {
 
 public:
 
-    SF_Radius_Outlier_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+    SF_Radius_Outlier_Filter();
 
     virtual void compute(const SF_Param_Radius_Outlier_Filter<PointType> &params);
 

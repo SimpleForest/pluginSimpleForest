@@ -31,8 +31,7 @@
 #include <QDebug>
 #include <pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h>
 template <typename PointType>
-SF_Radius_Outlier_Filter<PointType>::SF_Radius_Outlier_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in):
-    Sf_Binary_Filter<PointType>(cloud_in) {
+SF_Radius_Outlier_Filter<PointType>::SF_Radius_Outlier_Filter() {
     Sf_Binary_Filter<PointType>::reset();
 }
 
@@ -42,7 +41,7 @@ void  SF_Radius_Outlier_Filter<PointType>::compute(const SF_Param_Radius_Outlier
     if(SF_Abstract_Cloud<PointType>::_cloud_in->points.size() >= 20) {
         SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(params);
     } else {
-        qDebug() << "foo";
+        qDebug() << "SF_Radius_Outlier_Filter<PointType>::compute - not enough points.";
     }
     SF_Radius_Outlier_Filter<PointType>::create_indices();
 }
@@ -54,7 +53,6 @@ void SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(SF_Param_Radius_
     outrem.setRadiusSearch(std_params._radius);
     outrem.setMinNeighborsInRadius( std_params._min_Pts);
     outrem.filter (*SF_Abstract_Filter<PointType>::_cloud_out_filtered);
-    qDebug() << " b2" << SF_Abstract_Filter<PointType>::_cloud_out_filtered->points.size() << ";" << std_params._radius<< ";" << std_params._min_Pts; //TODO
 }
 
 #endif // SF_RADIUS_OUTLIER_FILTER_HPP

@@ -29,8 +29,7 @@
 #define SF_UNITARY_FILTER_HPP
 #include "sf_unitary_filter.h"
 template <typename PointType>
-SF_Unitary_Filter<PointType>::SF_Unitary_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in):
-    SF_Abstract_Filter<PointType>(cloud_in) {
+SF_Unitary_Filter<PointType>::SF_Unitary_Filter() {
     reset();
 }
 

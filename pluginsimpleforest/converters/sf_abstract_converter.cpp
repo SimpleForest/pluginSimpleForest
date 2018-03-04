@@ -28,10 +28,8 @@
 #include "sf_abstract_converter.h"
 
 
-SF_Abstract_Converter::SF_Abstract_Converter(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in):
-    _itemCpy_cloud_in(itemCpy_cloud_in)
-{
-    assert(_itemCpy_cloud_in!=NULL);
+SF_Abstract_Converter::SF_Abstract_Converter() {
+
 }
 
 void SF_Abstract_Converter::add_point_vec(CT_PointIterator &it)
@@ -49,6 +47,10 @@ void SF_Abstract_Converter::sum_vector(CT_PointIterator &it)
     {
         add_point_vec(it);
     }
+}
+
+void SF_Abstract_Converter::set_itemCpy_cloud_in(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in) {
+    _itemCpy_cloud_in = itemCpy_cloud_in;
 }
 
 Eigen::Vector3d SF_Abstract_Converter::get_translation_matrix() const

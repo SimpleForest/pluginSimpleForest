@@ -59,12 +59,14 @@ protected:
 
 public:
 
-    SF_Abstract_Cloud(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+    SF_Abstract_Cloud();
 
     std::vector<int> get_indices() const;
 
+    void set_cloud_in(const typename pcl::PointCloud<PointType>::Ptr &cloud_in);
 };
 
 #include "sf_abstract_cloud.hpp"
 
 #endif // SF_ABRACT_CLOUD_H
+

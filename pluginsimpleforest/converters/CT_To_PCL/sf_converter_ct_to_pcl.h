@@ -62,7 +62,7 @@ public:
 
 
 
-    SF_Converter_CT_To_PCL(const CT_AbstractItemDrawableWithPointCloud * itemCpy_cloud_in);
+    SF_Converter_CT_To_PCL();
 
 
 

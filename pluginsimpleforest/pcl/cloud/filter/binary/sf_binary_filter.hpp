@@ -30,7 +30,7 @@
 #include"sf_binary_filter.h"
 
 template <typename PointType>
-Sf_Binary_Filter<PointType>::Sf_Binary_Filter(typename  pcl::PointCloud<PointType>::Ptr cloud_in): SF_Abstract_Filter<PointType>(cloud_in) {
+Sf_Binary_Filter<PointType>::Sf_Binary_Filter() {
     reset();
 }
 

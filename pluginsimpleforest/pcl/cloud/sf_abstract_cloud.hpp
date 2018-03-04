@@ -31,8 +31,7 @@
 #include <pcl/cloud/sf_abstract_cloud.h>
 
 template <typename PointType>
-SF_Abstract_Cloud<PointType>::SF_Abstract_Cloud(typename pcl::PointCloud<PointType>::Ptr cloud_in):
-     _cloud_in(cloud_in) {
+SF_Abstract_Cloud<PointType>::SF_Abstract_Cloud() {
 
 }
 
@@ -65,4 +64,10 @@ template <typename PointType>
 std::vector<int> SF_Abstract_Cloud<PointType>::get_indices() const {
    return _indices;
 }
+
+template <typename PointType>
+void SF_Abstract_Cloud<PointType>::set_cloud_in(const typename pcl::PointCloud<PointType>::Ptr &cloud_in) {
+    _cloud_in = cloud_in;
+}
+
 #endif // SF_ABSTRACT_CLOUD_HPP

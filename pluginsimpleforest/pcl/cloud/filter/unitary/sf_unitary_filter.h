@@ -42,7 +42,7 @@ protected:
 
 public:
 
-    SF_Unitary_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+    SF_Unitary_Filter();
 
 
 };

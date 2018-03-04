@@ -34,20 +34,43 @@
 
 class SF_Statistical_Outlier_Removal_Adapter {
 public:
-    SF_Statistical_Outlier_Removal_Adapter() {
 
+    std::shared_ptr<QMutex>  mMutex;
+
+    SF_Statistical_Outlier_Removal_Adapter(const SF_Statistical_Outlier_Removal_Adapter &obj) {
+        mMutex = obj.mMutex;
+    }
+
+    SF_Statistical_Outlier_Removal_Adapter () {
+        mMutex.reset(new QMutex);
+    }
+
+    ~SF_Statistical_Outlier_Removal_Adapter () {
     }
 
     void operator()(SF_Param_Statistical_Outlier_Filter<SF_Point> & params) {
-            SF_Converter_CT_To_PCL<SF_Point> converter( params._itemCpy_cloud_in);
-            converter.compute();
+        SF_Converter_CT_To_PCL<SF_Point> converter;
+        {
+            QMutexLocker m1(&*mMutex);
+            converter.set_itemCpy_cloud_in(params._itemCpy_cloud_in);
+        }
+        converter.compute();
+        {
+            QMutexLocker m1(&*mMutex);
             params._cloud_in = converter.get_cloud_translated();
-            params.log_import();
-            qDebug() << " a" << params._cloud_in->points.size(); //TODO
-            SF_Statistical_Outlier_Filter<SF_Point> filter (params._cloud_in);
-            filter.compute(params);
+        }
+        params.log_import();        
+        SF_Statistical_Outlier_Filter<SF_Point> filter;
+        {
+            QMutexLocker m1(&*mMutex);
+            filter.set_cloud_in(params._cloud_in);
+        }
+        filter.compute(params);
+        {
+            QMutexLocker m1(&*mMutex);
             params._output_indices = filter.get_indices();
-            params.log_filter(filter.get_percentage());
+        }
+        params.log_filter(filter.get_percentage());
     }
 };
 

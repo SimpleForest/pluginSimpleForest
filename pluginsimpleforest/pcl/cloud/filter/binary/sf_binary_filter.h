@@ -45,7 +45,7 @@ protected:
                       float sqrd_distance);
 public:
 
-    Sf_Binary_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+    Sf_Binary_Filter();
 
     typename pcl::PointCloud<PointType>::Ptr get_cloud_out_filtered_noise() const;
 

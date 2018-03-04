@@ -107,12 +107,6 @@ private:
 
     void remove_corrupted_scenes(int progress = 7);
 
-
-
-
-
-
-
 };
 
 #endif // SF_ABSTRACT_STEP_H

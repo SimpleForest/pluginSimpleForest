@@ -32,8 +32,7 @@
 
 #include <pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h>
 template <typename PointType>
-SF_Statistical_Outlier_Filter<PointType>::SF_Statistical_Outlier_Filter(typename pcl::PointCloud<PointType>::Ptr cloud_in):
-    Sf_Binary_Filter<PointType>(cloud_in) {
+SF_Statistical_Outlier_Filter<PointType>::SF_Statistical_Outlier_Filter() {
 }
 
 template <typename PointType>
