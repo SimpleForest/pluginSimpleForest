@@ -100,23 +100,18 @@ void SF_Step_Statistical_Outlier_Removal::createInResultModelListProtected() {
     res_model->addItemModel(DEF_IN_GRP, DEF_IN_CLOUD, CT_Scene::staticGetType(), tr("Point Cloud"));
 }
 
-void SF_Step_Statistical_Outlier_Removal::createPostConfigurationDialog() {
-    CT_StepConfigurableDialog *config_dialog = newStandardPostConfigurationDialog();
-    if(!_is_expert) {
-        config_dialog->addStringChoice("Choose how many points should be removed","",_non_expert_level, _choice);
-        config_dialog->addText("Low resulted clouds are affected more.");
-    } else {
-        CT_StepConfigurableDialog *config_dialogue = newStandardPostConfigurationDialog();
-        config_dialogue->addInt("Looks for each point at its ", " closest neighbors",1,1000,_k );
-        config_dialogue->addText("The average distance to the neighbor points is computed for each point." );
-        config_dialogue->addDouble("Assuming a normal distribution for all distances, all points further away from the mean distance than ", " " , 0.1,10,4,_std_mult );
-        config_dialogue->addText("times the standarddeviation are removed. As the standard distribution parameters change, the procedure can be repeated multiple times." );
-        config_dialogue->addInt("Please select the number of ", " iterations for the procedure",1,100,_iterations );
-    }
+void SF_Step_Statistical_Outlier_Removal::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
+    config_dialog->addInt("Looks for each point at its ", " closest neighbors",1,1000,_k );
+    config_dialog->addText("The average distance to the neighbor points is computed for each point." );
+    config_dialog->addDouble("Assuming a normal distribution for all distances, all points further away from the mean distance than ", " " , 0.1,10,4,_std_mult );
+    config_dialog->addText("times the standarddeviation are removed. As the standard distribution parameters change, the procedure can be repeated multiple times." );
+    config_dialog->addInt("Please select the number of ", " iterations for the procedure",1,100,_iterations );
 }
 
-
-
+void SF_Step_Statistical_Outlier_Removal::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
+    config_dialog->addStringChoice("Choose how many points should be removed","",_non_expert_level, _choice);
+    config_dialog->addText("Low resulted clouds are affected more.");
+}
 
 void SF_Step_Statistical_Outlier_Removal::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);

@@ -63,6 +63,14 @@ protected:
 
     void createPreConfigurationDialog();
 
+    void createPostConfigurationDialog();
+
+    virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) = 0;
+
+    virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) = 0;
+
+    virtual void createPostConfigurationDialogCitation(CT_StepConfigurableDialog *config_dialog);
+
     virtual void compute() = 0;
 
     void create_output_indices(std::vector<CT_PointCloudIndexVector*> &index_vectors, const std::vector<int> &indices, const CT_AbstractItemDrawableWithPointCloud *item_cpy_cloud_in);

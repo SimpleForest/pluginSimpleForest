@@ -85,6 +85,7 @@ void SF_Filter_3d_Grid_Sub_Cloud::createInResultModelListProtected() {
 void SF_Filter_3d_Grid_Sub_Cloud::createPostConfigurationDialog() {
     CT_StepConfigurableDialog *config_dialog = newStandardPostConfigurationDialog();
     config_dialog->addDouble("The x,y,z voxelsize size of the output clouds ", " " , 0.1,10,4,_voxel_size );
+    createPostConfigurationDialogCitation(config_dialog);
 }
 
 

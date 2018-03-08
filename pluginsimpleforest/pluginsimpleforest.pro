@@ -49,7 +49,11 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/filter/unitary/sf_unitary_filter.h \
     pcl/cloud/filter/unitary/sf_unitary_filter.hpp \
     pcl/cloud/filter/unitary/voxelgrid/sf_voxel_grid_ds.h \
-    pcl/cloud/filter/unitary/voxelgrid/sf_voxel_grid_ds.hpp
+    pcl/cloud/filter/unitary/voxelgrid/sf_voxel_grid_ds.hpp \
+    pcl/cloud/filter/binary/stem/sf_stem_filter.h \
+    pcl/cloud/filter/binary/stem/sf_stem_filter.hpp \
+    steps/filter/binary/stem_filter/sf_step_stem_filter.h \
+    steps/filter/binary/stem_filter/sf_step_stem_filter_adapter.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -62,7 +66,8 @@ SOURCES += \
     steps/filter/binary/sf_abstract_filter_binary_step.cpp \
     steps/filter/multiple/sf_abstract_filter_multiple_step.cpp \
     steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.cpp \
-    steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.cpp
+    steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.cpp \
+    steps/filter/binary/stem_filter/sf_step_stem_filter.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

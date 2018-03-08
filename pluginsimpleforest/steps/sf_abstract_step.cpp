@@ -49,7 +49,7 @@ void SF_Abstract_Step::set_progress_by_future(QFuture<void> &future, float perce
 
 void SF_Abstract_Step::createPreConfigurationDialog() {
     CT_StepConfigurableDialog *config_dialog = newStandardPreConfigurationDialog();
-    config_dialog->addBool("Uncheck to deactivate parameterization possibilities of this step.","","expert", _is_expert);
+    config_dialog->addBool("Uncheck to deactivate parameterization possibilities of this step. Only recommended for beginners","","expert", _is_expert);
 }
 
 Eigen::Vector3f SF_Abstract_Step::get_min(const CT_Scene* ct_cloud) {
@@ -108,6 +108,25 @@ void SF_Abstract_Step::identify_corrupted_scenes( CT_ResultGroup* out_result, in
         check_grp_and_cloud(group);
     }    
     setProgress(progress);
+}
+
+void SF_Abstract_Step::createPostConfigurationDialog() {
+    CT_StepConfigurableDialog *config_dialog = newStandardPostConfigurationDialog();
+    if(!_is_expert) {
+        createPostConfigurationDialogBeginner(config_dialog);
+    } else {
+        createPostConfigurationDialogExpert(config_dialog);
+    }
+    createPostConfigurationDialogCitation(config_dialog);
+}
+
+void SF_Abstract_Step::createPostConfigurationDialogCitation(CT_StepConfigurableDialog *config_dialog) {
+    config_dialog->addEmpty();
+    config_dialog->addTitle(QObject::tr("For general usage of the SimpleForest plugin please cite the following:"));
+    config_dialog->addEmpty();
+    config_dialog->addTitle(QObject::tr("Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P."));
+    config_dialog->addTitle(QObject::tr("<em>SimpleTree - An Efficient Open Source Tool to Build Tree Models from TLS Clouds.</em>"));
+    config_dialog->addTitle(QObject::tr("Forests <b>2015</b>, 6, 4245-4294."));
 }
 
 void SF_Abstract_Step::remove_corrupted_scenes(int progress) {

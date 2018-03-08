@@ -127,6 +127,35 @@ struct SF_Param_Normals: public SF_Param_Cloud<PointType> {
 };
 
 template <typename PointType>
+struct SF_Param_Stem_Filter : public SF_Param_Filter<PointType> {
+    float _voxel_size = 0.02f;
+    float _radius_normal = 0.05f;
+    float _radius_growth_direction = 0.1f;
+    float _x = 0;
+    float _y = 0;
+    float _z = 1;
+    int _angle = 10;
+    virtual QString to_string() {
+        QString str = "The stem filter with parameters (angle = ";
+        str.append(QString::number(_angle));
+        str.append("; axis = (");
+        str.append(QString::number(_x));
+        str.append("; ");
+        str.append(QString::number(_y));
+        str.append("; ");
+        str.append(QString::number(_z));
+        str.append("); radius_growth_direction =");
+        str.append(QString::number(_radius_growth_direction));
+        str.append("); radius_normal = ");
+        str.append(QString::number(_radius_normal));
+        str.append(" and voxel_down_scale_size = ");
+        str.append(QString::number(_voxel_size));
+        str.append(") is started.");
+        return str;
+    }
+};
+
+template <typename PointType>
 struct SF_Param_Statistical_Outlier_Filter : public SF_Param_Filter<PointType> {
     int _k = 25;
     float _std_mult = 3.5;

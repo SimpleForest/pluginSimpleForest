@@ -8,6 +8,7 @@
 #include "ct_actions/abstract/ct_abstractaction.h"
 
 #include "steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.h"
+#include "steps/filter/binary/stem_filter/sf_step_stem_filter.h"
 #include "steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.h"
 
 #include "steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.h"
@@ -99,6 +100,7 @@ bool SF_PluginManager::loadGenericsStep()
 //    CT_StepSeparator *sep = addNewSeparator(new CT_StepSeparator());
     addNewPointsStep<SF_Step_Statistical_Outlier_Removal>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Radius_Outlier_Filter_Step>(CT_StepsMenu::LP_Filter);
+    addNewPointsStep<SF_Step_Stem_Filter>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Filter_3d_Grid_Sub_Cloud>(CT_StepsMenu::LP_Voxels);
     // Ajouter ici les etapes
     //sep->addStep(new NomDeLEtape(*createNewStepInitializeData(NULL)));

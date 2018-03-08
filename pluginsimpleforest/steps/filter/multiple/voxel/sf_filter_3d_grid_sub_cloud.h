@@ -57,9 +57,13 @@ protected:
 
     void createPostConfigurationDialog();
 
+    void createOutResultModelListProtected();
+
     void createPreConfigurationDialog(){}
 
-    void createOutResultModelListProtected();
+    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog){}
+
+    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog){}
 
     void adapt_parameters_to_expert_level(){}
 

@@ -34,30 +34,10 @@
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 #include <steps/param/sf_abstract_param.h>
 
-//void compute_statistical_outlier_removal(SF_Param_Statistical_Outlier_Filter<SF_Point> & params)
-//{
-//    SF_Converter_CT_To_PCL<SF_Point> converter( params._itemCpy_cloud_in);
-//    converter.compute();
-//    params._cloud_in = converter.get_cloud_translated();
-//    SF_Statistical_Outlier_Filter<SF_Point> filter (params._cloud_in);
-//    filter.compute(params);
-//    params._output_indices = filter.get_indices();
-//}
-//std::function<void(SF_Param_Statistical_Outlier_Filter<SF_Point>& )> compute_statistical_outlier_removal =
-//        []( SF_Param_Statistical_Outlier_Filter<SF_Point> & params)
-//   {
-//    SF_Converter_CT_To_PCL<SF_Point> converter( params._itemCpy_cloud_in);
-//    converter.compute();
-//    params._cloud_in = converter.get_cloud_translated();
-//    SF_Statistical_Outlier_Filter<SF_Point> filter (params._cloud_in);
-//    filter.compute(params);
-//    params._output_indices = filter.get_indices();
-//   };
 
 
 
-class SF_Step_Statistical_Outlier_Removal:  public SF_Abstract_Filter_Binary_Step
-{
+class SF_Step_Statistical_Outlier_Removal:  public SF_Abstract_Filter_Binary_Step {
     Q_OBJECT
 
 public:
@@ -76,15 +56,18 @@ public:
 
     QStringList getStepRISCitations() const;
 
+
 protected:
 
     void createInResultModelListProtected();
 
-    void createPostConfigurationDialog();
-
     void createOutResultModelListProtected();
 
-    void adapt_parameters_to_expert_level();
+    void adapt_parameters_to_expert_level();    
+
+    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
+
+    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
 
     void compute();
 

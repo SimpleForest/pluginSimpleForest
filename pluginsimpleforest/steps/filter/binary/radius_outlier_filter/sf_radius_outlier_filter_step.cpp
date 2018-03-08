@@ -97,17 +97,16 @@ void SF_Radius_Outlier_Filter_Step::createInResultModelListProtected() {
     res_model->addItemModel(DEF_IN_GRP, DEF_IN_CLOUD, CT_Scene::staticGetType(), tr("Point Cloud"));
 }
 
-void SF_Radius_Outlier_Filter_Step::createPostConfigurationDialog() {
-    CT_StepConfigurableDialog *config_dialog = newStandardPostConfigurationDialog();
-    if(!_is_expert) {
-        config_dialog->addStringChoice("Choose how many points should be removed","",_non_expert_level, _choice);
-        config_dialog->addText("Low resulted clouds are affected more.");
-    } else {
-        config_dialog->addDouble("Looks for each point at its numbers of neighbors in range ", "",0.01,0.1,3,_radius );
-        config_dialog->addInt("A point is eliminated if it contains less than.", " Points",  2, 1000,_min_Pts);
-    }
-
+void SF_Radius_Outlier_Filter_Step::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
+    config_dialog->addDouble("Looks for each point at its numbers of neighbors in range ", "",0.01,0.1,3,_radius );
+    config_dialog->addInt("A point is eliminated if it contains less than.", " Points",  2, 1000,_min_Pts);
 }
+
+void SF_Radius_Outlier_Filter_Step::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
+    config_dialog->addStringChoice("Choose how many points should be removed","",_non_expert_level, _choice);
+    config_dialog->addText("Low resulted clouds are affected more.");
+}
+
 
 void SF_Radius_Outlier_Filter_Step::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
