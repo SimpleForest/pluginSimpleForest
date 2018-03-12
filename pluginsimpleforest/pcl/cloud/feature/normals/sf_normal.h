@@ -33,10 +33,19 @@
 
 template <typename PointType, typename FeatureType>
 class SF_Normal: public  SF_Abstract_Feature<PointType, FeatureType> {
-    SF_Normal::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in);
-    virtual void compute_feature();
+private:
+    int _k = 5;
+    bool _use_range = false;
+    float _range = 0.03f;
+public:
+    SF_Normal::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in, typename pcl::PointCloud<FeatureType>::Ptr features_out);
+    virtual void compute_features();
+    virtual void compute_features_range();
+    virtual void compute_features_knn();
+    void set_parameters(float range, bool use_range = true);
+    void set_parameters(int k, bool use_range = false);
 }
 
 
-
+#include "sf_normal.hpp"
 #endif // SF_NORMAL_H

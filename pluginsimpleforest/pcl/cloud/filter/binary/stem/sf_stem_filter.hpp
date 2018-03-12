@@ -31,26 +31,36 @@
 #include "pcl/cloud/filter/binary/stem/sf_stem_filter.h"
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/features/normal_3d.h>
-
+#include "pcl/sf_math.h"
+#include <pcl/filters/filter.h>
 
 
 template<typename PointType>
 typename pcl::PointCloud<PointType>::Ptr SF_Stem_Filter<PointType>::down_scale(const SF_Param_Stem_Filter<PointType> &params) {
+//    for(size_t i = 0; i < params._cloud_in->points.size(); i++)  {
+//        std::cout << params._cloud_in->points[i] << std::endl;
+//    }
     typename pcl::PointCloud<PointType>::Ptr downscaled_cloud(new typename pcl::PointCloud<PointType>);
     pcl::VoxelGrid<PointType> sor;
-    sor.setInputCloud (SF_Stem_Filter<PointType>::_cloud_in);
+    sor.setInputCloud (params._cloud_in);
     sor.setLeafSize (params._voxel_size, params._voxel_size, params._voxel_size);
     sor.filter (*downscaled_cloud);
-    return downscaled_cloud;
+    downscaled_cloud->width = downscaled_cloud->points.size();
+    downscaled_cloud->height = 1;
+    typename pcl::PointCloud<PointType>::Ptr downscaled_cloud2(new typename pcl::PointCloud<PointType>);
+    downscaled_cloud->is_dense = false;
+    std::vector<int> indices;
+    pcl::removeNaNFromPointCloud(*downscaled_cloud, *downscaled_cloud2, indices);
+    return downscaled_cloud2;
 }
 
 template<typename PointType>
 void SF_Stem_Filter<PointType>::compute_normals(const SF_Param_Stem_Filter<PointType> &params, typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud) {
-    pcl::NormalEstimation<PointType, PointType> ne;
+    pcl::NormalEstimation<PointType, PointType> ne;    
     ne.setInputCloud (down_scaled_cloud);
     typename pcl::search::KdTree<PointType>::Ptr tree (new typename pcl::search::KdTree<PointType> ());
     ne.setSearchMethod (tree);
-    ne.setRadiusSearch (params._radius_normal);
+    ne.setKSearch(10);
     ne.compute (*down_scaled_cloud);
 }
 
@@ -145,13 +155,8 @@ void SF_Stem_Filter<PointType>::transfer_stem(const SF_Param_Stem_Filter<PointTy
             axis2[0] = gd_point.normal_x;
             axis2[1] = gd_point.normal_y;
             axis2[2] = gd_point.normal_z;
-
-            axis1.normalize();
-            axis2.normalize();
-            double cos = axis1.dot(axis2);
-            double rad = acos(cos);
-            double deg = (rad*180.0)/3.1415926;
-            if(deg < params._angle || deg > (180-params._angle)) { //|| deg > (180-params._angle)
+            double deg = SF_Math<double>::get_angle_between_DEG(axis1,axis2);
+            if(deg < params._angle || deg > (180-params._angle)) {
                 SF_Stem_Filter<PointType>::_cloud_out_filtered->points.push_back(p);
             } else {
                 SF_Stem_Filter<PointType>::_cloud_out_filtered_noise->points.push_back(p);
@@ -161,20 +166,25 @@ void SF_Stem_Filter<PointType>::transfer_stem(const SF_Param_Stem_Filter<PointTy
 }
 
 template<typename PointType>
-void SF_Stem_Filter<PointType>::compute(const SF_Param_Stem_Filter<PointType> &params) {
+void SF_Stem_Filter<PointType>::set_params(SF_Param_Stem_Filter<PointType> &params) {
+    _params = params;
+}
+
+template<typename PointType>
+void SF_Stem_Filter<PointType>::compute() {
 
     SF_Stem_Filter<PointType>::_cloud_out_filtered_noise.reset(new typename pcl::PointCloud<PointType>);
     SF_Stem_Filter<PointType>::_cloud_out_filtered.reset(new typename pcl::PointCloud<PointType>);
-    SF_Cloud_Normal::Ptr down_scaled_cloud = down_scale(params);
-    compute_normals(params,down_scaled_cloud);
-    SF_Cloud_Normal::Ptr cloud_with_growth_direction = compute_growth_direction(params,down_scaled_cloud);
-    transfer_stem(params,down_scaled_cloud,cloud_with_growth_direction);
+    SF_Cloud_Normal::Ptr down_scaled_cloud = down_scale(_params);
+    compute_normals(_params,down_scaled_cloud);
+    SF_Cloud_Normal::Ptr cloud_with_growth_direction = compute_growth_direction(_params,down_scaled_cloud);
+    transfer_stem(_params,down_scaled_cloud,cloud_with_growth_direction);
     SF_Stem_Filter<PointType>::create_indices();
 }
 
 template<typename PointType>
 SF_Stem_Filter<PointType>::SF_Stem_Filter() {
-
+    Sf_Binary_Filter<PointType>::reset();
 }
 
 #endif // SF_STEM_FILTER_HPP

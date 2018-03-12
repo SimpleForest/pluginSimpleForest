@@ -31,7 +31,7 @@
 #include "steps/param/sf_abstract_param.h"
 #include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
 #include <pcl/cloud/filter/binary/stem/sf_stem_filter.h>
-
+#include <QThreadPool>
 class SF_Step_Stem_Filter_Adapter {
 public:
 
@@ -53,19 +53,38 @@ public:
         {
             QMutexLocker m1(&*mMutex);
             converter.set_itemCpy_cloud_in(params._itemCpy_cloud_in);
+             const CT_AbstractPointCloudIndex* index =params._itemCpy_cloud_in->getPointCloudIndex();
+             CT_PointIterator it(index);
+             int counter = 0;
+             std::cout << "------------------------------" << std::endl;
+             while(it.hasNext()) {
+                  const CT_Point &internalPoint = it.next().currentPoint();
+                  if(counter%1000 == 0)
+                  std::cout << internalPoint[0] << " ; " << internalPoint[1] << " ; "  << internalPoint[2] << std::endl;
+             }
+             std::cout << params._itemCpy_cloud_in->getPointCloudIndex()->size() << std::endl;
+             std::cout << "------------------------------" << std::endl;
         }
         converter.compute();
         {
             QMutexLocker m1(&*mMutex);
             params._cloud_in = converter.get_cloud_translated();
+            std::cout << params._cloud_in->points.size() << std::endl;
+            std::cout << "------------------------------" << std::endl;
+            for(size_t i = 0; i < (params._cloud_in->points.size()-11111); i = i + 10000) {
+                std::cout << "qwe" << params._cloud_in->points.at(i)<< std::endl;
+                std::cout << "................." <<std::endl;
+            }
+            std::cout << "------------------------------" << std::endl;
         }
         params.log_import();
         SF_Stem_Filter<SF_Point_N> filter;
         {
             QMutexLocker m1(&*mMutex);
             filter.set_cloud_in(params._cloud_in);
-        }
-        filter.compute(params);
+            filter.set_params(params);
+        }        
+        filter.compute();
         {
             QMutexLocker m1(&*mMutex);
             params._output_indices = filter.get_indices();

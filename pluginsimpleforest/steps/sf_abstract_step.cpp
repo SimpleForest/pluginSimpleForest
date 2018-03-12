@@ -157,7 +157,7 @@ void SF_Abstract_Step::create_output_index(std::vector<CT_PointCloudIndexVector 
         } else {
             qDebug() << "TODO void SF_Abstract_Step::create_output_index";
         }
-    }else {
+    } else {
         qDebug() << "TODO void SF_Abstract_Step::create_output_index2";
     }
 }

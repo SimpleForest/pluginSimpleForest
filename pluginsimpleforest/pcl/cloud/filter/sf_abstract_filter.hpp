@@ -40,6 +40,7 @@ SF_Abstract_Filter<PointType>::SF_Abstract_Filter() {
 template <typename PointType>
 void SF_Abstract_Filter<PointType>::reset() {
     _percentage_remaining = 0;
+    SF_Abstract_Filter<PointType>::_cloud_in.reset(new pcl::PointCloud<PointType> ());
     SF_Abstract_Filter<PointType>::_cloud_out_filtered.reset(new pcl::PointCloud<PointType> ());
     SF_Abstract_Filter<PointType>::_indices.clear();
 }

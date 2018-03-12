@@ -28,11 +28,26 @@
 #ifndef SF_MATH_H
 #define SF_MATH_H
 
+#include "pcl/point_types.h"
 
+template <typename T>
 class SF_Math
 {
 public:
+
+    static const double _PI;
+
+    static const double _RAD_TO_DEG;
+
+    static const double _DEG_TO_RAD;
+
+    static double get_angle_between_DEG(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
+
+    static double get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
+
     SF_Math();
 };
+
+#include "sf_math.hpp"
 
 #endif // SF_MATH_H

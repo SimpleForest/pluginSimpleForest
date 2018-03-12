@@ -87,9 +87,9 @@ private:
     double _y = 0;
     double _z = 1;
     double _angle = 25;
-    double _radius_growth_direction = 0.45;
-    double _radius_normal = 0.04;
-    double _voxel_size = 0.015;
+    double _radius_growth_direction = 0.1;
+    double _radius_normal = 0.05;
+    double _voxel_size = 0.02;
     double _size_output = 2;
 
     void write_output_per_scence(CT_ResultGroup* out_result, size_t i);

@@ -30,19 +30,51 @@
 #include "sf_normal.h"
 #include <pcl/features/normal_3d.h>
 template <typename PointType, typename FeatureType>
-SF_Normal<PointType, FeatureType>::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in):
-    _cloud_in(cloud_in) {
+SF_Normal<PointType, FeatureType>::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in, pcl::PointCloud::Ptr features_out):
+    _cloud_in(cloud_in), _features_out(features_out) {
 
 }
+
 template <typename PointType, typename FeatureType>
-void compute_feature() {
+void SF_Normal<PointType, FeatureType>::set_parameters(float range, bool use_range){
+    _range = range;
+    _use_range = use_range;
+}
+
+template <typename PointType, typename FeatureType>
+void SF_Normal<PointType, FeatureType>::set_parameters(int k, bool use_range) {
+    _k = k;
+    _use_range = use_range;
+}
+
+template <typename PointType, typename FeatureType>
+void SF_Normal<PointType, FeatureType>::compute_features_range() {
     pcl::NormalEstimation<PointType, FeatureType> ne;
     ne.setInputCloud (_cloud_in);
     pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType> ());
     ne.setSearchMethod (tree);
-    pcl::PointCloud<FeatureType>::Ptr cloud_normals (new pcl::PointCloud<FeatureType>);
-    ne.setRadiusSearch (0.03);
-    ne.compute (*cloud_normals);;
+    ne.setRadiusSearch (_range);
+    ne.compute (*SF_Normal<PointType, FeatureType>::_features);;
+
+}
+
+template <typename PointType, typename FeatureType>
+void SF_Normal<PointType, FeatureType>::compute_features_knn() {
+    pcl::NormalEstimation<PointType, FeatureType> ne;
+    ne.setInputCloud (_cloud_in);
+    pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType> ());
+    ne.setSearchMethod (tree);
+    ne.setKSearch(k);
+    ne.compute (*SF_Normal<PointType, FeatureType>::_features);;
+}
+
+template <typename PointType, typename FeatureType>
+void SF_Normal<PointType, FeatureType>::compute_features() {
+    if(_use_range) {
+        compute_features_range();
+    } else {
+        compute_features_knn();
+    }
 }
 
 #endif // SF_NORMAL_HPP

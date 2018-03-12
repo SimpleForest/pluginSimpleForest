@@ -29,10 +29,28 @@
 #define SF_PCA_H
 
 
-class SF_PCA
-{
-public:
-    SF_PCA();
-};
+//#include "pcl/cloud/feature/sf_abstract_feature.h"
+
+//template <typename PointType>
+//class SF_PCA: public  SF_Abstract_Feature<PointType> {
+//private:
+//    float _range;
+//    bool _use_range;
+//    int _k;
+//    void extract_neighbors(pcl::search::KdTree<PointType>::Ptr kd_tree, PointType p, pcl::PointCloud<PointType>::Ptr neighborhood);
+//    void extract_neighbors_by_index(std::vector<int> pointIndex, pcl::PointCloud<PointType>::Ptr neighborhood) ;
+//    extract_neighbors_by_range(pcl::search::KdTree<PointType>::Ptr kdtree, PointType p, pcl::PointCloud<PointType>::Ptr neighborhood);
+//    extract_neighbors_by_knn(pcl::search::KdTree<PointType>::Ptr kdtree, PointType p, pcl::PointCloud<PointType>::Ptr neighborhood);
+//public:
+//    SF_Normal::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in,  PointCloudSF_PCA::Ptr features_out);
+//    virtual void compute_features();
+//    SF_Point_PCA compute_features_from_neighbors(typename pcl::PointCloud<PointType>::Ptr neighborhood, const PointType &p, const Eigen::Vector4f& xyz_centroid);
+//    SF_Point_PCA compute_features_from_point(const PointType& p, pcl::search::KdTree<PointType>::Ptr kd_tree);
+//    void set_parameters(float range, bool use_range );
+//    void set_parameters(int k);
+//}
+
+
+#include "sf_pca.hpp"
 
 #endif // SF_PCA_H

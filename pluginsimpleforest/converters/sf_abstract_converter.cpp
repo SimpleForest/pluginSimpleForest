@@ -76,6 +76,9 @@ void SF_Abstract_Converter::compute_center_of_mass(size_t size, const CT_Abstrac
 void SF_Abstract_Converter::compute_translation_to_origin()
 {
     const CT_AbstractPointCloudIndex* index = _itemCpy_cloud_in->getPointCloudIndex();
+
     assert(index->size() > 0);
-    compute_center_of_mass(index->size(), index);
+    _center_of_mass[0] = _itemCpy_cloud_in->minX() + 0.5*(_itemCpy_cloud_in->maxX()-_itemCpy_cloud_in->minX());
+    _center_of_mass[1] = _itemCpy_cloud_in->minY() + 0.5*(_itemCpy_cloud_in->maxY()-_itemCpy_cloud_in->minY());
+    _center_of_mass[2] = _itemCpy_cloud_in->minZ() + 0.5*(_itemCpy_cloud_in->maxZ()-_itemCpy_cloud_in->minZ());
 }

@@ -33,6 +33,8 @@
 template <typename PointType>
 class SF_Stem_Filter: public Sf_Binary_Filter<PointType> {
 
+    SF_Param_Stem_Filter<PointType> _params;
+
     typename pcl::PointCloud<PointType>::Ptr down_scale(const SF_Param_Stem_Filter<PointType> &params);
 
     void compute_normals(const SF_Param_Stem_Filter<PointType> &params, typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud);
@@ -51,7 +53,9 @@ public:
 
     SF_Stem_Filter();
 
-    virtual void compute(const SF_Param_Stem_Filter<PointType> &params);
+    virtual void compute();
+
+    void set_params(SF_Param_Stem_Filter<PointType> &params);
 
 
 

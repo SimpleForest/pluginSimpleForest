@@ -35,6 +35,31 @@
 #include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/kdtree/impl/kdtree_flann.hpp>
 
+
+
+//struct SF_Point_PCA
+//{
+//    inline SF_Point_PCA (float _x, float _y, float _z):x(_x),y(_y),z(_z)
+//    {
+//    }
+
+//    inline SF_Point_PCA ():x(0),y(0),z(0)
+//    {
+//    }
+
+
+//    PCL_ADD_POINT4D;                  // preferred way of adding a XYZ+padding
+//    Eigen::Vector3f lambdas;
+//    Eigen::Matrix3f vectors;
+//    EIGEN_MAKE_ALIGNED_OPERATOR_NEW   // make sure our new allocators are aligned
+//} EIGEN_ALIGN16;                    // enforce SSE padding for correct memory alignment
+
+//POINT_CLOUD_REGISTER_POINT_STRUCT (SF_Point_PCA,           // here we assume a XYZ + "test" (as fields)
+//                                   (float, x, x)
+//                                   (float, y, y)
+//                                   (float, z, z)
+//                                   )
+
 struct SF_Point_ID
 {
     inline SF_Point_ID (float _x, float _y, float _z):x(_x),y(_y),z(_z),id(-1)
@@ -69,6 +94,8 @@ typedef pcl::PointCloud<SF_Point_N> SF_Cloud_Normal;
 
 typedef SF_Point_ID SF_Point_ID;
 typedef pcl::PointCloud<SF_Point_ID> PointCloudSF_ID;
+
+//typedef pcl::PointCloud<SF_Point_PCA> PointCloudSF_PCA;
 
 
 #endif // SF_POINT_H

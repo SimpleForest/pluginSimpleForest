@@ -53,7 +53,12 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/filter/binary/stem/sf_stem_filter.h \
     pcl/cloud/filter/binary/stem/sf_stem_filter.hpp \
     steps/filter/binary/stem_filter/sf_step_stem_filter.h \
-    steps/filter/binary/stem_filter/sf_step_stem_filter_adapter.h
+    steps/filter/binary/stem_filter/sf_step_stem_filter_adapter.h \
+    pcl/sf_math.h \
+    pcl/sf_math.hpp \
+    pcl/geometry/sf_point_geometry.h \
+    pcl/cloud/feature/pca/sf_pca.h \
+    pcl/cloud/feature/pca/sf_pca.hpp
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -67,7 +72,8 @@ SOURCES += \
     steps/filter/multiple/sf_abstract_filter_multiple_step.cpp \
     steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.cpp \
     steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.cpp \
-    steps/filter/binary/stem_filter/sf_step_stem_filter.cpp
+    steps/filter/binary/stem_filter/sf_step_stem_filter.cpp \
+    pcl/geometry/sf_point_geometry.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

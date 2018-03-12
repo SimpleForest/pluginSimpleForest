@@ -211,6 +211,7 @@ void SF_Step_Stem_Filter::compute() {
     identify_and_remove_corrupted_scenes(out_result);
     create_param_list(out_result);
     write_logger();
+
     QFuture<void> future = QtConcurrent::map(_param_list,SF_Step_Stem_Filter_Adapter() );
     set_progress_by_future(future,10,85);
     write_output(out_result);
