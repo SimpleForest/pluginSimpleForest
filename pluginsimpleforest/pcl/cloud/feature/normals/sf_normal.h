@@ -38,12 +38,12 @@ private:
     bool _use_range = false;
     float _range = 0.03f;
 public:
-    SF_Normal::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in, typename pcl::PointCloud<FeatureType>::Ptr features_out);
+    SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in, typename pcl::PointCloud<FeatureType>::Ptr features_out);
     virtual void compute_features();
     virtual void compute_features_range();
     virtual void compute_features_knn();
     void set_parameters(float range, bool use_range = true);
-    void set_parameters(int k, bool use_range = false);
+    void set_parameters(int k);
 }
 
 

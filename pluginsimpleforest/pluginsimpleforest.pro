@@ -1,5 +1,7 @@
-CT_PREFIX = ../../computreev3
+CONFIG   += console precompile_header
 
+#PRECOMPILED_HEADER  = /usr/include/c++/7/tr1/stdlib.h
+CT_PREFIX = ../../computreev3
 exists(../../computreev5) {
     CT_PREFIX = ../../computreev5
     DEFINES += COMPUTREE_V5
@@ -50,6 +52,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/filter/unitary/sf_unitary_filter.hpp \
     pcl/cloud/filter/unitary/voxelgrid/sf_voxel_grid_ds.h \
     pcl/cloud/filter/unitary/voxelgrid/sf_voxel_grid_ds.hpp \
+    pcl/cloud/filter/unitary/pca/sf_pca.h \
+    pcl/cloud/filter/unitary/pca/sf_pca.hpp \
+    pcl/cloud/filter/unitary/growthdirection/sf_growth_direction.h \
+    pcl/cloud/filter/unitary/growthdirection/sf_growth_direction.hpp \
     pcl/cloud/filter/binary/stem/sf_stem_filter.h \
     pcl/cloud/filter/binary/stem/sf_stem_filter.hpp \
     steps/filter/binary/stem_filter/sf_step_stem_filter.h \
@@ -58,7 +64,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/sf_math.hpp \
     pcl/geometry/sf_point_geometry.h \
     pcl/cloud/feature/pca/sf_pca.h \
-    pcl/cloud/feature/pca/sf_pca.hpp
+    pcl/cloud/feature/pca/sf_pca.hpp \
+    pcl/cloud/feature/growth_direction/sf_growth_direction.h \
+    pcl/cloud/feature/growth_direction/sf_growth_direction.hpp
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \

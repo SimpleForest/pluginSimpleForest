@@ -30,8 +30,10 @@
 #include "sf_abstract_feature.h"
 
 template <typename PointType, typename FeatureType>
-SF_Abstract_Feature<PointType, FeatureType>::SF_Abstract_Feature(typename pcl::PointCloud<PointType>::Ptr cloud_in, , typename pcl::PointCloud<FeatureType>::Ptr features_out):
-     _cloud_in(cloud_in), _features_out(features_out) {
+SF_Abstract_Feature<PointType, FeatureType>::SF_Abstract_Feature(typename pcl::PointCloud<PointType>::Ptr cloud_in, typename pcl::PointCloud<FeatureType>::Ptr features_out):
+     SF_Abstract_Feature::_cloud_in(cloud_in), SF_Abstract_Feature::_features_out(features_out) {
 
 }
+
+
 #endif // SF_ABSTRACT_FEATURE_HPP

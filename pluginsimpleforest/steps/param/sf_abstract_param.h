@@ -90,6 +90,18 @@ struct SF_Param_Filter: public SF_Param_Cloud<PointType>{
 };
 
 template <typename PointType>
+struct SF_Param_Growth_direction: public SF_Param_Cloud<PointType>{
+    float gd_range   = 0.03f;
+    float normal_range = 0.01f;
+    virtual QString to_string() {
+        QString str = "The growth direction computation with parameter (";
+        str.append(QString::number(gd_range));
+        str.append(" growth direction range) has started.");
+        return str;
+    }
+};
+
+template <typename PointType>
 struct SF_Param_Voxel_Grid_Downscale: public SF_Param_Cloud<PointType>{
     float voxel_size   = 0.01f;
     float voxel_size_x = 0.01f;

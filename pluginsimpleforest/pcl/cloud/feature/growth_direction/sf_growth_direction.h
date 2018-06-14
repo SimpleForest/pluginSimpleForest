@@ -25,29 +25,30 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_UNITARY_FILTER_HPP
-#define SF_UNITARY_FILTER_HPP
-#include "sf_unitary_filter.h"
-template <typename PointType>
-SF_Unitary_Filter<PointType>::SF_Unitary_Filter() {
-    reset();
-}
+#ifndef SF_GROWTH_DIRECTION_H
+#define SF_GROWTH_DIRECTION_H
 
-template<typename PointType>
-void SF_Unitary_Filter<PointType>::reset() {
-    SF_Abstract_Filter<PointType>::_cloud_in.reset(new pcl::PointCloud<PointType>);
-    SF_Abstract_Filter<PointType>::_cloud_out_filtered.reset(new pcl::PointCloud<PointType>);
-    SF_Abstract_Filter<PointType>::_indices.clear();
-}
+#include "pcl/cloud/feature/sf_abstract_feature.h"
+#include "../pca/sf_pca.h"
 
-template<typename PointType>
-void SF_Unitary_Filter<PointType>::create_index(PointType point,
-                                                float sqrd_distance)
-{
-    if(SF_Unitary_Filter<PointType>::equals_by_sqrt_distance(sqrd_distance))
-    {SF_Abstract_Cloud<PointType>::_indices.push_back(0);}
-    else
-    {SF_Abstract_Cloud<PointType>::_indices.push_back(-1);}
-}
+//#include <pcl/kdtree/kdtree_flann.h>
+//#include <pcl/features/normal_3d.h>
+template <typename PointType, typename FeatureType>
+class SF_Growth_Direction: public  SF_Abstract_Feature<PointType, FeatureType> {
+private:
 
-#endif // SF_UNITARY_FILTER_HPP
+    float _range_normal = 0.1f;
+    float _range_gd = 0.3f;
+    static constexpr float MAX_LAMBDA3 = 0.9;
+    void add_normals(std::vector<PCA_Values>& values);
+    void add_growth_direction(std::vector<PCA_Values>& values);
+
+public:
+    SF_Growth_Direction(typename pcl::PointCloud<PointType>::Ptr cloud_in, typename pcl::PointCloud<FeatureType>::Ptr features_out);
+    void compute_features();
+    std::vector<PCA_Values> compute_normal_pca();
+    void compute_pca_from_point(PointType p, typename pcl::KdTree<PointType>::Ptr kd_tree);
+    void set_parameters(float range_normal, float range_gd);
+};
+#include "sf_growth_direction.hpp"
+#endif // SF_GROWTH_DIRECTION_H

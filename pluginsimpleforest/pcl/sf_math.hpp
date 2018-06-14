@@ -31,23 +31,23 @@
 #include "sf_math.h"
 
 template <typename T>
-const double SF_Math<T>::_PI = 3.1415926;
+const T SF_Math<T>::_PI = 3.1415926;
 
 template <typename T>
-const double SF_Math<T>::_RAD_TO_DEG = 180.0/SF_Math::_PI;
+const T SF_Math<T>::_RAD_TO_DEG = 180.0/SF_Math::_PI;
 
 template <typename T>
-const double SF_Math<T>::_DEG_TO_RAD = SF_Math::_PI/180.0;
+const T SF_Math<T>::_DEG_TO_RAD = SF_Math::_PI/180.0;
 
 template <typename T>
-double SF_Math<T>::get_angle_between_DEG(Eigen::Vector3f  axis1, Eigen::Vector3f  axis2) {
+T SF_Math<T>::get_angle_between_DEG(Eigen::Vector3f  axis1, Eigen::Vector3f  axis2) {
     axis1.normalize();
     axis2.normalize();
     return acos(axis1.dot(axis2))*SF_Math::_RAD_TO_DEG;
 }
 
 template <typename T>
-double SF_Math<T>::get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
+T SF_Math<T>::get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
     axis1.normalize();
     axis2.normalize();
     return acos(axis1.dot(axis2));

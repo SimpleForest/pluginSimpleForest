@@ -35,15 +35,15 @@ class SF_Math
 {
 public:
 
-    static const double _PI;
+    static const T _PI;
 
-    static const double _RAD_TO_DEG;
+    static const T _RAD_TO_DEG;
 
-    static const double _DEG_TO_RAD;
+    static const T _DEG_TO_RAD;
 
-    static double get_angle_between_DEG(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
+    static T get_angle_between_DEG(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
 
-    static double get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
+    static T get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
 
     SF_Math();
 };

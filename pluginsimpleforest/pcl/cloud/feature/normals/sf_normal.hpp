@@ -31,20 +31,22 @@
 #include <pcl/features/normal_3d.h>
 template <typename PointType, typename FeatureType>
 SF_Normal<PointType, FeatureType>::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in, pcl::PointCloud::Ptr features_out):
-    _cloud_in(cloud_in), _features_out(features_out) {
+    _cloud_in(cloud_in), _features_out(features_out) {    
 
 }
 
 template <typename PointType, typename FeatureType>
 void SF_Normal<PointType, FeatureType>::set_parameters(float range, bool use_range){
     _range = range;
+    _k =5;
     _use_range = use_range;
 }
 
 template <typename PointType, typename FeatureType>
-void SF_Normal<PointType, FeatureType>::set_parameters(int k, bool use_range) {
+void SF_Normal<PointType, FeatureType>::set_parameters(int k) {
     _k = k;
-    _use_range = use_range;
+    _range = 0.03;
+    _use_range = false;
 }
 
 template <typename PointType, typename FeatureType>

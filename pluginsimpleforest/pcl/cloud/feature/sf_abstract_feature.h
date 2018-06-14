@@ -30,12 +30,12 @@
 #include "pcl/cloud/sf_abstract_cloud.h"
 template <typename PointType, typename FeatureType>
 class SF_Abstract_Feature: public  SF_Abstract_Cloud<PointType> {
-    pcl::PointCloud<FeatureType> _features_out;
+    typename pcl::PointCloud<FeatureType>::Ptr _features_out;
 
 public:
     SF_Abstract_Feature(typename pcl::PointCloud<PointType>::Ptr cloud_in, typename pcl::PointCloud<FeatureType>::Ptr features_out);
     virtual void compute_features() = 0;
-    pcl::PointCloud<FeatureType> get_features() const {
+    typename pcl::PointCloud<FeatureType>::Ptr get_features() const {
         return _features_out;
     }
 };

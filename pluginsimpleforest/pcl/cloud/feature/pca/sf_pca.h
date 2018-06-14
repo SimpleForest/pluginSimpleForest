@@ -29,28 +29,90 @@
 #define SF_PCA_H
 
 
-//#include "pcl/cloud/feature/sf_abstract_feature.h"
+struct PCA_Values{
+    Eigen::Vector3f lambdas;
+    inline void check_valid() {
+        if(lambdas[0]>lambdas[1] || lambdas[0]>lambdas[2]||lambdas[1]>lambdas[2]) {
+            throw std::runtime_error("Lambdas have not been computed during PCA.");
+        }
+    }
 
-//template <typename PointType>
-//class SF_PCA: public  SF_Abstract_Feature<PointType> {
-//private:
-//    float _range;
-//    bool _use_range;
-//    int _k;
-//    void extract_neighbors(pcl::search::KdTree<PointType>::Ptr kd_tree, PointType p, pcl::PointCloud<PointType>::Ptr neighborhood);
-//    void extract_neighbors_by_index(std::vector<int> pointIndex, pcl::PointCloud<PointType>::Ptr neighborhood) ;
-//    extract_neighbors_by_range(pcl::search::KdTree<PointType>::Ptr kdtree, PointType p, pcl::PointCloud<PointType>::Ptr neighborhood);
-//    extract_neighbors_by_knn(pcl::search::KdTree<PointType>::Ptr kdtree, PointType p, pcl::PointCloud<PointType>::Ptr neighborhood);
-//public:
-//    SF_Normal::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in,  PointCloudSF_PCA::Ptr features_out);
-//    virtual void compute_features();
-//    SF_Point_PCA compute_features_from_neighbors(typename pcl::PointCloud<PointType>::Ptr neighborhood, const PointType &p, const Eigen::Vector4f& xyz_centroid);
-//    SF_Point_PCA compute_features_from_point(const PointType& p, pcl::search::KdTree<PointType>::Ptr kd_tree);
-//    void set_parameters(float range, bool use_range );
-//    void set_parameters(int k);
-//}
+    inline float getLambda(const int i) {
+        if(lambdas[i]!=0) {
+            return (lambdas[i]/(lambdas[0]+lambdas[1]+lambdas[2]));
+        }
+        return 0;
+    }
+
+    inline float getLambda1() {
+        check_valid();
+        getLambda(0);
+    }
+
+    inline float getLambda2() {
+        check_valid();
+        getLambda(1);
+    }
+
+    inline float getLambda3() {
+        check_valid();
+        getLambda(2);
+    }
+
+    Eigen::Matrix3f vectors;
+
+    inline Eigen::Vector3f getVector1() {
+        check_valid();
+        Eigen::Vector3f vec = vectors.col(0);
+        vec.normalize();
+        return vec;
+    }
+
+    inline Eigen::Vector3f getVector2() {
+        check_valid();
+        Eigen::Vector3f vec = vectors.col(1);
+        vec.normalize();
+        return vec;
+    }
+
+
+
+    inline Eigen::Vector3f getVector3() {
+        check_valid();
+        Eigen::Vector3f vec = vectors.col(2);
+        vec.normalize();
+        return vec;
+    }
+};
+
+#include "pcl/cloud/feature/sf_abstract_feature.h"
+#include <pcl/features/normal_3d.h>
+
+template <typename PointType>
+class SF_PCA: public  SF_Abstract_Cloud <PointType> {
+private:
+    float _range;
+    bool _use_range;
+    int _k;
+    bool _center_zero;
+    std::vector<PCA_Values> pca_values;
+    void extract_neighbors(typename pcl::KdTree<PointType>::Ptr kd_tree, PointType p, typename pcl::PointCloud<PointType>::Ptr neighborhood);
+    static PCA_Values compute_features_from_neighbors(typename pcl::PointCloud<PointType>::Ptr neighborhood, const Eigen::Vector4f& xyz_centroid);
+public:
+    SF_PCA(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+    virtual void compute_features();    
+    virtual void create_indices(){}
+    virtual void create_index(PointType point, float sqrd_distance){}
+    virtual void reset(){pca_values.clear();}
+    PCA_Values compute_features_from_neighbors(typename pcl::PointCloud<PointType>::Ptr neighborhood, const Eigen::Vector4f& xyz_centroid);
+    void compute_features_for_point(const PointType& p, typename pcl::KdTree<PointType>::Ptr kd_tree, int index);
+    void set_parameters(float range, bool center_zero, bool use_range );
+    void set_parameters(int k, bool center_zero);
+    std::vector<PCA_Values> get_pca_values() const;
+};
 
 
 #include "sf_pca.hpp"
 
 #endif // SF_PCA_H
+

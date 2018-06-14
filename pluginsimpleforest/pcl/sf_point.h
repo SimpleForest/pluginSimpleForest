@@ -39,18 +39,56 @@
 
 //struct SF_Point_PCA
 //{
-//    inline SF_Point_PCA (float _x, float _y, float _z):x(_x),y(_y),z(_z)
-//    {
+//    inline SF_Point_PCA (float _x, float _y, float _z):x(_x),y(_y),z(_z) {
 //    }
 
-//    inline SF_Point_PCA ():x(0),y(0),z(0)
-//    {
+//    inline SF_Point_PCA ():x(0),y(0),z(0) {
 //    }
 
 
 //    PCL_ADD_POINT4D;                  // preferred way of adding a XYZ+padding
 //    Eigen::Vector3f lambdas;
+//    inline float getLambda1() {
+//        if(lambdas[0]!=0) {
+//            return (lambdas[0]/(lambdas[0]+lambdas[1]+lambdas[2]));
+//        }
+//        return 0;
+//    }
+
+//    inline float getLambda2() {
+//        if(lambdas[1]!=0) {
+//            return (lambdas[1]/(lambdas[0]+lambdas[1]+lambdas[2]));
+//        }
+//        return 0;
+//    }
+
+//    inline float getLambda3() {
+//        if(lambdas[2]!=0) {
+//            return (lambdas[2]/(lambdas[0]+lambdas[1]+lambdas[2]));
+//        }
+//        return 0;
+//    }
+
 //    Eigen::Matrix3f vectors;
+
+//    inline Eigen::Vector3f getVector1() {
+//        Eigen::Vector3f vec = vectors.col(0);
+//        vec.normalize();
+//        return vec;
+//    }
+
+//    inline Eigen::Vector3f getVector2() {
+//        Eigen::Vector3f vec = vectors.col(1);
+//        vec.normalize();
+//        return vec;
+//    }
+
+//    inline Eigen::Vector3f getVector3() {
+//        Eigen::Vector3f vec = vectors.col(2);
+//        vec.normalize();
+//        return vec;
+//    }
+
 //    EIGEN_MAKE_ALIGNED_OPERATOR_NEW   // make sure our new allocators are aligned
 //} EIGEN_ALIGN16;                    // enforce SSE padding for correct memory alignment
 
@@ -60,31 +98,31 @@
 //                                   (float, z, z)
 //                                   )
 
-struct SF_Point_ID
-{
-    inline SF_Point_ID (float _x, float _y, float _z):x(_x),y(_y),z(_z),id(-1)
-    {
-    }
+//struct SF_Point_ID
+//{
+//    inline SF_Point_ID (float _x, float _y, float _z):x(_x),y(_y),z(_z),id(-1)
+//    {
+//    }
 
-    inline SF_Point_ID ():x(0),y(0),z(0),id(-1)
-    {
-    }
+//    inline SF_Point_ID ():x(0),y(0),z(0),id(-1)
+//    {
+//    }
 
-    bool operator < (const SF_Point_ID & other){
-        return id < other.id;
-    }
+//    bool operator < (const SF_Point_ID & other){
+//        return id < other.id;
+//    }
 
-    PCL_ADD_POINT4D;                  // preferred way of adding a XYZ+padding
-    int id;
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW   // make sure our new allocators are aligned
-} EIGEN_ALIGN16;                    // enforce SSE padding for correct memory alignment
+//    PCL_ADD_POINT4D;                  // preferred way of adding a XYZ+padding
+//    int id;
+//    EIGEN_MAKE_ALIGNED_OPERATOR_NEW   // make sure our new allocators are aligned
+//} EIGEN_ALIGN16;                    // enforce SSE padding for correct memory alignment
 
-POINT_CLOUD_REGISTER_POINT_STRUCT (SF_Point_ID,           // here we assume a XYZ + "test" (as fields)
-                                   (float, x, x)
-                                   (float, y, y)
-                                   (float, z, z)
-                                   (int, id, id)
-                                   )
+//POINT_CLOUD_REGISTER_POINT_STRUCT (SF_Point_ID,           // here we assume a XYZ + "test" (as fields)
+//                                   (float, x, x)
+//                                   (float, y, y)
+//                                   (float, z, z)
+//                                   (int, id, id)
+//                                   )
 
 typedef pcl::PointXYZ SF_Point;
 typedef pcl::PointCloud<SF_Point> SF_Cloud;
@@ -92,8 +130,8 @@ typedef pcl::PointCloud<SF_Point> SF_Cloud;
 typedef pcl::PointXYZINormal SF_Point_N;
 typedef pcl::PointCloud<SF_Point_N> SF_Cloud_Normal;
 
-typedef SF_Point_ID SF_Point_ID;
-typedef pcl::PointCloud<SF_Point_ID> PointCloudSF_ID;
+
+//typedef pcl::PointCloud<SF_Point_ID> PointCloudSF_ID;
 
 //typedef pcl::PointCloud<SF_Point_PCA> PointCloudSF_PCA;
 

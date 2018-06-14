@@ -25,29 +25,27 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_UNITARY_FILTER_HPP
-#define SF_UNITARY_FILTER_HPP
-#include "sf_unitary_filter.h"
+#ifndef SF_VOXEL_GRID_DS_H
+#define SF_VOXEL_GRID_DS_H
+
+#include <pcl/cloud/filter/unitary/sf_unitary_filter.h>
+#include "pcl/filters/voxel_grid.h"
+
 template <typename PointType>
-SF_Unitary_Filter<PointType>::SF_Unitary_Filter() {
-    reset();
-}
+class SF_PCA: public SF_Unitary_Filter<PointType> {
 
-template<typename PointType>
-void SF_Unitary_Filter<PointType>::reset() {
-    SF_Abstract_Filter<PointType>::_cloud_in.reset(new pcl::PointCloud<PointType>);
-    SF_Abstract_Filter<PointType>::_cloud_out_filtered.reset(new pcl::PointCloud<PointType>);
-    SF_Abstract_Filter<PointType>::_indices.clear();
-}
+    void voxel_grid_downscale(SF_Param_Voxel_Grid_Downscale<PointType> std_params);
 
-template<typename PointType>
-void SF_Unitary_Filter<PointType>::create_index(PointType point,
-                                                float sqrd_distance)
-{
-    if(SF_Unitary_Filter<PointType>::equals_by_sqrt_distance(sqrd_distance))
-    {SF_Abstract_Cloud<PointType>::_indices.push_back(0);}
-    else
-    {SF_Abstract_Cloud<PointType>::_indices.push_back(-1);}
-}
+public:
 
-#endif // SF_UNITARY_FILTER_HPP
+    SF_PCA();
+
+    virtual void compute(const SF_Param_Voxel_Grid_Downscale<PointType> &params);
+
+    void set_leaf_size(typename pcl::VoxelGrid<pcl::PointCloud<PointType> > &sor);
+
+};
+
+#include "sf_voxel_grid_ds.hpp"
+
+#endif // SF_VOXEL_GRID_DS_H

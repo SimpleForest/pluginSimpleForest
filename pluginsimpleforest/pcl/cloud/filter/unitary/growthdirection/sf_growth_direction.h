@@ -25,29 +25,29 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_UNITARY_FILTER_HPP
-#define SF_UNITARY_FILTER_HPP
-#include "sf_unitary_filter.h"
+#ifndef SF_VOXEL_GRID_DS_H
+#define SF_VOXEL_GRID_DS_H
+
+#include <pcl/cloud/filter/unitary/sf_unitary_filter.h>
+#include "pcl/filters/voxel_grid.h"
+
 template <typename PointType>
-SF_Unitary_Filter<PointType>::SF_Unitary_Filter() {
-    reset();
-}
-
-template<typename PointType>
-void SF_Unitary_Filter<PointType>::reset() {
-    SF_Abstract_Filter<PointType>::_cloud_in.reset(new pcl::PointCloud<PointType>);
-    SF_Abstract_Filter<PointType>::_cloud_out_filtered.reset(new pcl::PointCloud<PointType>);
-    SF_Abstract_Filter<PointType>::_indices.clear();
-}
-
-template<typename PointType>
-void SF_Unitary_Filter<PointType>::create_index(PointType point,
-                                                float sqrd_distance)
+class SF_Growth_direction: public SF_Unitary_Filter<PointType>
 {
-    if(SF_Unitary_Filter<PointType>::equals_by_sqrt_distance(sqrd_distance))
-    {SF_Abstract_Cloud<PointType>::_indices.push_back(0);}
-    else
-    {SF_Abstract_Cloud<PointType>::_indices.push_back(-1);}
-}
+    bool compute_growth_direction(SF_Param_Growth_direction<PointType> std_params);
 
-#endif // SF_UNITARY_FILTER_HPP
+    bool compute_normal(SF_Param_Growth_direction<PointType> std_params);
+
+public:
+
+    SF_Growth_direction();
+
+    virtual void compute(const SF_Param_Growth_direction<PointType> &params);
+
+    void set_leaf_size(typename pcl::VoxelGrid<pcl::PointCloud<PointType> > &sor);
+
+};
+
+#include "sf_growth_direction.hpp"
+
+#endif // SF_VOXEL_GRID_DS_H
