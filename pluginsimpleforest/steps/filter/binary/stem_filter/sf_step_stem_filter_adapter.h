@@ -28,10 +28,12 @@
 #ifndef SF_STEP_STEM_FILTER_ADAPTER_H
 #define SF_STEP_STEM_FILTER_ADAPTER_H
 
-#include "steps/param/sf_abstract_param.h"
-#include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
 #include <pcl/cloud/filter/binary/stem/sf_stem_filter.h>
 #include <QThreadPool>
+#include <iostream>
+
+#include "steps/param/sf_abstract_param.h"
+#include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
 class SF_Step_Stem_Filter_Adapter {
 public:
 
@@ -65,7 +67,7 @@ public:
             QMutexLocker m1(&*mMutex);
             filter.set_cloud_in(params._cloud_in);
             filter.set_params(params);
-        }        
+        }
         filter.compute();
         {
             QMutexLocker m1(&*mMutex);

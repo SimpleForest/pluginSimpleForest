@@ -35,41 +35,30 @@
 class SF_Abstract_Converter
 {
 public:
-    SF_Abstract_Converter();    
-
-    Eigen::Vector3d get_translation_matrix() const;
-
+    SF_Abstract_Converter();
+    Eigen::Vector3d get_center_of_mass() const;
     void set_itemCpy_cloud_in(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in);
 
 protected:
     void sum_vector(CT_PointIterator &it);
-
     /**
      * @brief _center_of_mass The translation vector pointing from the origin to the original cloud center of mass
      */
     Eigen::Vector3d _center_of_mass;
-
     /**
      * @brief _itemCpy_cloud_in The input CT cloud
      */
     const CT_AbstractItemDrawableWithPointCloud * _itemCpy_cloud_in;
-
     /**
-     * @brief compute_translation Computes the vector @see _center_of_mass
+     * @brief compute_translation Computes the @see _center_of_mass
      */
     void compute_translation_to_origin();
-
-
     virtual void reset()=0;
-
     virtual void compute()=0;
-
-
     void compute_center_of_mass(size_t size, const CT_AbstractPointCloudIndex* index);
+
 private:
-
     void normalize_sum_vector_by_size(size_t size);
-
     void add_point_vec(CT_PointIterator &it);
 
 

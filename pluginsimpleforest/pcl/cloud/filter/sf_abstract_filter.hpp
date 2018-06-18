@@ -73,8 +73,4 @@ template <typename PointType>
 typename pcl::PointCloud<PointType>::Ptr SF_Abstract_Filter<PointType>::get_cloud_out_filtered() const {
     return _cloud_out_filtered;
 }
-
-
-
-
 #endif // SF_ABSTRACT_FILTER_HPP

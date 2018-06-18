@@ -39,15 +39,21 @@ private:
 
     float _range_normal = 0.1f;
     float _range_gd = 0.3f;
+    typename pcl::KdTree<PointType>::Ptr _kd_tree;
     static constexpr float MAX_LAMBDA3 = 0.9;
     void add_normals(std::vector<PCA_Values>& values);
     void add_growth_direction(std::vector<PCA_Values>& values);
+    virtual void create_indices(){; }
+    virtual void create_index(PointType point,
+                         float sqrd_distance) {
+        std::cout << "FOOO SF_Growth_Direction add_growth_direction 4ax " << " ; " << _range_gd << std::endl;; }
+    virtual void reset(){_features_out.reset(new pcl::PointCloud<FeatureType>);}
+
 
 public:
     SF_Growth_Direction(typename pcl::PointCloud<PointType>::Ptr cloud_in, typename pcl::PointCloud<FeatureType>::Ptr features_out);
     void compute_features();
     std::vector<PCA_Values> compute_normal_pca();
-    void compute_pca_from_point(PointType p, typename pcl::KdTree<PointType>::Ptr kd_tree);
     void set_parameters(float range_normal, float range_gd);
 };
 #include "sf_growth_direction.hpp"

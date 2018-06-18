@@ -1,6 +1,3 @@
-CONFIG   += console precompile_header
-
-#PRECOMPILED_HEADER  = /usr/include/c++/7/tr1/stdlib.h
 CT_PREFIX = ../../computreev3
 exists(../../computreev5) {
     CT_PREFIX = ../../computreev5
@@ -30,6 +27,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/filter/sf_abstract_filter.hpp \
     pcl/cloud/filter/binary/sf_binary_filter.hpp \
     pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h \
+    pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.hpp \
     steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.h \
     converters/CT_To_PCL/sf_converter_ct_to_pcl.h \
     converters/CT_To_PCL/sf_converter_ct_to_pcl.hpp \
@@ -41,7 +39,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/filter/multiple/sf_abstract_filter_multiple_step.h \
     steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.h \
     steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.h \
+    steps/filter/binary/ground_filter/sf_step_ground_filter_adapter.h \
+    steps/filter/binary/ground_filter/sf_step_ground_filter.h \
     pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h \
+    pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.hpp \
     steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_adapter.h \
     steps/filter/binary/statistical_outlier_filter/sf_statistical_outlier_removal_adapter.h \
     pcl/cloud/feature/sf_abstract_feature.h \
@@ -58,6 +59,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/filter/unitary/growthdirection/sf_growth_direction.hpp \
     pcl/cloud/filter/binary/stem/sf_stem_filter.h \
     pcl/cloud/filter/binary/stem/sf_stem_filter.hpp \
+    pcl/cloud/filter/binary/ground/sf_ground_filter.h \
+    pcl/cloud/filter/binary/ground/sf_ground_filter.hpp \
     steps/filter/binary/stem_filter/sf_step_stem_filter.h \
     steps/filter/binary/stem_filter/sf_step_stem_filter_adapter.h \
     pcl/sf_math.h \
@@ -80,6 +83,7 @@ SOURCES += \
     steps/filter/multiple/sf_abstract_filter_multiple_step.cpp \
     steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.cpp \
     steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.cpp \
+    steps/filter/binary/ground_filter/sf_step_ground_filter.cpp \
     steps/filter/binary/stem_filter/sf_step_stem_filter.cpp \
     pcl/geometry/sf_point_geometry.cpp
 

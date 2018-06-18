@@ -28,74 +28,48 @@
 #ifndef SF_STEP_STEM_FILTER_H
 #define SF_STEP_STEM_FILTER_H
 
+#include "steps/param/sf_abstract_param.h"
 #include "steps/filter/binary/sf_abstract_filter_binary_step.h"
-
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
-#include <steps/param/sf_abstract_param.h>
 
 class SF_Step_Stem_Filter:  public SF_Abstract_Filter_Binary_Step {
     Q_OBJECT
 
 public:
-
     SF_Step_Stem_Filter(CT_StepInitializeData &data_init);
-
     ~SF_Step_Stem_Filter();
-
     QString getStepDescription() const;
-
     QString getStepDetailledDescription() const;
-
     QString getStepURL() const;
-
     CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &data_init);
-
     QStringList getStepRISCitations() const;
 
-
 protected:
-
-    void createInResultModelListProtected();
-
-    void createOutResultModelListProtected();
-
-    void adapt_parameters_to_expert_level();
-
-    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
-
-    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
-
-    void compute();
-
     QList<SF_Param_Stem_Filter<SF_Point_N> > _param_list;
-
+    void createInResultModelListProtected();
+    void createOutResultModelListProtected();
+    void adapt_parameters_to_expert_level();
+    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
+    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
+    void compute();
     virtual void write_logger();
 
 private:
-
-    QString _less = "less";
-
+    QString _less         = "less";
     QString _intermediate = "intermediate";
-
     QString _many         = "many";
-
     QString _choice       = _intermediate;
-
-
     double _x = 0;
     double _y = 0;
     double _z = 1;
     double _angle = 25;
-    double _radius_growth_direction = 0.1;
-    double _radius_normal = 0.05;
-    double _voxel_size = 0.02;
+    double _radius_growth_direction = 0.4;
+    double _radius_normal = 0.2;
+    double _voxel_size = 0.04;
     double _size_output = 2;
-
     void write_output_per_scence(CT_ResultGroup* out_result, size_t i);
-
     void write_output(CT_ResultGroup* out_result);
-
     void create_param_list(CT_ResultGroup *out_result);
 };
 

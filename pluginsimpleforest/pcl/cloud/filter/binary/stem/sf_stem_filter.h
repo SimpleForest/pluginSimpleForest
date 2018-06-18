@@ -29,36 +29,21 @@
 #define SF_STEM_FILTER_H
 
 #include <pcl/cloud/filter/binary/sf_binary_filter.h>
-//#include "pcl/cloud/feature/growth_direction/sf_growth_direction.h"
 #include <pcl/features/normal_3d.h>
 #include <pcl/filters/filter.h>
+
 #include "pcl/sf_math.h"
 #include "pcl/cloud/feature/pca/sf_pca.h"
 
 template <typename PointType>
 class SF_Stem_Filter: public Sf_Binary_Filter<PointType> {
-
     SF_Param_Stem_Filter<PointType> _params;
-
     std::vector<PCA_Values> _pca_values;
-    typename pcl::PointCloud<PointType>::Ptr compute_growth_direction(const SF_Param_Stem_Filter<PointType> &params,
-                                                                      typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud);
-    void extract_neighbornormals(typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud, typename pcl::PointCloud<PointType>::Ptr neighborhood,
-                                                                                                             std::vector<int> pointIdxRadiusSearch);
-    void calc_growth_direction(typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction, typename pcl::PointCloud<PointType>::Ptr neighborhood,
-                               PointType point);
-
-//    void calc_stem(const SF_Param_Stem_Filter<PointType> &params, typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud);
-
     void transfer_stem(const SF_Param_Stem_Filter<PointType> &params, typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud,
                                                                       typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction);
-
 public:
-
     SF_Stem_Filter();
-
     virtual void compute();
-
     void set_params(SF_Param_Stem_Filter<PointType> &params);
 };
 

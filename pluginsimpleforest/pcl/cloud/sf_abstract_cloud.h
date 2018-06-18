@@ -41,16 +41,18 @@ protected:
     bool equals_by_sqrt_distance(float sqrt_distance);
     typename pcl::PointCloud<PointType>::Ptr _cloud_in;
     virtual void reset() = 0;
-    virtual void create_index(PointType point,
-                         float sqrd_distance) = 0;
     void search_kd_tree(size_t index, typename
                         pcl::KdTreeFLANN<PointType> &kdtree);
     void iterate_over_cloud(pcl::KdTreeFLANN<PointType> &kdtree);
-    pcl::PointCloud<PointType>::Ptr down_scale(float voxel_size);
+    typename pcl::PointCloud<PointType>::Ptr down_scale(float voxel_size);
     void extract_neighbors_by_range(typename pcl::KdTree<PointType>::Ptr kdtree, PointType p, typename pcl::PointCloud<PointType>::Ptr neighborhood, float range);
     void extract_neighbors_by_knn(typename pcl::KdTree<PointType>::Ptr kdtree, PointType p, typename pcl::PointCloud<PointType>::Ptr neighborhood, int k);
     void extract_neighborhood_by_index_list(std::vector<int> pointIndex, typename pcl::PointCloud<PointType>::Ptr neighborhood);
+
+
     virtual void create_indices() = 0;
+    virtual void create_index(PointType point,
+                         float sqrd_distance) = 0;
 
 public:
     SF_Abstract_Cloud();

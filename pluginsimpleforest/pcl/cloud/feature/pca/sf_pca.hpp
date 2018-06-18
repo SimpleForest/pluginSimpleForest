@@ -47,17 +47,16 @@ template <typename PointType>
 void SF_PCA<PointType>::set_parameters(int k, bool center_zero) {
     _k = k;
     _center_zero = center_zero;
-    _range = 0.03;
+    _k = 0.03;
     _use_range = false;
 }
-
 
 template <typename PointType>
 void SF_PCA<PointType>::extract_neighbors(typename pcl::KdTree<PointType>::Ptr kd_tree, PointType p, typename pcl::PointCloud<PointType>::Ptr neighborhood) {
     if(_use_range) {
-        extract_neighbors_by_range(kd_tree,p,neighborhood);
+        extract_neighbors_by_range(kd_tree,p,neighborhood, _range);
     } else {
-        extract_neighbors_by_knn(kd_tree,p,neighborhood);
+        extract_neighbors_by_knn(kd_tree,p,neighborhood, _k);
     }
 }
 
@@ -78,7 +77,8 @@ void SF_PCA<PointType>::compute_features_for_point(const PointType& p, typename 
     typename pcl::PointCloud<PointType>::Ptr neighborhood(new typename pcl::PointCloud<PointType>);
     extract_neighbors(kd_tree,p,neighborhood);
     pcl::compute3DCentroid (*neighborhood, xyz_centroid);
-    PCA_Values ppca = compute_features_from_neighbors(neighborhood, (_center_zero ?  Eigen::Vector4f&(0,0,0,1) : xyz_centroid) );
+    Eigen::Vector4f origin(0,0,0,1) ;
+    PCA_Values ppca = compute_features_from_neighbors(neighborhood, (_center_zero ?  origin : xyz_centroid) );
     pca_values[index] = ppca;
 }
 

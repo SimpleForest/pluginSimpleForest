@@ -25,31 +25,31 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_RADIUS_OUTLIER_FILTER_ADAPTER_H
-#define SF_RADIUS_OUTLIER_FILTER_ADAPTER_H
+#ifndef SF_STEP_GROUND_FILTER_ADAPTER_H
+#define SF_STEP_GROUND_FILTER_ADAPTER_H
+
+#include <pcl/cloud/filter/binary/ground/sf_ground_filter.h>
+#include <QThreadPool>
 
 #include "steps/param/sf_abstract_param.h"
-#include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
-#include <pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h>
-
-class SF_Radius_Outlier_Filter_Adapter {
-
-public:    
+#include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
+class SF_Step_Ground_Filter_Adapter {
+public:
 
     std::shared_ptr<QMutex>  mMutex;
 
-    SF_Radius_Outlier_Filter_Adapter(const SF_Radius_Outlier_Filter_Adapter &obj) {
+    SF_Step_Ground_Filter_Adapter(const SF_Step_Ground_Filter_Adapter &obj) {
         mMutex = obj.mMutex;
     }
 
-    SF_Radius_Outlier_Filter_Adapter () {
+    SF_Step_Ground_Filter_Adapter () {
         mMutex.reset(new QMutex);
     }
 
-    ~SF_Radius_Outlier_Filter_Adapter () {
+    ~SF_Step_Ground_Filter_Adapter () {
     }
 
-    void operator()(SF_Param_Radius_Outlier_Filter<SF_Point_N> & params) {
+    void operator()(SF_Param_Ground_Filter<SF_Point_N> & params) {
         SF_Converter_CT_To_PCL<SF_Point_N> converter;
         {
             QMutexLocker m1(&*mMutex);
@@ -61,12 +61,13 @@ public:
             params._cloud_in = converter.get_cloud_translated();
         }
         params.log_import();
-        SF_Radius_Outlier_Filter<SF_Point_N> filter;
+        SF_Ground_Filter<SF_Point_N> filter;
         {
             QMutexLocker m1(&*mMutex);
             filter.set_cloud_in(params._cloud_in);
+            filter.set_params(params);
         }
-        filter.compute(params);
+        filter.compute();
         {
             QMutexLocker m1(&*mMutex);
             params._output_indices = filter.get_indices();
@@ -75,4 +76,4 @@ public:
     }
 };
 
-#endif // SF_RADIUS_OUTLIER_FILTER_ADAPTER_H
+#endif // SF_STEP_GROUND_FILTER_ADAPTER_H

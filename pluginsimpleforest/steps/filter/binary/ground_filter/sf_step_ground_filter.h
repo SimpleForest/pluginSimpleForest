@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,19 +25,20 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_RADIUS_OUTLIER_FILTER_STEP_H
-#define SF_RADIUS_OUTLIER_FILTER_STEP_H
+#ifndef SF_STEP_GROUND_FILTER_H
+#define SF_STEP_GROUND_FILTER_H
 
+#include "steps/param/sf_abstract_param.h"
 #include "steps/filter/binary/sf_abstract_filter_binary_step.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
-class SF_Radius_Outlier_Filter_Step:  public SF_Abstract_Filter_Binary_Step
-{
+class SF_Step_Ground_Filter:  public SF_Abstract_Filter_Binary_Step {
     Q_OBJECT
+
 public:
-    SF_Radius_Outlier_Filter_Step(CT_StepInitializeData &data_init);
-    ~SF_Radius_Outlier_Filter_Step();
+    SF_Step_Ground_Filter(CT_StepInitializeData &data_init);
+    ~SF_Step_Ground_Filter();
     QString getStepDescription() const;
     QString getStepDetailledDescription() const;
     QString getStepURL() const;
@@ -45,25 +46,30 @@ public:
     QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_Param_Radius_Outlier_Filter<SF_Point_N> > _param_list;
-    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
-    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
+    QList<SF_Param_Ground_Filter<SF_Point_N> > _param_list;
     void createInResultModelListProtected();
     void createOutResultModelListProtected();
+    void adapt_parameters_to_expert_level();
+    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
+    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
     void compute();
     virtual void write_logger();
-    void adapt_parameters_to_expert_level();
 
 private:
     QString _less         = "less";
     QString _intermediate = "intermediate";
     QString _many         = "many";
-    QString _clear_sky    = "clear sky";
     QString _choice       = _intermediate;
-    double _radius = 0.03;
-    int _min_Pts = 5;
+    double _x = 0;
+    double _y = 0;
+    double _z = 1;
+    double _angle = 25;
+    double _radius_normal = 0.2;
+    double _voxel_size = 0.04;
+    double _size_output = 2;
     void write_output_per_scence(CT_ResultGroup* out_result, size_t i);
     void write_output(CT_ResultGroup* out_result);
     void create_param_list(CT_ResultGroup *out_result);
 };
-#endif // SF_RADIUS_OUTLIER_FILTER_STEP_H
+
+#endif // SF_STEP_GROUND_FILTER_H

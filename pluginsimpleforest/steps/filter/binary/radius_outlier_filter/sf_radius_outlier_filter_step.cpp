@@ -33,6 +33,7 @@ SF_Radius_Outlier_Filter_Step::SF_Radius_Outlier_Filter_Step(CT_StepInitializeDa
     _non_expert_level.append(_less);
     _non_expert_level.append(_intermediate);
     _non_expert_level.append(_many);
+    _non_expert_level.append(_clear_sky);
 }
 
 SF_Radius_Outlier_Filter_Step::~SF_Radius_Outlier_Filter_Step() {
@@ -89,24 +90,24 @@ QStringList SF_Radius_Outlier_Filter_Step::getStepRISCitations() const {
                                       "ER  - \n"));
     return _RIS_citation_list;
 }
+
 void SF_Radius_Outlier_Filter_Step::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     assert(res_model != NULL);
     res_model->setZeroOrMoreRootGroup();
-    res_model->addGroupModel("", DEF_IN_GRP);
+    res_model->addGroupModel("", DEF_IN_GRP, CT_AbstractItemGroup::staticGetType(), tr("Point Cloud Grp In"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
     res_model->addItemModel(DEF_IN_GRP, DEF_IN_CLOUD, CT_Scene::staticGetType(), tr("Point Cloud"));
 }
 
 void SF_Radius_Outlier_Filter_Step::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
-    config_dialog->addDouble("Looks for each point at its numbers of neighbors in range ", "",0.01,0.1,3,_radius );
-    config_dialog->addInt("A point is eliminated if it contains less than.", " Points",  2, 1000,_min_Pts);
+    config_dialog->addDouble("Looks for each point at its numbers of neighbors in range ", "",0.01,4.1,3,_radius );
+    config_dialog->addInt("A point is eliminated if it contains less than.", " Points",  2, 99999,_min_Pts);
 }
 
 void SF_Radius_Outlier_Filter_Step::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
     config_dialog->addStringChoice("Choose how many points should be removed","",_non_expert_level, _choice);
     config_dialog->addText("Low resulted clouds are affected more.");
 }
-
 
 void SF_Radius_Outlier_Filter_Step::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
@@ -120,7 +121,7 @@ void SF_Radius_Outlier_Filter_Step::createOutResultModelListProtected() {
 }
 
 void SF_Radius_Outlier_Filter_Step::write_output_per_scence(CT_ResultGroup* out_result, size_t i) {
-    SF_Param_Radius_Outlier_Filter<SF_Point> param = _param_list.at(i);
+    SF_Param_Radius_Outlier_Filter<SF_Point_N> param = _param_list.at(i);
     std::vector<CT_PointCloudIndexVector *> output_index_list = create_output_vectors(param._size_output);
     create_output_indices(output_index_list, param._output_indices, param._itemCpy_cloud_in);
     CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
@@ -161,6 +162,9 @@ void SF_Radius_Outlier_Filter_Step::adapt_parameters_to_expert_level() {
             _min_Pts = 5;
         } else if(_choice == _intermediate) {
             _min_Pts= 18;
+        } else if(_choice == _clear_sky) {
+            _radius = 1.5;
+            _min_Pts = 1000;
         } else {
             _min_Pts = 40;
         }
@@ -173,7 +177,7 @@ void SF_Radius_Outlier_Filter_Step::create_param_list(CT_ResultGroup * out_resul
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
-        SF_Param_Radius_Outlier_Filter<SF_Point> param;
+        SF_Param_Radius_Outlier_Filter<SF_Point_N> param;
         param._log = PS_LOG;
         param._radius = _radius;
         param._min_Pts = _min_Pts;

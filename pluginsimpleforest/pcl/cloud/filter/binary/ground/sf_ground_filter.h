@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,37 +25,26 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_CONVERTER_CT_TO_PCL_H
-#define SF_CONVERTER_CT_TO_PCL_H
+#ifndef SF_GROUND_FILTER_H
+#define SF_GROUND_FILTER_H
 
-#include <pcl/sf_point.h>
+#include <pcl/cloud/filter/binary/sf_binary_filter.h>
+#include <pcl/features/normal_3d.h>
+#include <pcl/filters/filter.h>
 
-#include <converters/sf_abstract_converter.h>
-#include "ct_iterator/ct_pointiterator.h"
+#include "pcl/sf_math.h"
+#include "pcl/cloud/feature/pca/sf_pca.h"
 
 template <typename PointType>
-class SF_Converter_CT_To_PCL: public SF_Abstract_Converter
-{
-private:
-    typename pcl::PointCloud<PointType>::Ptr _cloud_translated;
-    typename pcl::PointCloud<PointType>::Ptr _cloud_original;
-    virtual void reset();
-    void iterate_cloud_and_convert(const CT_AbstractPointCloudIndex *index);
-    void convert_point(CT_PointIterator &it);
-    void convert();
-
+class SF_Ground_Filter: public Sf_Binary_Filter<PointType> {
+    SF_Param_Ground_Filter<PointType> _params;
+    void transfer_normal_and_filter(const SF_Param_Ground_Filter<PointType> &params, typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud,
+                                                                      typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction);
 public:
+    SF_Ground_Filter();
     virtual void compute();
-    void down_scale(float range, typename pcl::PointCloud<PointType>::Ptr downscaled_cloud);
-    SF_Converter_CT_To_PCL();
-    typename
-    pcl::PointCloud<PointType>::Ptr get_cloud_translated() const;
-    typename
-    pcl::PointCloud<PointType>::Ptr get_cloud_original() const;
+    void set_params(SF_Param_Ground_Filter<PointType> &params);
 };
 
-
-
-#include "sf_converter_ct_to_pcl.hpp"
-
-#endif // SF_CONVERTER_CT_TO_PCL_H
+#include "pcl/cloud/filter/binary/ground/sf_ground_filter.hpp"
+#endif // SF_GROUND_FILTER_H

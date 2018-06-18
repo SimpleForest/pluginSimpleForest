@@ -33,7 +33,7 @@
 template <typename PointType>
 class SF_Radius_Outlier_Filter: public Sf_Binary_Filter<PointType> {
 
-    void radius_outlier_filter(SF_Param_Radius_Outlier_Filter<PointType> std_params);
+    void radius_outlier_filter(typename SF_Param_Radius_Outlier_Filter<PointType> std_params);
 
 public:
 

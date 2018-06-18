@@ -25,39 +25,39 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#include "sf_step_stem_filter.h"
+#include "sf_step_ground_filter.h"
 
-#include "sf_step_stem_filter_adapter.h"
+#include "sf_step_ground_filter_adapter.h"
 #include <QtConcurrent/QtConcurrent>
 
-SF_Step_Stem_Filter::SF_Step_Stem_Filter(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init) {
+SF_Step_Ground_Filter::SF_Step_Ground_Filter(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init) {
     _non_expert_level.append(_less);
     _non_expert_level.append(_intermediate);
     _non_expert_level.append(_many);
 }
 
-SF_Step_Stem_Filter::~SF_Step_Stem_Filter() {
+SF_Step_Ground_Filter::~SF_Step_Ground_Filter() {
 
 }
 
-QString SF_Step_Stem_Filter::getStepDescription() const {
-    return tr("Stem Filter");
+QString SF_Step_Ground_Filter::getStepDescription() const {
+    return tr("Ground Filter");
 }
 
-QString SF_Step_Stem_Filter::getStepDetailledDescription() const {
-    return tr("Stem Filter - This Filter estimates for each point the growth direction of the underlying branch segment. The angle between this direction vector and the z axis is computed. "
-              "If the angle is small, the point is detected as stem, if large the point is considered non stem.");
+QString SF_Step_Ground_Filter::getStepDetailledDescription() const {
+    return tr("Ground Filter - This Filter estimates for each point the normal. The angle between the normal vector and the z axis is computed. "
+              "If the angle is small, the point is detected as ground, if large the point is considered non ground.");
 }
 
-QString SF_Step_Stem_Filter::getStepURL() const {
+QString SF_Step_Ground_Filter::getStepURL() const {
     return tr("https://www.youtube.com/watch?v=5i6_Rtv-xEw");
 }
 
-CT_VirtualAbstractStep* SF_Step_Stem_Filter::createNewInstance(CT_StepInitializeData &dataInit) {
-    return new SF_Step_Stem_Filter(dataInit);
+CT_VirtualAbstractStep* SF_Step_Ground_Filter::createNewInstance(CT_StepInitializeData &dataInit) {
+    return new SF_Step_Ground_Filter(dataInit);
 }
 
-QStringList SF_Step_Stem_Filter::getStepRISCitations() const {
+QStringList SF_Step_Ground_Filter::getStepRISCitations() const {
     QStringList _RIS_citation_list;
     _RIS_citation_list.append(QString("TY  - JOUR\n"
                                       "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
@@ -89,31 +89,10 @@ QStringList SF_Step_Stem_Filter::getStepRISCitations() const {
                                       "PB  - IEEE\n"
                                       "UL  - http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
                                       "ER  - \n"));
-
-
-    _RIS_citation_list.append(QString("TY  - EJOU\n"
-                                      "T1  - Fast Automatic Precision Tree Models from Terrestrial Laser Scanner Data\n"
-                                      "A1  - Raumonen, Pasi\n"
-                                      "A1  - Kaasalainen, Mikko\n"
-                                      "A1  - Akerblom, Markku\n"
-                                      "A1  - Kaasalainen, Sanna\n"
-                                      "A1  - Kaartinen, Harri\n"
-                                      "A1  - Vastaranta, Mikko\n"
-                                      "A1  - Holopainen, Markus\n"
-                                      "A1  - Disney, Mathias\n"
-                                      "A1  - Lewis, Philip\n"
-                                      "JO  - Remote Sensing\n"
-                                      "SP  - 5\n"
-                                      "EP  - 2\n"
-                                      "SN  - 2072-4292\n"
-                                      "Y1  - 2013\n"
-                                      "PB  - MDPI\n"
-                                      "UL  - http://www.mdpi.com/2072-4292/5/2/491\n"
-                                      "ER  - \n"));
     return _RIS_citation_list;
 }
 
-void SF_Step_Stem_Filter::createInResultModelListProtected() {
+void SF_Step_Ground_Filter::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     assert(res_model != NULL);
     res_model->setZeroOrMoreRootGroup();
@@ -121,46 +100,39 @@ void SF_Step_Stem_Filter::createInResultModelListProtected() {
     res_model->addItemModel(DEF_IN_GRP, DEF_IN_CLOUD, CT_Scene::staticGetType(), tr("Point Cloud"));
 }
 
-void SF_Step_Stem_Filter::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
+void SF_Step_Ground_Filter::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
     config_dialog->addDouble("First the cloud is downscaled to a voxel size of  ",   " (m). " , 0.015,0.1,3,_voxel_size );
     config_dialog->addDouble("For each of the downscaled points its normal is computed with a range search of  ", "  (m). " , 0.025,0.2,3,_radius_normal );
-    config_dialog->addDouble("Another neighborhood range search is performed on the downscaled points with range  ", " (m)." , 0.05,0.5,3,_radius_growth_direction );
-    config_dialog->addText("The second range should be larger than the first, which should be larger than the downscale size.");
-    config_dialog->addText("For each point the Covariance matrix on all neighboring points within the second range is build and a PCA performed.");
-    config_dialog->addText("The eigenvector representing the direction along the smallest variance is taken as the growth direction of the point.");
-    config_dialog->addText("The eigenvector representing the direction along the smallest variance is taken as the growth direction of the point.");
-    config_dialog->addDouble("The angle for each point between this eigenvector and the adjusted z axis is computed and is not allowed to deviate more than ", " " , 0.5,180,1,_angle );
+    config_dialog->addDouble("The angle for each point between the normal and the adjusted z axis is computed and is not allowed to deviate more than ", " " , 0.5,180,1,_angle );
     config_dialog->addText("degrees.");
     config_dialog->addDouble("The x-component of the adjusted z-axis", " " , 0.01,1,2,_x );
     config_dialog->addDouble("The y-component of the adjusted z-axis", " " , 0.01,1,2,_y );
     config_dialog->addDouble("The z-component of the adjusted z-axis", " " , 0.01,1,2,_z );
-    config_dialog->addText("Please read Raumonen <b>2013</b> (see Citation menu) for more information, this step is based on knowledge gained there.");
 }
 
-void SF_Step_Stem_Filter::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
+void SF_Step_Ground_Filter::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
     config_dialog->addStringChoice("Choose how many points should be removed","",_non_expert_level, _choice);
     config_dialog->addText("For bended trees select a weaker filter level.");
 }
 
-void SF_Step_Stem_Filter::createOutResultModelListProtected() {
+void SF_Step_Ground_Filter::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
-        res_modelw->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(), tr ("stem filtered removal") );
-        res_modelw->addGroupModel(_out_grp, _out_grp_cloud, new CT_StandardItemGroup(), tr ("stem") );
-        res_modelw->addGroupModel(_out_grp, _out_grp_noise, new CT_StandardItemGroup(), tr ("not stem") );
+        res_modelw->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(), tr ("ground filtered removal") );
+        res_modelw->addGroupModel(_out_grp, _out_grp_cloud, new CT_StandardItemGroup(), tr ("ground") );
+        res_modelw->addGroupModel(_out_grp, _out_grp_noise, new CT_StandardItemGroup(), tr ("not ground") );
         res_modelw->addItemModel(_out_grp_cloud, _out_cloud, new CT_Scene(), tr("cloud"));
         res_modelw->addItemModel(_out_grp_noise, _out_noise, new CT_Scene(), tr("cloud"));
     }
 }
 
-void SF_Step_Stem_Filter::adapt_parameters_to_expert_level() {
+void SF_Step_Ground_Filter::adapt_parameters_to_expert_level() {
     if(!_is_expert) {
         if(_choice == _less) {
             _x = 0;
             _y = 0;
             _z = 1;
             _angle = 15;
-            _radius_growth_direction = 0.45;
             _radius_normal = 0.04;
             _voxel_size = 0.015;
             _size_output = 2;
@@ -169,7 +141,6 @@ void SF_Step_Stem_Filter::adapt_parameters_to_expert_level() {
             _y = 0;
             _z = 1;
             _angle = 30;
-            _radius_growth_direction = 0.45;
             _radius_normal = 0.04;
             _voxel_size = 0.015;
             _size_output = 2;
@@ -178,7 +149,6 @@ void SF_Step_Stem_Filter::adapt_parameters_to_expert_level() {
             _y = 0;
             _z = 1;
             _angle = 45;
-            _radius_growth_direction = 0.45;
             _radius_normal = 0.04;
             _voxel_size = 0.015;
             _size_output = 2;
@@ -186,9 +156,8 @@ void SF_Step_Stem_Filter::adapt_parameters_to_expert_level() {
     }
 }
 
-
-void SF_Step_Stem_Filter::write_output_per_scence(CT_ResultGroup* out_result, size_t i) {
-    SF_Param_Stem_Filter<SF_Point_N> param = _param_list.at(i);
+void SF_Step_Ground_Filter::write_output_per_scence(CT_ResultGroup* out_result, size_t i) {
+    SF_Param_Ground_Filter<SF_Point_N> param = _param_list.at(i);
     std::vector<CT_PointCloudIndexVector *> output_index_list = create_output_vectors(param._size_output);
     create_output_indices(output_index_list, param._output_indices, param._itemCpy_cloud_in);
     CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
@@ -197,46 +166,45 @@ void SF_Step_Stem_Filter::write_output_per_scence(CT_ResultGroup* out_result, si
     add_scene_in_subgrp_to_grp(filter_grp, _out_noise.completeName(), _out_grp_noise.completeName(), out_result, output_index_list[1]);
 }
 
-void SF_Step_Stem_Filter::write_output(CT_ResultGroup* out_result) {
+void SF_Step_Ground_Filter::write_output(CT_ResultGroup* out_result) {
     size_t size = _param_list.size();
     for(size_t i = 0; i < size; i ++) {
         write_output_per_scence(out_result, i);
     }
 }
 
-void SF_Step_Stem_Filter::compute() {
+void SF_Step_Ground_Filter::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
     create_param_list(out_result);
     write_logger();
 
-    QFuture<void> future = QtConcurrent::map(_param_list,SF_Step_Stem_Filter_Adapter() );
+    QFuture<void> future = QtConcurrent::map(_param_list,SF_Step_Ground_Filter_Adapter() );
     set_progress_by_future(future,10,85);
     write_output(out_result);
 }
 
-void SF_Step_Stem_Filter::write_logger() {
+void SF_Step_Ground_Filter::write_logger() {
     if(!_param_list.empty()) {
         QString str = _param_list[0].to_string();
         PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);
     }
 }
 
-void SF_Step_Stem_Filter::create_param_list(CT_ResultGroup * out_result) {
+void SF_Step_Ground_Filter::create_param_list(CT_ResultGroup * out_result) {
     adapt_parameters_to_expert_level();
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
-        SF_Param_Stem_Filter<SF_Point_N> param;
+        SF_Param_Ground_Filter<SF_Point_N> param;
 
         param._log = PS_LOG;
         param._x = _x;
         param._y = _y;
         param._z = _z;
         param._angle = _angle;
-        param._radius_growth_direction = _radius_growth_direction;
         param._radius_normal = _radius_normal;
         param._voxel_size = _voxel_size;
         param._size_output = 2;

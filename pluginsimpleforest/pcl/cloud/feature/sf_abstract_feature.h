@@ -30,6 +30,7 @@
 #include "pcl/cloud/sf_abstract_cloud.h"
 template <typename PointType, typename FeatureType>
 class SF_Abstract_Feature: public  SF_Abstract_Cloud<PointType> {
+protected:
     typename pcl::PointCloud<FeatureType>::Ptr _features_out;
 
 public:

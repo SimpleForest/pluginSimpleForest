@@ -104,9 +104,6 @@ void SF_Abstract_Cloud<PointType>::extract_neighborhood_by_index_list(std::vecto
         PointType neighbor = SF_Abstract_Cloud<PointType>::_cloud_in->points[index];
         neighborhood->points.push_back(neighbor);
     }
-    neighborhood->width = pointIndex.size();
-    neighborhood->height = 1;
-    neighborhood->is_dense = true;
 }
 
 template <typename PointType>

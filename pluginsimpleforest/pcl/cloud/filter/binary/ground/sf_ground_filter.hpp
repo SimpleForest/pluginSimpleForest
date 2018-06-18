@@ -28,16 +28,16 @@
 #ifndef SF_STEM_FILTER_HPP
 #define SF_STEM_FILTER_HPP
 
-#include "pcl/cloud/filter/binary/stem/sf_stem_filter.h"
+#include "pcl/cloud/filter/binary/ground/sf_ground_filter.h"
 #include "pcl/cloud/feature/growth_direction/sf_growth_direction.h"
 
 template<typename PointType>
-void SF_Stem_Filter<PointType>::transfer_stem(const SF_Param_Stem_Filter<PointType> &params, typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud,
+void SF_Ground_Filter<PointType>::transfer_normal_and_filter(const SF_Param_Ground_Filter<PointType> &params, typename pcl::PointCloud<PointType>::Ptr cloud_in,
                                               typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction) {
     pcl::KdTreeFLANN<PointType> kdtree;
     kdtree.setInputCloud (cloud_with_growth_direction);
-    for(size_t i = 0; i <  SF_Stem_Filter<PointType>::_cloud_in->points.size(); i++) {
-        PointType p =  SF_Stem_Filter<PointType>::_cloud_in->points.at(i);
+    for(size_t i = 0; i <  cloud_in->points.size(); i++) {
+        PointType p =  cloud_in->points.at(i);
         std::vector<int> pointIdxRadiusSearch;
         std::vector<float> pointRadiusSquaredDistance;
         if ( kdtree.nearestKSearch ( p, 1, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0 ) {
@@ -52,34 +52,38 @@ void SF_Stem_Filter<PointType>::transfer_stem(const SF_Param_Stem_Filter<PointTy
             axis2[2] = gd_point.normal_z;
             double deg = SF_Math<double>::get_angle_between_DEG(axis1,axis2);
             if(deg < params._angle || deg > (180-params._angle)) {
-                SF_Stem_Filter<PointType>::_cloud_out_filtered->points.push_back(p);
+                SF_Ground_Filter<PointType>::_cloud_out_filtered->points.push_back(p);
             } else {
-                SF_Stem_Filter<PointType>::_cloud_out_filtered_noise->points.push_back(p);
+                SF_Ground_Filter<PointType>::_cloud_out_filtered_noise->points.push_back(p);
             }
         }
     }
 }
 
 template<typename PointType>
-void SF_Stem_Filter<PointType>::set_params(SF_Param_Stem_Filter<PointType> &params) {
+void SF_Ground_Filter<PointType>::set_params(SF_Param_Ground_Filter<PointType> &params) {
     _params = params;
 }
 
 template<typename PointType>
-void SF_Stem_Filter<PointType>::compute() {
-    SF_Stem_Filter<PointType>::_cloud_out_filtered_noise.reset(new typename pcl::PointCloud<PointType>);
-    SF_Stem_Filter<PointType>::_cloud_out_filtered.reset(new typename pcl::PointCloud<PointType>);
+void SF_Ground_Filter<PointType>::compute() {
+    SF_Ground_Filter<PointType>::_cloud_out_filtered_noise.reset(new typename pcl::PointCloud<PointType>);
+    SF_Ground_Filter<PointType>::_cloud_out_filtered.reset(new typename pcl::PointCloud<PointType>);
     pcl::PointCloud<PointType>::Ptr down_scaled_cloud = down_scale(_params._voxel_size);
-    pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction(new SF_Cloud_Normal());
-    SF_Growth_Direction<PointType, PointType> gd(down_scaled_cloud, cloud_with_growth_direction);
-    gd.set_parameters(_params._radius_normal,_params._radius_growth_direction);
-    gd.compute_features();
-    transfer_stem(_params,SF_Abstract_Cloud<PointType>::_cloud_in,cloud_with_growth_direction);
-    SF_Stem_Filter<PointType>::create_indices();
+
+    pcl::NormalEstimation<PointType, PointType> ne;
+    ne.setInputCloud (down_scaled_cloud);
+    pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType> ());
+    ne.setSearchMethod (tree);
+    ne.setRadiusSearch (_params._radius_normal);
+    ne.compute (*down_scaled_cloud);
+
+    transfer_normal_and_filter(_params,SF_Abstract_Cloud<PointType>::_cloud_in,down_scaled_cloud);
+    SF_Ground_Filter<PointType>::create_indices();
 }
 
 template<typename PointType>
-SF_Stem_Filter<PointType>::SF_Stem_Filter() {
+SF_Ground_Filter<PointType>::SF_Ground_Filter() {
     Sf_Binary_Filter<PointType>::reset();
 }
 

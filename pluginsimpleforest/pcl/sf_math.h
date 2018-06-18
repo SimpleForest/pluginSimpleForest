@@ -34,17 +34,11 @@ template <typename T>
 class SF_Math
 {
 public:
-
     static const T _PI;
-
     static const T _RAD_TO_DEG;
-
     static const T _DEG_TO_RAD;
-
     static T get_angle_between_DEG(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
-
     static T get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
-
     SF_Math();
 };
 

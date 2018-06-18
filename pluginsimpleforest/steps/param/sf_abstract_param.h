@@ -139,6 +139,49 @@ struct SF_Param_Normals: public SF_Param_Cloud<PointType> {
 };
 
 template <typename PointType>
+struct SF_Param_Ground_Filter : public SF_Param_Filter<PointType> {
+    float _voxel_size = 0.04f;
+    float _radius_normal = 0.2f;
+    float _x = 0;
+    float _y = 0;
+    float _z = 1;
+    int _angle = 20;
+    virtual QString to_string() {
+        QString str = "The ground filter with parameters (angle = ";
+        str.append(QString::number(_angle));
+        str.append("; axis = (");
+        str.append(QString::number(_x));
+        str.append("; ");
+        str.append(QString::number(_y));
+        str.append("; ");
+        str.append(QString::number(_z));
+        str.append("); radius_normal = ");
+        str.append(QString::number(_radius_normal));
+        str.append(" and voxel_down_scale_size = ");
+        str.append(QString::number(_voxel_size));
+        str.append(") is started.");
+        return str;
+    }
+};
+
+template <typename PointType>
+struct SF_Param_DTM : public SF_Param_Filter<PointType> {
+    float _voxel_size = 0.03f;
+    float _radius_normal = 0.1f;
+    float _min_cell_size = 0.2;
+    virtual QString to_string() {
+        QString str = "The DTM generation with parameters (voxel_size = ";
+        str.append(QString::number(_voxel_size));
+        str.append("; radius_normal = ");
+        str.append(QString::number(_radius_normal));
+        str.append(" and _min_size = ");
+        str.append(QString::number(_min_cell_size));
+        str.append(") is started.");
+        return str;
+    }
+};
+
+template <typename PointType>
 struct SF_Param_Stem_Filter : public SF_Param_Filter<PointType> {
     float _voxel_size = 0.02f;
     float _radius_normal = 0.05f;
