@@ -92,14 +92,14 @@ void SF_Converter_CT_To_PCL<PointType>::convert() {
     assert( index->size() > 0);
     iterate_cloud_and_convert(index);
 }
-#include <iostream>
+
 template<typename PointType>
 void SF_Converter_CT_To_PCL<PointType>::down_scale(float range,  typename pcl::PointCloud<PointType>::Ptr downscaled_cloud) {
     assert( index->size() > 0);
     compute_translation_to_origin();
     const CT_AbstractPointCloudIndex* index =_itemCpy_cloud_in->getPointCloudIndex();
     CT_PointIterator it(index);
-    CT_Grid3D_Sparse<int>* grid_clouds = CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords(
+    CT_Grid3D_Sparse<int>* indices = CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords(
                                                                      NULL,NULL,
                                                                      _itemCpy_cloud_in->minX(),_itemCpy_cloud_in->minY(),_itemCpy_cloud_in->minZ(),
                                                                      _itemCpy_cloud_in->maxX(),_itemCpy_cloud_in->maxY(),_itemCpy_cloud_in->maxZ(),
@@ -109,13 +109,13 @@ void SF_Converter_CT_To_PCL<PointType>::down_scale(float range,  typename pcl::P
     while(it.hasNext()) {
         const CT_Point &ct_point = it.next().currentPoint();
         size_t index;
-        grid_clouds->indexAtXYZ(ct_point(0),ct_point(1),ct_point(2),index);
-        int value_at = grid_clouds->valueAtIndex(index);
+        indices->indexAtXYZ(ct_point(0),ct_point(1),ct_point(2),index);
+        int value_at = indices->valueAtIndex(index);
         if(value_at <= -1) {
             pcl::PointCloud<PointType>::Ptr cell_cloud(new pcl::PointCloud<PointType>);
             value_at = number_initialized_clouds++;
             clouds_vec.push_back(cell_cloud);
-            grid_clouds->setValueAtIndex(index, value_at);
+            indices->setValueAtIndex(index, value_at);
         }
         PointType p;
         p.x = ct_point(0);
@@ -123,10 +123,10 @@ void SF_Converter_CT_To_PCL<PointType>::down_scale(float range,  typename pcl::P
         p.z = ct_point(2);
         clouds_vec[value_at]->points.push_back(p);
     }
-    for(size_t i = 0; i < grid_clouds->xArraySize(); i++) {
-        for(size_t j = 0; j < grid_clouds->yArraySize(); j++) {
-            for(size_t k = 0; k < grid_clouds->zArraySize(); k++) {
-                int index = grid_clouds->value(i,j,k);
+    for(size_t i = 0; i < indices->xArraySize(); i++) {
+        for(size_t j = 0; j < indices->yArraySize(); j++) {
+            for(size_t k = 0; k < indices->zArraySize(); k++) {
+                int index = indices->value(i,j,k);
                 if(index>=0) {
                     pcl::PointCloud<PointType>::Ptr cell_cloud = clouds_vec[index];
                     if(cell_cloud!=nullptr) {

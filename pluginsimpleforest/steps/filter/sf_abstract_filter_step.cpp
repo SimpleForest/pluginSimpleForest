@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,26 +25,24 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
+
 #include "sf_abstract_filter_step.h"
 
-
-
-SF_Abstract_Filter_Step::SF_Abstract_Filter_Step(CT_StepInitializeData &data_init): SF_Abstract_Step(data_init)
-{
+SF_Abstract_Filter_Step::SF_Abstract_Filter_Step(CT_StepInitializeData &data_init): SF_Abstract_Step(data_init) {
 
 }
 
-void SF_Abstract_Filter_Step::add_scene_to_grp(CT_StandardItemGroup* cloud_grp, const QString & out_cloud_complete_name, CT_PointCloudIndexVector * ct_point_cloud_index, CT_ResultGroup* out_result)
-{
+void SF_Abstract_Filter_Step::add_scene_to_grp(CT_StandardItemGroup* cloud_grp, const QString & out_cloud_complete_name, CT_PointCloudIndexVector * ct_point_cloud_index, CT_ResultGroup* out_result) {
     CT_Scene* outScene = new CT_Scene(out_cloud_complete_name , out_result, PS_REPOSITORY->registerPointCloudIndex(ct_point_cloud_index));
     outScene->updateBoundingBox();
     cloud_grp->addItemDrawable(outScene);
 }
 
 void SF_Abstract_Filter_Step::add_scene_in_subgrp_to_grp(CT_StandardItemGroup* filter_grp,const QString & out_cloud_complete_name,
-                                                                     const QString & sub_grp_complete_name, CT_ResultGroup* out_result,  CT_PointCloudIndexVector * ct_point_cloud_index)
-{
+                                                                     const QString & sub_grp_complete_name, CT_ResultGroup* out_result,  CT_PointCloudIndexVector * ct_point_cloud_index) {
     CT_StandardItemGroup* cloud_grp = new CT_StandardItemGroup(sub_grp_complete_name, out_result);
     filter_grp->addGroup(cloud_grp);
     add_scene_to_grp(cloud_grp, out_cloud_complete_name, ct_point_cloud_index , out_result);
 }
+
+

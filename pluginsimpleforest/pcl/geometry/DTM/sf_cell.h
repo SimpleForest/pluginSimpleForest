@@ -25,24 +25,33 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_BINARY_STEP_H
-#define SF_ABSTRACT_FILTER_BINARY_STEP_H
 
-#include <steps/filter/sf_abstract_filter_step.h>
+#ifndef SF_CELL_H
+#define SF_CELL_H
 
-class SF_Abstract_Filter_Binary_Step: public SF_Abstract_Filter_Step
-{
-public:
+#include <pcl/ModelCoefficients.h>
+#include <ct_itemdrawable/ct_image2d.h>
+#include <memory>
 
-    SF_Abstract_Filter_Binary_Step(CT_StepInitializeData & data_init);
+#include "pcl/sf_point.h"
 
-protected:
+template <typename PointType>
+struct Cell {
+    int _index;
+    std::shared_ptr<CT_Image2D<float> > _dtm;
+    Cell(std::shared_ptr<CT_Image2D<float> > dtm, int index);
+    Eigen::Vector2f getMinMaxHeight(const pcl::ModelCoefficients& coeff);
+    float getHeight(const Eigen::Vector2d &coords, const pcl::ModelCoefficients& coeff);
 
-    CT_AutoRenameModels _out_grp;
-    CT_AutoRenameModels _out_grp_noise;
-    CT_AutoRenameModels _out_noise;
-    CT_AutoRenameModels _out_grp_cloud;
-    CT_AutoRenameModels _out_cloud;
+private:
+    void updateMinMax(const float updateHeight, float &minHeight, float& maxHeight);
+    Eigen::Vector2d getCorner1();
+    Eigen::Vector2d getCorner2();
+    Eigen::Vector2d getCorner3();
+    Eigen::Vector2d getCorner4();
 };
 
-#endif // SF_ABSTRACT_FILTER_BINARY_STEP_H
+#include "sf_cell.hpp"
+
+#endif // SF_CELL_H
+

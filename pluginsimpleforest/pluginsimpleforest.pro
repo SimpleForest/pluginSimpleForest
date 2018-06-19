@@ -69,7 +69,14 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/feature/pca/sf_pca.h \
     pcl/cloud/feature/pca/sf_pca.hpp \
     pcl/cloud/feature/growth_direction/sf_growth_direction.h \
-    pcl/cloud/feature/growth_direction/sf_growth_direction.hpp
+    pcl/cloud/feature/growth_direction/sf_growth_direction.hpp \
+    pcl/geometry/DTM/sf_pyramidlayer.h \
+    pcl/geometry/DTM/sf_cell.h \
+    pcl/geometry/DTM/sf_pyramidlayer.hpp \
+    pcl/geometry/DTM/sf_dtm.h \
+    pcl/geometry/DTM/sf_dtm.hpp \
+    steps/dtm/sf_dtm_generator.h \
+    pcl/geometry/DTM/sf_cell.hpp
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -85,7 +92,8 @@ SOURCES += \
     steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.cpp \
     steps/filter/binary/ground_filter/sf_step_ground_filter.cpp \
     steps/filter/binary/stem_filter/sf_step_stem_filter.cpp \
-    pcl/geometry/sf_point_geometry.cpp
+    pcl/geometry/sf_point_geometry.cpp \
+    steps/dtm/sf_dtm_generator.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts
