@@ -94,17 +94,11 @@ void SF_Converter_CT_To_PCL<PointType>::convert() {
 }
 
 template<typename PointType>
-void SF_Converter_CT_To_PCL<PointType>::down_scale(float range,  typename pcl::PointCloud<PointType>::Ptr downscaled_cloud) {
-    assert( index->size() > 0);
-    compute_translation_to_origin();
+std::vector<typename pcl::PointCloud<PointType>::Ptr> SF_Converter_CT_To_PCL<PointType>::mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices) {
     const CT_AbstractPointCloudIndex* index =_itemCpy_cloud_in->getPointCloudIndex();
+    assert( index->size() > 0);
     CT_PointIterator it(index);
-    CT_Grid3D_Sparse<int>* indices = CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords(
-                                                                     NULL,NULL,
-                                                                     _itemCpy_cloud_in->minX(),_itemCpy_cloud_in->minY(),_itemCpy_cloud_in->minZ(),
-                                                                     _itemCpy_cloud_in->maxX(),_itemCpy_cloud_in->maxY(),_itemCpy_cloud_in->maxZ(),
-                                                                     range, -2, -1);
-    std::vector<pcl::PointCloud<PointType>::Ptr> clouds_vec;
+    std::vector<pcl::PointCloud<PointType>::Ptr> clouds;
     int number_initialized_clouds = 0;
     while(it.hasNext()) {
         const CT_Point &ct_point = it.next().currentPoint();
@@ -114,28 +108,34 @@ void SF_Converter_CT_To_PCL<PointType>::down_scale(float range,  typename pcl::P
         if(value_at <= -1) {
             pcl::PointCloud<PointType>::Ptr cell_cloud(new pcl::PointCloud<PointType>);
             value_at = number_initialized_clouds++;
-            clouds_vec.push_back(cell_cloud);
+            clouds.push_back(cell_cloud);
             indices->setValueAtIndex(index, value_at);
         }
         PointType p;
-        p.x = ct_point(0);
-        p.y = ct_point(1);
-        p.z = ct_point(2);
-        clouds_vec[value_at]->points.push_back(p);
+        p.x = ct_point(0) - _center_of_mass[0];
+        p.y = ct_point(1) - _center_of_mass[1];
+        p.z = ct_point(2) - _center_of_mass[2];
+        clouds[value_at]->points.push_back(p);
     }
+    return clouds;
+}
+
+template<typename PointType>
+void SF_Converter_CT_To_PCL<PointType>::mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices, std::vector<typename pcl::PointCloud<PointType>::Ptr> cloudsVec,
+                                                               typename pcl::PointCloud<PointType>::Ptr downscaled_cloud) {
     for(size_t i = 0; i < indices->xArraySize(); i++) {
         for(size_t j = 0; j < indices->yArraySize(); j++) {
             for(size_t k = 0; k < indices->zArraySize(); k++) {
                 int index = indices->value(i,j,k);
                 if(index>=0) {
-                    pcl::PointCloud<PointType>::Ptr cell_cloud = clouds_vec[index];
+                    pcl::PointCloud<PointType>::Ptr cell_cloud = cloudsVec[index];
                     if(cell_cloud!=nullptr) {
                         Eigen::Vector4d centroid;
                         pcl::compute3DCentroid (*cell_cloud, centroid);
                         PointType p;
-                        p.x = centroid(0)-_center_of_mass[0];
-                        p.y = centroid(1)-_center_of_mass[1];
-                        p.z = centroid(2)-_center_of_mass[2];
+                        p.x = centroid(0);
+                        p.y = centroid(1);
+                        p.z = centroid(2);
                         p.intensity = cell_cloud->points.size();
                         downscaled_cloud->push_back(p);
                     }
@@ -143,6 +143,18 @@ void SF_Converter_CT_To_PCL<PointType>::down_scale(float range,  typename pcl::P
             }
         }
     }
+}
+
+template<typename PointType>
+void SF_Converter_CT_To_PCL<PointType>::down_scale(float range,  typename pcl::PointCloud<PointType>::Ptr downscaled_cloud) {
+    compute_translation_to_origin();
+    CT_Grid3D_Sparse<int>* indices = CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords(
+                                                                     NULL,NULL,
+                                                                     _itemCpy_cloud_in->minX(),_itemCpy_cloud_in->minY(),_itemCpy_cloud_in->minZ(),
+                                                                     _itemCpy_cloud_in->maxX(),_itemCpy_cloud_in->maxY(),_itemCpy_cloud_in->maxZ(),
+                                                                     range, -2, -1);
+    std::vector<pcl::PointCloud<PointType>::Ptr> cloudsVec = mergeSubCloudsToVector(indices);
+    mergeSubCloudsToVector(indices, cloudsVec, downscaled_cloud);
 }
 
 #endif // SF_CONVERTER_CT_TO_PCL_HPP

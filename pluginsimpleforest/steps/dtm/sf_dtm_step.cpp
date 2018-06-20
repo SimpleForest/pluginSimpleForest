@@ -26,39 +26,39 @@
 
 *****************************************************************************/
 
-#include "sf_dtm_generator.h"
+#include "sf_dtm_step.h"
 #include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
 #include "pcl/geometry/DTM/sf_dtm.h"
 #include "pcl/filters/voxel_grid.h"
 #include <pcl/features/normal_3d.h>
 
-SF_DTM_Generator::SF_DTM_Generator(CT_StepInitializeData &data_init): SF_Abstract_Step(data_init) {
+SF_DTM_Step::SF_DTM_Step(CT_StepInitializeData &data_init): SF_Abstract_Step(data_init) {
     _non_expert_level.append(_less);
     _non_expert_level.append(_intermediate);
     _non_expert_level.append(_many);
 }
 
-SF_DTM_Generator::~SF_DTM_Generator() {
+SF_DTM_Step::~SF_DTM_Step() {
 
 }
 
-QString SF_DTM_Generator::getStepDescription() const {
+QString SF_DTM_Step::getStepDescription() const {
     return tr("DTM generation");
 }
 
-QString SF_DTM_Generator::getStepDetailledDescription() const {
+QString SF_DTM_Step::getStepDetailledDescription() const {
     return tr("DTM generation - uses a pyramidal MLESAC plane fitting apporach on a robust downscaled input ground cloud.");
 }
 
-QString SF_DTM_Generator::getStepURL() const {
+QString SF_DTM_Step::getStepURL() const {
     return tr("https://www.youtube.com/watch?v=5i6_Rtv-xEw");
 }
 
-CT_VirtualAbstractStep* SF_DTM_Generator::createNewInstance(CT_StepInitializeData &dataInit) {
-    return new SF_DTM_Generator(dataInit);
+CT_VirtualAbstractStep* SF_DTM_Step::createNewInstance(CT_StepInitializeData &dataInit) {
+    return new SF_DTM_Step(dataInit);
 }
 
-QStringList SF_DTM_Generator::getStepRISCitations() const {
+QStringList SF_DTM_Step::getStepRISCitations() const {
     QStringList _RIS_citation_list;
     _RIS_citation_list.append(QString("TY  - JOUR\n"
                                       "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
@@ -93,7 +93,7 @@ QStringList SF_DTM_Generator::getStepRISCitations() const {
     return _RIS_citation_list;
 }
 
-void SF_DTM_Generator::createInResultModelListProtected() {
+void SF_DTM_Step::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     assert(res_model != NULL);
     res_model->setZeroOrMoreRootGroup();
@@ -103,19 +103,18 @@ void SF_DTM_Generator::createInResultModelListProtected() {
     res_model->addItemModel(DEF_IN_SCENE, DEF_IN_SCENE_CLOUD, CT_Scene::staticGetType(), tr("Input Scene"));
 }
 
-void SF_DTM_Generator::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
+void SF_DTM_Step::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
     config_dialog->addDouble("First the cloud is downscaled to a voxel size of  ",   " (m). " , 0.015,0.1,3,_voxel_size );
     config_dialog->addDouble("For each of the downscaled points its normal is computed with a range search of  ", "  (m). " , 0.025,0.5,3,_radius_normal );
     config_dialog->addText("That range search radius is also used as the approximated cell size of the DTM.");
-    config_dialog->addDouble("The angle between a plane normal and the parent plane normal has to be smaller than ", " " , 0.5,45,1,_angle );
-    config_dialog->addText("degrees.");
+    config_dialog->addDouble("The angle between a plane normal and the parent plane normal has to be smaller than ", " degrees." , 0.5,45,1,_angle );
 }
 
-void SF_DTM_Generator::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
+void SF_DTM_Step::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
     config_dialog->addStringChoice("Choose the slope of the terrain","",_non_expert_level, _choice);
 }
 
-void SF_DTM_Generator::createOutResultModelListProtected() {
+void SF_DTM_Step::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
         res_modelw->addGroupModel(DEF_IN_SCENE, _outGroundGRP, new CT_StandardItemGroup(), tr ("Terrain") );
@@ -124,7 +123,7 @@ void SF_DTM_Generator::createOutResultModelListProtected() {
     }
 }
 
-void SF_DTM_Generator::adapt_parameters_to_expert_level() {
+void SF_DTM_Step::adapt_parameters_to_expert_level() {
     _radius_normal = std::max(3*_voxel_size,_radius_normal);
     if(!_is_expert) {
         if(_choice == _less) {
@@ -143,7 +142,7 @@ void SF_DTM_Generator::adapt_parameters_to_expert_level() {
     }
 }
 
-void SF_DTM_Generator::copyCroppedHeights(pcl::PointCloud<pcl::PointXYZINormal>::Ptr groundCloud, std::shared_ptr<CT_Image2D<float> > dtmPtr, CT_Image2D<float>* CTDTM) {
+void SF_DTM_Step::copyCroppedHeights(pcl::PointCloud<pcl::PointXYZINormal>::Ptr groundCloud, std::shared_ptr<CT_Image2D<float> > dtmPtr, CT_Image2D<float>* CTDTM) {
     float minZ = std::numeric_limits<float>::max();
     float maxz = std::numeric_limits<float>::lowest();
     for(size_t i = 0; i < groundCloud->points.size(); i++) {
@@ -172,31 +171,36 @@ void SF_DTM_Generator::copyCroppedHeights(pcl::PointCloud<pcl::PointXYZINormal>:
     }
 }
 
-void SF_DTM_Generator::compute() {
+void SF_DTM_Step::compute() {
+    adapt_parameters_to_expert_level();
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
     CT_ResultGroupIterator iter(out_result,this, DEF_IN_SCENE);
     CT_StandardItemGroup* root = (CT_StandardItemGroup*) iter.next();
-    CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _outGroundGRP.completeName(), out_result);
-    root->addGroup(filter_grp);
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr groundCloud = create_ground_cloud(out_result, filter_grp);
-    SF_DTM<pcl::PointXYZINormal> sfDTM(groundCloud, _angle, _radius_normal, out_result, _outDTM2);
+    CT_StandardItemGroup* terrainGrp = new CT_StandardItemGroup( _outGroundGRP.completeName(), out_result);
+    root->addGroup(terrainGrp);
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr groundCloud = createGroundCloud(out_result, terrainGrp);
+    SF_DTM<pcl::PointXYZINormal> sfDTM(groundCloud, _angle, _radius_normal, out_result, _outDTMDummy);
     std::shared_ptr<CT_Image2D<float> > dtmPtr = sfDTM.DTM();
-    CT_Image2D<float> * CTDTM = CT_Image2D<float>::createImage2DFromXYCoords(_outDTM.completeName(),out_result,
+    CT_Image2D<float> * dtm = CT_Image2D<float>::createImage2DFromXYCoords(_outDTM.completeName(),out_result,
                                                                            dtmPtr->minX()+_translate(0), dtmPtr->minY()+_translate(1),
                                                                            dtmPtr->maxX()+_translate(0), dtmPtr->maxY()+_translate(1),
                                                                            dtmPtr->resolution(), _translate(2), 1337,0);
-
-    copyCroppedHeights(groundCloud, dtmPtr, CTDTM);
-    CTDTM->computeMinMax();
-    filter_grp->addItemDrawable(CTDTM);
+    copyCroppedHeights(groundCloud, dtmPtr, dtm);
+    dtm->computeMinMax();
+    terrainGrp->addItemDrawable(dtm);
+    write_logger();
 }
 
-void SF_DTM_Generator::write_logger() {
+void SF_DTM_Step::write_logger() {
+    QString str = "The DTM was modelled with a cell size of ";
+    str.append(QString::number(_radius_normal));
+    str.append(" (m).");
+    PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);
 }
 
-void SF_DTM_Generator::computeNormals(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downscaledCloud) {
+void SF_DTM_Step::computeNormals(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downscaledCloud) {
     pcl::NormalEstimation<pcl::PointXYZINormal, pcl::PointXYZINormal> ne;
     ne.setInputCloud (downscaledCloud);
     pcl::search::KdTree<pcl::PointXYZINormal>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZINormal> ());
@@ -205,12 +209,7 @@ void SF_DTM_Generator::computeNormals(pcl::PointCloud<pcl::PointXYZINormal>::Ptr
     ne.compute (*downscaledCloud);
 }
 
-pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Generator::convertDownScale(CT_Scene* scene) {
-    SF_Converter_CT_To_PCL<pcl::PointXYZINormal> converter;
-    converter.set_itemCpy_cloud_in(scene);
-    converter.compute();
-    _translate =  converter.get_center_of_mass();
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = converter.get_cloud_translated();
+pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Step::downScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud) {
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr downscaledCloud(new pcl::PointCloud<pcl::PointXYZINormal>);
     pcl::VoxelGrid<pcl::PointXYZINormal> sor;
     sor.setInputCloud (cloud);
@@ -219,15 +218,24 @@ pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Generator::convertDownScale(CT
     return downscaledCloud;
 }
 
-CT_Scene * SF_DTM_Generator::addGroundCloudToResult(CT_PointCloudIndexVector *mergedClouds, CT_StandardItemGroup* root, CT_ResultGroup *out_result) {
-    mergedClouds->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
+pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Step::convert(CT_Scene* scene) {
+    SF_Converter_CT_To_PCL<pcl::PointXYZINormal> converter;
+    converter.set_itemCpy_cloud_in(scene);
+    converter.compute();
+    _translate =  converter.get_center_of_mass();
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = converter.get_cloud_translated();
+    return cloud;
+}
+
+CT_Scene * SF_DTM_Step::addGroundCloudToResult(CT_PointCloudIndexVector *mergedClouds, CT_StandardItemGroup* root, CT_ResultGroup *out_result) {
     CT_Scene* scene (new CT_Scene(_outCloud.completeName(), out_result, PS_REPOSITORY->registerPointCloudIndex(mergedClouds)));
     scene->updateBoundingBox();
     root->addItemDrawable(scene);
     return scene;
 }
 
-CT_PointCloudIndexVector * SF_DTM_Generator::mergeIndices(CT_ResultGroupIterator out_res_it) {
+CT_Scene* SF_DTM_Step::mergeIndices(CT_ResultGroup *out_result, CT_StandardItemGroup* root) {
+    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
     CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
     mergedClouds->setSortType(CT_AbstractCloudIndex::NotSorted);
     std::vector<size_t> indices;
@@ -245,15 +253,15 @@ CT_PointCloudIndexVector * SF_DTM_Generator::mergeIndices(CT_ResultGroupIterator
     for(size_t i = 0; i < indices.size(); i++) {
         mergedClouds->addIndex(indices.at(i));
     }
-    return mergedClouds;
+    mergedClouds->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
+    CT_Scene* scene = addGroundCloudToResult(mergedClouds, root, out_result);
+    return scene;
 }
 
-pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Generator::create_ground_cloud(CT_ResultGroup *out_result, CT_StandardItemGroup* root) {
-    adapt_parameters_to_expert_level();
-    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
-    CT_PointCloudIndexVector *mergedClouds = mergeIndices(out_res_it);
-    CT_Scene* scene = addGroundCloudToResult(mergedClouds, root, out_result);
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr downscaledCloud = convertDownScale(scene);
+pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Step::createGroundCloud(CT_ResultGroup *out_result, CT_StandardItemGroup* terrainGrp) {
+    CT_Scene* scene = mergeIndices(out_result, terrainGrp);
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = convert(scene);
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr downscaledCloud = downScale(cloud);
     computeNormals(downscaledCloud);
     return downscaledCloud;
 }

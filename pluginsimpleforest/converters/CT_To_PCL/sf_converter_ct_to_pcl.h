@@ -44,6 +44,10 @@ private:
     void convert_point(CT_PointIterator &it);
     void convert();
 
+    std::vector<typename pcl::PointCloud<PointType>::Ptr> mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices);
+    void mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices, std::vector<typename pcl::PointCloud<PointType>::Ptr> cloudsVec,
+                                typename pcl::PointCloud<PointType>::Ptr downscaled_cloud);
+
 public:
     virtual void compute();
     void down_scale(float range, typename pcl::PointCloud<PointType>::Ptr downscaled_cloud);

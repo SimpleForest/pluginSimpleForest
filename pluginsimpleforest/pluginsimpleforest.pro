@@ -75,7 +75,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/geometry/DTM/sf_pyramidlayer.hpp \
     pcl/geometry/DTM/sf_dtm.h \
     pcl/geometry/DTM/sf_dtm.hpp \
-    steps/dtm/sf_dtm_generator.h \
+    steps/dtm/sf_dtm_step.h \
     pcl/geometry/DTM/sf_cell.hpp
 SOURCES += \
     sf_pluginentry.cpp \
@@ -93,7 +93,7 @@ SOURCES += \
     steps/filter/binary/ground_filter/sf_step_ground_filter.cpp \
     steps/filter/binary/stem_filter/sf_step_stem_filter.cpp \
     pcl/geometry/sf_point_geometry.cpp \
-    steps/dtm/sf_dtm_generator.cpp
+    steps/dtm/sf_dtm_step.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts
