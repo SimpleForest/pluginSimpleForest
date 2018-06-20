@@ -76,7 +76,12 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/geometry/DTM/sf_dtm.h \
     pcl/geometry/DTM/sf_dtm.hpp \
     steps/dtm/sf_dtm_step.h \
-    pcl/geometry/DTM/sf_cell.hpp
+    pcl/geometry/DTM/sf_cell.hpp \
+    plot/sf_plot_model.h \
+    plot/DTM/sf_dtm.h \
+    plot/sf_raster_model.h \
+    math/interpolation/sf_interpolation.h \
+    converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -93,7 +98,12 @@ SOURCES += \
     steps/filter/binary/ground_filter/sf_step_ground_filter.cpp \
     steps/filter/binary/stem_filter/sf_step_stem_filter.cpp \
     pcl/geometry/sf_point_geometry.cpp \
-    steps/dtm/sf_dtm_step.cpp
+    steps/dtm/sf_dtm_step.cpp \
+    plot/sf_plot_model.cpp \
+    plot/DTM/sf_dtm.cpp \
+    plot/sf_raster_model.cpp \
+    math/interpolation/sf_interpolation.cpp \
+    converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

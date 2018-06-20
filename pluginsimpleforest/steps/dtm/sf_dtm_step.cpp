@@ -26,11 +26,13 @@
 
 *****************************************************************************/
 
+#include <pcl/features/normal_3d.h>
+
 #include "sf_dtm_step.h"
 #include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
+#include "converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.h"
 #include "pcl/geometry/DTM/sf_dtm.h"
 #include "pcl/filters/voxel_grid.h"
-#include <pcl/features/normal_3d.h>
 
 SF_DTM_Step::SF_DTM_Step(CT_StepInitializeData &data_init): SF_Abstract_Step(data_init) {
     _non_expert_level.append(_less);
@@ -105,9 +107,11 @@ void SF_DTM_Step::createInResultModelListProtected() {
 
 void SF_DTM_Step::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
     config_dialog->addDouble("First the cloud is downscaled to a voxel size of  ",   " (m). " , 0.015,0.1,3,_voxel_size );
-    config_dialog->addDouble("For each of the downscaled points its normal is computed with a range search of  ", "  (m). " , 0.025,0.5,3,_radius_normal );
-    config_dialog->addText("That range search radius is also used as the approximated cell size of the DTM.");
-    config_dialog->addDouble("The angle between a plane normal and the parent plane normal has to be smaller than ", " degrees." , 0.5,45,1,_angle );
+    config_dialog->addDouble("For each of the downscaled points its normal is computed with a range search of  ", " (m). " , 0.025,0.5,3,_radius_normal );
+    config_dialog->addDouble("The cell size of the DTM is supposed to be  ", " (m). " , 0.025,0.5,3,_cell_size );
+    config_dialog->addInt("For IDW interpolation the following number of nearest neighbors is needed " , ".",1,99,_idwNeighbors );
+    config_dialog->addInt("For median interpolation the following number of nearest neighbors is needed " , ".",1,99,_medianNeighbors );
+    config_dialog->addDouble("The angle between a plane normal and the parent plane normal has to be smaller than ", " (°)." , 0.5,45,1,_angle );
 }
 
 void SF_DTM_Step::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
@@ -139,6 +143,9 @@ void SF_DTM_Step::adapt_parameters_to_expert_level() {
             _radius_normal = 0.15;
             _voxel_size = 0.05;
         }
+        _cell_size = 0.2;
+        _medianNeighbors = 9;
+        _idwNeighbors = 3;
     }
 }
 
@@ -181,15 +188,38 @@ void SF_DTM_Step::compute() {
     CT_StandardItemGroup* terrainGrp = new CT_StandardItemGroup( _outGroundGRP.completeName(), out_result);
     root->addGroup(terrainGrp);
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr groundCloud = createGroundCloud(out_result, terrainGrp);
-    SF_DTM<pcl::PointXYZINormal> sfDTM(groundCloud, _angle, _radius_normal, out_result, _outDTMDummy);
+    SF_DTM<pcl::PointXYZINormal> sfDTM(groundCloud, _angle, _cell_size, out_result, _outDTMDummy);
     std::shared_ptr<CT_Image2D<float> > dtmPtr = sfDTM.DTM();
-    CT_Image2D<float> * dtm = CT_Image2D<float>::createImage2DFromXYCoords(_outDTM.completeName(),out_result,
+    CT_Image2D<float> * dtm = CT_Image2D<float>::createImage2DFromXYCoords(_outDTMDummy.completeName(),out_result,
                                                                            dtmPtr->minX()+_translate(0), dtmPtr->minY()+_translate(1),
                                                                            dtmPtr->maxX()+_translate(0), dtmPtr->maxY()+_translate(1),
                                                                            dtmPtr->resolution(), _translate(2), 1337,0);
     copyCroppedHeights(groundCloud, dtmPtr, dtm);
-    dtm->computeMinMax();
-    terrainGrp->addItemDrawable(dtm);
+    SF_Converter_CT_to_PCL_DTM dtmConverter(_translate,dtm);
+    std::shared_ptr<SF_DTM_Model> dtmModel = dtmConverter.dtmPCL();
+
+    CT_Image2D<float> * dtmTrueResolution = CT_Image2D<float>::createImage2DFromXYCoords(_outDTMDummy.completeName(),out_result,
+                                                                           dtmPtr->minX()+_translate(0), dtmPtr->minY()+_translate(1),
+                                                                           dtmPtr->maxX()+_translate(0), dtmPtr->maxY()+_translate(1),
+                                                                           _radius_normal, _translate(2), 1337,0);
+    SF_Converter_CT_to_PCL_DTM dtmConverterTrueResolution(_translate, dtmTrueResolution);
+    std::shared_ptr<SF_DTM_Model> dtmModelTrueResolution = dtmConverterTrueResolution.dtmPCL();
+    dtmModel->interpolateIDW(_idwNeighbors, dtmModelTrueResolution);
+    CT_Image2D<float> * dtmMedianSmoothed = CT_Image2D<float>::createImage2DFromXYCoords(_outDTM.completeName(),out_result,
+                                                                           dtmPtr->minX()+_translate(0), dtmPtr->minY()+_translate(1),
+                                                                           dtmPtr->maxX()+_translate(0), dtmPtr->maxY()+_translate(1),
+                                                                           _radius_normal, _translate(2), 1337,0);
+    SF_Converter_CT_to_PCL_DTM dtmConverterMedianSmoothed(_translate, dtmMedianSmoothed);
+    std::shared_ptr<SF_DTM_Model> dtmModelMedianSmoothed = dtmConverterMedianSmoothed.dtmPCL();
+    dtmModelTrueResolution->interpolateMedian(_medianNeighbors, dtmModelMedianSmoothed);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = dtmModelMedianSmoothed->getCloud3D();
+    for(size_t i = 0; i < dtmMedianSmoothed->nCells(); i++) {
+        dtmMedianSmoothed->setValueAtIndex(i,cloud->points[i].z+_translate(2));
+    }
+    dtmMedianSmoothed->computeMinMax();
+    terrainGrp->addItemDrawable(dtmMedianSmoothed);
+    delete dtmTrueResolution;
+    delete dtm;
     write_logger();
 }
 
@@ -220,7 +250,7 @@ pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Step::downScale(pcl::PointClou
 
 pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Step::convert(CT_Scene* scene) {
     SF_Converter_CT_To_PCL<pcl::PointXYZINormal> converter;
-    converter.set_itemCpy_cloud_in(scene);
+    converter.setItemCpyCloudIn(scene);
     converter.compute();
     _translate =  converter.get_center_of_mass();
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = converter.get_cloud_translated();

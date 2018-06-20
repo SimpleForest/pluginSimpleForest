@@ -53,7 +53,7 @@ public:
         SF_Converter_CT_To_PCL<SF_Point_N> converter;
         {
             QMutexLocker m1(&*mMutex);
-            converter.set_itemCpy_cloud_in(params._itemCpy_cloud_in);
+            converter.setItemCpyCloudIn(params._itemCpy_cloud_in);
         }
         converter.compute();
         {

@@ -32,44 +32,54 @@ SF_Abstract_Converter::SF_Abstract_Converter() {
 
 }
 
-void SF_Abstract_Converter::add_point_vec(CT_PointIterator &it) {
+void SF_Abstract_Converter::addPointVec(CT_PointIterator &it) {
     const CT_Point &internalPoint = it.next().currentPoint();
-    _center_of_mass[0] += internalPoint(0);
-    _center_of_mass[1] += internalPoint(1);
-    _center_of_mass[2] += internalPoint(2);
+    _centerOfMass[0] += internalPoint(0);
+    _centerOfMass[1] += internalPoint(1);
+    _centerOfMass[2] += internalPoint(2);
 }
 
-void SF_Abstract_Converter::sum_vector(CT_PointIterator &it) {
+void SF_Abstract_Converter::sumVector(CT_PointIterator &it) {
     while(it.hasNext()) {
-        add_point_vec(it);
+        addPointVec(it);
     }
 }
 
-void SF_Abstract_Converter::set_itemCpy_cloud_in(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in) {
+Eigen::Vector3d SF_Abstract_Converter::getCenterOfMass() const
+{
+    return _centerOfMass;
+}
+
+void SF_Abstract_Converter::setCenterOfMass(const Eigen::Vector3d &centerOfMass)
+{
+    _centerOfMass = centerOfMass;
+}
+
+void SF_Abstract_Converter::setItemCpyCloudIn(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in) {
     _itemCpy_cloud_in = itemCpy_cloud_in;
 }
 
 Eigen::Vector3d SF_Abstract_Converter::get_center_of_mass() const {
-    return _center_of_mass;
+    return _centerOfMass;
 }
 
-void SF_Abstract_Converter::normalize_sum_vector_by_size(size_t size) {
-    _center_of_mass[0]/=size;
-    _center_of_mass[1]/=size;
-    _center_of_mass[2]/=size;
+void SF_Abstract_Converter::normalizeSumVectorBySize(size_t size) {
+    _centerOfMass[0]/=size;
+    _centerOfMass[1]/=size;
+    _centerOfMass[2]/=size;
 }
 
-void SF_Abstract_Converter::compute_center_of_mass(size_t size, const CT_AbstractPointCloudIndex* index) {
+void SF_Abstract_Converter::computeCenterOfMass(size_t size, const CT_AbstractPointCloudIndex* index) {
     assert(size > 0);
     CT_PointIterator it(index);
-    sum_vector(it);
-    normalize_sum_vector_by_size(size);
+    sumVector(it);
+    normalizeSumVectorBySize(size);
 }
 
-void SF_Abstract_Converter::compute_translation_to_origin() {
+void SF_Abstract_Converter::computeTranslationToOrigin() {
     const CT_AbstractPointCloudIndex* index = _itemCpy_cloud_in->getPointCloudIndex();
     assert(index->size() > 0);
-    _center_of_mass[0] = _itemCpy_cloud_in->minX() + 0.5*(_itemCpy_cloud_in->maxX()-_itemCpy_cloud_in->minX());
-    _center_of_mass[1] = _itemCpy_cloud_in->minY() + 0.5*(_itemCpy_cloud_in->maxY()-_itemCpy_cloud_in->minY());
-    _center_of_mass[2] = _itemCpy_cloud_in->minZ() + 0.5*(_itemCpy_cloud_in->maxZ()-_itemCpy_cloud_in->minZ());
+    _centerOfMass[0] = _itemCpy_cloud_in->minX() + 0.5*(_itemCpy_cloud_in->maxX()-_itemCpy_cloud_in->minX());
+    _centerOfMass[1] = _itemCpy_cloud_in->minY() + 0.5*(_itemCpy_cloud_in->maxY()-_itemCpy_cloud_in->minY());
+    _centerOfMass[2] = _itemCpy_cloud_in->minZ() + 0.5*(_itemCpy_cloud_in->maxZ()-_itemCpy_cloud_in->minZ());
 }

@@ -66,6 +66,9 @@ private:
 
     double _angle = 20;
     double _radius_normal = 0.2;
+    double _cell_size = 0.2;
+    int _medianNeighbors = 9;
+    int _idwNeighbors = 3;
     double _voxel_size = 0.05;
 
     CT_AutoRenameModels     _outDTM;

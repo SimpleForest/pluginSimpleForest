@@ -65,9 +65,9 @@ void SF_Converter_CT_To_PCL<PointType>::convert_point(CT_PointIterator& it) {
     origin.z = internalPoint[2];
     PointType translated;
 
-    translated.x = internalPoint[0]-_center_of_mass[0];
-    translated.y = internalPoint[1]-_center_of_mass[1];
-    translated.z = internalPoint[2]-_center_of_mass[2];
+    translated.x = internalPoint[0]-_centerOfMass[0];
+    translated.y = internalPoint[1]-_centerOfMass[1];
+    translated.z = internalPoint[2]-_centerOfMass[2];
     _cloud_original->push_back(origin);
     _cloud_translated->push_back(translated);
 }
@@ -82,7 +82,7 @@ void SF_Converter_CT_To_PCL<PointType>::iterate_cloud_and_convert(const CT_Abstr
 
 template <typename PointType>
 void SF_Converter_CT_To_PCL<PointType>::compute() {
-    compute_translation_to_origin();
+    computeTranslationToOrigin();
     convert();
 }
 
@@ -112,9 +112,9 @@ std::vector<typename pcl::PointCloud<PointType>::Ptr> SF_Converter_CT_To_PCL<Poi
             indices->setValueAtIndex(index, value_at);
         }
         PointType p;
-        p.x = ct_point(0) - _center_of_mass[0];
-        p.y = ct_point(1) - _center_of_mass[1];
-        p.z = ct_point(2) - _center_of_mass[2];
+        p.x = ct_point(0) - _centerOfMass[0];
+        p.y = ct_point(1) - _centerOfMass[1];
+        p.z = ct_point(2) - _centerOfMass[2];
         clouds[value_at]->points.push_back(p);
     }
     return clouds;
@@ -147,7 +147,7 @@ void SF_Converter_CT_To_PCL<PointType>::mergeSubCloudsToVector(CT_Grid3D_Sparse<
 
 template<typename PointType>
 void SF_Converter_CT_To_PCL<PointType>::down_scale(float range,  typename pcl::PointCloud<PointType>::Ptr downscaled_cloud) {
-    compute_translation_to_origin();
+    computeTranslationToOrigin();
     CT_Grid3D_Sparse<int>* indices = CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords(
                                                                      NULL,NULL,
                                                                      _itemCpy_cloud_in->minX(),_itemCpy_cloud_in->minY(),_itemCpy_cloud_in->minZ(),
