@@ -44,6 +44,9 @@
 
 #define DEF_IN_RESULT "ires"
 #define DEF_IN_GRP    "igrp"
+#define DEF_IN_RESULT_DTM "idtmres"
+#define DEF_IN_DTMGRP    "igrpdtm"
+#define DEF_IN_DTM    "idtm"
 #define DEF_IN_CLOUD  "icloud"
 #define DEF_IN_SCENE    "igrp2"
 #define DEF_IN_SCENE_CLOUD  "icloud2"

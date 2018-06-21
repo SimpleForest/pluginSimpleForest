@@ -35,6 +35,7 @@ class SF_DTM_Model: public SF_Raster_Model
 {
 public:
     SF_DTM_Model(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D);
+    float heightAbove(pcl::PointXYZ point);
 };
 
 #endif // SF_DTM2_H

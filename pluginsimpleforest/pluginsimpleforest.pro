@@ -81,7 +81,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     plot/DTM/sf_dtm.h \
     plot/sf_raster_model.h \
     math/interpolation/sf_interpolation.h \
-    converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.h
+    converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.h \
+    steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -103,7 +104,8 @@ SOURCES += \
     plot/DTM/sf_dtm.cpp \
     plot/sf_raster_model.cpp \
     math/interpolation/sf_interpolation.cpp \
-    converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.cpp
+    converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.cpp \
+    steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

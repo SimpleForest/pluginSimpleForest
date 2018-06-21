@@ -11,6 +11,7 @@
 #include "steps/filter/binary/stem_filter/sf_step_stem_filter.h"
 #include "steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.h"
 #include "steps/filter/binary/ground_filter/sf_step_ground_filter.h"
+#include "steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.h"
 #include "steps/dtm/sf_dtm_step.h"
 
 #include "steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.h"
@@ -103,6 +104,7 @@ bool SF_PluginManager::loadGenericsStep()
     addNewPointsStep<SF_Radius_Outlier_Filter_Step>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Step_Stem_Filter>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Step_Ground_Filter>(CT_StepsMenu::LP_Filter);
+    addNewPointsStep<SF_Step_Cut_Cloud_Above_DTM>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Filter_3d_Grid_Sub_Cloud>(CT_StepsMenu::LP_Voxels);
     addNewRastersStep<SF_DTM_Step>("SimpleForest");
 

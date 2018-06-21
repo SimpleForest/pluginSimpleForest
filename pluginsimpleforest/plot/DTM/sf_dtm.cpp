@@ -31,3 +31,8 @@
 SF_DTM_Model::SF_DTM_Model(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D) : SF_Raster_Model(cloud3D) {
 
 }
+
+float SF_DTM_Model::heightAbove(pcl::PointXYZ point) {
+    float heightDTM = heightAt(point.x, point.y);
+    return point.z - heightDTM;
+}
