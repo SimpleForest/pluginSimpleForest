@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -26,29 +26,27 @@
 
 *****************************************************************************/
 
-#ifndef SF_BINARY_FILTER_H
-#define SF_BINARY_FILTER_H
+#ifndef SF_MULTIPLE_FILTER_H
+#define SF_MULTIPLE_FILTER_H
 
 #include "pcl/cloud/filter/sf_abstract_filter.h"
 #include <pcl/cloud/sf_abstract_cloud.h>
 
 template <typename PointType>
-class Sf_Binary_Filter: public  SF_Abstract_Filter<PointType> {
+class Sf_Multiple_Filter: public  SF_Abstract_Filter<PointType> {
+
+private:
+    typename pcl::PointCloud<PointType>::Ptr  _downScaledCloud;
+    typename std::vector<pcl::PointCloud<PointType>::Ptr> _clouds;
 
 protected:
-    typename pcl::PointCloud<PointType>::Ptr _cloud_out_filtered_noise;
     virtual void reset();
-    virtual void create_index(PointType point,
-                      float sqrd_distance);
+    virtual void create_indices();
 
 public:
-    Sf_Binary_Filter();
-    typename pcl::PointCloud<PointType>::Ptr get_cloud_out_filtered_noise() const;
-    double get_percentage();
+    Sf_Multiple_Filter();
 };
 
-#include "sf_binary_filter.hpp"
+#include "sf_multiple_filter.hpp"
 
-#endif // SF_BINARY_FILTER_H
-
-
+#endif // SF_MULTIPLE_FILTER_H

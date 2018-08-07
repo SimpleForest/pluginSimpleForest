@@ -19,7 +19,7 @@ public:
     QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_Param_Filter<pcl::PointXYZ> > _param_list;
+    QList<SF_Param_DTM_Height<pcl::PointXYZ> > _param_list;
     void createInResultModelListProtected();
     void createOutResultModelListProtected();
     virtual void createPreConfigurationDialog();

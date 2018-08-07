@@ -56,8 +56,12 @@ void SF_Abstract_Converter::setCenterOfMass(const Eigen::Vector3d &centerOfMass)
 }
 
 void SF_Abstract_Converter::setItemCpyCloudIn(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in) {
-    _itemCpy_cloud_in = itemCpy_cloud_in;
+    _itemCpyCloudIn = itemCpy_cloud_in;
 }
+
+//void SF_Abstract_Converter::setItemCpyCloudInVector(const std::vector<CT_AbstractItemDrawableWithPointCloud *> itemCpy_cloud_inVector) {
+//    _itemCpyCloudInVector = itemCpy_cloud_inVector;
+//}
 
 Eigen::Vector3d SF_Abstract_Converter::get_center_of_mass() const {
     return _centerOfMass;
@@ -77,9 +81,9 @@ void SF_Abstract_Converter::computeCenterOfMass(size_t size, const CT_AbstractPo
 }
 
 void SF_Abstract_Converter::computeTranslationToOrigin() {
-    const CT_AbstractPointCloudIndex* index = _itemCpy_cloud_in->getPointCloudIndex();
+    const CT_AbstractPointCloudIndex* index = _itemCpyCloudIn->getPointCloudIndex();
     assert(index->size() > 0);
-    _centerOfMass[0] = _itemCpy_cloud_in->minX() + 0.5*(_itemCpy_cloud_in->maxX()-_itemCpy_cloud_in->minX());
-    _centerOfMass[1] = _itemCpy_cloud_in->minY() + 0.5*(_itemCpy_cloud_in->maxY()-_itemCpy_cloud_in->minY());
-    _centerOfMass[2] = _itemCpy_cloud_in->minZ() + 0.5*(_itemCpy_cloud_in->maxZ()-_itemCpy_cloud_in->minZ());
+    _centerOfMass[0] = _itemCpyCloudIn->minX() + 0.5*(_itemCpyCloudIn->maxX()-_itemCpyCloudIn->minX());
+    _centerOfMass[1] = _itemCpyCloudIn->minY() + 0.5*(_itemCpyCloudIn->maxY()-_itemCpyCloudIn->minY());
+    _centerOfMass[2] = _itemCpyCloudIn->minZ() + 0.5*(_itemCpyCloudIn->maxZ()-_itemCpyCloudIn->minZ());
 }

@@ -264,32 +264,8 @@ CT_Scene * SF_DTM_Step::addGroundCloudToResult(CT_PointCloudIndexVector *mergedC
     return scene;
 }
 
-CT_Scene* SF_DTM_Step::mergeIndices(CT_ResultGroup *out_result, CT_StandardItemGroup* root) {
-    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
-    CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
-    mergedClouds->setSortType(CT_AbstractCloudIndex::NotSorted);
-    std::vector<size_t> indices;
-    while(!isStopped() && out_res_it.hasNext()) {
-        CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
-        const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
-        CT_PointIterator iter(ct_cloud->getPointCloudIndex());
-        while(iter.hasNext() && ! isStopped()) {
-            iter.next();
-            size_t index = iter.currentGlobalIndex();
-            indices.push_back(index);
-        }
-    }
-    std::sort(indices.begin(), indices.end());
-    for(size_t i = 0; i < indices.size(); i++) {
-        mergedClouds->addIndex(indices.at(i));
-    }
-    mergedClouds->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
-    CT_Scene* scene = addGroundCloudToResult(mergedClouds, root, out_result);
-    return scene;
-}
-
 pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Step::createGroundCloud(CT_ResultGroup *out_result, CT_StandardItemGroup* terrainGrp) {
-    CT_Scene* scene = mergeIndices(out_result, terrainGrp);
+    CT_Scene* scene = mergeIndices(out_result, terrainGrp, DEF_IN_GRP, DEF_IN_CLOUD);
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = convert(scene);
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr downscaledCloud = downScale(cloud);
     computeNormals(downscaledCloud);

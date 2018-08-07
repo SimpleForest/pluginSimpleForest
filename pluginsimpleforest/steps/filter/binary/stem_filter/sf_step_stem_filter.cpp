@@ -186,14 +186,13 @@ void SF_Step_Stem_Filter::adapt_parameters_to_expert_level() {
     }
 }
 
-
 void SF_Step_Stem_Filter::write_output_per_scence(CT_ResultGroup* out_result, size_t i) {
     SF_Param_Stem_Filter<SF_Point_N> param = _param_list.at(i);
     std::vector<CT_PointCloudIndexVector *> output_index_list = create_output_vectors(param._size_output);
     create_output_indices(output_index_list, param._output_indices, param._itemCpy_cloud_in);
     CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
     param._grpCpy_grp->addGroup(filter_grp);
-    add_scene_in_subgrp_to_grp(filter_grp, _out_cloud.completeName(),_out_grp_cloud.completeName(), out_result, output_index_list[0]);
+    add_scene_in_subgrp_to_grp(filter_grp, _out_cloud.completeName(), _out_grp_cloud.completeName(), out_result, output_index_list[0]);
     add_scene_in_subgrp_to_grp(filter_grp, _out_noise.completeName(), _out_grp_noise.completeName(), out_result, output_index_list[1]);
 }
 

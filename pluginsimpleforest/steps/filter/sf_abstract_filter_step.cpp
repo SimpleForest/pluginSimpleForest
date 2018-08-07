@@ -39,7 +39,8 @@ void SF_Abstract_Filter_Step::add_scene_to_grp(CT_StandardItemGroup* cloud_grp, 
 }
 
 void SF_Abstract_Filter_Step::add_scene_in_subgrp_to_grp(CT_StandardItemGroup* filter_grp,const QString & out_cloud_complete_name,
-                                                                     const QString & sub_grp_complete_name, CT_ResultGroup* out_result,  CT_PointCloudIndexVector * ct_point_cloud_index) {
+                                                                     const QString & sub_grp_complete_name, CT_ResultGroup* out_result,
+                                                         CT_PointCloudIndexVector * ct_point_cloud_index) {
     CT_StandardItemGroup* cloud_grp = new CT_StandardItemGroup(sub_grp_complete_name, out_result);
     filter_grp->addGroup(cloud_grp);
     add_scene_to_grp(cloud_grp, out_cloud_complete_name, ct_point_cloud_index , out_result);

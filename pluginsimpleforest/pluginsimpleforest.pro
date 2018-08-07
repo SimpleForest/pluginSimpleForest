@@ -41,6 +41,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.h \
     steps/filter/binary/ground_filter/sf_step_ground_filter_adapter.h \
     steps/filter/binary/ground_filter/sf_step_ground_filter.h \
+    steps/filter/multiple/euclideanclustering/sf_binary_filter.h \
     pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h \
     pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.hpp \
     steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_adapter.h \
@@ -82,7 +83,13 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     plot/sf_raster_model.h \
     math/interpolation/sf_interpolation.h \
     converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.h \
-    steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.h
+    steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.h \
+    steps/filter/binary/cut_cloud_above_dtm/sf_cut_above_dtm_adapter.h \
+    pcl/cloud/filter/multiple/sf_multiple_filter.h \
+    pcl/cloud/filter/multiple/sf_multiple_filter.hpp \
+    pcl/cloud/filter/multiple/euclideanclustering/sf_euclidean_clustering.h \
+    pcl/cloud/filter/multiple/euclideanclustering/sf_euclidean_clustering.hpp \
+    steps/filter/multiple/euclideanclustering/sf_euclidean_clustering_step.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -105,7 +112,8 @@ SOURCES += \
     plot/sf_raster_model.cpp \
     math/interpolation/sf_interpolation.cpp \
     converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.cpp \
-    steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.cpp
+    steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.cpp \
+    steps/filter/multiple/euclideanclustering/sf_euclidean_clustering_step.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

@@ -32,19 +32,13 @@
 #include "pcl/filters/voxel_grid.h"
 
 template <typename PointType>
-class SF_Voxel_Grid_DS: public SF_Unitary_Filter<PointType>
-{
-
+class SF_Voxel_Grid_DS: public SF_Unitary_Filter<PointType> {
     void voxel_grid_downscale(SF_Param_Voxel_Grid_Downscale<PointType> std_params);
 
 public:
-
     SF_Voxel_Grid_DS();
-
     virtual void compute(const SF_Param_Voxel_Grid_Downscale<PointType> &params);
-
     void set_leaf_size(typename pcl::VoxelGrid<pcl::PointCloud<PointType> > &sor);
-
 };
 
 #include "sf_voxel_grid_ds.hpp"

@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -26,29 +26,24 @@
 
 *****************************************************************************/
 
-#ifndef SF_BINARY_FILTER_H
-#define SF_BINARY_FILTER_H
+#ifndef SF_EUCLIDEAN_CLUSTERING_H
+#define SF_EUCLIDEAN_CLUSTERING_H
 
-#include "pcl/cloud/filter/sf_abstract_filter.h"
-#include <pcl/cloud/sf_abstract_cloud.h>
+#include "pcl/cloud/filter/multiple/sf_multiple_filter.h"
 
 template <typename PointType>
-class Sf_Binary_Filter: public  SF_Abstract_Filter<PointType> {
-
+class Sf_Euclidean_Clustering: public  Sf_Multiple_Filter<PointType> {
+    SF_Param_Euclidean_Clustering _params;
+    extractClusterIndices(std::vector<pcl::PointIndices> & clusterIndices);
+    extractClouds(const std::vector<pcl::PointIndices> & clusterIndices);
+    convertAndDownScale();
 protected:
-    typename pcl::PointCloud<PointType>::Ptr _cloud_out_filtered_noise;
-    virtual void reset();
-    virtual void create_index(PointType point,
-                      float sqrd_distance);
 
 public:
-    Sf_Binary_Filter();
-    typename pcl::PointCloud<PointType>::Ptr get_cloud_out_filtered_noise() const;
-    double get_percentage();
+    Sf_Euclidean_Clustering();
+    compute(SF_Param_Euclidean_Clustering& params);
 };
 
-#include "sf_binary_filter.hpp"
+#include "sf_euclidean_clustering.hpp"
 
-#endif // SF_BINARY_FILTER_H
-
-
+#endif // SF_EUCLIDEAN_CLUSTERING_H

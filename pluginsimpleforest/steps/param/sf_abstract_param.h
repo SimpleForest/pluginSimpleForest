@@ -30,6 +30,7 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
+#include "ct_itemdrawable/ct_image2d.h"
 #include "pcl/sf_point.h"
 
 
@@ -86,6 +87,21 @@ private:
 template <typename PointType>
 struct SF_Param_Filter: public SF_Param_Cloud<PointType>{
     int _size_output;
+    std::vector<int> _output_indices;
+};
+
+template <typename PointType>
+struct SF_Param_Euclidean_Clustering: public SF_Param_Filter<PointType>{
+    float _cellSize;
+    float _euclideanDistance;
+    int _minSize;
+    std::vector<int> _output_indices;
+};
+
+template <typename PointType>
+struct SF_Param_DTM_Height: public SF_Param_Filter<PointType>{
+    float _cropHeight;
+    CT_Image2D<float> * _dtmCT;
     std::vector<int> _output_indices;
 };
 

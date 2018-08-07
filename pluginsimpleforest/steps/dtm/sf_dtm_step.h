@@ -80,7 +80,6 @@ private:
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr createGroundCloud(CT_ResultGroup *out_result, CT_StandardItemGroup *terrainGrp);
     void computeNormals(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downscaledCloud);
     CT_Scene * addGroundCloudToResult(CT_PointCloudIndexVector *mergedClouds, CT_StandardItemGroup* root, CT_ResultGroup *out_result);
-    CT_Scene *mergeIndices(CT_ResultGroup *out_result, CT_StandardItemGroup* root);
     void copyCroppedHeights(pcl::PointCloud<pcl::PointXYZINormal>::Ptr groundCloud, std::shared_ptr<CT_Image2D<float> > dtmPtr, CT_Image2D<float>* CTDTM);
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud);
 };

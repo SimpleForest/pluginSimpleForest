@@ -41,6 +41,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QFuture>
+#include <QString>
 
 #define DEF_IN_RESULT "ires"
 #define DEF_IN_GRP    "igrp"
@@ -57,67 +58,40 @@ class SF_Abstract_Step: public CT_AbstractStep
 
 protected:
     void recursive_remove_if_empty(CT_AbstractItemGroup *parent, CT_AbstractItemGroup *group);
-
     void set_progress_by_future(QFuture<void> & future, float percentage_interval_start, float percentage_interval_size);
-
     virtual void createInResultModelListProtected() = 0;
-
     virtual void createOutResultModelListProtected() = 0;
-
     virtual void adapt_parameters_to_expert_level() = 0;
-
     void createPreConfigurationDialog();
-
     void createPostConfigurationDialog();
-
     virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) = 0;
-
     virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) = 0;
-
     virtual void createPostConfigurationDialogCitation(CT_StepConfigurableDialog *config_dialog);
-
     virtual void compute() = 0;
-
-    void create_output_indices(std::vector<CT_PointCloudIndexVector*> &index_vectors, const std::vector<int> &indices, const CT_AbstractItemDrawableWithPointCloud *item_cpy_cloud_in);
-
+    void create_output_indices(std::vector<CT_PointCloudIndexVector*> &index_vectors, const std::vector<int> &indices,
+                               const CT_AbstractItemDrawableWithPointCloud *item_cpy_cloud_in);
     void identify_and_remove_corrupted_scenes(CT_ResultGroup* out_result);
-
-    void create_output_index(std::vector<CT_PointCloudIndexVector *> &index_vectors, const std::vector<int> &indices, size_t counter, CT_PointIterator &point_it);
-
-    virtual void write_logger();
-
+    void create_output_index(std::vector<CT_PointCloudIndexVector *> &index_vectors,
+                             const std::vector<int> &indices, size_t counter, CT_PointIterator &point_it);
+    virtual void write_logger();    
+    CT_Scene *mergeIndices(CT_ResultGroup *out_result, CT_StandardItemGroup* root, const QString defInnGrp, const QString defInCloud);
     Eigen::Vector3f get_min(const CT_Scene* ct_cloud);
-
     Eigen::Vector3f get_max(const CT_Scene* ct_cloud);
-
     std::vector<CT_PointCloudIndexVector*> create_output_vectors(size_t number_output);
-
-
-
     QList<SF_Param_CT> _param_list;
-
     bool _is_expert = true;
-
     QStringList _non_expert_level;
 
 public:
-
     SF_Abstract_Step(CT_StepInitializeData & data_init);
-
     virtual CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit) = 0;
 
 private:
-
     QList<CT_AbstractItemGroup*> _groups_to_be_removed;
-
     void check_is_empty(CT_StandardItemGroup* group, const CT_AbstractItemDrawableWithPointCloud* ct_cloud);
-
     void check_is_null_or_empty(const CT_AbstractItemDrawableWithPointCloud* ct_cloud, CT_StandardItemGroup* group);
-
     void check_grp_and_cloud(CT_StandardItemGroup* group);
-
     void identify_corrupted_scenes(CT_ResultGroup* out_result, int progress = 4);
-
     void remove_corrupted_scenes(int progress = 7);
 
 };

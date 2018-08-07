@@ -38,7 +38,6 @@ SF_Radius_Outlier_Filter<PointType>::SF_Radius_Outlier_Filter() {
     Sf_Binary_Filter<PointType>::reset();
 }
 
-
 template <typename PointType>
 void  SF_Radius_Outlier_Filter<PointType>::compute(const SF_Param_Radius_Outlier_Filter<PointType> &params) {
     if(SF_Abstract_Cloud<PointType>::_cloud_in->points.size() >= 1) {
@@ -48,7 +47,7 @@ void  SF_Radius_Outlier_Filter<PointType>::compute(const SF_Param_Radius_Outlier
     }
     SF_Radius_Outlier_Filter<PointType>::create_indices();
 }
-#include <iostream>
+
 template <typename PointType>
 void SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(typename SF_Param_Radius_Outlier_Filter<PointType> std_params) {
     if(std_params._radius>0.1f) {

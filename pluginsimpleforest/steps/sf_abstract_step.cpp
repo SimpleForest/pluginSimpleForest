@@ -47,6 +47,30 @@ void SF_Abstract_Step::set_progress_by_future(QFuture<void> &future, float perce
     }
 }
 
+CT_Scene* SF_Abstract_Step::mergeIndices(CT_ResultGroup *out_result, CT_StandardItemGroup* root, const QString defInnGrp, const QString defInCloud) {
+    CT_ResultGroupIterator out_res_it(out_result, this, defInnGrp);
+    CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
+    mergedClouds->setSortType(CT_AbstractCloudIndex::NotSorted);
+    std::vector<size_t> indices;
+    while(!isStopped() && out_res_it.hasNext()) {
+        CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
+        const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, defInCloud);
+        CT_PointIterator iter(ct_cloud->getPointCloudIndex());
+        while(iter.hasNext() && ! isStopped()) {
+            iter.next();
+            size_t index = iter.currentGlobalIndex();
+            indices.push_back(index);
+        }
+    }
+    std::sort(indices.begin(), indices.end());
+    for(size_t i = 0; i < indices.size(); i++) {
+        mergedClouds->addIndex(indices.at(i));
+    }
+    mergedClouds->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
+    CT_Scene* scene = new CT_Scene(defInCloud , out_result, PS_REPOSITORY->registerPointCloudIndex(mergedClouds));
+    return scene;
+}
+
 void SF_Abstract_Step::createPreConfigurationDialog() {
     CT_StepConfigurableDialog *config_dialog = newStandardPreConfigurationDialog();
     config_dialog->addBool("Uncheck to deactivate parameterization possibilities of this step. Only recommended for beginners","","expert", _is_expert);

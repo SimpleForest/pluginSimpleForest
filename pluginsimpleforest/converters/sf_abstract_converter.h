@@ -38,6 +38,7 @@ public:
     SF_Abstract_Converter();
     Eigen::Vector3d get_center_of_mass() const;
     void setItemCpyCloudIn(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in);
+    void setItemCpyCloudInVector(const std::vector<CT_AbstractItemDrawableWithPointCloud *> itemCpy_cloud_inVector);
 
     Eigen::Vector3d getCenterOfMass() const;
     void setCenterOfMass(const Eigen::Vector3d &centerOfMass);
@@ -51,7 +52,10 @@ protected:
     /**
      * @brief _itemCpy_cloud_in The input CT cloud
      */
-    const CT_AbstractItemDrawableWithPointCloud * _itemCpy_cloud_in;
+    const CT_AbstractItemDrawableWithPointCloud * _itemCpyCloudIn;
+
+
+//    const std::vector<CT_AbstractItemDrawableWithPointCloud *> _itemCpyCloudInVector;
     /**
      * @brief compute_translation Computes the @see _center_of_mass
      */

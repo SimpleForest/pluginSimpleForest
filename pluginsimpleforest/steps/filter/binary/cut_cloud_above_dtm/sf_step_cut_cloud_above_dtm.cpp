@@ -27,8 +27,9 @@
 *****************************************************************************/
 
 #include "sf_step_cut_cloud_above_dtm.h"
-#include "converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.h"
-#include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
+#include "sf_cut_above_dtm_adapter.h"
+
+#include <QtConcurrent/QtConcurrent>
 
 SF_Step_Cut_Cloud_Above_DTM::SF_Step_Cut_Cloud_Above_DTM(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init) {
 }
@@ -130,7 +131,7 @@ void SF_Step_Cut_Cloud_Above_DTM::adapt_parameters_to_expert_level() {
 }
 
 void SF_Step_Cut_Cloud_Above_DTM::write_output_per_scence(CT_ResultGroup* out_result, size_t i) {
-    SF_Param_Filter<pcl::PointXYZ> param = _param_list.at(i);
+    SF_Param_DTM_Height<pcl::PointXYZ> param = _param_list.at(i);
     std::vector<CT_PointCloudIndexVector *> output_index_list = create_output_vectors(param._size_output);
     create_output_indices(output_index_list, param._output_indices, param._itemCpy_cloud_in);
     CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
@@ -147,33 +148,12 @@ void SF_Step_Cut_Cloud_Above_DTM::write_output(CT_ResultGroup* out_result) {
 }
 
 void SF_Step_Cut_Cloud_Above_DTM::compute() {
-    CT_ResultGroup * inDTMResult = getInputResults().at(0);
-    CT_ResultItemIterator iterDTM(inDTMResult, this, DEF_IN_DTM);
-    CT_Image2D<float> * dtm = (CT_Image2D<float> *) iterDTM.next();
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
     create_param_list(out_result);
-    for(size_t i = 0; i < _param_list.size(); i++) {
-        SF_Param_Filter<pcl::PointXYZ> param = _param_list[i];
-        SF_Converter_CT_To_PCL<pcl::PointXYZ> cloudConverter;
-        cloudConverter.setItemCpyCloudIn(param._itemCpy_cloud_in);
-        cloudConverter.compute();
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = cloudConverter.get_cloud_translated();
-        SF_Converter_CT_to_PCL_DTM dtmConverter(cloudConverter.getCenterOfMass(), dtm);
-        std::shared_ptr<SF_DTM_Model> dtmModel = dtmConverter.dtmPCL();
-        std::vector<int> indices;
-        for(size_t j = 0; j < cloud->points.size(); j++) {
-            pcl::PointXYZ p = cloud->points[j];
-            if(dtmModel->heightAbove(p) < _cutHeight) {
-                indices.push_back(0);
-            } else {
-                indices.push_back(1);
-            }
-        }
-        param._output_indices = indices;
-        _param_list[i] = param;
-    }
+    QFuture<void> future = QtConcurrent::map(_param_list,SF_Step_Cut_Above_DTM_Adapter() );
+    set_progress_by_future(future,10,85);
     write_logger();
     write_output(out_result);
 }
@@ -184,13 +164,18 @@ void SF_Step_Cut_Cloud_Above_DTM::write_logger() {
 }
 
 void SF_Step_Cut_Cloud_Above_DTM::create_param_list(CT_ResultGroup * out_result) {
+    CT_ResultGroup * inDTMResult = getInputResults().at(0);
+    CT_ResultItemIterator iterDTM(inDTMResult, this, DEF_IN_DTM);
+    CT_Image2D<float> * dtm = (CT_Image2D<float> *) iterDTM.next();
     adapt_parameters_to_expert_level();
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
-        SF_Param_Filter<pcl::PointXYZ> param;
+        SF_Param_DTM_Height<pcl::PointXYZ> param;
         param._log = PS_LOG;
+        param._dtmCT = dtm;
+        param._cropHeight = _cutHeight;
         param._size_output = 2;
         param._itemCpy_cloud_in = ct_cloud;
         param._grpCpy_grp = group;

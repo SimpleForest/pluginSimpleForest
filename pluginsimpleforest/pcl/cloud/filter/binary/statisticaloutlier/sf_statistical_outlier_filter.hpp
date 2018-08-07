@@ -61,8 +61,7 @@ void SF_Statistical_Outlier_Filter<PointType>::statistical_outlier_filter_iterat
 template <typename PointType>
 void SF_Statistical_Outlier_Filter<PointType>::iterate(SF_Param_Statistical_Outlier_Filter<PointType> params, typename pcl::PointCloud<PointType>::Ptr cloud) {
     int iterations = params._iterations;
-    while(iterations > 0)
-    {
+    while(iterations > 0) {
         SF_Statistical_Outlier_Filter<PointType>::statistical_outlier_filter(params, cloud);
         cloud = SF_Statistical_Outlier_Filter<PointType>::_cloud_out_filtered;
         iterations--;

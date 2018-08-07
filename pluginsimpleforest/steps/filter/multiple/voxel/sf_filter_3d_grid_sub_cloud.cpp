@@ -26,6 +26,7 @@
 
 *****************************************************************************/
 #include "sf_filter_3d_grid_sub_cloud.h"
+
 #include <algorithm>
 
 SF_Filter_3d_Grid_Sub_Cloud::SF_Filter_3d_Grid_Sub_Cloud(CT_StepInitializeData &data_init): SF_Abstract_Filter_Multiple_Step(data_init) {
@@ -73,7 +74,6 @@ QStringList SF_Filter_3d_Grid_Sub_Cloud::getStepRISCitations() const {
     return _RIS_citation_list;
 }
 
-
 void SF_Filter_3d_Grid_Sub_Cloud::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     //    assert(res_model != NULL);
@@ -88,9 +88,6 @@ void SF_Filter_3d_Grid_Sub_Cloud::createPostConfigurationDialog() {
     createPostConfigurationDialogCitation(config_dialog);
 }
 
-
-
-
 void SF_Filter_3d_Grid_Sub_Cloud::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
@@ -99,9 +96,6 @@ void SF_Filter_3d_Grid_Sub_Cloud::createOutResultModelListProtected() {
         res_modelw->addItemModel(_out_grp_cluster, _out_cloud_cluster, new CT_Scene(), tr("cloud"));
     }
 }
-
-
-
 
 CT_Grid3D_Sparse<int> * SF_Filter_3d_Grid_Sub_Cloud::create_grid3d_from_scene(const CT_Scene* ct_cloud, double voxel_size) {
     Eigen::Vector3f min = get_min(ct_cloud);
@@ -153,7 +147,7 @@ void SF_Filter_3d_Grid_Sub_Cloud::compute() {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         const CT_Scene* ct_cloud = (const CT_Scene*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
         add_cloud_to_grid_cluster(ct_cloud, clusters);
-        std::sort(clusters.begin(),clusters.end(),sf_compare_CT_Clouds_Cy_Size);
+        std::sort(clusters.begin(),clusters.end(),sfCompareCTCloudsBySize);
         write_output(out_result, clusters, group);
     }
 }

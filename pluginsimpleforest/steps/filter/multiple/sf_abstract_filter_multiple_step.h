@@ -29,25 +29,20 @@
 #define SF_ABSTRACT_FILTER_MULTIPLE_STEP_H
 
 #include <steps/filter/sf_abstract_filter_step.h>
-inline bool sf_compare_CT_Clouds_Cy_Size(CT_PointCloudIndexVector * cloud1, CT_PointCloudIndexVector * cloud2){
+inline bool sfCompareCTCloudsBySize(CT_PointCloudIndexVector * cloud1, CT_PointCloudIndexVector * cloud2){
     return(cloud1->size()>cloud2->size());
 }
+
 class SF_Abstract_Filter_Multiple_Step: public SF_Abstract_Filter_Step
 {
 public:
-
     SF_Abstract_Filter_Multiple_Step(CT_StepInitializeData & data_init);
 
 protected:
-
     CT_AutoRenameModels _out_grp;
-
     CT_AutoRenameModels _out_grp_cluster;
-
     CT_AutoRenameModels _out_cloud_cluster;
-
     void write_output_per_scence(CT_ResultGroup* out_result, CT_PointCloudIndexVector *output_cluster, CT_StandardItemGroup *group);
-
     void write_output(CT_ResultGroup* out_result, std::vector<CT_PointCloudIndexVector *> cluster_vec, CT_StandardItemGroup *group);
 };
 
