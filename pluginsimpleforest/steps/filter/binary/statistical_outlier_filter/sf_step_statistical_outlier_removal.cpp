@@ -96,8 +96,8 @@ void SF_Step_Statistical_Outlier_Removal::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     assert(res_model != NULL);
     res_model->setZeroOrMoreRootGroup();
-    res_model->addGroupModel("", DEF_IN_GRP, CT_AbstractItemGroup::staticGetType(), tr("Point Cloud Grp In"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    res_model->addItemModel(DEF_IN_GRP, DEF_IN_CLOUD, CT_Scene::staticGetType(), tr("Point Cloud"));
+    res_model->addGroupModel("", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(), tr("Point Cloud Grp In"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Point Cloud"));
 }
 
 void SF_Step_Statistical_Outlier_Removal::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
@@ -116,7 +116,7 @@ void SF_Step_Statistical_Outlier_Removal::createPostConfigurationDialogBeginner(
 void SF_Step_Statistical_Outlier_Removal::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
-        res_modelw->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(), tr ("statistical outlier removal") );
+        res_modelw->addGroupModel(DEF_IN_GRP_CLUSTER, _out_grp, new CT_StandardItemGroup(), tr ("statistical outlier removal") );
         res_modelw->addGroupModel(_out_grp, _out_grp_cloud, new CT_StandardItemGroup(), tr ("filtered") );
         res_modelw->addGroupModel(_out_grp, _out_grp_noise, new CT_StandardItemGroup(), tr ("noise") );
         res_modelw->addItemModel(_out_grp_cloud, _out_cloud, new CT_Scene(), tr("cloud"));
@@ -180,10 +180,10 @@ void SF_Step_Statistical_Outlier_Removal::write_logger() {
 
 void SF_Step_Statistical_Outlier_Removal::create_param_list(CT_ResultGroup * out_result) {
     adapt_parameters_to_expert_level();
-    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
+    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
-        const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
+        const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
         SF_Param_Statistical_Outlier_Filter<SF_Point> param;
         param._log = PS_LOG;
         param._iterations = _iterations;

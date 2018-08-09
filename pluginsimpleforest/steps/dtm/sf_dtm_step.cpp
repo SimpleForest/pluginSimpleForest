@@ -99,8 +99,8 @@ void SF_DTM_Step::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     assert(res_model != NULL);
     res_model->setZeroOrMoreRootGroup();
-    res_model->addGroupModel("", DEF_IN_GRP, CT_AbstractItemGroup::staticGetType(), tr("Point Cloud Grp In"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    res_model->addItemModel(DEF_IN_GRP, DEF_IN_CLOUD, CT_Scene::staticGetType(), tr("Point Cloud"));
+    res_model->addGroupModel("", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(), tr("Point Cloud Grp In"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Point Cloud"));
     res_model->addGroupModel("", DEF_IN_SCENE, CT_AbstractItemGroup::staticGetType(), tr("Input Scene Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
     res_model->addItemModel(DEF_IN_SCENE, DEF_IN_SCENE_CLOUD, CT_Scene::staticGetType(), tr("Input Scene"));
 }
@@ -265,7 +265,7 @@ CT_Scene * SF_DTM_Step::addGroundCloudToResult(CT_PointCloudIndexVector *mergedC
 }
 
 pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Step::createGroundCloud(CT_ResultGroup *out_result, CT_StandardItemGroup* terrainGrp) {
-    CT_Scene* scene = mergeIndices(out_result, terrainGrp, DEF_IN_GRP, DEF_IN_CLOUD);
+    CT_Scene* scene = mergeIndices(out_result, terrainGrp, DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED);
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = convert(scene);
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr downscaledCloud = downScale(cloud);
     computeNormals(downscaledCloud);

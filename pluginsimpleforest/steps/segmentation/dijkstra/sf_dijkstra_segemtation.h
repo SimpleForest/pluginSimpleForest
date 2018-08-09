@@ -26,18 +26,18 @@
 
 *****************************************************************************/
 
-#ifndef SF_EUCLIDEAN_CLUSTERING_STEP_H
-#define SF_EUCLIDEAN_CLUSTERING_STEP_H
+#ifndef SF_DIJKSTRA_SEGEMTATION_H
+#define SF_DIJKSTRA_SEGEMTATION_H
 
 #include "steps/filter/multiple/sf_abstract_filter_multiple_step.h"
 
-class SF_Euclidean_Clustering_Step: public SF_Abstract_Filter_Multiple_Step
+class SF_Dijkstra_Segmentation_Step: public SF_Abstract_Filter_Multiple_Step
 {
     Q_OBJECT
 
 public:
-    SF_Euclidean_Clustering_Step(CT_StepInitializeData &data_init);
-    ~SF_Euclidean_Clustering_Step();
+    SF_Dijkstra_Segmentation_Step(CT_StepInitializeData &data_init);
+    ~SF_Dijkstra_Segmentation_Step();
     QString getStepDescription() const;
     QString getStepDetailledDescription() const;
     QString getStepURL() const;
@@ -57,7 +57,7 @@ protected:
     void compute();
 
     void mergeClustersToPCLCloud(std::vector<size_t> indices, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL, CT_ResultGroupIterator out_res_it);
-    
+
 private:
     double _voxelSize = 0.04;
     double _euclideanDistance = 0.1;

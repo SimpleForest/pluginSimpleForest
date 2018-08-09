@@ -117,7 +117,7 @@ void SF_Abstract_Step::check_is_null_or_empty(const CT_AbstractItemDrawableWithP
 
 void SF_Abstract_Step::check_grp_and_cloud(CT_StandardItemGroup* group) {
     if(group!=NULL) {
-        const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
+        const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
         check_is_null_or_empty(ct_cloud, group);
     } else {
         _groups_to_be_removed.push_back(group);
@@ -126,7 +126,7 @@ void SF_Abstract_Step::check_grp_and_cloud(CT_StandardItemGroup* group) {
 
 void SF_Abstract_Step::identify_corrupted_scenes( CT_ResultGroup* out_result, int progress) {
     _groups_to_be_removed.clear();
-    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
+    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         check_grp_and_cloud(group);

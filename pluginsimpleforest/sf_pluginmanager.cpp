@@ -13,27 +13,24 @@
 #include "steps/filter/binary/ground_filter/sf_step_ground_filter.h"
 #include "steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.h"
 #include "steps/filter/multiple/euclideanclustering/sf_euclidean_clustering_step.h"
+#include "steps/segmentation/dijkstra/sf_dijkstra_segemtation.h"
 #include "steps/dtm/sf_dtm_step.h"
 
 #include "steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.h"
 
 // Inclure ici les entetes des classes definissant des Ã©tapes/actions/exporters ou readers
 
-SF_PluginManager::SF_PluginManager() : CT_AbstractStepPlugin()
-{
+SF_PluginManager::SF_PluginManager() : CT_AbstractStepPlugin() {
 }
 
-SF_PluginManager::~SF_PluginManager()
-{
+SF_PluginManager::~SF_PluginManager() {
 }
 
-QString SF_PluginManager::getPluginOfficialName() const
-{
+QString SF_PluginManager::getPluginOfficialName() const {
     return "SimpleForest";
 }
 
-QString SF_PluginManager::getPluginRISCitation() const
-{
+QString SF_PluginManager::getPluginRISCitation() const {
     return             "TY  - JOUR\n"
                        "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
                        "A1  - Hackenberg, Jan\n"
@@ -52,8 +49,7 @@ QString SF_PluginManager::getPluginRISCitation() const
                        "ER  - \n";
 }
 
-bool SF_PluginManager::init()
-{
+bool SF_PluginManager::init() {
     return CT_AbstractStepPlugin::init();
 }
 
@@ -65,55 +61,48 @@ bool SF_PluginManager::loadGenericsStep() {
     addNewPointsStep<SF_Step_Cut_Cloud_Above_DTM>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Filter_3d_Grid_Sub_Cloud>(CT_StepsMenu::LP_Voxels);
     addNewPointsStep<SF_Euclidean_Clustering_Step>(CT_StepsMenu::LP_Clusters);
+    addNewPointsStep<SF_Dijkstra_Segmentation_Step>(CT_StepsMenu::LP_Clusters);
     addNewRastersStep<SF_DTM_Step>(CT_StepsMenu::LP_DEM);
 
     return true;
 }
 
-bool SF_PluginManager::loadOpenFileStep()
-{
+bool SF_PluginManager::loadOpenFileStep() {
 
     return true;
 }
 
-bool SF_PluginManager::loadCanBeAddedFirstStep()
-{
+bool SF_PluginManager::loadCanBeAddedFirstStep() {
 
     return true;
 }
 
-bool SF_PluginManager::loadFilters()
-{
+bool SF_PluginManager::loadFilters() {
 
     return true;
 }
 
-bool SF_PluginManager::loadMetrics()
-{
+bool SF_PluginManager::loadMetrics() {
 
     return true;
 }
 
-bool SF_PluginManager::loadItemDrawables()
-{
+bool SF_PluginManager::loadItemDrawables() {
 
     return true;
 }
 
-bool SF_PluginManager::loadActions()
-{
+bool SF_PluginManager::loadActions() {
 
     return true;
 }
 
-bool SF_PluginManager::loadExporters()
-{
+bool SF_PluginManager::loadExporters() {
 
     return true;
 }
 
-bool SF_PluginManager::loadReaders()
-{
+bool SF_PluginManager::loadReaders() {
 
     return true;
 }

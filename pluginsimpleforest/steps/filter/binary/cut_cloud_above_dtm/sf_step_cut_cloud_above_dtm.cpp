@@ -100,8 +100,8 @@ void SF_Step_Cut_Cloud_Above_DTM::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     assert(res_model != NULL);
     res_model->setZeroOrMoreRootGroup();
-    res_model->addGroupModel("", DEF_IN_GRP, CT_AbstractItemGroup::staticGetType(), tr("Point Cloud Grp In"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    res_model->addItemModel(DEF_IN_GRP, DEF_IN_CLOUD, CT_Scene::staticGetType(), tr("Point Cloud"));
+    res_model->addGroupModel("", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(), tr("Point Cloud Grp In"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Point Cloud"));
 }
 
 void SF_Step_Cut_Cloud_Above_DTM::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
@@ -119,7 +119,7 @@ void SF_Step_Cut_Cloud_Above_DTM::createPreConfigurationDialog() {
 void SF_Step_Cut_Cloud_Above_DTM::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
-        res_modelw->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(), tr ("cut above DTM") );
+        res_modelw->addGroupModel(DEF_IN_GRP_CLUSTER, _out_grp, new CT_StandardItemGroup(), tr ("cut above DTM") );
         res_modelw->addGroupModel(_out_grp, _out_grp_cloud, new CT_StandardItemGroup(), tr ("lower") );
         res_modelw->addGroupModel(_out_grp, _out_grp_noise, new CT_StandardItemGroup(), tr ("upper") );
         res_modelw->addItemModel(_out_grp_cloud, _out_cloud, new CT_Scene(), tr("lower cloud"));
@@ -168,10 +168,10 @@ void SF_Step_Cut_Cloud_Above_DTM::create_param_list(CT_ResultGroup * out_result)
     CT_ResultItemIterator iterDTM(inDTMResult, this, DEF_IN_DTM);
     CT_Image2D<float> * dtm = (CT_Image2D<float> *) iterDTM.next();
     adapt_parameters_to_expert_level();
-    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
+    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
-        const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
+        const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
         SF_Param_DTM_Height<pcl::PointXYZ> param;
         param._log = PS_LOG;
         param._dtmCT = dtm;

@@ -26,35 +26,38 @@
 
 *****************************************************************************/
 
-#include "sf_euclidean_clustering_step.h"
+#include "sf_dijkstra_segemtation.h"
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/segmentation/extract_clusters.h>
 
-SF_Euclidean_Clustering_Step::SF_Euclidean_Clustering_Step(CT_StepInitializeData &data_init): SF_Abstract_Filter_Multiple_Step(data_init) {
+SF_Dijkstra_Segmentation_Step::SF_Dijkstra_Segmentation_Step(CT_StepInitializeData &data_init): SF_Abstract_Filter_Multiple_Step(data_init) {
 
 }
 
-SF_Euclidean_Clustering_Step::~SF_Euclidean_Clustering_Step() {
+SF_Dijkstra_Segmentation_Step::~SF_Dijkstra_Segmentation_Step() {
 
 }
 
-QString SF_Euclidean_Clustering_Step::getStepDescription() const {
-    return tr("Euclidean Clustering");
+QString SF_Dijkstra_Segmentation_Step::getStepDescription() const {
+    return tr("Dikstra Based Tree Segmentation from seeds");
 }
 
-QString SF_Euclidean_Clustering_Step::getStepDetailledDescription() const {
-    return tr("Performs an Euclidean Clustering Operation.");
+QString SF_Dijkstra_Segmentation_Step::getStepDetailledDescription() const {
+    return tr("The step takes vegetation points and seed clusters as input. All clusters are tagged with an own id and zero distance, remaining non cluster points are"
+              "initialized with infinity distance. Then a competitive dijkstra is applied. Later all points are tagged with the id from the seed cluster they are connected to."
+              "Before the routine the cloud can be scaled in z-axis to enable easier vertical growth of the dijkstra routine."
+              "If points remain not reached by the dijkstra they are alligned to the closest pre cluster tree by nearest neighbor check.");
 }
 
-QString SF_Euclidean_Clustering_Step::getStepURL() const {
+QString SF_Dijkstra_Segmentation_Step::getStepURL() const {
     return tr("");
 }
 
-CT_VirtualAbstractStep* SF_Euclidean_Clustering_Step::createNewInstance(CT_StepInitializeData &dataInit) {
-    return new SF_Euclidean_Clustering_Step(dataInit);
+CT_VirtualAbstractStep* SF_Dijkstra_Segmentation_Step::createNewInstance(CT_StepInitializeData &dataInit) {
+    return new SF_Dijkstra_Segmentation_Step(dataInit);
 }
 
-QStringList SF_Euclidean_Clustering_Step::getStepRISCitations() const {
+QStringList SF_Dijkstra_Segmentation_Step::getStepRISCitations() const {
     QStringList _RIS_citation_list;
     _RIS_citation_list.append(QString("TY  - JOUR\n"
                                       "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
@@ -85,20 +88,39 @@ QStringList SF_Euclidean_Clustering_Step::getStepRISCitations() const {
                                       "PB  - IEEE\n"
                                       "UL  - http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
                                       "ER  - \n"));
+
+    _RIS_citation_list.append(QString("TY  - JOUR\n"
+                                      "T1  - STRUCTURING LASER-SCANNED TREES USING 3D MATHEMATICAL MORPHOLOGY\n"
+                                      "A1  - Gorte, Ben\n"
+                                      "A1  - Pfeifer, Norbert\n"
+                                      "JO  - Section of Photogrammetry and Remote Sensing\n"
+                                      "Y1  - 2004\n"
+                                      "PB  - TU Delft\n"
+                                      "UL  - http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.438.1610&rep=rep1&type=pdf\n"
+                                      "ER  - \n"));
+
+    _RIS_citation_list.append(QString("TY  - JOUR\n"
+                                      "T1  - A note on two problems in connexion with graphs\n"
+                                      "A1  - Dijkstra, Edsger W\n"
+                                      "JO  - Numerische mathematik\n"
+                                      "Y1  - 1959\n"
+                                      "PB  - Springer\n"
+                                      "UL  - https://link.springer.com/article/10.1007%2FBF01386390\n"
+                                      "ER  - \n"));
     return _RIS_citation_list;
 }
 
 
-void SF_Euclidean_Clustering_Step::createInResultModelListProtected() {
+void SF_Dijkstra_Segmentation_Step::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     res_model->setZeroOrMoreRootGroup();
-    res_model->addGroupModel("", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(), tr("Input Cloud Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Point Cloud"));/*
-    res_model->addGroupModel("", DEF_IN_SCENE, CT_AbstractItemGroup::staticGetType(), tr("Input Scene Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    res_model->addItemModel(DEF_IN_SCENE, DEF_IN_SCENE_CLOUD, CT_Scene::staticGetType(), tr("Input Scene"));*/
+    res_model->addGroupModel("", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(), tr("Input Scene Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Scene Cloud"));
+    res_model->addGroupModel("", DEF_IN_SCENE, CT_AbstractItemGroup::staticGetType(), tr("Input Seed Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    res_model->addItemModel(DEF_IN_SCENE, DEF_IN_SCENE_CLOUD, CT_Scene::staticGetType(), tr("Seed Scene"));
 }
 
-void SF_Euclidean_Clustering_Step::createPostConfigurationDialog() {
+void SF_Dijkstra_Segmentation_Step::createPostConfigurationDialog() {
     CT_StepConfigurableDialog *config_dialog = newStandardPostConfigurationDialog();
     config_dialog->addDouble("The cloud is firstly downscaled with voxel size  ", " (m).", 0.01, 10, 4, _voxelSize);
     config_dialog->addDouble("Than an euclidean clustering routine is performed with threshold  ", " (m)." , 0.01, 10, 4, _euclideanDistance);
@@ -106,7 +128,7 @@ void SF_Euclidean_Clustering_Step::createPostConfigurationDialog() {
     createPostConfigurationDialogCitation(config_dialog);
 }
 
-void SF_Euclidean_Clustering_Step::createOutResultModelListProtected() {
+void SF_Dijkstra_Segmentation_Step::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
         res_modelw->addGroupModel(DEF_IN_GRP_CLUSTER, _out_grp_cluster, new CT_StandardItemGroup(), tr ("Euclidean Clustering") );
@@ -114,7 +136,7 @@ void SF_Euclidean_Clustering_Step::createOutResultModelListProtected() {
     }
 }
 
-void SF_Euclidean_Clustering_Step::compute() {
+void SF_Dijkstra_Segmentation_Step::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
@@ -204,7 +226,7 @@ void SF_Euclidean_Clustering_Step::compute() {
     }
 }
 
-void SF_Euclidean_Clustering_Step::createParamList(CT_ResultGroup * out_result) {
+void SF_Dijkstra_Segmentation_Step::createParamList(CT_ResultGroup * out_result) {
     adapt_parameters_to_expert_level();
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     while(!isStopped() && out_res_it.hasNext()) {

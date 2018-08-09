@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -44,11 +44,11 @@
 #include <QString>
 
 #define DEF_IN_RESULT "ires"
-#define DEF_IN_GRP    "igrp"
+#define DEF_IN_GRP_CLUSTER    "igrp"
 #define DEF_IN_RESULT_DTM "idtmres"
 #define DEF_IN_DTMGRP    "igrpdtm"
 #define DEF_IN_DTM    "idtm"
-#define DEF_IN_CLOUD  "icloud"
+#define DEF_IN_CLOUD_SEED  "icloud"
 #define DEF_IN_SCENE    "igrp2"
 #define DEF_IN_SCENE_CLOUD  "icloud2"
 

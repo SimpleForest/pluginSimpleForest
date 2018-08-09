@@ -78,8 +78,8 @@ void SF_Filter_3d_Grid_Sub_Cloud::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     //    assert(res_model != NULL);
     res_model->setZeroOrMoreRootGroup();
-    res_model->addGroupModel("", DEF_IN_GRP);
-    res_model->addItemModel(DEF_IN_GRP, DEF_IN_CLOUD, CT_Scene::staticGetType(), tr("Point Cloud"));
+    res_model->addGroupModel("", DEF_IN_GRP_CLUSTER);
+    res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Point Cloud"));
 }
 
 void SF_Filter_3d_Grid_Sub_Cloud::createPostConfigurationDialog() {
@@ -91,7 +91,7 @@ void SF_Filter_3d_Grid_Sub_Cloud::createPostConfigurationDialog() {
 void SF_Filter_3d_Grid_Sub_Cloud::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
-        res_modelw->addGroupModel(DEF_IN_GRP, _out_grp, new CT_StandardItemGroup(), tr ("voxel") );
+        res_modelw->addGroupModel(DEF_IN_GRP_CLUSTER, _out_grp, new CT_StandardItemGroup(), tr ("voxel") );
         res_modelw->addGroupModel(_out_grp, _out_grp_cluster, new CT_StandardItemGroup(), tr ("cluster") );
         res_modelw->addItemModel(_out_grp_cluster, _out_cloud_cluster, new CT_Scene(), tr("cloud"));
     }
@@ -141,11 +141,11 @@ void SF_Filter_3d_Grid_Sub_Cloud::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
-    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP);
+    CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     while(!isStopped() && out_res_it.hasNext()) {
         std::vector<CT_PointCloudIndexVector *> clusters;
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
-        const CT_Scene* ct_cloud = (const CT_Scene*) group->firstItemByINModelName(this, DEF_IN_CLOUD);
+        const CT_Scene* ct_cloud = (const CT_Scene*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
         add_cloud_to_grid_cluster(ct_cloud, clusters);
         std::sort(clusters.begin(),clusters.end(),sfCompareCTCloudsBySize);
         write_output(out_result, clusters, group);
