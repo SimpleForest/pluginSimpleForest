@@ -197,6 +197,22 @@ struct SF_Param_DTM : public SF_Param_Filter<PointType> {
     }
 };
 
+struct SF_Param_Stem_RANSAC_Filter : public SF_Param_Filter<pcl::PointXYZINormal> {
+    float _voxel_size = 0.01f;
+    float _radius_normal = 0.03f;
+    float _inlierDistance = 0.1f;
+    float _x = 0;
+    float _y = 0;
+    float _z = 1;
+    int _angle = 20;
+    virtual QString to_string() {
+        QString str = "The stem RANSAC filter ";
+        str.append(" is started.");
+        return str;
+    }
+};
+
+
 template <typename PointType>
 struct SF_Param_Stem_Filter : public SF_Param_Filter<PointType> {
     float _voxel_size = 0.02f;

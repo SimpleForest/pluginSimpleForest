@@ -90,7 +90,14 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/filter/multiple/euclideanclustering/sf_euclidean_clustering.h \
     pcl/cloud/filter/multiple/euclideanclustering/sf_euclidean_clustering.hpp \
     steps/filter/multiple/euclideanclustering/sf_euclidean_clustering_step.h \
-    steps/segmentation/dijkstra/sf_dijkstra_segemtation.h
+    steps/segmentation/dijkstra/sf_dijkstra_segemtation.h \
+    pcl/cloud/segmentation/dijkstra/sf_dijkstra.h \
+    pcl/cloud/segmentation/dijkstra/sf_dijkstra.hpp \
+    steps/segmentation/sf_segmentation_step.h \
+    steps/segmentation/voronoi/sf_voronoi_segmentation.h \
+    steps/filter/binary/stem_filter/sf_step_stem_ransac_filter.h \
+    pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.h \
+    steps/filter/binary/stem_filter/sf_step_stem_filter_ransac_adapter.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -115,7 +122,11 @@ SOURCES += \
     converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.cpp \
     steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.cpp \
     steps/filter/multiple/euclideanclustering/sf_euclidean_clustering_step.cpp \
-    steps/segmentation/dijkstra/sf_dijkstra_segemtation.cpp
+    steps/segmentation/dijkstra/sf_dijkstra_segemtation.cpp \
+    steps/segmentation/sf_segmentation_step.cpp \
+    steps/segmentation/voronoi/sf_voronoi_segmentation.cpp \
+    steps/filter/binary/stem_filter/sf_step_stem_ransac_filter.cpp \
+    pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

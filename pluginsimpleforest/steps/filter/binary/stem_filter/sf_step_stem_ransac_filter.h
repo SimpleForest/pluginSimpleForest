@@ -25,19 +25,20 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
+#ifndef SF_STEP_STEM_RANSAC_FILTER_H
+#define SF_STEP_STEM_RANSAC_FILTER_H
 
-#ifndef SF_DIJKSTRA_SEGEMTATION_H
-#define SF_DIJKSTRA_SEGEMTATION_H
+#include "steps/param/sf_abstract_param.h"
+#include "steps/filter/binary/sf_abstract_filter_binary_step.h"
+#include "ct_view/ct_stepconfigurabledialog.h"
+#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
-#include "steps/segmentation/sf_segmentation_step.h"
-
-class SF_Dijkstra_Segmentation_Step: public SF_Segmentation_Step
-{
+class SF_Step_Stem_RANSAC_Filter:  public SF_Abstract_Filter_Binary_Step {
     Q_OBJECT
 
 public:
-    SF_Dijkstra_Segmentation_Step(CT_StepInitializeData &data_init);
-    ~SF_Dijkstra_Segmentation_Step();
+    SF_Step_Stem_RANSAC_Filter(CT_StepInitializeData &data_init);
+    ~SF_Step_Stem_RANSAC_Filter();
     QString getStepDescription() const;
     QString getStepDetailledDescription() const;
     QString getStepURL() const;
@@ -45,20 +46,30 @@ public:
     QStringList getStepRISCitations() const;
 
 protected:
+    QList<SF_Param_Stem_RANSAC_Filter> _param_list;
     void createInResultModelListProtected();
-    void createPostConfigurationDialog();
     void createOutResultModelListProtected();
-    void createPreConfigurationDialog(){}
-    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog){}
-    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog){}
-    void adapt_parameters_to_expert_level(){}
-    void createParamList(CT_ResultGroup * out_result);
+    void adapt_parameters_to_expert_level();
+    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
+    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
     void compute();
+    virtual void write_logger();
 
 private:
-    double _voxelSize = 0.1;
-    double _euclideanDistance = 0.2;
-    double _zFactor = 0.3;
+    QString _less         = "less";
+    QString _intermediate = "intermediate";
+    QString _many         = "many";
+    QString _choice       = _intermediate;
+    double _x = 0;
+    double _y = 0;
+    double _z = 1;
+    double _angle = 25;
+    double _radius_normal = 0.03;
+    double _voxel_size = 0.01;
+    double _size_output = 2;
+    double _inlierDistance = 0.1;
+    void write_output_per_scence(CT_ResultGroup* out_result, size_t i);
+    void write_output(CT_ResultGroup* out_result);
+    void create_param_list(CT_ResultGroup *out_result);
 };
-
-#endif // SF_EUCLIDEAN_CLUSTERING_STEP_H
+#endif

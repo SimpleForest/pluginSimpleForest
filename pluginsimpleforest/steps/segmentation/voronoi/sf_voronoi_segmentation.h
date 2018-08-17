@@ -26,18 +26,18 @@
 
 *****************************************************************************/
 
-#ifndef SF_DIJKSTRA_SEGEMTATION_H
-#define SF_DIJKSTRA_SEGEMTATION_H
+#ifndef SF_VORONOI_SEGMENTATION_H
+#define SF_VORONOI_SEGMENTATION_H
 
 #include "steps/segmentation/sf_segmentation_step.h"
 
-class SF_Dijkstra_Segmentation_Step: public SF_Segmentation_Step
+class SF_Voronoi_Segmentation: public SF_Segmentation_Step
 {
     Q_OBJECT
 
 public:
-    SF_Dijkstra_Segmentation_Step(CT_StepInitializeData &data_init);
-    ~SF_Dijkstra_Segmentation_Step();
+    SF_Voronoi_Segmentation(CT_StepInitializeData &data_init);
+    ~SF_Voronoi_Segmentation();
     QString getStepDescription() const;
     QString getStepDetailledDescription() const;
     QString getStepURL() const;
@@ -56,9 +56,8 @@ protected:
     void compute();
 
 private:
-    double _voxelSize = 0.1;
-    double _euclideanDistance = 0.2;
+    double _euclideanDistance = 0.77;
     double _zFactor = 0.3;
 };
 
-#endif // SF_EUCLIDEAN_CLUSTERING_STEP_H
+#endif // SF_VORONOI_SEGMENTATION_H

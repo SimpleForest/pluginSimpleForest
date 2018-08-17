@@ -9,11 +9,13 @@
 
 #include "steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.h"
 #include "steps/filter/binary/stem_filter/sf_step_stem_filter.h"
+#include "steps/filter/binary/stem_filter/sf_step_stem_ransac_filter.h"
 #include "steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.h"
 #include "steps/filter/binary/ground_filter/sf_step_ground_filter.h"
 #include "steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.h"
 #include "steps/filter/multiple/euclideanclustering/sf_euclidean_clustering_step.h"
 #include "steps/segmentation/dijkstra/sf_dijkstra_segemtation.h"
+#include "steps/segmentation/voronoi/sf_voronoi_segmentation.h"
 #include "steps/dtm/sf_dtm_step.h"
 
 #include "steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.h"
@@ -57,11 +59,13 @@ bool SF_PluginManager::loadGenericsStep() {
     addNewPointsStep<SF_Step_Statistical_Outlier_Removal>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Radius_Outlier_Filter_Step>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Step_Stem_Filter>(CT_StepsMenu::LP_Filter);
+    addNewPointsStep<SF_Step_Stem_RANSAC_Filter>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Step_Ground_Filter>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Step_Cut_Cloud_Above_DTM>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_Filter_3d_Grid_Sub_Cloud>(CT_StepsMenu::LP_Voxels);
     addNewPointsStep<SF_Euclidean_Clustering_Step>(CT_StepsMenu::LP_Clusters);
     addNewPointsStep<SF_Dijkstra_Segmentation_Step>(CT_StepsMenu::LP_Clusters);
+    addNewPointsStep<SF_Voronoi_Segmentation>(CT_StepsMenu::LP_Clusters);
     addNewRastersStep<SF_DTM_Step>(CT_StepsMenu::LP_DEM);
 
     return true;

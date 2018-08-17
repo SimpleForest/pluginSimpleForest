@@ -26,35 +26,32 @@
 
 *****************************************************************************/
 
-#include "sf_dijkstra_segemtation.h"
-#include <pcl/cloud/segmentation/dijkstra/sf_dijkstra.h>
+#include "sf_voronoi_segmentation.h"
 
-SF_Dijkstra_Segmentation_Step::SF_Dijkstra_Segmentation_Step(CT_StepInitializeData &data_init): SF_Segmentation_Step(data_init) {
+SF_Voronoi_Segmentation::SF_Voronoi_Segmentation(CT_StepInitializeData &data_init): SF_Segmentation_Step(data_init) {
 }
 
-SF_Dijkstra_Segmentation_Step::~SF_Dijkstra_Segmentation_Step() {
+SF_Voronoi_Segmentation::~SF_Voronoi_Segmentation() {
 }
 
-QString SF_Dijkstra_Segmentation_Step::getStepDescription() const {
-    return tr("Dikstra Based Tree Segmentation from seeds");
+QString SF_Voronoi_Segmentation::getStepDescription() const {
+    return tr("Voronoi Based Tree Segmentation from seeds");
 }
 
-QString SF_Dijkstra_Segmentation_Step::getStepDetailledDescription() const {
-    return tr("The step takes vegetation points and seed clusters as input. All clusters are tagged with an own id and zero distance, remaining non cluster points are"
-              "initialized with infinity distance. Then a competitive dijkstra is applied. Later all points are tagged with the id from the seed cluster they are connected to."
-              "Before the routine the cloud can be scaled in z-axis to enable easier vertical growth of the dijkstra routine."
-              "If points remain not reached by the dijkstra they are alligned to the closest pre cluster tree by nearest neighbor check.");
+QString SF_Voronoi_Segmentation::getStepDetailledDescription() const {
+    return tr("Rather than computing the Voronoi regions for seeds, distance for the input points to the clustered seeds are computed."
+              "If a closest point pair between input and seeds has distance smaller than a threshold, the input point gets the ID of its closest seed point.");
 }
 
-QString SF_Dijkstra_Segmentation_Step::getStepURL() const {
+QString SF_Voronoi_Segmentation::getStepURL() const {
     return tr("");
 }
 
-CT_VirtualAbstractStep* SF_Dijkstra_Segmentation_Step::createNewInstance(CT_StepInitializeData &dataInit) {
-    return new SF_Dijkstra_Segmentation_Step(dataInit);
+CT_VirtualAbstractStep* SF_Voronoi_Segmentation::createNewInstance(CT_StepInitializeData &dataInit) {
+    return new SF_Voronoi_Segmentation(dataInit);
 }
 
-QStringList SF_Dijkstra_Segmentation_Step::getStepRISCitations() const {
+QStringList SF_Voronoi_Segmentation::getStepRISCitations() const {
     QStringList _RIS_citation_list;
     _RIS_citation_list.append(QString("TY  - JOUR\n"
                                       "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
@@ -85,30 +82,11 @@ QStringList SF_Dijkstra_Segmentation_Step::getStepRISCitations() const {
                                       "PB  - IEEE\n"
                                       "UL  - http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
                                       "ER  - \n"));
-
-    _RIS_citation_list.append(QString("TY  - JOUR\n"
-                                      "T1  - STRUCTURING LASER-SCANNED TREES USING 3D MATHEMATICAL MORPHOLOGY\n"
-                                      "A1  - Gorte, Ben\n"
-                                      "A1  - Pfeifer, Norbert\n"
-                                      "JO  - Section of Photogrammetry and Remote Sensing\n"
-                                      "Y1  - 2004\n"
-                                      "PB  - TU Delft\n"
-                                      "UL  - http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.438.1610&rep=rep1&type=pdf\n"
-                                      "ER  - \n"));
-
-    _RIS_citation_list.append(QString("TY  - JOUR\n"
-                                      "T1  - A note on two problems in connexion with graphs\n"
-                                      "A1  - Dijkstra, Edsger W\n"
-                                      "JO  - Numerische mathematik\n"
-                                      "Y1  - 1959\n"
-                                      "PB  - Springer\n"
-                                      "UL  - https://link.springer.com/article/10.1007%2FBF01386390\n"
-                                      "ER  - \n"));
     return _RIS_citation_list;
 }
 
 
-void SF_Dijkstra_Segmentation_Step::createInResultModelListProtected() {
+void SF_Voronoi_Segmentation::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     res_model->setZeroOrMoreRootGroup();
     res_model->addGroupModel("", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(), tr("Vegetation Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
@@ -117,45 +95,35 @@ void SF_Dijkstra_Segmentation_Step::createInResultModelListProtected() {
     res_model->addItemModel(DEF_IN_SCENE, DEF_IN_SCENE_CLOUD, CT_Scene::staticGetType(), tr("Seed Cloud"));
 }
 
-void SF_Dijkstra_Segmentation_Step::createPostConfigurationDialog() {
-    CT_StepConfigurableDialog *config_dialog = newStandardPostConfigurationDialog();    
+void SF_Voronoi_Segmentation::createPostConfigurationDialog() {
+    CT_StepConfigurableDialog *config_dialog = newStandardPostConfigurationDialog();
     config_dialog->addDouble("The cloud is scaled along the z axis with a factor of  ", ".", 0.1, 1, 1, _zFactor);
-    config_dialog->addDouble("The cloud is downscaled with voxel size  ", " (m).", 0.01, 10, 4, _voxelSize);
-    config_dialog->addDouble("Than a Dijkstra based Segmentation is performed with neighbors connection with range  ", " (m)." , 0.01, 10, 4, _euclideanDistance);
-    config_dialog->addText("Voxel size should be at minimum 2 or 3 times smaller than Dijkstra range.");
+    config_dialog->addDouble("If an input point has a distance to its closest seed point smaller   ", " (m)." , 0.01, 10, 4, _euclideanDistance);
+    config_dialog->addText("it gets the according seed segment ID.");
     createPostConfigurationDialogCitation(config_dialog);
 }
 
-void SF_Dijkstra_Segmentation_Step::createOutResultModelListProtected() {
+void SF_Voronoi_Segmentation::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
-        res_modelw->addItemModel(DEF_IN_SCENE, _out_cloud_cluster, new CT_Scene(), tr("Dijsktra Segmented"));
+        res_modelw->addItemModel(DEF_IN_SCENE, _out_cloud_cluster, new CT_Scene(), tr("Voronoi Segmented"));
     }
 }
 
-void SF_Dijkstra_Segmentation_Step::compute() {
+void SF_Voronoi_Segmentation::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
-
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL(new pcl::PointCloud<pcl::PointXYZI>);
-    pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled(new pcl::PointCloud<pcl::PointXYZI>);
     pcl::PointCloud<pcl::PointXYZI>::Ptr clustersPCL(new pcl::PointCloud<pcl::PointXYZI>);
-    pcl::PointCloud<pcl::PointXYZI>::Ptr clustersPCLDownscaled(new pcl::PointCloud<pcl::PointXYZI>);
     std::vector<size_t> indices;
     std::vector<size_t> indicesCluster;
     std::vector<CT_PointCloudIndexVector *> indexVec;
-
     createPCLCloud(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, out_result, cloudPCL, indices, _zFactor);
     createPCLCloud(DEF_IN_SCENE, DEF_IN_SCENE_CLOUD, out_result, clustersPCL, indicesCluster, _zFactor);
-    downscale(cloudPCL, _voxelSize, cloudPCLDownscaled);
-    downscale(clustersPCL, _voxelSize, clustersPCLDownscaled);
-
-    SF_Dijkstra dijk(cloudPCLDownscaled, clustersPCLDownscaled, _euclideanDistance);
-    int size = getClusterNumber(cloudPCLDownscaled);
+    int size = getClusterNumber(clustersPCL);
     initializeIndexVec(size, indexVec);
-    fillIndexVec(cloudPCL, indexVec, indices, cloudPCLDownscaled,_voxelSize*3);
-
+    fillIndexVec(cloudPCL, indexVec, indices, clustersPCL,_euclideanDistance);
     CT_ResultGroupIterator resultGrpIterator(out_result, this, DEF_IN_SCENE);
     int i = 0;
     while(!isStopped() && resultGrpIterator.hasNext()) {
@@ -168,6 +136,6 @@ void SF_Dijkstra_Segmentation_Step::compute() {
     }
 }
 
-void SF_Dijkstra_Segmentation_Step::createParamList(CT_ResultGroup * out_result) {
+void SF_Voronoi_Segmentation::createParamList(CT_ResultGroup * out_result) {
 
 }
