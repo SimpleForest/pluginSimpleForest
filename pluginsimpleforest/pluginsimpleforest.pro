@@ -97,7 +97,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/segmentation/voronoi/sf_voronoi_segmentation.h \
     steps/filter/binary/stem_filter/sf_step_stem_ransac_filter.h \
     pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.h \
-    steps/filter/binary/stem_filter/sf_step_stem_filter_ransac_adapter.h
+    steps/filter/binary/stem_filter/sf_step_stem_filter_ransac_adapter.h \
+    qsm/sf_model_cylinder_buildingbrick.h \
+    qsm/sf_model_tree.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -126,7 +128,9 @@ SOURCES += \
     steps/segmentation/sf_segmentation_step.cpp \
     steps/segmentation/voronoi/sf_voronoi_segmentation.cpp \
     steps/filter/binary/stem_filter/sf_step_stem_ransac_filter.cpp \
-    pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.cpp
+    pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.cpp \
+    qsm/sf_model_cylinder_buildingbrick.cpp \
+    qsm/sf_model_tree.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

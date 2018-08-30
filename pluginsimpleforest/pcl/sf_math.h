@@ -39,9 +39,12 @@ public:
     static const T _DEG_TO_RAD;
     static T get_angle_between_DEG(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
     static T get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
+    static T getMedian(std::vector<T>& vec);
     SF_Math();
 };
 
 #include "sf_math.hpp"
 
 #endif // SF_MATH_H
+
+

@@ -25,47 +25,27 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_MATH_HPP
-#define SF_MATH_HPP
 
-#include "sf_math.h"
+#ifndef SF_MODEL_CYLINDER_BUILDINGBRICK_H
+#define SF_MODEL_CYLINDER_BUILDINGBRICK_H
 
-template <typename T>
-const T SF_Math<T>::_PI = 3.1415926;
+#include <pcl/ModelCoefficients.h>
+#include <pcl/point_types.h>
+#include "sf_model_abstract_buildingbrick.h"
 
-template <typename T>
-const T SF_Math<T>::_RAD_TO_DEG = 180.0/SF_Math::_PI;
 
-template <typename T>
-const T SF_Math<T>::_DEG_TO_RAD = SF_Math::_PI/180.0;
+class SF_Model_Cylinder_Buildingbrick: public SF_Model_Abstract_Buildingbrick {
+    float _radius;
+protected:
+    virtual float getRadius();
+    virtual float getVolume();
+    virtual float getLength();
+    virtual Eigen::Vector3f getCenter();
+    virtual Eigen::Vector3f getPrincipleDirection();
+public:
+    SF_Model_Cylinder_Buildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB);
+    virtual std::string toString();
+    virtual std::string toHeaderString();
+};
 
-template <typename T>
-T SF_Math<T>::get_angle_between_DEG(Eigen::Vector3f  axis1, Eigen::Vector3f  axis2) {
-    axis1.normalize();
-    axis2.normalize();
-    return acos(axis1.dot(axis2))*SF_Math::_RAD_TO_DEG;
-}
-
-template <typename T>
-T SF_Math<T>::get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
-    axis1.normalize();
-    axis2.normalize();
-    return acos(axis1.dot(axis2));
-}
-
-template<typename T>
-T SF_Math::getMedian(std::vector<T> &vec) {
-    size_t size = vec.size();
-    if (size == 0) {
-        return 0;
-    } else {
-        std::sort(vec.begin(), vec.end());
-        if (size % 2 == 0) {
-            return (vec[size / 2 - 1] + vec[size / 2]) / 2;
-        } else {
-            return vec[size / 2];
-        }
-    }
-}
-
-#endif // SF_MATH_HPP
+#endif // SF_MODEL_CYLINDER_BUILDINGBRICK_H
