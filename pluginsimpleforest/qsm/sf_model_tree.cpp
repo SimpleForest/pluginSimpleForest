@@ -40,6 +40,20 @@ SF_Model_Tree::SF_Model_Tree(int ID):_ID(ID), _species("unknownSpecies") {
 
 }
 
+std::string SF_Model_Tree::toString() {
+    std::string str(std::to_string(_ID));
+    str.append(", ");
+    str.append(_species);
+    str.append("\n");
+    return str;
+}
+
+std::string SF_Model_Tree::toHeaderString() {
+    std::string str("treeID, treeSpecies");
+    str.append("\n");
+    return str;
+}
+
 std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > SF_Model_Tree::getSegments() {
     std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > segments;
     if(_rootSegment!=nullptr) {
@@ -51,8 +65,8 @@ std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > SF_Model_Tree::getSegme
 std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > SF_Model_Tree::getSegments(std::shared_ptr<SF_Model_Abstract_Segment> segment) {
     std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > segments;
     segments.push_back(segment);
-    for(size_t i = 0; i < segments->getChildSegments().size(); i++) {
-        std::shared_ptr<SF_Model_Abstract_Segment> child = segments->getChildSegments()[i];
+    for(size_t i = 0; i < segment->getChildSegments().size(); i++) {
+        std::shared_ptr<SF_Model_Abstract_Segment> child = segment->getChildSegments()[i];
         std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > childSegments = getSegments(child);
         segments.insert( segments.end(), childSegments.begin(), childSegments.end() );
     }

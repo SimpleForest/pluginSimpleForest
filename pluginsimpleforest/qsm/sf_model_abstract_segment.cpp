@@ -26,6 +26,7 @@
 
 *****************************************************************************/
 
+#include "sf_model_tree.h"
 #include "sf_model_abstract_segment.h"
 #include "pcl/sf_math.h"
 
@@ -42,43 +43,38 @@ std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > SF_Model_Abstract
 }
 
 std::string SF_Model_Abstract_Segment::toString() {
-    std::string str(_ID);
+    std::string str(std::to_string(_ID));
     str.append(", ");
     std::shared_ptr<SF_Model_Abstract_Segment> parent = getParent();
     if(parent == nullptr) {
         str.append("-1");
     } else {
-        str.append(parent->getID());
+        str.append(std::to_string(parent->getID()));
     }
     str.append(", ");
-    str.append(getStart()[0]);
+    str.append(std::to_string(getRadius()));
     str.append(", ");
-    str.append(getStart()[1]);
+    str.append(std::to_string(_buildingBricks[_buildingBricks.size()/2]->getGrowthVolume()));
     str.append(", ");
-    str.append(getStart()[2]);
+    str.append(std::to_string(getLength()));
     str.append(", ");
-    str.append(getEnd()[0]);
+    str.append(std::to_string(_buildingBricks[_buildingBricks.size()/2]->getGrowthLength()));
     str.append(", ");
-    str.append(getEnd()[1]);
+    str.append(std::to_string(_branchOrder));
     str.append(", ");
-    str.append(getEnd()[2]);
+    str.append(std::to_string(_reverseBranchOrder));
     str.append(", ");
-    str.append(getRadius());
+    str.append(std::to_string(_reversePipeBranchOrder));
     str.append(", ");
-    str.append(getVolume());
+    str.append(std::to_string(_branchID));
     str.append(", ");
-    str.append(_buildingBricks[_buildingBricks.size()/2]->getGrowthVolume());
-    str.append(", ");
-    str.append(getLength());
-    str.append(", ");
-    str.append(_buildingBricks[_buildingBricks.size()/2]->getGrowthLength());
-    str.append(std::endl);
+    str.append(getTree()->toString());
     return str;
 }
 
 std::string SF_Model_Abstract_Segment::toHeaderString() {
-    std::string str ("segmentID, parentSegmentID, segmentStartX, segmentStartY, segmentStartZ, segmentEndX, segmentEndY, segmentEndZ, segmentRadius, segmentVolume, segmentGrowthVolume, segmentLength, segmentGrowthLength");
-    str.append(std::endl);
+    std::string str ("segmentID, parentSegmentID, segmentMedianRadius, segmentGrowthVolume, segmentGrowthLength, branchOrder, reverseBranchOrder, reversePipeBranchorder, branchID, ");
+    str.append(getTree()->toHeaderString());
     return str;
 }
 
@@ -135,6 +131,10 @@ std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > SF_Model_Abstract_Segme
     return _childSegments;
 }
 
+std::shared_ptr<SF_Model_Tree> SF_Model_Abstract_Segment::getTree() const {
+    return _tree.lock();
+}
+
 int SF_Model_Abstract_Segment::getParentID() {
     std::shared_ptr<SF_Model_Abstract_Segment> parent = getParent();
     if(parent == nullptr) {
@@ -151,6 +151,7 @@ void SF_Model_Abstract_Segment::addChild(std::shared_ptr<SF_Model_Abstract_Segme
 
 void SF_Model_Abstract_Segment::addBuildingBrick(std::shared_ptr<SF_Model_Abstract_Buildingbrick> buildingBrick) {
     buildingBrick->setIndex(_buildingBricks.size());
+    buildingBrick->setSegment(shared_from_this());
     _buildingBricks.push_back(buildingBrick);
 }
 
@@ -160,7 +161,7 @@ std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > SF_Model_Abstract
         children.push_back(_buildingBricks.at(index + 1));
     } else if(index == _buildingBricks.size()-1 ) {
         for(size_t i = 0; i < _childSegments.size(); i ++) {
-            std::shared_ptr<SF_Model_Abstract_Buildingbrick> child = _childSegments.at(i).getBuildingBricks()[0];
+            std::shared_ptr<SF_Model_Abstract_Buildingbrick> child = _childSegments.at(i)->getBuildingBricks()[0];
             children.push_back(child);
         }
     }
@@ -180,6 +181,10 @@ std::shared_ptr<SF_Model_Abstract_Buildingbrick>  SF_Model_Abstract_Segment::get
     return parent;
 }
 
-SF_Model_Abstract_Segment::SF_Model_Abstract_Segment() {
-
+SF_Model_Abstract_Segment::SF_Model_Abstract_Segment(std::shared_ptr<SF_Model_Tree> tree): _tree(tree) {
+    _ID = -1;
+    _branchOrder = -1;
+    _reverseBranchOrder = -1;
+    _reversePipeBranchOrder = -1;
+    _branchID = -1;
 }

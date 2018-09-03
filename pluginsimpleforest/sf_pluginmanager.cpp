@@ -17,6 +17,7 @@
 #include "steps/segmentation/dijkstra/sf_dijkstra_segemtation.h"
 #include "steps/segmentation/voronoi/sf_voronoi_segmentation.h"
 #include "steps/dtm/sf_dtm_step.h"
+#include "steps/qsm/modelling/sf_step_spherefollowing_basic.h"
 
 #include "steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.h"
 
@@ -67,6 +68,7 @@ bool SF_PluginManager::loadGenericsStep() {
     addNewPointsStep<SF_Dijkstra_Segmentation_Step>(CT_StepsMenu::LP_Clusters);
     addNewPointsStep<SF_Voronoi_Segmentation>(CT_StepsMenu::LP_Clusters);
     addNewRastersStep<SF_DTM_Step>(CT_StepsMenu::LP_DEM);
+    addNewGeometricalShapesStep<SF_Step_Spherefollowing_Basic> ("QSM");
 
     return true;
 }

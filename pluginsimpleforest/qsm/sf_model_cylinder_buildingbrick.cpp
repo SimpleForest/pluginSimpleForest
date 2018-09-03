@@ -27,6 +27,8 @@
 *****************************************************************************/
 
 #include "sf_model_cylinder_buildingbrick.h"
+#include "sf_model_abstract_buildingbrick.h"
+#include "sf_model_abstract_segment.h"
 #include "pcl/sf_math.h"
 
 float SF_Model_Cylinder_Buildingbrick::getRadius() {
@@ -62,41 +64,42 @@ SF_Model_Cylinder_Buildingbrick::SF_Model_Cylinder_Buildingbrick(pcl::ModelCoeff
     _end[1] = circleB->values[1];
     _end[2] = circleB->values[2];
     _radius = (circleA->values[3]+circleB->values[3])/2;
+    _fittingType = FittingType::SPHEREFOLLOWING;
 }
 
 std::string SF_Model_Cylinder_Buildingbrick::toString() {
     std::string str("cylinder");
     str.append(", ");
-    str.append(_ID);
+    str.append(std::to_string(_ID));
     str.append(", ");
     std::shared_ptr<SF_Model_Abstract_Buildingbrick> parent = getParent();
     if(parent == nullptr) {
         str.append("-1");
     } else {
-        str.append(parent.getID());
+        str.append(std::to_string(parent->getID()));
     }
     str.append(", ");
-    str.append(_start[0]);
+    str.append(std::to_string(_start[0]));
     str.append(", ");
-    str.append(_start[1]);
+    str.append(std::to_string(_start[1]));
     str.append(", ");
-    str.append(_start[2]);
+    str.append(std::to_string(_start[2]));
     str.append(", ");
-    str.append(_end[0]);
+    str.append(std::to_string(_end[0]));
     str.append(", ");
-    str.append(_end[1]);
+    str.append(std::to_string(_end[1]));
     str.append(", ");
-    str.append(_end[2]);
+    str.append(std::to_string(_end[2]));
     str.append(", ");
-    str.append(_radius);
+    str.append(std::to_string(_radius));
     str.append(", ");
-    str.append(getVolume());
+    str.append(std::to_string(getVolume()));
     str.append(", ");
-    str.append(getGrowthVolume());
+    str.append(std::to_string(getGrowthVolume()));
     str.append(", ");
-    str.append(getLength());
+    str.append(std::to_string(getLength()));
     str.append(", ");
-    str.append(getGrowthLength());
+    str.append(std::to_string(getGrowthLength()));
     str.append(", ");
     std::shared_ptr<SF_Model_Abstract_Segment> segment = getSegment();
     str.append(segment->toString());

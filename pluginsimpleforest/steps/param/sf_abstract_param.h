@@ -212,7 +212,6 @@ struct SF_Param_Stem_RANSAC_Filter : public SF_Param_Filter<pcl::PointXYZINormal
     }
 };
 
-
 template <typename PointType>
 struct SF_Param_Stem_Filter : public SF_Param_Filter<PointType> {
     float _voxel_size = 0.02f;
@@ -238,6 +237,40 @@ struct SF_Param_Stem_Filter : public SF_Param_Filter<PointType> {
         str.append(" and voxel_down_scale_size = ");
         str.append(QString::number(_voxel_size));
         str.append(") is started.");
+        return str;
+    }
+};
+
+template <typename PointType>
+struct SF_Param_Spherefollowing_Basic : public SF_Param_Filter<PointType> {
+    float _euclideanDistance;
+    float _sphereRadiusMultiplier;
+    float _minRadius;
+    float _sphereEpsilon;
+    float _ransacCircleInlierDistance;
+    int _minPtsCircle;
+    float _heightStartSphere;
+    float _voxelSize;
+    Eigen::Vector3d _translation;
+    virtual QString to_string() {
+        QString str = "The SphereFollwing method with parameters (_voxelSize = ";
+        str.append(QString::number(_voxelSize));
+        str.append("; _euclideanDistance = ");
+        str.append(QString::number(_euclideanDistance));
+        str.append("; _sphereRadiusMultiplier = ");
+        str.append(QString::number(_sphereRadiusMultiplier));
+        str.append("; _minRadius = ");
+        str.append(QString::number(_minRadius));
+        str.append("; _sphereEpsilon = ");
+        str.append(QString::number(_sphereEpsilon));
+        str.append("; _ransacCircleInlierDistance = ");
+        str.append(QString::number(_ransacCircleInlierDistance));
+        str.append("; _minPtsCircle = ");
+        str.append(QString::number(_minPtsCircle));
+        str.append("; _heightStartSphere = ");
+        str.append(QString::number(_heightStartSphere));
+        str.append("; _voxelSize = ");
+        str.append(QString::number(_voxelSize));
         return str;
     }
 };

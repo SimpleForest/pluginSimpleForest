@@ -33,7 +33,6 @@
 #include <pcl/point_types.h>
 #include "sf_model_abstract_buildingbrick.h"
 
-
 class SF_Model_Cylinder_Buildingbrick: public SF_Model_Abstract_Buildingbrick {
     float _radius;
 protected:

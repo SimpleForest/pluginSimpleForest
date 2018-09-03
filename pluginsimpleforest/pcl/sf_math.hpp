@@ -46,6 +46,14 @@ T SF_Math<T>::get_angle_between_DEG(Eigen::Vector3f  axis1, Eigen::Vector3f  axi
     return acos(axis1.dot(axis2))*SF_Math::_RAD_TO_DEG;
 }
 
+template<typename T>
+T SF_Math<T>::distance(const Eigen::Vector3f& pointA, const Eigen::Vector3f& pointB) {
+    T distance = std::sqrt( (pointA[0] - pointB[0])*(pointA[0] - pointB[0]) +
+                            (pointA[1] - pointB[1])*(pointA[1] - pointB[1]) +
+                            (pointA[2] - pointB[2])*(pointA[2] - pointB[2]) );
+    return distance;
+}
+
 template <typename T>
 T SF_Math<T>::get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
     axis1.normalize();
@@ -54,7 +62,7 @@ T SF_Math<T>::get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2
 }
 
 template<typename T>
-T SF_Math::getMedian(std::vector<T> &vec) {
+T SF_Math<T>::getMedian(std::vector<T> &vec) {
     size_t size = vec.size();
     if (size == 0) {
         return 0;

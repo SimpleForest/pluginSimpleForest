@@ -26,27 +26,14 @@
 
 *****************************************************************************/
 
-#ifndef SF_MODEL_TREE_H
-#define SF_MODEL_TREE_H
+#ifndef SF_SPHERE_FOLLOWING_H
+#define SF_SPHERE_FOLLOWING_H
 
-#include "sf_model_abstract_segment.h"
 
-class SF_Model_Tree
+class SF_Sphere_Following
 {
-    std::string _species;
-    int _ID;
-    std::shared_ptr<SF_Model_Abstract_Segment> _rootSegment;
-
 public:
-    SF_Model_Tree(int ID);
-    virtual std::string toString();
-    virtual std::string toHeaderString();
-
-    std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > getSegments();
-    std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > getSegments(std::shared_ptr<SF_Model_Abstract_Segment> segment);
-    std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > getBuildingBricks();
-    std::shared_ptr<SF_Model_Abstract_Segment> getRootSegment() const;
-    void setRootSegment(const std::shared_ptr<SF_Model_Abstract_Segment> &rootSegment);
+    SF_Sphere_Following();
 };
 
-#endif // SF_MODEL_TREE_H
+#endif // SF_SPHERE_FOLLOWING_H

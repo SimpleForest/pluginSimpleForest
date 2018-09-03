@@ -46,7 +46,6 @@ public:
         _distance = p2._distance;
         _visited  = p2._visited;
         _point    = p2._point;
-
     }
     Point(pcl::PointXYZI point, float distance): _point(point), _distance(distance) {}
 };

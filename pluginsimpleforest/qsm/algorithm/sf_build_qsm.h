@@ -26,27 +26,32 @@
 
 *****************************************************************************/
 
-#ifndef SF_MODEL_TREE_H
-#define SF_MODEL_TREE_H
+#ifndef SF_BUILD_QSM_H
+#define SF_BUILD_QSM_H
 
-#include "sf_model_abstract_segment.h"
+#include <pcl/octree/octree.h>
 
-class SF_Model_Tree
+#include "pcl/sf_point.h"
+#include "sf_qsm_algorithm.h"
+#include "qsm/sf_model_tree.h"
+
+class SF_Build_QSM
 {
-    std::string _species;
-    int _ID;
-    std::shared_ptr<SF_Model_Abstract_Segment> _rootSegment;
-
+    const float _RESOLUTION = 0.02f;
+    const float _MINEQUALDISTANCE = 0.0001f;
+    std::shared_ptr<SF_Model_Tree> _tree;
+    pcl::octree::OctreePointCloudSearch<SF_Point>::Ptr _octree;
+    std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > _buildingBricks;
 public:
-    SF_Model_Tree(int ID);
-    virtual std::string toString();
-    virtual std::string toHeaderString();
+    SF_Build_QSM(const std::vector<Cylinder> &cylinders, int index);
+    std::shared_ptr<SF_Model_Tree> getTree() const;
+    void setTree(const std::shared_ptr<SF_Model_Tree> &getTree);
 
-    std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > getSegments();
-    std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > getSegments(std::shared_ptr<SF_Model_Abstract_Segment> segment);
-    std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > getBuildingBricks();
-    std::shared_ptr<SF_Model_Abstract_Segment> getRootSegment() const;
-    void setRootSegment(const std::shared_ptr<SF_Model_Abstract_Segment> &rootSegment);
+private:
+    void buildTree(std::shared_ptr<SF_Model_Abstract_Segment> segment);
+    void initializeOctree();
+    void initializeCylinderBuildingBricks(const std::vector<Cylinder> &cylinders);
+    void initializeTree(int index);
 };
 
-#endif // SF_MODEL_TREE_H
+#endif // SF_BUILD_QSM_H

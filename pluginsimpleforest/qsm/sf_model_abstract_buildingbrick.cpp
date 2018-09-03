@@ -27,6 +27,7 @@
 *****************************************************************************/
 
 #include "sf_model_abstract_buildingbrick.h"
+#include "sf_model_abstract_segment.h"
 
 float SF_Model_Abstract_Buildingbrick::getGrowthLength() {
     float  growthLength = getLength();
@@ -81,7 +82,7 @@ Eigen::Vector3f SF_Model_Abstract_Buildingbrick::getEnd() const {
 }
 
 std::shared_ptr<SF_Model_Abstract_Buildingbrick> SF_Model_Abstract_Buildingbrick::getParent() {
-    std::shared_ptr<SF_Model_Abstract_Buildingbrick> parent = segment->getParentBuildingBrick(_indexVector);
+    std::shared_ptr<SF_Model_Abstract_Buildingbrick> parent = getSegment()->getParentBuildingBrick(_indexVector);
     return parent;
 }
 

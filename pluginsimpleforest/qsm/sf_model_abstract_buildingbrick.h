@@ -33,6 +33,8 @@
 #include<memory.h>
 #include<pcl/ModelCoefficients.h>
 
+enum FittingType {UNKNOWN, SPHEREFOLLOWING};
+
 class SF_Model_Abstract_Segment;
 
 class SF_Model_Abstract_Buildingbrick
@@ -43,6 +45,7 @@ protected:
     std::weak_ptr<SF_Model_Abstract_Segment> _segment;
     Eigen::Vector3f _start;
     Eigen::Vector3f _end;
+    FittingType _fittingType;
 
 public:
     SF_Model_Abstract_Buildingbrick();

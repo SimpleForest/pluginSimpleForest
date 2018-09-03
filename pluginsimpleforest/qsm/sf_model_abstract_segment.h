@@ -32,25 +32,30 @@
 #include "sf_model_abstract_buildingbrick.h"
 #include "vector"
 
-class SF_Model_Abstract_Segment: std::enable_shared_from_this<SF_Model_Abstract_Segment> {
+class SF_Model_Tree;
+
+
+
+class SF_Model_Abstract_Segment: public std::enable_shared_from_this<SF_Model_Abstract_Segment> {
     std::weak_ptr<SF_Model_Abstract_Segment> _parent;
+    std::weak_ptr<SF_Model_Tree> _tree;
     std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > _buildingBricks;
     std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > _childSegments;
 protected:
     int _ID;
+    int _branchOrder;
+    int _reverseBranchOrder;
+    int _reversePipeBranchOrder;
+    int _branchID;
     int getParentID();
     std::shared_ptr<SF_Model_Abstract_Segment> getFirstChild();
 public:
+    SF_Model_Abstract_Segment(std::shared_ptr<SF_Model_Tree> tree);
     void addChild(std::shared_ptr<SF_Model_Abstract_Segment> child);
     void addBuildingBrick(std::shared_ptr<SF_Model_Abstract_Buildingbrick> buildingBrick);
-    std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > getChildBuildingBricks(const size_t index);
-    std::shared_ptr<SF_Model_Abstract_Buildingbrick> getParentBuildingBrick(const size_t index);
-    SF_Model_Abstract_Segment();    
-    std::shared_ptr<SF_Model_Abstract_Segment> getParent();
-    void setParent(const std::weak_ptr<SF_Model_Abstract_Segment> &parent);
-    std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > getBuildingBricks() const;
     virtual std::string toString();
     virtual std::string toHeaderString();
+
     Eigen::Vector3f getStart() const;
     Eigen::Vector3f getEnd() const;
     float getRadius() const;
@@ -58,7 +63,13 @@ public:
     float getLength() const;
     int getID() const;
     void setID(int ID);
+    std::shared_ptr<SF_Model_Abstract_Segment> getParent();
+    void setParent(const std::weak_ptr<SF_Model_Abstract_Segment> &parent);
+    std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > getBuildingBricks() const;
     std::vector<std::shared_ptr<SF_Model_Abstract_Segment> > getChildSegments() const;
+    std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > getChildBuildingBricks(const size_t index);
+    std::shared_ptr<SF_Model_Abstract_Buildingbrick> getParentBuildingBrick(const size_t index);
+    std::shared_ptr<SF_Model_Tree> getTree() const;
 };
 
 #endif // SF_MODEL_ABSTRACT_SEGMENT_H
