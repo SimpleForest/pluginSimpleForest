@@ -35,23 +35,25 @@
 #include "sf_qsm_algorithm.h"
 #include "qsm/sf_model_tree.h"
 
-class SF_Build_QSM
-{
+class SF_Build_QSM {
     const float _RESOLUTION = 0.02f;
     const float _MINEQUALDISTANCE = 0.0001f;
     std::shared_ptr<SF_Model_Tree> _tree;
     pcl::octree::OctreePointCloudSearch<SF_Point>::Ptr _octree;
     std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > _buildingBricks;
+
 public:
     SF_Build_QSM(const std::vector<Cylinder> &cylinders, int index);
     std::shared_ptr<SF_Model_Tree> getTree() const;
-    void setTree(const std::shared_ptr<SF_Model_Tree> &getTree);
 
 private:
     void buildTree(std::shared_ptr<SF_Model_Abstract_Segment> segment);
     void initializeOctree();
     void initializeCylinderBuildingBricks(const std::vector<Cylinder> &cylinders);
     void initializeTree(int index);
+    void addBuildingBrickToSegment(const std::vector<int> &pointIdxNKNSearch, std::shared_ptr<SF_Model_Abstract_Segment> segment);
+    void addBuildingBricksToChildSegments(const std::vector<int> &pointIdxNKNSearch, std::shared_ptr<SF_Model_Abstract_Segment> segment);
+    void addChildBuildingbricks(std::shared_ptr<SF_Model_Abstract_Segment> segment, std::vector<int> pointIdxNKNSearch);
 };
 
 #endif // SF_BUILD_QSM_H

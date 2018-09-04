@@ -100,11 +100,13 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/filter/binary/stem_filter/sf_step_stem_filter_ransac_adapter.h \
     qsm/sf_model_cylinder_buildingbrick.h \
     qsm/sf_model_tree.h \
-    qsm/algorithm/sf_sphere_following.h \
     qsm/algorithm/sf_qsm_algorithm.h \
     qsm/algorithm/sf_build_qsm.h \
     steps/qsm/modelling/sf_step_spherefollowing_basic.h \
-    steps/qsm/modelling/sf_step_spherefollowing_basic_adapter.h
+    steps/qsm/modelling/sf_step_spherefollowing_basic_adapter.h \
+    qsm/algorithm/spherefollowing/sf_spherefollowing_parameters.h \
+    qsm/algorithm/spherefollowing/sf_sphere_following.h \
+    qsm/algorithm/sf_qsm_cylinder.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -136,9 +138,9 @@ SOURCES += \
     pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.cpp \
     qsm/sf_model_cylinder_buildingbrick.cpp \
     qsm/sf_model_tree.cpp \
-    qsm/algorithm/sf_sphere_following.cpp \
     qsm/algorithm/sf_build_qsm.cpp \
-    steps/qsm/modelling/sf_step_spherefollowing_basic.cpp
+    steps/qsm/modelling/sf_step_spherefollowing_basic.cpp \
+    qsm/algorithm/spherefollowing/sf_sphere_following.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

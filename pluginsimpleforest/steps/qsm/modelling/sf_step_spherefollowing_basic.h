@@ -3,8 +3,7 @@
 
 #include "steps/segmentation/sf_segmentation_step.h"
 
-class SF_Step_Spherefollowing_Basic: public SF_Segmentation_Step
-{
+class SF_Step_Spherefollowing_Basic: public SF_Segmentation_Step {
     Q_OBJECT
 
 public:
