@@ -50,7 +50,7 @@ void SF_Stem_Filter<PointType>::transfer_stem(const SF_Param_Stem_Filter<PointTy
             axis2[0] = gd_point.normal_x;
             axis2[1] = gd_point.normal_y;
             axis2[2] = gd_point.normal_z;
-            double deg = SF_Math<double>::get_angle_between_DEG(axis1,axis2);
+            double deg = SF_Math<double>::getAngleBetweenDeg(axis1,axis2);
             if(deg < params._angle || deg > (180-params._angle)) {
                 SF_Stem_Filter<PointType>::_cloud_out_filtered->points.push_back(p);
             } else {

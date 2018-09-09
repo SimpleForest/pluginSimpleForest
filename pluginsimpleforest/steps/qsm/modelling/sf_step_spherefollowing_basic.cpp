@@ -30,33 +30,33 @@
 #include "sf_step_spherefollowing_basic_adapter.h"
 #include <QtConcurrent/QtConcurrent>
 
-SF_Step_Spherefollowing_Basic::SF_Step_Spherefollowing_Basic(CT_StepInitializeData &data_init): SF_Segmentation_Step(data_init) {
+SFStepSpherefollowingRoot::SFStepSpherefollowingRoot(CT_StepInitializeData &data_init): SF_Segmentation_Step(data_init) {
     _non_expert_level.append(_low);
     _non_expert_level.append(_medium);
     _non_expert_level.append(_high);
 }
 
-SF_Step_Spherefollowing_Basic::~SF_Step_Spherefollowing_Basic() {
+SFStepSpherefollowingRoot::~SFStepSpherefollowingRoot() {
 }
 
-QString SF_Step_Spherefollowing_Basic::getStepDescription() const {
+QString SFStepSpherefollowingRoot::getStepDescription() const {
     return tr("SphereFollowing Basic");
 }
 
-QString SF_Step_Spherefollowing_Basic::getStepDetailledDescription() const {
+QString SFStepSpherefollowingRoot::getStepDetailledDescription() const {
     return tr("This implementation of the SphereFollowing method utilizes an unsegmented tree cloud. Only one set of parameters will be optimized."
               "Results in a fast QSM estimation with less accuracy. From the QSM a segmentation then is performed on the tree cloud.");
 }
 
-QString SF_Step_Spherefollowing_Basic::getStepURL() const {
+QString SFStepSpherefollowingRoot::getStepURL() const {
     return tr("");
 }
 
-CT_VirtualAbstractStep* SF_Step_Spherefollowing_Basic::createNewInstance(CT_StepInitializeData &dataInit) {
-    return new SF_Step_Spherefollowing_Basic(dataInit);
+CT_VirtualAbstractStep* SFStepSpherefollowingRoot::createNewInstance(CT_StepInitializeData &dataInit) {
+    return new SFStepSpherefollowingRoot(dataInit);
 }
 
-QStringList SF_Step_Spherefollowing_Basic::getStepRISCitations() const {
+QStringList SFStepSpherefollowingRoot::getStepRISCitations() const {
     QStringList _RIS_citation_list;
     _RIS_citation_list.append(QString("TY  - JOUR\n"
                                       "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
@@ -107,14 +107,14 @@ QStringList SF_Step_Spherefollowing_Basic::getStepRISCitations() const {
 }
 
 
-void SF_Step_Spherefollowing_Basic::createInResultModelListProtected() {
+void SFStepSpherefollowingRoot::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
     res_model->setZeroOrMoreRootGroup();
     res_model->addGroupModel("", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(), tr("Tree Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
     res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Tree Cloud"));
 }
 
-void SF_Step_Spherefollowing_Basic::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
+void SFStepSpherefollowingRoot::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog) {
     config_dialog->addDouble("The cloud is downscaled first to  ", " (m). " , 0.005,0.03,4,_voxelSize );
     config_dialog->addDouble("The algorithm is initialized on a close to ground slice with height ", " " , 0.05,0.3,2,_heightStartSphere );
     config_dialog->addInt("At minimum  ", " points are needed to fit a circle",3,20,_minPtsCircle );
@@ -124,18 +124,19 @@ void SF_Step_Spherefollowing_Basic::createPostConfigurationDialogExpert(CT_StepC
     config_dialog->addDouble("Point on sphere surface are clustered with threshold    ", " " , 0.02 ,0.1 , 2, _euclideanDistance );
 }
 
-void SF_Step_Spherefollowing_Basic::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
+void SFStepSpherefollowingRoot::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
     config_dialog->addStringChoice("Choose the quality of the point cloud","",_non_expert_level, _choice);
 }
 
-void SF_Step_Spherefollowing_Basic::createOutResultModelListProtected() {
+void SFStepSpherefollowingRoot::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
         res_modelw->addItemModel(DEF_IN_SCENE, _out_cloud_cluster, new CT_Scene(), tr("Dijsktra Segmented"));
     }
 }
 
-void SF_Step_Spherefollowing_Basic::adapt_parameters_to_expert_level() {
+void SFStepSpherefollowingRoot::adapt_parameters_to_expert_level() {
+
     if(!_is_expert) {
         _euclideanDistance = 0.02;
         _sphereRadiusMultiplier = 2;
@@ -161,7 +162,7 @@ void SF_Step_Spherefollowing_Basic::adapt_parameters_to_expert_level() {
     }
 }
 
-void SF_Step_Spherefollowing_Basic::compute() {
+void SFStepSpherefollowingRoot::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
     identify_and_remove_corrupted_scenes(out_result);
@@ -172,13 +173,13 @@ void SF_Step_Spherefollowing_Basic::compute() {
 //    write_output(out_result);
 }
 
-void SF_Step_Spherefollowing_Basic::createParamList(CT_ResultGroup * out_result) {
+void SFStepSpherefollowingRoot::createParamList(CT_ResultGroup * out_result) {
     adapt_parameters_to_expert_level();
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
-        SF_Param_Spherefollowing_Basic<SF_Point> param;
+        SfParamSpherefollowingBasic<SF_Point> param;
         param._log = PS_LOG;
         param._itemCpy_cloud_in = ct_cloud;
         param._grpCpy_grp = group;

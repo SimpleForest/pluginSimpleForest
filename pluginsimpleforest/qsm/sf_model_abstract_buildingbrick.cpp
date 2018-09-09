@@ -91,6 +91,12 @@ std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > SF_Model_Abstract
     return segment->getChildBuildingBricks(_indexVector);
 }
 
+float SF_Model_Abstract_Buildingbrick::getBoundingSphereRadius() {
+    float halfLength = getLength()/2;
+    float radius = getRadius();
+    return std::sqrt(halfLength*halfLength + radius*radius);
+}
+
 SF_Model_Abstract_Buildingbrick::SF_Model_Abstract_Buildingbrick() {
 
 }

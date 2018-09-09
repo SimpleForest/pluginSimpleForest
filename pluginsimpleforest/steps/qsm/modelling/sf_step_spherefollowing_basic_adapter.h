@@ -29,7 +29,7 @@ public:
     ~SF_Spherefollowing_Basic_Adapter () {
     }
 
-    void operator()(SF_Param_Spherefollowing_Basic<SF_Point> & params) {
+    void operator()(SfParamSpherefollowingBasic<SF_Point> & params) {
         SF_Converter_CT_To_PCL<SF_Point_N> converter;
         {
             QMutexLocker m1(&*mMutex);

@@ -40,7 +40,7 @@ template <typename T>
 const T SF_Math<T>::_DEG_TO_RAD = SF_Math::_PI/180.0;
 
 template <typename T>
-T SF_Math<T>::get_angle_between_DEG(Eigen::Vector3f  axis1, Eigen::Vector3f  axis2) {
+T SF_Math<T>::getAngleBetweenDeg(Eigen::Vector3f  axis1, Eigen::Vector3f  axis2) {
     axis1.normalize();
     axis2.normalize();
     return acos(axis1.dot(axis2))*SF_Math::_RAD_TO_DEG;
@@ -55,7 +55,7 @@ T SF_Math<T>::distance(const Eigen::Vector3f& pointA, const Eigen::Vector3f& poi
 }
 
 template <typename T>
-T SF_Math<T>::get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
+T SF_Math<T>::getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
     axis1.normalize();
     axis2.normalize();
     return acos(axis1.dot(axis2));
@@ -73,6 +73,21 @@ T SF_Math<T>::getMedian(std::vector<T> &vec) {
         } else {
             return vec[size / 2];
         }
+    }
+}
+
+
+template<typename T>
+T SF_Math::getMean(std::vector<T> &vec) {
+    size_t size = vec.size();
+    if (size == 0) {
+        return 0;
+    } else {
+        T sum = 0;
+        for(size_t i = 0; i < vec.size(); i++) {
+            sum += vec[i];
+        }
+        return (sum/vec.size());
     }
 }
 

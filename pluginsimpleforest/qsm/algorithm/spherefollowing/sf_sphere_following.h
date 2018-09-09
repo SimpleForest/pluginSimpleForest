@@ -2,12 +2,11 @@
 #define SF_SPHERE_FOLLOWING_H
 
 #include "sf_spherefollowing_parameters.h"
-#include "
 
-class SF_Sphere_Following {
+class SfSphereFollowing {
 
 public:
-    SF_Sphere_Following();
+    SfSphereFollowing();
 };
 
 #endif // SF_SPHERE_FOLLOWING_H

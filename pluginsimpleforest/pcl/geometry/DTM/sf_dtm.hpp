@@ -109,7 +109,7 @@ bool SF_DTM<PointType>::isValid(const pcl::ModelCoefficients &parentCoeff, const
     zAxis(0) = parentCoeff.values[0];
     zAxis(1) = parentCoeff.values[1];
     zAxis(2) = parentCoeff.values[2];
-    float angle = SF_Math<float>::get_angle_between_DEG(normal,zAxis);
+    float angle = SF_Math<float>::getAngleBetweenDeg(normal,zAxis);
     float maxDelta = std::min(1.0f, gridSize/2);
     bool isHorizontal = ((angle < _maxAngle) || (angle > 180 - _maxAngle));
     bool isGoodHeight = ((childHeights[0]> (parentHeights[0]-maxDelta) ) && (childHeights[1] < (parentHeights[1]+maxDelta) ));

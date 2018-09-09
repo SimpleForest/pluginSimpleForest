@@ -37,10 +37,11 @@ public:
     static const T _PI;
     static const T _RAD_TO_DEG;
     static const T _DEG_TO_RAD;
-    static T get_angle_between_DEG(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
+    static T getAngleBetweenDeg(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
     static T distance(const Eigen::Vector3f& pointA, const Eigen::Vector3f& pointB);
-    static T get_angle_between_RAD(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
+    static T getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
     static T getMedian(std::vector<T>& vec);
+    static T getMean(std::vector<T>& vec);
     SF_Math();
 };
 

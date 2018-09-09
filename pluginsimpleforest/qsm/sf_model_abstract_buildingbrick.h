@@ -32,6 +32,7 @@
 #include<Eigen/Core>
 #include<memory.h>
 #include<pcl/ModelCoefficients.h>
+#include<pcl/point_types.h>
 
 enum FittingType {UNKNOWN, SPHEREFOLLOWING};
 
@@ -46,6 +47,9 @@ protected:
     Eigen::Vector3f _start;
     Eigen::Vector3f _end;
     FittingType _fittingType;
+    virtual float getDistanceToAxis(const pcl::PointXYZ& point) = 0;
+    virtual Eigen::Vector3f getProjectionOnAxis(const pcl::PointXYZ& point) = 0;
+    virtual float getBoundingSphereRadius();
 
 public:
     SF_Model_Abstract_Buildingbrick();
@@ -57,8 +61,9 @@ public:
     virtual float getLength() = 0;
     virtual float getVolume() = 0;
     virtual float getRadius() = 0;
+    virtual float getDistance(const pcl::PointXYZ& point) = 0;
     virtual Eigen::Vector3f getCenter() = 0;
-    virtual Eigen::Vector3f getPrincipleDirection() = 0;
+    virtual Eigen::Vector3f getAxis() = 0;
     virtual std::string toString() = 0;
     virtual std::string toHeaderString() = 0;
 

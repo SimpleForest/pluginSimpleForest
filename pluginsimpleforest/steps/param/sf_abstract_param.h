@@ -32,6 +32,8 @@
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "ct_itemdrawable/ct_image2d.h"
 #include "pcl/sf_point.h"
+#include "qsm/algorithm/spherefollowing/sf_spherefollowing_parameters.h"
+#include "qsm/sf_model_tree.h"
 
 
 //TODO Check standard parameters.
@@ -242,35 +244,44 @@ struct SF_Param_Stem_Filter : public SF_Param_Filter<PointType> {
 };
 
 template <typename PointType>
-struct SF_Param_Spherefollowing_Basic : public SF_Param_Filter<PointType> {
-    float _euclideanDistance;
-    float _sphereRadiusMultiplier;
-    float _minRadius;
-    float _sphereEpsilon;
-    float _ransacCircleInlierDistance;
-    int _minPtsCircle;
-    float _heightStartSphere;
-    float _voxelSize;
+struct SfParamSpherefollowingBasic : public SF_Param_Filter<PointType> {
+    SfSphereFollowingParameters _sfParams;
     Eigen::Vector3d _translation;
+    float _maxError;
+    float _minError;
+    int _fittedCylinders;
+    std::vector<float> _errors;
+    SF_Model_Tree _tree;
     virtual QString to_string() {
         QString str = "The SphereFollwing method with parameters (_voxelSize = ";
-        str.append(QString::number(_voxelSize));
-        str.append("; _euclideanDistance = ");
-        str.append(QString::number(_euclideanDistance));
-        str.append("; _sphereRadiusMultiplier = ");
-        str.append(QString::number(_sphereRadiusMultiplier));
-        str.append("; _minRadius = ");
-        str.append(QString::number(_minRadius));
-        str.append("; _sphereEpsilon = ");
-        str.append(QString::number(_sphereEpsilon));
+        str.append(QString::number(_sfParams._voxelSize;));
         str.append("; _ransacCircleInlierDistance = ");
-        str.append(QString::number(_ransacCircleInlierDistance));
-        str.append("; _minPtsCircle = ");
-        str.append(QString::number(_minPtsCircle));
-        str.append("; _heightStartSphere = ");
-        str.append(QString::number(_heightStartSphere));
-        str.append("; _voxelSize = ");
-        str.append(QString::number(_voxelSize));
+        str.append(QString::number(_sfParams._ransacCircleInlierDistance));
+        str.append("; Higher Dimensional Output Following: { ");
+        for(size_t i = 0; i < _sfParams._paramVec.size(); i++) {
+            str.append("; _euclideanDistance = ");
+            str.append(QString::number(_sfParams._paramVec.at(i)._euclideanDistance));
+            str.append("; _sphereRadiusMultiplier = ");
+            str.append(QString::number(_sfParams._paramVec.at(i)._sphereRadiusMultiplier));
+            str.append("; _minRadius = ");
+            str.append(QString::number(_sfParams._paramVec.at(i)._minRadius));
+            str.append("; _epsilonSphere = ");
+            str.append(QString::number(_sfParams._paramVec.at(i)._epsilonSphere));
+            str.append("; _minPtsCircle = ");
+            str.append(QString::number(_sfParams._paramVec.at(i)._minPtsCircle));
+            str.append("; _heightStartSphere = ");
+            str.append(QString::number(_sfParams._paramVec.at(i)._heightStartSphere));
+        }
+        str.append("}) has been optimized. During the Parameter search ");
+        str.append(QString::number(_sfParams._paramVec.size()*6));
+        str.append("}) have been optimized.");
+        str.append("The error has been reduced from max:");
+        str.append(QString::number(_maxError));
+        str.append("to min:");
+        str.append(QString::number(_minError));
+        str.append(". During the procedure a number of ");
+        str.append(QString::number(_fittedCylinders));
+        str.append("have been fitted.");
         return str;
     }
 };

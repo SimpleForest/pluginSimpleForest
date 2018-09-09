@@ -2,7 +2,7 @@
 #define SF_QSM_CYLINDER_H
 
 #include <pcl/ModelCoefficients.h>
-
+#include "
 struct QSMDetectionCylinder {
     float _distance;
     pcl::ModelCoefficients::Ptr _circleA;

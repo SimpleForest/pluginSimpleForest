@@ -106,7 +106,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/qsm/modelling/sf_step_spherefollowing_basic_adapter.h \
     qsm/algorithm/spherefollowing/sf_spherefollowing_parameters.h \
     qsm/algorithm/spherefollowing/sf_sphere_following.h \
-    qsm/algorithm/sf_qsm_cylinder.h
+    qsm/algorithm/sf_qsm_cylinder.h \
+    qsm/algorithm/distance/sf_cloud_to_model_distance.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -140,7 +141,8 @@ SOURCES += \
     qsm/sf_model_tree.cpp \
     qsm/algorithm/sf_build_qsm.cpp \
     steps/qsm/modelling/sf_step_spherefollowing_basic.cpp \
-    qsm/algorithm/spherefollowing/sf_sphere_following.cpp
+    qsm/algorithm/spherefollowing/sf_sphere_following.cpp \
+    qsm/algorithm/distance/sf_cloud_to_model_distance.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

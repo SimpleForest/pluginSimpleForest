@@ -3,12 +3,12 @@
 
 #include "steps/segmentation/sf_segmentation_step.h"
 
-class SF_Step_Spherefollowing_Basic: public SF_Segmentation_Step {
+class SFStepSpherefollowingRoot: public SF_Segmentation_Step {
     Q_OBJECT
 
 public:
-    SF_Step_Spherefollowing_Basic(CT_StepInitializeData &data_init);
-    ~SF_Step_Spherefollowing_Basic();
+    SFStepSpherefollowingRoot(CT_StepInitializeData &data_init);
+    ~SFStepSpherefollowingRoot();
     QString getStepDescription() const;
     QString getStepDetailledDescription() const;
     QString getStepURL() const;
@@ -23,7 +23,7 @@ protected:
     void adapt_parameters_to_expert_level();
     void createParamList(CT_ResultGroup * out_result);
     void compute();
-    QList<SF_Param_Spherefollowing_Basic<SF_Point> > _param_list;
+    QList<SfParamSpherefollowingBasic<SF_Point> > _param_list;
 
 private:
     double _euclideanDistance = 0.03;

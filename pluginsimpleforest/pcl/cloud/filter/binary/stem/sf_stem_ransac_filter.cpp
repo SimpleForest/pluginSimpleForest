@@ -78,7 +78,7 @@ void SF_Stem_RANSAC_Filter::addInliers(pcl::PointCloud<pcl::PointXYZINormal>::Pt
         cylinderAxis[0] = coeffCylinder->values[3];
         cylinderAxis[1] = coeffCylinder->values[4];
         cylinderAxis[2] = coeffCylinder->values[5];
-        float angle =  SF_Math<float>::get_angle_between_DEG(zAxis, cylinderAxis);
+        float angle =  SF_Math<float>::getAngleBetweenDeg(zAxis, cylinderAxis);
         if(!(angle>_params._angle && angle < (180-_params._angle)) ) {
             *lastCoeffCylinder = *coeffCylinder;
             for (size_t j = 0; j < inliersCylinder->indices.size (); ++j)

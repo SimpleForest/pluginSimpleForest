@@ -45,12 +45,54 @@ float SF_Model_Cylinder_Buildingbrick::getLength() {
     return length;
 }
 
+float SF_Model_Cylinder_Buildingbrick::getDistance(const pcl::PointXYZ &point) {
+    float distToAxis = getDistanceToAxis(point);
+    float distToSegment = getProjectedDistanceToSegment(point);
+    float fac = - 1;
+    if(distToAxis < _radius ) fac = 1;
+    float distToHull = distToAxis - _radius;
+    float distance = fac * (std::sqrt((distToHull*distToHull)+(distToSegment*distToSegment)));
+    return distance;
+}
+
+float SF_Model_Cylinder_Buildingbrick::getDistanceToAxis(const pcl::PointXYZ &point) {
+    Eigen::Vector3f pointEigen (point.x, point.y, point.z);
+    Eigen::Vector3f a = pointEigen-_start;
+    Eigen::Vector3f b = pointEigen-_end;
+    Eigen::Vector3f c = _end-_start;
+    return ((a.cross(b)).norm())/(c.norm());
+}
+#include "pcl/sf_math.h"
+float SF_Model_Cylinder_Buildingbrick::getProjectedDistanceToSegment(const pcl::PointXYZ &point) {
+    Eigen::Vector3f projection = getProjectionOnAxis(point);
+    float distToStart = SF_Math<float>::distance(_start,projection);
+    float distToEnd   = SF_Math<float>::distance(_end,projection);
+    float length      = getLength();
+    if(distToStart<=length && distToEnd <= length) {
+        return 0;
+    }
+    return std::min(distToStart, distToEnd);
+}
+
+float SF_Model_Cylinder_Buildingbrick::getDistanceToInfinitHull(const pcl::PointXYZ &point) {
+    return getDistanceToAxis(point)-radius;
+}
+
+Eigen::Vector3f SF_Model_Cylinder_Buildingbrick::getProjectionOnAxis(const pcl::PointXYZ &point) {
+    Eigen::Vector3f x0 (point.x, point.y, point.z);
+    Eigen::Vector3f x1 = getStart();
+    Eigen::Vector3f x2 = getEnd();
+    Eigen::Vector3f a = x0-x1;
+    Eigen::Vector3f b = x2-x1;
+    return (x1 + (a.norm()/b.norm())*b);
+}
+
 Eigen::Vector3f SF_Model_Cylinder_Buildingbrick::getCenter() {
     Eigen::Vector3f center((_start[0] + _end[0])/2, (_start[1] + _end[1])/2, (_start[2] + _end[2])/2);
     return center;
 }
 
-Eigen::Vector3f SF_Model_Cylinder_Buildingbrick::getPrincipleDirection() {
+Eigen::Vector3f SF_Model_Cylinder_Buildingbrick::getAxis() {
     Eigen::Vector3f principleDirection((_end[0] - _start[0]), (_end[1] - _start[1]), (_end[2] - _start[2]));
     return principleDirection;
 }
