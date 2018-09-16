@@ -27,7 +27,7 @@
 *****************************************************************************/
 #include "sf_abstract_filter_binary_step.h"
 
-SF_Abstract_Filter_Binary_Step::SF_Abstract_Filter_Binary_Step(CT_StepInitializeData &data_init): SF_Abstract_Filter_Step(data_init)
+SF_Abstract_Filter_Binary_Step::SF_Abstract_Filter_Binary_Step(CT_StepInitializeData &data_init): SF_AbstractFilterStep(data_init)
 {
 
 }

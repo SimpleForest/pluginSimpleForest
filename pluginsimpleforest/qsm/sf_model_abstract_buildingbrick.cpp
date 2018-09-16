@@ -53,6 +53,16 @@ size_t SF_Model_Abstract_Buildingbrick::getIndex() const {
     return _indexVector;
 }
 
+float SF_Model_Abstract_Buildingbrick::getDistance(const pcl::PointXYZ &point) {
+    Eigen::Vector3f p(point.x, point.y, point.z);
+    return getDistance(p);
+}
+
+float SF_Model_Abstract_Buildingbrick::getDistance(const pcl::PointXYZINormal &point) {
+    Eigen::Vector3f p(point.x, point.y, point.z);
+    return getDistance(p);
+}
+
 void SF_Model_Abstract_Buildingbrick::setIndex(const size_t &index) {
     _indexVector = index;
 }

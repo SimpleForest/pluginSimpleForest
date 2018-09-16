@@ -26,6 +26,8 @@
 
 *****************************************************************************/
 
+#include <Eigen/Dense>
+
 #include "sf_model_cylinder_buildingbrick.h"
 #include "sf_model_abstract_buildingbrick.h"
 #include "sf_model_abstract_segment.h"
@@ -41,11 +43,13 @@ float SF_Model_Cylinder_Buildingbrick::getVolume() {
 }
 
 float SF_Model_Cylinder_Buildingbrick::getLength() {
-    float length = std::sqrt((_start[0] - _end[0])*(_start[0] - _end[0]) + (_start[1] - _end[1])*(_start[1] - _end[1]) + (_start[2] - _end[2])*(_start[2] - _end[2]));
+    float length = std::sqrt((_start[0] - _end[0])*(_start[0] - _end[0]) +
+                             (_start[1] - _end[1])*(_start[1] - _end[1]) +
+                             (_start[2] - _end[2])*(_start[2] - _end[2]));
     return length;
 }
 
-float SF_Model_Cylinder_Buildingbrick::getDistance(const pcl::PointXYZ &point) {
+float SF_Model_Cylinder_Buildingbrick::getDistance(const Eigen::Vector3f &point) {
     float distToAxis = getDistanceToAxis(point);
     float distToSegment = getProjectedDistanceToSegment(point);
     float fac = - 1;
@@ -55,15 +59,15 @@ float SF_Model_Cylinder_Buildingbrick::getDistance(const pcl::PointXYZ &point) {
     return distance;
 }
 
-float SF_Model_Cylinder_Buildingbrick::getDistanceToAxis(const pcl::PointXYZ &point) {
-    Eigen::Vector3f pointEigen (point.x, point.y, point.z);
-    Eigen::Vector3f a = pointEigen-_start;
-    Eigen::Vector3f b = pointEigen-_end;
+float SF_Model_Cylinder_Buildingbrick::getDistanceToAxis(const Eigen::Vector3f &point) {
+    Eigen::Vector3f a = point-_start;
+    Eigen::Vector3f b = point-_end;
     Eigen::Vector3f c = _end-_start;
-    return ((a.cross(b)).norm())/(c.norm());
+    Eigen::Vector3f d = a.cross(b);
+    return d.norm()/c.norm();
 }
-#include "pcl/sf_math.h"
-float SF_Model_Cylinder_Buildingbrick::getProjectedDistanceToSegment(const pcl::PointXYZ &point) {
+
+float SF_Model_Cylinder_Buildingbrick::getProjectedDistanceToSegment(const Eigen::Vector3f &point) {
     Eigen::Vector3f projection = getProjectionOnAxis(point);
     float distToStart = SF_Math<float>::distance(_start,projection);
     float distToEnd   = SF_Math<float>::distance(_end,projection);
@@ -74,12 +78,12 @@ float SF_Model_Cylinder_Buildingbrick::getProjectedDistanceToSegment(const pcl::
     return std::min(distToStart, distToEnd);
 }
 
-float SF_Model_Cylinder_Buildingbrick::getDistanceToInfinitHull(const pcl::PointXYZ &point) {
-    return getDistanceToAxis(point)-radius;
+float SF_Model_Cylinder_Buildingbrick::getDistanceToInfinitHull(const Eigen::Vector3f &point) {
+    return getDistanceToAxis(point)-_radius;
 }
 
-Eigen::Vector3f SF_Model_Cylinder_Buildingbrick::getProjectionOnAxis(const pcl::PointXYZ &point) {
-    Eigen::Vector3f x0 (point.x, point.y, point.z);
+Eigen::Vector3f SF_Model_Cylinder_Buildingbrick::getProjectionOnAxis(const Eigen::Vector3f &point) {
+    Eigen::Vector3f x0 = point;
     Eigen::Vector3f x1 = getStart();
     Eigen::Vector3f x2 = getEnd();
     Eigen::Vector3f a = x0-x1;

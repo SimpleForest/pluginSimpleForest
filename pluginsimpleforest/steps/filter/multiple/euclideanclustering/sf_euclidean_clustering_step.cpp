@@ -30,7 +30,7 @@
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/segmentation/extract_clusters.h>
 
-SF_Euclidean_Clustering_Step::SF_Euclidean_Clustering_Step(CT_StepInitializeData &data_init): SF_Abstract_Filter_Multiple_Step(data_init) {
+SF_Euclidean_Clustering_Step::SF_Euclidean_Clustering_Step(CT_StepInitializeData &data_init): SF_AbstractFilterMultipleStep(data_init) {
 
 }
 
@@ -109,15 +109,15 @@ void SF_Euclidean_Clustering_Step::createPostConfigurationDialog() {
 void SF_Euclidean_Clustering_Step::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
-        res_modelw->addGroupModel(DEF_IN_SCENE, _out_grp_cluster, new CT_StandardItemGroup(), tr ("Euclidean Clustering") );
-        res_modelw->addItemModel(_out_grp_cluster, _out_cloud_cluster, new CT_Scene(), tr("Tree seeds"));
+        res_modelw->addGroupModel(DEF_IN_SCENE, _outGrpCluster, new CT_StandardItemGroup(), tr ("Euclidean Clustering") );
+        res_modelw->addItemModel(_outGrpCluster, _outCloudCluster, new CT_Scene(), tr("Tree seeds"));
     }
 }
 
 void SF_Euclidean_Clustering_Step::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
-    identify_and_remove_corrupted_scenes(out_result);
+    identifyAndRemoveCorruptedScenes(out_result);
 
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL(new pcl::PointCloud<pcl::PointXYZI>);
@@ -192,10 +192,10 @@ void SF_Euclidean_Clustering_Step::compute() {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it2.next();
         for(size_t i = 0; i < indexVec.size(); i++) {
             if(indexVec[i]->size() > _minPts ) {
-                CT_StandardItemGroup* cloud_grp = new CT_StandardItemGroup(_out_grp_cluster.completeName(), out_result );
+                CT_StandardItemGroup* cloud_grp = new CT_StandardItemGroup(_outGrpCluster.completeName(), out_result );
                 group->addGroup(cloud_grp);
                 indexVec[i]->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
-                CT_Scene* outScene = new CT_Scene(_out_cloud_cluster.completeName(), out_result, PS_REPOSITORY->registerPointCloudIndex(indexVec[i]) );
+                CT_Scene* outScene = new CT_Scene(_outCloudCluster.completeName(), out_result, PS_REPOSITORY->registerPointCloudIndex(indexVec[i]) );
                 outScene->updateBoundingBox();
                 cloud_grp->addItemDrawable(outScene);
             }
@@ -204,7 +204,7 @@ void SF_Euclidean_Clustering_Step::compute() {
 }
 
 void SF_Euclidean_Clustering_Step::createParamList(CT_ResultGroup * out_result) {
-    adapt_parameters_to_expert_level();
+    adaptParametersToExpertLevel();
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_SCENE);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
@@ -214,8 +214,8 @@ void SF_Euclidean_Clustering_Step::createParamList(CT_ResultGroup * out_result) 
         param._cellSize = _voxelSize;
         param._euclideanDistance = _euclideanDistance;
         param._minSize = _minPts;
-        param._itemCpy_cloud_in = ct_cloud;
-        param._grpCpy_grp = group;
-        _param_list.append(param);
+        param._itemCpyCloudIn = ct_cloud;
+        param._grpCpyGrp = group;
+        _paramList.append(param);
     }
 }

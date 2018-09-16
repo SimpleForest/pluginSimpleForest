@@ -45,14 +45,14 @@ public:
     QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_Param_Radius_Outlier_Filter<SF_Point_N> > _param_list;
+    QList<SF_Param_Radius_Outlier_Filter<SF_Point_N> > _paramList;
     void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
     void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
     void createInResultModelListProtected();
     void createOutResultModelListProtected();
     void compute();
-    virtual void write_logger();
-    void adapt_parameters_to_expert_level();
+    virtual void writeLogger();
+    void adaptParametersToExpertLevel();
 
 private:
     QString _less         = "less";

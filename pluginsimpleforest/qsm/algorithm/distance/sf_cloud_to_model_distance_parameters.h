@@ -26,25 +26,30 @@
 
 *****************************************************************************/
 
-#ifndef SF_QSM_ALGORITHM_H
-#define SF_QSM_ALGORITHM_H
+#ifndef SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
+#define SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
 
-#include <boost/heap/fibonacci_heap.hpp>
+enum SF_CLoudToModelDistanceMethod {ZEROMOMENTUMORDER,
+                                   FIRSTMOMENTUMORDERMSAC,
+                                   FIRSTMOMENTUMORDER,
+                                   SECONDMOMENTUMORDERMSAC,
+                                   SECONDMOMENTUMORDER};
 
-#include "sf_qsm_cylinder.h"
-#include "pcl/sf_math.h"
-
-struct heapDataCylinder;
-
-using HeapCylinder = boost::heap::fibonacci_heap<heapDataCylinder>;
-
-struct heapDataCylinder {
-    SF_QSMDetectionCylinder _cylinder;
-    HeapCylinder::handle_type handle;
-    heapDataCylinder(SF_QSMDetectionCylinder cylinder): _cylinder(cylinder),handle() {}
-    bool operator<(heapDataCylinder const & second) const {
-        return _cylinder._distance < second._cylinder._distance;
+struct SF_CloudToModelDistanceParameters {
+    int   _method           = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC;
+    float _inlierDistance   = 0.05f;
+    int   _robustPercentage = 100;
+    int   _k                = 5;
+    SF_CloudToModelDistanceParameters (){}
+    SF_CloudToModelDistanceParameters (SF_CLoudToModelDistanceMethod &method,
+                                       float inlierDistance,
+                                       int k,
+                                       int percentage) {
+        _method           = method;
+        _inlierDistance   = inlierDistance;
+        _k                = k;
+        _robustPercentage = percentage;
     }
 };
 
-#endif // SF_QSM_ALGORITHM_H
+#endif // SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H

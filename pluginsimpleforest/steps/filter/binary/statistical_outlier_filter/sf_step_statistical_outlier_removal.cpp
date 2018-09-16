@@ -31,9 +31,9 @@
 #include <QtConcurrent/QtConcurrent>
 
 SF_Step_Statistical_Outlier_Removal::SF_Step_Statistical_Outlier_Removal(CT_StepInitializeData &data_init): SF_Abstract_Filter_Binary_Step(data_init) {
-    _non_expert_level.append(_less);
-    _non_expert_level.append(_intermediate);
-    _non_expert_level.append(_many);
+    _nonExpertLevel.append(_less);
+    _nonExpertLevel.append(_intermediate);
+    _nonExpertLevel.append(_many);
 }
 
 SF_Step_Statistical_Outlier_Removal::~SF_Step_Statistical_Outlier_Removal() {
@@ -109,7 +109,7 @@ void SF_Step_Statistical_Outlier_Removal::createPostConfigurationDialogExpert(CT
 }
 
 void SF_Step_Statistical_Outlier_Removal::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
-    config_dialog->addStringChoice("Choose how many points should be removed","",_non_expert_level, _choice);
+    config_dialog->addStringChoice("Choose how many points should be removed","",_nonExpertLevel, _choice);
     config_dialog->addText("Low resulted clouds are affected more.");
 }
 
@@ -124,8 +124,8 @@ void SF_Step_Statistical_Outlier_Removal::createOutResultModelListProtected() {
     }
 }
 
-void SF_Step_Statistical_Outlier_Removal::adapt_parameters_to_expert_level() {
-    if(!_is_expert) {
+void SF_Step_Statistical_Outlier_Removal::adaptParametersToExpertLevel() {
+    if(!_isExpert) {
         if(_choice == _less) {
             _k = 9;
             _std_mult = 4;
@@ -144,17 +144,17 @@ void SF_Step_Statistical_Outlier_Removal::adapt_parameters_to_expert_level() {
 
 
 void SF_Step_Statistical_Outlier_Removal::write_output_per_scence(CT_ResultGroup* out_result, size_t i) {
-    SF_Param_Statistical_Outlier_Filter<SF_Point> param = _param_list.at(i);
-    std::vector<CT_PointCloudIndexVector *> output_index_list = create_output_vectors(param._size_output);
-    create_output_indices(output_index_list, param._output_indices, param._itemCpy_cloud_in);
+    SF_Param_Statistical_Outlier_Filter<SF_Point> param = _paramList.at(i);
+    std::vector<CT_PointCloudIndexVector *> output_index_list = createOutputVectors(param._size_output);
+    createOutputIndices(output_index_list, param._output_indices, param._itemCpyCloudIn);
     CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
-    param._grpCpy_grp->addGroup(filter_grp);
-    add_scene_in_subgrp_to_grp(filter_grp, _out_cloud.completeName(),_out_grp_cloud.completeName(), out_result, output_index_list[0]);
-    add_scene_in_subgrp_to_grp(filter_grp, _out_noise.completeName(), _out_grp_noise.completeName(), out_result, output_index_list[1]);
+    param._grpCpyGrp->addGroup(filter_grp);
+    addSceneInSubgrpToGrp(filter_grp, _out_cloud.completeName(),_out_grp_cloud.completeName(), out_result, output_index_list[0]);
+    addSceneInSubgrpToGrp(filter_grp, _out_noise.completeName(), _out_grp_noise.completeName(), out_result, output_index_list[1]);
 }
 
 void SF_Step_Statistical_Outlier_Removal::write_output(CT_ResultGroup* out_result) {
-    size_t size = _param_list.size();
+    size_t size = _paramList.size();
     for(size_t i = 0; i < size; i ++) {
         write_output_per_scence(out_result, i);
     }
@@ -163,23 +163,23 @@ void SF_Step_Statistical_Outlier_Removal::write_output(CT_ResultGroup* out_resul
 void SF_Step_Statistical_Outlier_Removal::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
-    identify_and_remove_corrupted_scenes(out_result);
+    identifyAndRemoveCorruptedScenes(out_result);
     create_param_list(out_result);
-    write_logger();
-    QFuture<void> future = QtConcurrent::map(_param_list,SF_Statistical_Outlier_Removal_Adapter() );
-    set_progress_by_future(future,10,85);
+    writeLogger();
+    QFuture<void> future = QtConcurrent::map(_paramList,SF_Statistical_Outlier_Removal_Adapter() );
+    setProgressByFuture(future,10,85);
     write_output(out_result);
 }
 
-void SF_Step_Statistical_Outlier_Removal::write_logger() {
-    if(!_param_list.empty()) {
-        QString str = _param_list[0].to_string();
+void SF_Step_Statistical_Outlier_Removal::writeLogger() {
+    if(!_paramList.empty()) {
+        QString str = _paramList[0].toString();
         PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);
     }
 }
 
 void SF_Step_Statistical_Outlier_Removal::create_param_list(CT_ResultGroup * out_result) {
-    adapt_parameters_to_expert_level();
+    adaptParametersToExpertLevel();
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
@@ -190,8 +190,8 @@ void SF_Step_Statistical_Outlier_Removal::create_param_list(CT_ResultGroup * out
         param._k = _k;
         param._std_mult = _std_mult;
         param._size_output = 2;
-        param._itemCpy_cloud_in = ct_cloud;
-        param._grpCpy_grp = group;
-        _param_list.append(param);
+        param._itemCpyCloudIn = ct_cloud;
+        param._grpCpyGrp = group;
+        _paramList.append(param);
     }
 }

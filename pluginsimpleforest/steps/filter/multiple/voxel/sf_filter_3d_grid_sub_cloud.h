@@ -32,7 +32,7 @@
 
 #include "steps/filter/multiple/sf_abstract_filter_multiple_step.h"
 
-class SF_Filter_3d_Grid_Sub_Cloud: public SF_Abstract_Filter_Multiple_Step
+class SF_Filter_3d_Grid_Sub_Cloud: public SF_AbstractFilterMultipleStep
 {
     Q_OBJECT
 
@@ -52,7 +52,7 @@ protected:
     void createPreConfigurationDialog(){}
     void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog){}
     void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog){}
-    void adapt_parameters_to_expert_level(){}
+    void adaptParametersToExpertLevel(){}
     void compute();
 
 private:

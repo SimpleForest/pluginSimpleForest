@@ -37,19 +37,19 @@ class SF_Model_Cylinder_Buildingbrick: public SF_Model_Abstract_Buildingbrick {
     float _radius;
 
 protected:
-    float getDistanceToAxis(const pcl::PointXYZ& point) override;
-    float getProjectedDistanceToSegment(const pcl::PointXYZ &point);
-    float getDistanceToInfinitHull(const pcl::PointXYZ& point);
-    Eigen::Vector3f getProjectionOnAxis(const pcl::PointXYZ& point) override;
+    float getDistanceToAxis(const Eigen::Vector3f& point) override;
+    float getProjectedDistanceToSegment(const Eigen::Vector3f &point);
+    float getDistanceToInfinitHull(const Eigen::Vector3f& point);
+    Eigen::Vector3f getProjectionOnAxis(const Eigen::Vector3f& point) override;
 
 public:
     SF_Model_Cylinder_Buildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB);
-    virtual std::string toString() override;
-    virtual std::string toHeaderString() override;
+    std::string toString() override;
+    std::string toHeaderString() override;
     float getRadius() override;
     float getVolume() override;
     float getLength() override;
-    float getDistance(const pcl::PointXYZ& point) override;
+    float getDistance(const Eigen::Vector3f& point) override;
     virtual Eigen::Vector3f getCenter() override;
     virtual Eigen::Vector3f getAxis() override;
 };

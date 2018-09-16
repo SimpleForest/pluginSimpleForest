@@ -33,11 +33,11 @@
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/segmentation/extract_clusters.h>
 
-class SF_Segmentation_Step: public SF_Abstract_Filter_Multiple_Step
+class SF_SegmentationStep: public SF_AbstractFilterMultipleStep
 {
     Q_OBJECT
 public:
-    SF_Segmentation_Step(CT_StepInitializeData &data_init);
+    SF_SegmentationStep(CT_StepInitializeData &data_init);
 protected:
     Eigen::Vector3d _centerOfMass;
     bool _first = true;

@@ -56,7 +56,7 @@ public:
         SF_Converter_CT_To_PCL<pcl::PointXYZ> converterCloud;
         {
             QMutexLocker m1(&*mMutex);
-            converterCloud.setItemCpyCloudIn(params._itemCpy_cloud_in);
+            converterCloud.setItemCpyCloudIn(params._itemCpyCloudIn);
         }
         converterCloud.compute();
         float _cutHeight;

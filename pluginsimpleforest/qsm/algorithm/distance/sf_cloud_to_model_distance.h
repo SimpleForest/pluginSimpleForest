@@ -31,35 +31,39 @@
 
 #include <pcl/kdtree/kdtree_flann.h>
 #include "qsm/sf_model_tree.h"
+#include "sf_cloud_to_model_distance_parameters.h"
 
-enum SFCLoudToModelDistanceMethod {ZEROMOMENTUMORDER,
-                                   FIRSTMOMENTUMORDERMSAC,
-                                   FIRSTMOMENTUMORDER,
-                                   SECONDMOMENTUMORDERMSAC,
-                                   SECONDMOMENTUMORDER};
-
-class SfCloudToModelDistance {
-    const SFCLoudToModelDistanceMethod _METHOD;
-    const float _INLIERDISTANCE;
-    float _k;
+class Sf_CloudToModelDistance {
+    int _METHOD;
+    int _percentage;
+    int _k;
+    float _INLIERDISTANCE;
     float _averageDistance;
+    std::vector<float> _distances;
     std::shared_ptr<SF_Model_Tree> _tree;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr _cloud;
-    pcl::KdTreeFLANN<pcl::PointXYZ>::Ptr _kdtreeQSM;
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr _cloud;
+    pcl::KdTreeFLANN<pcl::PointXYZINormal>::Ptr _kdtreeQSM;
 
+    void initializeKdTree();
+    void compute();
+    const std::vector<float> cropDistances(std::vector<float> distances);
     const float getDistance(const pcl::PointXYZ &point, std::shared_ptr<SF_Model_Abstract_Buildingbrick> buildingBrick);
+    const float getDistance(const pcl::PointXYZINormal &point, std::shared_ptr<SF_Model_Abstract_Buildingbrick> buildingBrick);
     const std::vector<float> getCloudToModelDistances();
     const float getNumberInliers(const std::vector<float> &distances);
     const float adaptDistanceToMethod(float distance);
-    void initializeKdTree();
-    void compute();
 
 public:
-    SfCloudToModelDistance(std::shared_ptr<SF_Model_Tree> tree,
-                           pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                           SFCLoudToModelDistanceMethod &method,
+    Sf_CloudToModelDistance(std::shared_ptr<SF_Model_Tree> tree,
+                           pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
+                           SF_CLoudToModelDistanceMethod &method,
                            float inlierDistance,
-                           int k);
+                           int k,
+                            int percentage);
+    Sf_CloudToModelDistance(std::shared_ptr<SF_Model_Tree> tree,
+                           pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
+                           const SF_CloudToModelDistanceParameters &params);
+    float getAverageDistance() const;
 };
 
 #endif // SF_CLOUD_TO_MODEL_DISTANCE_H

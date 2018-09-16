@@ -28,7 +28,7 @@
 
 #include "sf_voronoi_segmentation.h"
 
-SF_Voronoi_Segmentation::SF_Voronoi_Segmentation(CT_StepInitializeData &data_init): SF_Segmentation_Step(data_init) {
+SF_Voronoi_Segmentation::SF_Voronoi_Segmentation(CT_StepInitializeData &data_init): SF_SegmentationStep(data_init) {
 }
 
 SF_Voronoi_Segmentation::~SF_Voronoi_Segmentation() {
@@ -106,14 +106,14 @@ void SF_Voronoi_Segmentation::createPostConfigurationDialog() {
 void SF_Voronoi_Segmentation::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
-        res_modelw->addItemModel(DEF_IN_SCENE, _out_cloud_cluster, new CT_Scene(), tr("Voronoi Segmented"));
+        res_modelw->addItemModel(DEF_IN_SCENE, _outCloudCluster, new CT_Scene(), tr("Voronoi Segmented"));
     }
 }
 
 void SF_Voronoi_Segmentation::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
-    identify_and_remove_corrupted_scenes(out_result);
+    identifyAndRemoveCorruptedScenes(out_result);
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL(new pcl::PointCloud<pcl::PointXYZI>);
     pcl::PointCloud<pcl::PointXYZI>::Ptr clustersPCL(new pcl::PointCloud<pcl::PointXYZI>);
     std::vector<size_t> indices;
@@ -129,7 +129,7 @@ void SF_Voronoi_Segmentation::compute() {
     while(!isStopped() && resultGrpIterator.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) resultGrpIterator.next();
         indexVec[i]->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
-        CT_Scene* outScene = new CT_Scene(_out_cloud_cluster.completeName(), out_result, PS_REPOSITORY->registerPointCloudIndex(indexVec[i]) );
+        CT_Scene* outScene = new CT_Scene(_outCloudCluster.completeName(), out_result, PS_REPOSITORY->registerPointCloudIndex(indexVec[i]) );
         outScene->updateBoundingBox();
         group->addItemDrawable(outScene);
         i++;

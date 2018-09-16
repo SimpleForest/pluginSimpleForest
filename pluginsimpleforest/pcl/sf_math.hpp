@@ -78,7 +78,7 @@ T SF_Math<T>::getMedian(std::vector<T> &vec) {
 
 
 template<typename T>
-T SF_Math::getMean(std::vector<T> &vec) {
+T SF_Math<T>::getMean(std::vector<T> &vec) {
     size_t size = vec.size();
     if (size == 0) {
         return 0;

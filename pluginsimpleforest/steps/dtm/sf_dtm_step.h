@@ -35,7 +35,7 @@
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 #include "ct_itemdrawable/ct_image2d.h"
 
-class SF_DTM_Step:  public SF_Abstract_Step {
+class SF_DTM_Step:  public SF_AbstractStep {
     Q_OBJECT
 
 public:
@@ -52,11 +52,11 @@ public:
 protected:
     void createInResultModelListProtected();
     void createOutResultModelListProtected();
-    void adapt_parameters_to_expert_level();
+    void adaptParametersToExpertLevel();
     void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
     void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
     void compute();
-    virtual void write_logger();
+    virtual void writeLogger();
 
 private:
     QString _less         = "no slope";

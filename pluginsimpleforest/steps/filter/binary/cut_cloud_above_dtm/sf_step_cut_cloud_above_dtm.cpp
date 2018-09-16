@@ -113,7 +113,7 @@ void SF_Step_Cut_Cloud_Above_DTM::createPostConfigurationDialogBeginner(CT_StepC
 }
 
 void SF_Step_Cut_Cloud_Above_DTM::createPreConfigurationDialog() {
-    _is_expert = true;
+    _isExpert = true;
 }
 
 void SF_Step_Cut_Cloud_Above_DTM::createOutResultModelListProtected() {
@@ -127,21 +127,21 @@ void SF_Step_Cut_Cloud_Above_DTM::createOutResultModelListProtected() {
     }
 }
 
-void SF_Step_Cut_Cloud_Above_DTM::adapt_parameters_to_expert_level() {
+void SF_Step_Cut_Cloud_Above_DTM::adaptParametersToExpertLevel() {
 }
 
 void SF_Step_Cut_Cloud_Above_DTM::write_output_per_scence(CT_ResultGroup* out_result, size_t i) {
-    SF_Param_DTM_Height<pcl::PointXYZ> param = _param_list.at(i);
-    std::vector<CT_PointCloudIndexVector *> output_index_list = create_output_vectors(param._size_output);
-    create_output_indices(output_index_list, param._output_indices, param._itemCpy_cloud_in);
+    SF_Param_DTM_Height<pcl::PointXYZ> param = _paramList.at(i);
+    std::vector<CT_PointCloudIndexVector *> output_index_list = createOutputVectors(param._size_output);
+    createOutputIndices(output_index_list, param._output_indices, param._itemCpyCloudIn);
     CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
-    param._grpCpy_grp->addGroup(filter_grp);
-    add_scene_in_subgrp_to_grp(filter_grp, _out_cloud.completeName(),_out_grp_cloud.completeName(), out_result, output_index_list[0]);
-    add_scene_in_subgrp_to_grp(filter_grp, _out_noise.completeName(), _out_grp_noise.completeName(), out_result, output_index_list[1]);
+    param._grpCpyGrp->addGroup(filter_grp);
+    addSceneInSubgrpToGrp(filter_grp, _out_cloud.completeName(),_out_grp_cloud.completeName(), out_result, output_index_list[0]);
+    addSceneInSubgrpToGrp(filter_grp, _out_noise.completeName(), _out_grp_noise.completeName(), out_result, output_index_list[1]);
 }
 
 void SF_Step_Cut_Cloud_Above_DTM::write_output(CT_ResultGroup* out_result) {
-    size_t size = _param_list.size();
+    size_t size = _paramList.size();
     for(size_t i = 0; i < size; i ++) {
         write_output_per_scence(out_result, i);
     }
@@ -150,15 +150,15 @@ void SF_Step_Cut_Cloud_Above_DTM::write_output(CT_ResultGroup* out_result) {
 void SF_Step_Cut_Cloud_Above_DTM::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
-    identify_and_remove_corrupted_scenes(out_result);
+    identifyAndRemoveCorruptedScenes(out_result);
     create_param_list(out_result);
-    QFuture<void> future = QtConcurrent::map(_param_list,SF_Step_Cut_Above_DTM_Adapter() );
-    set_progress_by_future(future,10,85);
-    write_logger();
+    QFuture<void> future = QtConcurrent::map(_paramList,SF_Step_Cut_Above_DTM_Adapter() );
+    setProgressByFuture(future,10,85);
+    writeLogger();
     write_output(out_result);
 }
 
-void SF_Step_Cut_Cloud_Above_DTM::write_logger() {
+void SF_Step_Cut_Cloud_Above_DTM::writeLogger() {
     QString str = "The DTM has been cut above DTM.";
     PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);
 }
@@ -167,7 +167,7 @@ void SF_Step_Cut_Cloud_Above_DTM::create_param_list(CT_ResultGroup * out_result)
     CT_ResultGroup * inDTMResult = getInputResults().at(0);
     CT_ResultItemIterator iterDTM(inDTMResult, this, DEF_IN_DTM);
     CT_Image2D<float> * dtm = (CT_Image2D<float> *) iterDTM.next();
-    adapt_parameters_to_expert_level();
+    adaptParametersToExpertLevel();
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
@@ -177,8 +177,8 @@ void SF_Step_Cut_Cloud_Above_DTM::create_param_list(CT_ResultGroup * out_result)
         param._dtmCT = dtm;
         param._cropHeight = _cutHeight;
         param._size_output = 2;
-        param._itemCpy_cloud_in = ct_cloud;
-        param._grpCpy_grp = group;
-        _param_list.append(param);
+        param._itemCpyCloudIn = ct_cloud;
+        param._grpCpyGrp = group;
+        _paramList.append(param);
     }
 }

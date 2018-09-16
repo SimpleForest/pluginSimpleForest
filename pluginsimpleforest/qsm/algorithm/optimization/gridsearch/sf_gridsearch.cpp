@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,22 +25,29 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_STEP_H
-#define SF_ABSTRACT_FILTER_STEP_H
-#include <steps/sf_abstract_step.h>
 
-class SF_AbstractFilterStep: public SF_AbstractStep
-{
-public:
+#include <cmath>
 
-    SF_AbstractFilterStep(CT_StepInitializeData & data_init);
+#include "sf_gridsearch.h"
 
-protected:
-    void addSceneToGrp(CT_StandardItemGroup* cloud_grp, const QString & out_cloud_complete_name, CT_PointCloudIndexVector *ct_point_cloud_index, CT_ResultGroup* out_result);
+const int SF_GridSearch::size(const int nDim, const int res) {
+    int size = static_cast<int>(std::pow(res, nDim));
+    return size;
+}
 
-    void addSceneInSubgrpToGrp(CT_StandardItemGroup* filter_grp, const QString &out_cloud_complete_name, const QString &sub_grp_complete_name, CT_ResultGroup* out_result,
-                                    CT_PointCloudIndexVector * ct_point_cloud_index);
+void SF_GridSearch::restrictSearchSpace() {
+    int max = _params._maxNumberSearches;
+    int size = size(_params._nDimensions, _params._resolution);
+    while(size > max) {
+        _params._resolution = _params._resolution - 1;
+        size = size(_params._nDimensions, _params._resolution);
+    }
+}
 
-};
+SF_GridSearch::SF_GridSearch() {
 
-#endif // SF_ABSTRACT_FILTER_STEP_H
+}
+
+void SF_GridSearch::compute() {
+
+}

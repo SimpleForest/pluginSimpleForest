@@ -31,7 +31,7 @@
 
 #include "steps/segmentation/sf_segmentation_step.h"
 
-class SF_Voronoi_Segmentation: public SF_Segmentation_Step
+class SF_Voronoi_Segmentation: public SF_SegmentationStep
 {
     Q_OBJECT
 
@@ -51,7 +51,7 @@ protected:
     void createPreConfigurationDialog(){}
     void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog){}
     void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog){}
-    void adapt_parameters_to_expert_level(){}
+    void adaptParametersToExpertLevel(){}
     void createParamList(CT_ResultGroup * out_result);
     void compute();
 

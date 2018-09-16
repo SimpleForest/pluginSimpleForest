@@ -29,7 +29,7 @@
 
 #include <algorithm>
 
-SF_Filter_3d_Grid_Sub_Cloud::SF_Filter_3d_Grid_Sub_Cloud(CT_StepInitializeData &data_init): SF_Abstract_Filter_Multiple_Step(data_init) {
+SF_Filter_3d_Grid_Sub_Cloud::SF_Filter_3d_Grid_Sub_Cloud(CT_StepInitializeData &data_init): SF_AbstractFilterMultipleStep(data_init) {
 
 }
 
@@ -91,15 +91,15 @@ void SF_Filter_3d_Grid_Sub_Cloud::createPostConfigurationDialog() {
 void SF_Filter_3d_Grid_Sub_Cloud::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *res_modelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(res_modelw != NULL) {
-        res_modelw->addGroupModel(DEF_IN_GRP_CLUSTER, _out_grp, new CT_StandardItemGroup(), tr ("voxel") );
-        res_modelw->addGroupModel(_out_grp, _out_grp_cluster, new CT_StandardItemGroup(), tr ("cluster") );
-        res_modelw->addItemModel(_out_grp_cluster, _out_cloud_cluster, new CT_Scene(), tr("cloud"));
+        res_modelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outGrp, new CT_StandardItemGroup(), tr ("voxel") );
+        res_modelw->addGroupModel(_outGrp, _outGrpCluster, new CT_StandardItemGroup(), tr ("cluster") );
+        res_modelw->addItemModel(_outGrpCluster, _outCloudCluster, new CT_Scene(), tr("cloud"));
     }
 }
 
 CT_Grid3D_Sparse<int> * SF_Filter_3d_Grid_Sub_Cloud::create_grid3d_from_scene(const CT_Scene* ct_cloud, double voxel_size) {
-    Eigen::Vector3f min = get_min(ct_cloud);
-    Eigen::Vector3f max = get_max(ct_cloud);
+    Eigen::Vector3f min = getMin(ct_cloud);
+    Eigen::Vector3f max = getMax(ct_cloud);
     CT_Grid3D_Sparse<int>* hit_grid = CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords( NULL,NULL,min(0),min(1),min(2)
                                                                                         ,max(0), max(1), max(2),voxel_size, -2,-1);
     return hit_grid;
@@ -140,7 +140,7 @@ void SF_Filter_3d_Grid_Sub_Cloud::add_cloud_to_grid_cluster(const CT_Scene* ct_c
 void SF_Filter_3d_Grid_Sub_Cloud::compute() {
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
-    identify_and_remove_corrupted_scenes(out_result);
+    identifyAndRemoveCorruptedScenes(out_result);
     CT_ResultGroupIterator out_res_it(out_result, this, DEF_IN_GRP_CLUSTER);
     while(!isStopped() && out_res_it.hasNext()) {
         std::vector<CT_PointCloudIndexVector *> clusters;
@@ -148,6 +148,6 @@ void SF_Filter_3d_Grid_Sub_Cloud::compute() {
         const CT_Scene* ct_cloud = (const CT_Scene*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
         add_cloud_to_grid_cluster(ct_cloud, clusters);
         std::sort(clusters.begin(),clusters.end(),sfCompareCTCloudsBySize);
-        write_output(out_result, clusters, group);
+        writeOutput(out_result, clusters, group);
     }
 }

@@ -34,10 +34,10 @@
 #include "pcl/geometry/DTM/sf_dtm.h"
 #include "pcl/filters/voxel_grid.h"
 
-SF_DTM_Step::SF_DTM_Step(CT_StepInitializeData &data_init): SF_Abstract_Step(data_init) {
-    _non_expert_level.append(_less);
-    _non_expert_level.append(_intermediate);
-    _non_expert_level.append(_many);
+SF_DTM_Step::SF_DTM_Step(CT_StepInitializeData &data_init): SF_AbstractStep(data_init) {
+    _nonExpertLevel.append(_less);
+    _nonExpertLevel.append(_intermediate);
+    _nonExpertLevel.append(_many);
 }
 
 SF_DTM_Step::~SF_DTM_Step() {
@@ -115,7 +115,7 @@ void SF_DTM_Step::createPostConfigurationDialogExpert(CT_StepConfigurableDialog 
 }
 
 void SF_DTM_Step::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog) {
-    config_dialog->addStringChoice("Choose the slope of the terrain","",_non_expert_level, _choice);
+    config_dialog->addStringChoice("Choose the slope of the terrain","",_nonExpertLevel, _choice);
 }
 
 void SF_DTM_Step::createOutResultModelListProtected() {
@@ -127,9 +127,9 @@ void SF_DTM_Step::createOutResultModelListProtected() {
     }
 }
 
-void SF_DTM_Step::adapt_parameters_to_expert_level() {
+void SF_DTM_Step::adaptParametersToExpertLevel() {
     _radius_normal = std::max(3*_voxel_size,_radius_normal);
-    if(!_is_expert) {
+    if(!_isExpert) {
         if(_choice == _less) {
             _angle = 10;
             _radius_normal = 0.15;
@@ -179,10 +179,10 @@ void SF_DTM_Step::copyCroppedHeights(pcl::PointCloud<pcl::PointXYZINormal>::Ptr 
 }
 
 void SF_DTM_Step::compute() {
-    adapt_parameters_to_expert_level();
+    adaptParametersToExpertLevel();
     const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
     CT_ResultGroup * out_result = out_result_list.at(0);
-    identify_and_remove_corrupted_scenes(out_result);
+    identifyAndRemoveCorruptedScenes(out_result);
     CT_ResultGroupIterator iter(out_result,this, DEF_IN_SCENE);
     CT_StandardItemGroup* root = (CT_StandardItemGroup*) iter.next();
     CT_StandardItemGroup* terrainGrp = new CT_StandardItemGroup( _outGroundGRP.completeName(), out_result);
@@ -220,10 +220,10 @@ void SF_DTM_Step::compute() {
     terrainGrp->addItemDrawable(dtmMedianSmoothed);
     delete dtmTrueResolution;
     delete dtm;
-    write_logger();
+    writeLogger();
 }
 
-void SF_DTM_Step::write_logger() {
+void SF_DTM_Step::writeLogger() {
     QString str = "The DTM was modelled with a cell size of ";
     str.append(QString::number(_radius_normal));
     str.append(" (m).");

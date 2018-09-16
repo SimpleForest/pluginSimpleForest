@@ -49,12 +49,12 @@ public:
 protected:
     void createInResultModelListProtected();
     void createOutResultModelListProtected();
-    void adapt_parameters_to_expert_level();
+    void adaptParametersToExpertLevel();
     void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
     void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
     void compute();
-    QList<SF_Param_Statistical_Outlier_Filter<SF_Point> > _param_list;
-    virtual void write_logger();
+    QList<SF_Param_Statistical_Outlier_Filter<SF_Point> > _paramList;
+    virtual void writeLogger();
 
 private:
     QString _less = "less";

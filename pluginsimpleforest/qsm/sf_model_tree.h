@@ -31,8 +31,7 @@
 
 #include "sf_model_abstract_segment.h"
 
-class SF_Model_Tree
-{
+class SF_Model_Tree {
     std::string _species;
     int _ID;
     std::shared_ptr<SF_Model_Abstract_Segment> _rootSegment;

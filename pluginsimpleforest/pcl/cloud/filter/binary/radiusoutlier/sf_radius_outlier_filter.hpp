@@ -52,7 +52,7 @@ template <typename PointType>
 void SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(typename SF_Param_Radius_Outlier_Filter<PointType> std_params) {
     if(std_params._radius>0.1f) {
         SF_Converter_CT_To_PCL<PointType> converter;
-        converter.setItemCpyCloudIn(std_params._itemCpy_cloud_in);
+        converter.setItemCpyCloudIn(std_params._itemCpyCloudIn);
         pcl::PointCloud<PointType>::Ptr downscaled_cloud (new pcl::PointCloud<PointType>);
         converter.down_scale(std_params._radius/5,downscaled_cloud);
         pcl::PointCloud<PointType>::Ptr downscaled_cloud_neighbors_number  (new pcl::PointCloud<PointType>);

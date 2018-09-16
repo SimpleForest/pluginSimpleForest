@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,22 +25,21 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_STEP_H
-#define SF_ABSTRACT_FILTER_STEP_H
-#include <steps/sf_abstract_step.h>
 
-class SF_AbstractFilterStep: public SF_AbstractStep
+#ifndef SF_GRIDSEARCH_H
+#define SF_GRIDSEARCH_H
+
+#include "sf_gridsearchparameters.h"
+
+class SF_GridSearch
 {
-public:
-
-    SF_AbstractFilterStep(CT_StepInitializeData & data_init);
-
 protected:
-    void addSceneToGrp(CT_StandardItemGroup* cloud_grp, const QString & out_cloud_complete_name, CT_PointCloudIndexVector *ct_point_cloud_index, CT_ResultGroup* out_result);
-
-    void addSceneInSubgrpToGrp(CT_StandardItemGroup* filter_grp, const QString &out_cloud_complete_name, const QString &sub_grp_complete_name, CT_ResultGroup* out_result,
-                                    CT_PointCloudIndexVector * ct_point_cloud_index);
-
+    SF_GridSearchParameters _params;
+    const int size(const int nDim, const int res);
+    void restrictSearchSpace();
+public:
+    SF_GridSearch();
+    void compute();
 };
 
-#endif // SF_ABSTRACT_FILTER_STEP_H
+#endif // SF_GRIDSEARCH_H

@@ -33,6 +33,7 @@
 
 #include "pcl/sf_point.h"
 #include "sf_qsm_algorithm.h"
+#include "sf_qsm_cylinder.h"
 #include "qsm/sf_model_tree.h"
 
 class SF_Build_QSM {
@@ -43,13 +44,13 @@ class SF_Build_QSM {
     std::vector<std::shared_ptr<SF_Model_Abstract_Buildingbrick> > _buildingBricks;
 
 public:
-    SF_Build_QSM(const std::vector<Cylinder> &cylinders, int index);
+    SF_Build_QSM(const std::vector<SF_QSMDetectionCylinder> &cylinders, int index);
     std::shared_ptr<SF_Model_Tree> getTree() const;
 
 private:
     void buildTree(std::shared_ptr<SF_Model_Abstract_Segment> segment);
     void initializeOctree();
-    void initializeCylinderBuildingBricks(const std::vector<Cylinder> &cylinders);
+    void initializeCylinderBuildingBricks(const std::vector<SF_QSMDetectionCylinder> &cylinders);
     void initializeTree(int index);
     void addBuildingBrickToSegment(const std::vector<int> &pointIdxNKNSearch, std::shared_ptr<SF_Model_Abstract_Segment> segment);
     void addBuildingBricksToChildSegments(const std::vector<int> &pointIdxNKNSearch, std::shared_ptr<SF_Model_Abstract_Segment> segment);

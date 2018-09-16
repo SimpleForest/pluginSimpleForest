@@ -33,17 +33,17 @@ inline bool sfCompareCTCloudsBySize(CT_PointCloudIndexVector * cloud1, CT_PointC
     return(cloud1->size()>cloud2->size());
 }
 
-class SF_Abstract_Filter_Multiple_Step: public SF_Abstract_Filter_Step
+class SF_AbstractFilterMultipleStep: public SF_AbstractFilterStep
 {
 public:
-    SF_Abstract_Filter_Multiple_Step(CT_StepInitializeData & data_init);
+    SF_AbstractFilterMultipleStep(CT_StepInitializeData & data_init);
 
 protected:
-    CT_AutoRenameModels _out_grp;
-    CT_AutoRenameModels _out_grp_cluster;
-    CT_AutoRenameModels _out_cloud_cluster;
-    void write_output_per_scence(CT_ResultGroup* out_result, CT_PointCloudIndexVector *output_cluster, CT_StandardItemGroup *group);
-    void write_output(CT_ResultGroup* out_result, std::vector<CT_PointCloudIndexVector *> cluster_vec, CT_StandardItemGroup *group);
+    CT_AutoRenameModels _outGrp;
+    CT_AutoRenameModels _outGrpCluster;
+    CT_AutoRenameModels _outCloudCluster;
+    void writeOutputPerScence(CT_ResultGroup* out_result, CT_PointCloudIndexVector *output_cluster, CT_StandardItemGroup *group);
+    void writeOutput(CT_ResultGroup* out_result, std::vector<CT_PointCloudIndexVector *> cluster_vec, CT_StandardItemGroup *group);
 };
 
 #endif // SF_ABSTRACT_FILTER_MULTIPLE_STEP_H

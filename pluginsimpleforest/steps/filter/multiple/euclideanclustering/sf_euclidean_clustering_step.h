@@ -31,7 +31,7 @@
 
 #include "steps/filter/multiple/sf_abstract_filter_multiple_step.h"
 
-class SF_Euclidean_Clustering_Step: public SF_Abstract_Filter_Multiple_Step
+class SF_Euclidean_Clustering_Step: public SF_AbstractFilterMultipleStep
 {
     Q_OBJECT
 
@@ -52,7 +52,7 @@ protected:
     void createPreConfigurationDialog(){}
     void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog){}
     void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog){}
-    void adapt_parameters_to_expert_level(){}
+    void adaptParametersToExpertLevel(){}
     void createParamList(CT_ResultGroup * out_result);
     void compute();
 

@@ -31,7 +31,7 @@
 
 #include "steps/segmentation/sf_segmentation_step.h"
 
-class SF_Dijkstra_Segmentation_Step: public SF_Segmentation_Step
+class SF_Dijkstra_Segmentation_Step: public SF_SegmentationStep
 {
     Q_OBJECT
 
@@ -49,9 +49,9 @@ protected:
     void createPostConfigurationDialog();
     void createOutResultModelListProtected();
     void createPreConfigurationDialog(){}
-    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog){}
-    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog){}
-    void adapt_parameters_to_expert_level(){}
+    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog){config_dialog;}
+    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog){config_dialog;}
+    void adaptParametersToExpertLevel(){}
     void createParamList(CT_ResultGroup * out_result);
     void compute();
 

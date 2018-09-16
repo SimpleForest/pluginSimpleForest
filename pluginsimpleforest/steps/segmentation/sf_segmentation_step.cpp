@@ -28,17 +28,17 @@
 
 #include "sf_segmentation_step.h"
 
-SF_Segmentation_Step::SF_Segmentation_Step(CT_StepInitializeData &data_init): SF_Abstract_Filter_Multiple_Step(data_init) {
+SF_SegmentationStep::SF_SegmentationStep(CT_StepInitializeData &data_init): SF_AbstractFilterMultipleStep(data_init) {
 }
 
-void SF_Segmentation_Step::initializeIndexVec(size_t size, std::vector<CT_PointCloudIndexVector *>& indexVec) {
+void SF_SegmentationStep::initializeIndexVec(size_t size, std::vector<CT_PointCloudIndexVector *>& indexVec) {
     for(size_t i = 0; i < size; i++) {
         CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
         indexVec.push_back(mergedClouds);
     }
 }
 
-void SF_Segmentation_Step::createPCLCloud(const QString& clusterGrpStr, const QString& clusterStr, CT_ResultGroup* out_result,
+void SF_SegmentationStep::createPCLCloud(const QString& clusterGrpStr, const QString& clusterStr, CT_ResultGroup* out_result,
                                           pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL, std::vector<size_t>& indices, float factor) {
     CT_ResultGroupIterator out_res_it(out_result, this, clusterGrpStr);
     int clusterID = 0;
@@ -66,7 +66,7 @@ void SF_Segmentation_Step::createPCLCloud(const QString& clusterGrpStr, const QS
     }
 }
 
-int SF_Segmentation_Step::getClusterNumber(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled) {
+int SF_SegmentationStep::getClusterNumber(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled) {
     int size = 0;
     for(int i = 0; i < cloudPCLDownscaled->points.size(); i++) {
         if(cloudPCLDownscaled->points[i].intensity + 1 > size) {
@@ -76,7 +76,7 @@ int SF_Segmentation_Step::getClusterNumber(pcl::PointCloud<pcl::PointXYZI>::Ptr 
     return size;
 }
 
-void SF_Segmentation_Step::downscale(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL, float voxelSize, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled) {
+void SF_SegmentationStep::downscale(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL, float voxelSize, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled) {
     pcl::VoxelGrid<pcl::PointXYZI> sor;
     sor.setInputCloud (cloudPCL);
     sor.setLeafSize (voxelSize, voxelSize, voxelSize);
@@ -93,7 +93,7 @@ void SF_Segmentation_Step::downscale(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudP
     }
 }
 
-void SF_Segmentation_Step::fillIndexVec(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL, std::vector<CT_PointCloudIndexVector *>& indexVec,
+void SF_SegmentationStep::fillIndexVec(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL, std::vector<CT_PointCloudIndexVector *>& indexVec,
                                         std::vector<size_t>& indices, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled, float maxRange) {
     pcl::search::KdTree<pcl::PointXYZI>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZI>);
     kdtree->setInputCloud (cloudPCLDownscaled);

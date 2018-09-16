@@ -30,7 +30,7 @@
 
 #include <steps/filter/sf_abstract_filter_step.h>
 
-class SF_Abstract_Filter_Binary_Step: public SF_Abstract_Filter_Step
+class SF_Abstract_Filter_Binary_Step: public SF_AbstractFilterStep
 {
 public:
 

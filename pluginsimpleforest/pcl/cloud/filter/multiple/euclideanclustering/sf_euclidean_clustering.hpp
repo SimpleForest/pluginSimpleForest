@@ -37,7 +37,7 @@
 template <typename PointType>
 Sf_Euclidean_Clustering<PointType>::convertAndDownScale() {
     SF_Converter_CT_To_PCL<PointType> converterCloud;
-    converterCloud.setItemCpyCloudIn(_params._itemCpy_cloud_in);
+    converterCloud.setItemCpyCloudIn(_params._itemCpyCloudIn);
     converterCloud.compute();
     SF_Abstract_Cloud<PointType>::_cloud_in = converterCloud.get_cloud_translated();
     Sf_Multiple_Filter<PointType>::_downScaledCloud = down_scale(_params._cellSize);

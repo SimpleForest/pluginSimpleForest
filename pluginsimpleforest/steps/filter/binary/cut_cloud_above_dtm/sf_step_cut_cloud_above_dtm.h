@@ -19,15 +19,15 @@ public:
     QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_Param_DTM_Height<pcl::PointXYZ> > _param_list;
+    QList<SF_Param_DTM_Height<pcl::PointXYZ> > _paramList;
     void createInResultModelListProtected();
     void createOutResultModelListProtected();
     virtual void createPreConfigurationDialog();
-    void adapt_parameters_to_expert_level();
+    void adaptParametersToExpertLevel();
     void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
     void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
     void compute();
-    virtual void write_logger();
+    virtual void writeLogger();
 
 private:
     double _cutHeight = 0.03f;

@@ -41,10 +41,10 @@ void SF_Build_QSM::initializeOctree() {
     _octree->addPointsFromInputCloud();
 }
 
-void SF_Build_QSM::initializeCylinderBuildingBricks(const std::vector<Cylinder> &cylinders) {
+void SF_Build_QSM::initializeCylinderBuildingBricks(const std::vector<SF_QSMDetectionCylinder> &cylinders) {
     _buildingBricks.clear();
     for(size_t i = 0; i < cylinders.size(); i++) {
-        Cylinder cyl = cylinders[i];
+        SF_QSMDetectionCylinder cyl = cylinders[i];
         std::shared_ptr<SF_Model_Cylinder_Buildingbrick> cylinder(new SF_Model_Cylinder_Buildingbrick(cyl._circleA,cyl._circleB));
         _buildingBricks.push_back(cylinder);
     }
@@ -61,7 +61,7 @@ std::shared_ptr<SF_Model_Tree> SF_Build_QSM::getTree() const {
     return _tree;
 }
 
-SF_Build_QSM::SF_Build_QSM(const std::vector<Cylinder> &cylinders, int index) {
+SF_Build_QSM::SF_Build_QSM(const std::vector<SF_QSMDetectionCylinder> &cylinders, int index) {
     initializeCylinderBuildingBricks(cylinders);
     initializeTree(index);
     initializeOctree();

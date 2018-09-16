@@ -68,7 +68,7 @@ bool SF_PluginManager::loadGenericsStep() {
     addNewPointsStep<SF_Dijkstra_Segmentation_Step>(CT_StepsMenu::LP_Clusters);
     addNewPointsStep<SF_Voronoi_Segmentation>(CT_StepsMenu::LP_Clusters);
     addNewRastersStep<SF_DTM_Step>(CT_StepsMenu::LP_DEM);
-    addNewGeometricalShapesStep<SFStepSpherefollowingRoot> ("QSM");
+    addNewGeometricalShapesStep<SF_StepSpherefollowingRoot> ("QSM");
 
     return true;
 }

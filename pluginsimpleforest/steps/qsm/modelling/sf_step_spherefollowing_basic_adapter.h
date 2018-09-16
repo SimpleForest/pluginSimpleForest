@@ -6,34 +6,34 @@
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/features/normal_3d.h>
 
-
-
 #include <pcl/ModelCoefficients.h>
 #include "qsm/algorithm/sf_build_qsm.h"
 #include "qsm/algorithm/sf_qsm_algorithm.h"
+#include "qsm/algorithm/sf_qsm_cylinder.h"
 
 
-class SF_Spherefollowing_Basic_Adapter {
+
+class Sf_SpherefollowingBasicAdapter {
 public:
 
     std::shared_ptr<QMutex>  mMutex;
 
-    SF_Spherefollowing_Basic_Adapter(const SF_Spherefollowing_Basic_Adapter &obj) {
+    Sf_SpherefollowingBasicAdapter(const Sf_SpherefollowingBasicAdapter &obj) {
         mMutex = obj.mMutex;
     }
 
-    SF_Spherefollowing_Basic_Adapter () {
+    Sf_SpherefollowingBasicAdapter () {
         mMutex.reset(new QMutex);
     }
 
-    ~SF_Spherefollowing_Basic_Adapter () {
+    ~Sf_SpherefollowingBasicAdapter () {
     }
 
-    void operator()(SfParamSpherefollowingBasic<SF_Point> & params) {
+    void operator()(SF_ParamSpherefollowingBasic<SF_Point_N> & params) {
         SF_Converter_CT_To_PCL<SF_Point_N> converter;
         {
             QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudIn(params._itemCpy_cloud_in);
+            converter.setItemCpyCloudIn(params._itemCpyCloudIn);
         }
         SF_Cloud_Normal::Ptr cloud;
         SF_Cloud_Normal::Ptr cloudDownscaled (new SF_Cloud_Normal());
@@ -122,20 +122,20 @@ public:
         coeffc4->values.push_back(4);
         coeffc4->values.push_back(1);
 
-        Cylinder cyl1(0,coeff1, coeff2);
-        Cylinder cyl2(0,coeff2, coeff3);
-        Cylinder cyl3(0,coeff3, coeff4);
-        Cylinder cyl4(0,coeff4, coeff4a);
-        Cylinder cyl5(0,coeff4a, coeff4b);
-        Cylinder cyl6(0,coeff4b, coeff4c);
-        Cylinder cyl7(0,coeff4, coeff5);
-        Cylinder cyl8(0,coeff5, coeff6);
-        Cylinder cyl9(0,coeff6, coeff7);
-        Cylinder cyl10(0,coeff4, coeffa4);
-        Cylinder cyl11(0,coeffa4, coeffb4);
-        Cylinder cyl12(0,coeffb4, coeffc4);
+        SF_QSMDetectionCylinder cyl1(0,coeff1, coeff2);
+        SF_QSMDetectionCylinder cyl2(0,coeff2, coeff3);
+        SF_QSMDetectionCylinder cyl3(0,coeff3, coeff4);
+        SF_QSMDetectionCylinder cyl4(0,coeff4, coeff4a);
+        SF_QSMDetectionCylinder cyl5(0,coeff4a, coeff4b);
+        SF_QSMDetectionCylinder cyl6(0,coeff4b, coeff4c);
+        SF_QSMDetectionCylinder cyl7(0,coeff4, coeff5);
+        SF_QSMDetectionCylinder cyl8(0,coeff5, coeff6);
+        SF_QSMDetectionCylinder cyl9(0,coeff6, coeff7);
+        SF_QSMDetectionCylinder cyl10(0,coeff4, coeffa4);
+        SF_QSMDetectionCylinder cyl11(0,coeffa4, coeffb4);
+        SF_QSMDetectionCylinder cyl12(0,coeffb4, coeffc4);
 
-        std::vector<Cylinder> list;
+        std::vector<SF_QSMDetectionCylinder> list;
         list.push_back(cyl1);
         list.push_back(cyl2);
         list.push_back(cyl3);

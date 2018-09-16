@@ -55,7 +55,7 @@ public:
         SF_Converter_CT_To_PCL<pcl::PointXYZINormal> converter;
         {
             QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudIn(params._itemCpy_cloud_in);
+            converter.setItemCpyCloudIn(params._itemCpyCloudIn);
         }
         converter.compute();
         {
