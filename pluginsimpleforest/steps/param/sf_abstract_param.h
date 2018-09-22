@@ -34,8 +34,8 @@
 #include "ct_itemdrawable/ct_image2d.h"
 #include "pcl/sf_point.h"
 #include "qsm/algorithm/spherefollowing/sf_spherefollowing_parameters.h"
-#include "qsm/algorithm/distance/sf_cloud_to_model_distance_parameters.h"
-#include "qsm/sf_model_tree.h"
+#include "qsm/algorithm/distance/sf_cloudToModelDistanceParameters.h"
+#include "qsm/sf_modelQSM.h"
 
 struct SF_Param_CT{
     CT_StandardItemGroup* _grpCpyGrp;
@@ -252,7 +252,7 @@ struct SF_ParamSpherefollowingBasic : public SF_Param_Filter<PointType> {
     float _minError;
     int _fittedGeometries;
     std::vector<float> _errors;
-    std::shared_ptr<SF_Model_Tree> _tree;
+    std::shared_ptr<SF_ModelQSM> _tree;
 
     QString methodToString(int method) {
         QString str;

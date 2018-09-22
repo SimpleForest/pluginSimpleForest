@@ -29,8 +29,8 @@
 #include <pcl/features/normal_3d.h>
 
 #include "sf_dtm_step.h"
-#include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
-#include "converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.h"
+#include "converters/CT_To_PCL/sf_converterCTToPCL.h"
+#include "converters/CT_To_PCL/sf_converterCTToPCLDTM.h"
 #include "pcl/geometry/DTM/sf_dtm.h"
 #include "pcl/filters/voxel_grid.h"
 
@@ -195,22 +195,22 @@ void SF_DTM_Step::compute() {
                                                                            dtmPtr->maxX()+_translate(0), dtmPtr->maxY()+_translate(1),
                                                                            dtmPtr->resolution(), _translate(2), 1337,0);
     copyCroppedHeights(groundCloud, dtmPtr, dtm);
-    SF_Converter_CT_to_PCL_DTM dtmConverter(_translate,dtm);
-    std::shared_ptr<SF_DTM_Model> dtmModel = dtmConverter.dtmPCL();
+    SF_ConverterCTToPCLDTM dtmConverter(_translate,dtm);
+    std::shared_ptr<SF_ModelDTM> dtmModel = dtmConverter.dtmPCL();
 
     CT_Image2D<float> * dtmTrueResolution = CT_Image2D<float>::createImage2DFromXYCoords(_outDTMDummy.completeName(),out_result,
                                                                            dtmPtr->minX()+_translate(0), dtmPtr->minY()+_translate(1),
                                                                            dtmPtr->maxX()+_translate(0), dtmPtr->maxY()+_translate(1),
                                                                            _radius_normal, _translate(2), 1337,0);
-    SF_Converter_CT_to_PCL_DTM dtmConverterTrueResolution(_translate, dtmTrueResolution);
-    std::shared_ptr<SF_DTM_Model> dtmModelTrueResolution = dtmConverterTrueResolution.dtmPCL();
+    SF_ConverterCTToPCLDTM dtmConverterTrueResolution(_translate, dtmTrueResolution);
+    std::shared_ptr<SF_ModelDTM> dtmModelTrueResolution = dtmConverterTrueResolution.dtmPCL();
     dtmModel->interpolateIDW(_idwNeighbors, dtmModelTrueResolution);
     CT_Image2D<float> * dtmMedianSmoothed = CT_Image2D<float>::createImage2DFromXYCoords(_outDTM.completeName(),out_result,
                                                                            dtmPtr->minX()+_translate(0), dtmPtr->minY()+_translate(1),
                                                                            dtmPtr->maxX()+_translate(0), dtmPtr->maxY()+_translate(1),
                                                                            _radius_normal, _translate(2), 1337,0);
-    SF_Converter_CT_to_PCL_DTM dtmConverterMedianSmoothed(_translate, dtmMedianSmoothed);
-    std::shared_ptr<SF_DTM_Model> dtmModelMedianSmoothed = dtmConverterMedianSmoothed.dtmPCL();
+    SF_ConverterCTToPCLDTM dtmConverterMedianSmoothed(_translate, dtmMedianSmoothed);
+    std::shared_ptr<SF_ModelDTM> dtmModelMedianSmoothed = dtmConverterMedianSmoothed.dtmPCL();
     dtmModelTrueResolution->interpolateMedian(_medianNeighbors, dtmModelMedianSmoothed);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = dtmModelMedianSmoothed->getCloud3D();
     for(size_t i = 0; i < dtmMedianSmoothed->nCells(); i++) {
@@ -249,11 +249,11 @@ pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Step::downScale(pcl::PointClou
 }
 
 pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_DTM_Step::convert(CT_Scene* scene) {
-    SF_Converter_CT_To_PCL<pcl::PointXYZINormal> converter;
+    Sf_ConverterCTToPCL<pcl::PointXYZINormal> converter;
     converter.setItemCpyCloudIn(scene);
     converter.compute();
-    _translate =  converter.get_center_of_mass();
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = converter.get_cloud_translated();
+    _translate =  converter.getCenterOfMass();
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = converter.getCloudTranslated();
     return cloud;
 }
 

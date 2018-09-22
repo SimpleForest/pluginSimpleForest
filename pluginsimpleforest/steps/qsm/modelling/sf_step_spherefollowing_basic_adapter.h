@@ -2,14 +2,14 @@
 #define SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
 
 #include "steps/param/sf_abstract_param.h"
-#include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
+#include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/features/normal_3d.h>
 
 #include <pcl/ModelCoefficients.h>
-#include "qsm/algorithm/sf_build_qsm.h"
-#include "qsm/algorithm/sf_qsm_algorithm.h"
-#include "qsm/algorithm/sf_qsm_cylinder.h"
+#include "qsm/algorithm/sf_buildQSM.h"
+#include "qsm/algorithm/sf_QSMAlgorithm.h"
+#include "qsm/algorithm/sf_QSMCylinder.h"
 
 
 
@@ -29,30 +29,30 @@ public:
     ~Sf_SpherefollowingBasicAdapter () {
     }
 
-    void operator()(SF_ParamSpherefollowingBasic<SF_Point_N> & params) {
-        SF_Converter_CT_To_PCL<SF_Point_N> converter;
+    void operator()(SF_ParamSpherefollowingBasic<SF_PointNormal> & params) {
+        Sf_ConverterCTToPCL<SF_PointNormal> converter;
         {
             QMutexLocker m1(&*mMutex);
             converter.setItemCpyCloudIn(params._itemCpyCloudIn);
         }
-        SF_Cloud_Normal::Ptr cloud;
-        SF_Cloud_Normal::Ptr cloudDownscaled (new SF_Cloud_Normal());
+        SF_CloudNormal::Ptr cloud;
+        SF_CloudNormal::Ptr cloudDownscaled (new SF_CloudNormal());
         converter.compute();
         {
             QMutexLocker m1(&*mMutex);
             params._translation = converter.getCenterOfMass();
-            cloud = converter.get_cloud_translated();
+            cloud = converter.getCloudTranslated();
         }
-        pcl::VoxelGrid<SF_Point_N> sor;
+        pcl::VoxelGrid<SF_PointNormal> sor;
         sor.setInputCloud (cloud);
         {
             QMutexLocker m1(&*mMutex);
             sor.setLeafSize (params._voxelSize, params._voxelSize, params._voxelSize);
         }
         sor.filter (*cloudDownscaled);
-        pcl::NormalEstimation<SF_Point_N, SF_Point_N> ne;
+        pcl::NormalEstimation<SF_PointNormal, SF_PointNormal> ne;
         ne.setInputCloud (cloudDownscaled);
-        pcl::search::KdTree<SF_Point_N>::Ptr tree (new pcl::search::KdTree<SF_Point_N> ());
+        pcl::search::KdTree<SF_PointNormal>::Ptr tree (new pcl::search::KdTree<SF_PointNormal> ());
         ne.setSearchMethod (tree);
         ne.setRadiusSearch (params._voxelSize*3);
         ne.compute (*cloudDownscaled);
@@ -150,11 +150,11 @@ public:
         list.push_back(cyl12);
         {
             QMutexLocker m1(&*mMutex);
-            SF_Build_QSM builder(list, 666);
-            std::shared_ptr<SF_Model_Tree> tree2 =  builder.getTree();
-            std::vector< std::shared_ptr<SF_Model_Abstract_Buildingbrick> > bricks = tree2->getBuildingBricks();
+            SF_BuildQSM builder(list, 666);
+            std::shared_ptr<SF_ModelQSM> tree2 =  builder.getTree();
+            std::vector< std::shared_ptr<Sf_ModelAbstractBuildingbrick> > bricks = tree2->getBuildingBricks();
             for(size_t i = 0; i < bricks.size(); i++) {
-                std::shared_ptr<SF_Model_Abstract_Buildingbrick> brick = bricks[i];
+                std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick = bricks[i];
             }
         }
 

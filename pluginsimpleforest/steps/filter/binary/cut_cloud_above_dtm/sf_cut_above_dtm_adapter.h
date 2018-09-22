@@ -33,8 +33,8 @@
 #include <QThreadPool>
 
 #include "steps/param/sf_abstract_param.h"
-#include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
-#include "converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.h".h"
+#include "converters/CT_To_PCL/sf_converterCTToPCL.h"
+#include "converters/CT_To_PCL/sf_converterCTToPCLDTM.h".h"
 
 
 class SF_Step_Cut_Above_DTM_Adapter {
@@ -53,7 +53,7 @@ public:
     }
 
     void operator()(SF_Param_DTM_Height<pcl::PointXYZ> & params) {
-        SF_Converter_CT_To_PCL<pcl::PointXYZ> converterCloud;
+        Sf_ConverterCTToPCL<pcl::PointXYZ> converterCloud;
         {
             QMutexLocker m1(&*mMutex);
             converterCloud.setItemCpyCloudIn(params._itemCpyCloudIn);
@@ -63,15 +63,15 @@ public:
         CT_Image2D<float> * dtmCT;
         {
             QMutexLocker m1(&*mMutex);
-            params._cloud_in = converterCloud.get_cloud_translated();
+            params._cloud_in = converterCloud.getCloudTranslated();
             _cutHeight = params._cropHeight;
             dtmCT = params._dtmCT;
         }
-        SF_Converter_CT_to_PCL_DTM dtmConverter(converterCloud.getCenterOfMass(), params._dtmCT);
-        std::shared_ptr<SF_DTM_Model> dtmModel = dtmConverter.dtmPCL();
+        SF_ConverterCTToPCLDTM dtmConverter(converterCloud.getCenterOfMass(), params._dtmCT);
+        std::shared_ptr<SF_ModelDTM> dtmModel = dtmConverter.dtmPCL();
         std::vector<int> indices;
-        for(size_t j = 0; j < converterCloud.get_cloud_translated()->points.size(); j++) {
-            pcl::PointXYZ p = converterCloud.get_cloud_translated()->points[j];
+        for(size_t j = 0; j < converterCloud.getCloudTranslated()->points.size(); j++) {
+            pcl::PointXYZ p = converterCloud.getCloudTranslated()->points[j];
             if(dtmModel->heightAbove(p) < _cutHeight) {
                 indices.push_back(0);
             } else {

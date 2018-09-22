@@ -29,7 +29,7 @@
 #define SF_STATISTICAL_OUTLIER_REMOVAL_ADAPTER_H
 
 #include "steps/param/sf_abstract_param.h"
-#include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
+#include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h>
 
 class SF_Statistical_Outlier_Removal_Adapter {
@@ -49,7 +49,7 @@ public:
     }
 
     void operator()(SF_Param_Statistical_Outlier_Filter<SF_Point> & params) {
-        SF_Converter_CT_To_PCL<SF_Point> converter;
+        Sf_ConverterCTToPCL<SF_Point> converter;
         {
             QMutexLocker m1(&*mMutex);
             converter.setItemCpyCloudIn(params._itemCpyCloudIn);
@@ -57,18 +57,18 @@ public:
         converter.compute();
         {
             QMutexLocker m1(&*mMutex);
-            params._cloud_in = converter.get_cloud_translated();
+            params._cloud_in = converter.getCloudTranslated();
         }
         params.log_import();        
         SF_Statistical_Outlier_Filter<SF_Point> filter;
         {
             QMutexLocker m1(&*mMutex);
-            filter.set_cloud_in(params._cloud_in);
+            filter.setCloudIn(params._cloud_in);
         }
         filter.compute(params);
         {
             QMutexLocker m1(&*mMutex);
-            params._output_indices = filter.get_indices();
+            params._output_indices = filter.getIndices();
         }
         params.log_filter(filter.get_percentage());
     }

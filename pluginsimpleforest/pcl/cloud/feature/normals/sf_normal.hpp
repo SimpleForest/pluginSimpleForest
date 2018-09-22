@@ -31,7 +31,7 @@
 #include <pcl/features/normal_3d.h>
 template <typename PointType, typename FeatureType>
 SF_Normal<PointType, FeatureType>::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in, pcl::PointCloud::Ptr features_out):
-    _cloud_in(cloud_in), _features_out(features_out) {    
+    _cloudIn(cloud_in), _features_out(features_out) {    
 
 }
 
@@ -52,7 +52,7 @@ void SF_Normal<PointType, FeatureType>::set_parameters(int k) {
 template <typename PointType, typename FeatureType>
 void SF_Normal<PointType, FeatureType>::compute_features_range() {
     pcl::NormalEstimation<PointType, FeatureType> ne;
-    ne.setInputCloud (_cloud_in);
+    ne.setInputCloud (_cloudIn);
     pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType> ());
     ne.setSearchMethod (tree);
     ne.setRadiusSearch (_range);
@@ -63,7 +63,7 @@ void SF_Normal<PointType, FeatureType>::compute_features_range() {
 template <typename PointType, typename FeatureType>
 void SF_Normal<PointType, FeatureType>::compute_features_knn() {
     pcl::NormalEstimation<PointType, FeatureType> ne;
-    ne.setInputCloud (_cloud_in);
+    ne.setInputCloud (_cloudIn);
     pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType> ());
     ne.setSearchMethod (tree);
     ne.setKSearch(k);

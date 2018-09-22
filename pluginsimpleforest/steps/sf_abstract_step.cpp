@@ -28,7 +28,7 @@
 
 #include "sf_abstract_step.h"
 #include <pcl/sample_consensus/method_types.h>
-#include "qsm/algorithm/distance/sf_cloud_to_model_distance.h"
+#include "qsm/algorithm/distance/sf_cloudToModelDistance.h"
 
 void  SF_AbstractStep::recursiveRemoveIfEmpty(CT_AbstractItemGroup *parent,
                                               CT_AbstractItemGroup *group) {

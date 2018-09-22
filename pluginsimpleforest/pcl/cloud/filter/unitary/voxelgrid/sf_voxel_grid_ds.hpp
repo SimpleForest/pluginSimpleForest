@@ -38,19 +38,19 @@ SF_Voxel_Grid_DS<PointType>::SF_Voxel_Grid_DS() {
 template <typename PointType>
 void  SF_Voxel_Grid_DS<PointType>::compute(const SF_Param_Voxel_Grid_Downscale<PointType> &params) {
     SF_Voxel_Grid_DS<PointType>::voxel_grid_downscale(params);
-    SF_Voxel_Grid_DS<PointType>::create_indices();
+    SF_Voxel_Grid_DS<PointType>::createIndices();
 }
 
 template <typename PointType>
 void SF_Voxel_Grid_DS<PointType>::voxel_grid_downscale(SF_Param_Voxel_Grid_Downscale<PointType> std_params) {
     pcl::VoxelGrid<pcl::PointCloud<PointType> > sor;
-    sor.setInputCloud (SF_Abstract_Filter<PointType>::_cloud_in);
+    sor.setInputCloud (SF_AbstractFilter<PointType>::_cloudIn);
     if(std_params.is_even) {
         sor.setLeafSize (std_params.voxel_size, std_params.voxel_size, std_params.voxel_size);
     } else {
         sor.setLeafSize (std_params.voxel_size_x, std_params.voxel_size_y, std_params.voxel_size_z);
     }
-    sor.filter (* SF_Abstract_Filter<PointType>::_cloud_out_filtered);
+    sor.filter (* SF_AbstractFilter<PointType>::_cloudOutFiltered);
 }
 
 #endif // SF_VOXEL_GRID_DS_HPP

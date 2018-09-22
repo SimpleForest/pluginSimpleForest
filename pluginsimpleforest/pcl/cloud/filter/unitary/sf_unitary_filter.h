@@ -28,16 +28,16 @@
 #ifndef SF_UNITARY_FILTER_H
 #define SF_UNITARY_FILTER_H
 
-#include "pcl/cloud/filter/sf_abstract_filter.h"
-#include <pcl/cloud/sf_abstract_cloud.h>
+#include "pcl/cloud/filter/sf_abstractFilter.h"
+#include <pcl/cloud/sf_abstractCloud.h>
 template <typename PointType>
-class SF_Unitary_Filter: public  SF_Abstract_Filter<PointType>
+class SF_Unitary_Filter: public  SF_AbstractFilter<PointType>
 {
 protected:
 
     virtual void reset();
 
-    virtual void create_index(PointType point,
+    virtual void createIndex(PointType point,
                       float sqrd_distance);
 
 public:

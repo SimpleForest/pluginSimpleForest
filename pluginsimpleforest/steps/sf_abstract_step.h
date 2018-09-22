@@ -96,7 +96,31 @@ protected:
     Eigen::Vector3f getMax(const CT_Scene* ctCloud);
     std::vector<CT_PointCloudIndexVector*> createOutputVectors(size_t numberOutput);
     QList<SF_Param_CT> _paramList;
+
     bool _isExpert = true;
+    QString _RANSAC  = "RANSAC  - RANdom SAmple Consensus";
+    QString _LMEDS   = "LMEDS   - Least Median of Squares";
+    QString _MSAC    = "MSAC    - M-Estimator SAmple Consensus";
+    QString _RRANSAC = "RRANSAC - Randomized RANSAC";
+    QString _RMSAC   = "RMSAC   - Randomized MSAC";
+    QString _MLESAC  = "MLESAC  - Maximum LikeLihood Estimation SAmple Consensus";
+    QString _PROSAC  = "PROSAC  - PROgressive SAmple Consensus";
+    QString _SF_methodChoice = _MLESAC;
+    QStringList _SF_methodList;
+
+    QString _ZEROMOMENTUMORDER       = "ZEROMOMENTUMORDER       - maximize inliers of model";
+    QString _FIRSTMOMENTUMORDERMSAC  = "FIRSTMOMENTUMORDERMSAC  - minimize cropped (MSAC) average absolute distance";
+    QString _FIRSTMOMENTUMORDER      = "FIRSTMOMENTUMORDER      - minimize average absolute distance";
+    QString _SECONDMOMENTUMORDERMSAC = "SECONDMOMENTUMORDERMSAC - minimize cropped (MSAC) root squared distance";
+    QString _SECONDMOMENTUMORDER     = "SECONDMOMENTUMORDER     - minimize average root squared distance";
+    QString _CMD_methodChoice = _SECONDMOMENTUMORDERMSAC;
+    QStringList _CMD_methodList;
+
+    QStringList _nonExpertLevel;
+    QString _low    = "low";
+    QString _medium = "medium";
+    QString _high   = "high";
+    QString _choice = _medium;
 
 
 

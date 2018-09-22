@@ -52,7 +52,7 @@ void SF_Ground_Filter<PointType>::transfer_normal_and_filter(const SF_Param_Grou
             axis2[2] = gd_point.normal_z;
             double deg = SF_Math<double>::getAngleBetweenDeg(axis1,axis2);
             if(deg < params._angle || deg > (180-params._angle)) {
-                SF_Ground_Filter<PointType>::_cloud_out_filtered->points.push_back(p);
+                SF_Ground_Filter<PointType>::_cloudOutFiltered->points.push_back(p);
             } else {
                 SF_Ground_Filter<PointType>::_cloud_out_filtered_noise->points.push_back(p);
             }
@@ -68,18 +68,20 @@ void SF_Ground_Filter<PointType>::set_params(SF_Param_Ground_Filter<PointType> &
 template<typename PointType>
 void SF_Ground_Filter<PointType>::compute() {
     SF_Ground_Filter<PointType>::_cloud_out_filtered_noise.reset(new typename pcl::PointCloud<PointType>);
-    SF_Ground_Filter<PointType>::_cloud_out_filtered.reset(new typename pcl::PointCloud<PointType>);
-    pcl::PointCloud<PointType>::Ptr down_scaled_cloud = down_scale(_params._voxel_size);
+    SF_Ground_Filter<PointType>::_cloudOutFiltered.reset(new typename pcl::PointCloud<PointType>);
+    pcl::PointCloud<PointType>::Ptr downScaledCloud = downScale(_params._voxel_size);
 
     pcl::NormalEstimation<PointType, PointType> ne;
-    ne.setInputCloud (down_scaled_cloud);
+    ne.setInputCloud (downScaledCloud);
     pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType> ());
     ne.setSearchMethod (tree);
     ne.setRadiusSearch (_params._radius_normal);
-    ne.compute (*down_scaled_cloud);
+    ne.compute (*downScaledCloud);
 
-    transfer_normal_and_filter(_params,SF_Abstract_Cloud<PointType>::_cloud_in,down_scaled_cloud);
-    SF_Ground_Filter<PointType>::create_indices();
+    transfer_normal_and_filter(_params,
+                               SF_AbstractCloud<PointType>::_cloudIn,
+                               downScaledCloud);
+    SF_Ground_Filter<PointType>::createIndices();
 }
 
 template<typename PointType>

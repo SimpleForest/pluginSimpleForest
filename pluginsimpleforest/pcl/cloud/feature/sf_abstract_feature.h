@@ -27,9 +27,9 @@
 *****************************************************************************/
 #ifndef SF_ABSTRACT_FEATURE_H
 #define SF_ABSTRACT_FEATURE_H
-#include "pcl/cloud/sf_abstract_cloud.h"
+#include "pcl/cloud/sf_abstractCloud.h"
 template <typename PointType, typename FeatureType>
-class SF_Abstract_Feature: public  SF_Abstract_Cloud<PointType> {
+class SF_Abstract_Feature: public  SF_AbstractCloud<PointType> {
 protected:
     typename pcl::PointCloud<FeatureType>::Ptr _features_out;
 

@@ -31,7 +31,7 @@
 #include "sf_pca.h"
 template <typename PointType>
 SF_PCA<PointType>::SF_PCA(typename pcl::PointCloud<PointType>::Ptr cloud_in):
-    SF_Abstract_Cloud<PointType>(cloud_in) {
+    SF_AbstractCloud<PointType>(cloud_in) {
     pca_values.resize(cloud_in->points.size());
 }
 
@@ -54,9 +54,9 @@ void SF_PCA<PointType>::set_parameters(int k, bool center_zero) {
 template <typename PointType>
 void SF_PCA<PointType>::extract_neighbors(typename pcl::KdTree<PointType>::Ptr kd_tree, PointType p, typename pcl::PointCloud<PointType>::Ptr neighborhood) {
     if(_use_range) {
-        extract_neighbors_by_range(kd_tree,p,neighborhood, _range);
+        extractNeighborsByRange(kd_tree,p,neighborhood, _range);
     } else {
-        extract_neighbors_by_knn(kd_tree,p,neighborhood, _k);
+        extractNeighborsByKnn(kd_tree,p,neighborhood, _k);
     }
 }
 
@@ -85,14 +85,14 @@ void SF_PCA<PointType>::compute_features_for_point(const PointType& p, typename 
 
 template <typename PointType>
 void SF_PCA<PointType>::compute_features() {
-    if(pca_values.size() != SF_PCA<PointType>::_cloud_in->points.size()) {
-        pca_values.resize(SF_PCA<PointType>::_cloud_in->points.size());
+    if(pca_values.size() != SF_PCA<PointType>::_cloudIn->points.size()) {
+        pca_values.resize(SF_PCA<PointType>::_cloudIn->points.size());
     }
 
     typename pcl::KdTreeFLANN<PointType>::Ptr kd_tree (new typename pcl::KdTreeFLANN<PointType> ());
-    kd_tree->setInputCloud(SF_PCA<PointType>::_cloud_in);
-    for(size_t i = 0; i < SF_PCA<PointType>::_cloud_in->points.size(); i++) {
-        PointType p = SF_PCA<PointType>::_cloud_in->points[i];
+    kd_tree->setInputCloud(SF_PCA<PointType>::_cloudIn);
+    for(size_t i = 0; i < SF_PCA<PointType>::_cloudIn->points.size(); i++) {
+        PointType p = SF_PCA<PointType>::_cloudIn->points[i];
         compute_features_for_point(p, kd_tree, i);
     }
 }

@@ -34,7 +34,7 @@
 #include <iostream>
 
 #include "steps/param/sf_abstract_param.h"
-#include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
+#include "converters/CT_To_PCL/sf_converterCTToPCL.h"
 class SF_Step_Stem_Filter_RANSAC_Adapter {
 public:
 
@@ -52,7 +52,7 @@ public:
     }
 
     void operator()(SF_Param_Stem_RANSAC_Filter & params) {
-        SF_Converter_CT_To_PCL<pcl::PointXYZINormal> converter;
+        Sf_ConverterCTToPCL<pcl::PointXYZINormal> converter;
         {
             QMutexLocker m1(&*mMutex);
             converter.setItemCpyCloudIn(params._itemCpyCloudIn);
@@ -60,19 +60,19 @@ public:
         converter.compute();
         {
             QMutexLocker m1(&*mMutex);
-            params._cloud_in = converter.get_cloud_translated();
+            params._cloud_in = converter.getCloudTranslated();
         }
         params.log_import();
         SF_Stem_RANSAC_Filter filter;
         {
             QMutexLocker m1(&*mMutex);
-            filter.set_cloud_in(params._cloud_in);
+            filter.setCloudIn(params._cloud_in);
             filter.setParams(params);
         }
         filter.compute();
         {
             QMutexLocker m1(&*mMutex);
-            params._output_indices = filter.get_indices();
+            params._output_indices = filter.getIndices();
         }
         params.log_filter(filter.get_percentage());
     }

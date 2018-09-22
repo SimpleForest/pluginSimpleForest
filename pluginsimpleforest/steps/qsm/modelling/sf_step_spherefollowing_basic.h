@@ -26,7 +26,7 @@ protected:
     void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog *configDialog);
     void createParamList(CT_ResultGroup * out_result);
     void compute();
-    QList<SF_ParamSpherefollowingBasic<SF_Point_N> > _paramList;
+    QList<SF_ParamSpherefollowingBasic<SF_PointNormal> > _paramList;
 
 private:
     int toStringSFMethod();
@@ -44,39 +44,15 @@ private:
     int    _SF_minPtsGeometry                  = 3;
     double _SF_heightInitializationSlice       = 0.05;
     int    _CMD_robustPercentage               = 100;
-    int    _CMD_fittingMethod                  = toStringSFMethod();
-    int    _CMD_inlierDistance                 = toStringCMDMethod();
+    int    _CMD_fittingMethod                  = toStringCMDMethod();
     int    _CMD_k                              = 5;
     double _CMD_inlierDistance                 = 0.05;
     bool   _GS_doGridSearch                    = true;
     int    _GS_nDimensions                     = 4;
     int    _GS_resolution                      = 3;
-    int   _GS_maximizeSearchSpace              = 81;
-
-    QStringList _nonExpertLevel;
-    QString _RANSAC  = "RANSAC  - RANdom SAmple Consensus";
-    QString _LMEDS   = "LMEDS   - Least Median of Squares";
-    QString _MSAC    = "MSAC    - M-Estimator SAmple Consensus";
-    QString _RRANSAC = "RRANSAC - Randomized RANSAC";
-    QString _RMSAC   = "RMSAC   - Randomized MSAC";
-    QString _MLESAC  = "MLESAC  - Maximum LikeLihood Estimation SAmple Consensus";
-    QString _PROSAC  = "PROSAC  - PROgressive SAmple Consensus";
-    QString _SF_methodChoice = _MLESAC;
-    QStringList _SF_methodList;
-
-    QString _ZEROMOMENTUMORDER       = "ZEROMOMENTUMORDER       - maximize inliers of model";
-    QString _FIRSTMOMENTUMORDERMSAC  = "FIRSTMOMENTUMORDERMSAC  - minimize cropped (MSAC) average absolute distance";
-    QString _FIRSTMOMENTUMORDER      = "FIRSTMOMENTUMORDER      - minimize average absolute distance";
-    QString _SECONDMOMENTUMORDERMSAC = "SECONDMOMENTUMORDERMSAC - minimize cropped (MSAC) root squared distance";
-    QString _SECONDMOMENTUMORDER     = "SECONDMOMENTUMORDER     - minimize average root squared distance";
-    QString _CMD_methodChoice = _SECONDMOMENTUMORDERMSAC;
-    QStringList _CMD_methodList;
+    int    _GS_maximizeSearchSpace             = 81;
 
 
-    QString _low    = "low";
-    QString _medium = "medium";
-    QString _high   = "high";
-    QString _choice = _medium;
     void configDialogGuruAddSphereFollowing(CT_StepConfigurableDialog *configDialog);
     void configDialogAddSphereFollowingHyperParameters(CT_StepConfigurableDialog *configDialog);
     void configDialogAddSphereFollowingOptimizableParameters(CT_StepConfigurableDialog *configDialog);

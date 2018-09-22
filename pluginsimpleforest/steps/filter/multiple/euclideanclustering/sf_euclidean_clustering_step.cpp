@@ -209,7 +209,7 @@ void SF_Euclidean_Clustering_Step::createParamList(CT_ResultGroup * out_result) 
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
-        SF_Param_Euclidean_Clustering<SF_Point_N> param;
+        SF_Param_Euclidean_Clustering<SF_PointNormal> param;
         param._log = PS_LOG;
         param._cellSize = _voxelSize;
         param._euclideanDistance = _euclideanDistance;

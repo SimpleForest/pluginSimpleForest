@@ -36,7 +36,7 @@ Sf_Binary_Filter<PointType>::Sf_Binary_Filter() {
 
 template<typename PointType>
 void Sf_Binary_Filter<PointType>::reset() {
-    SF_Abstract_Filter<PointType>::reset();
+    SF_AbstractFilter<PointType>::reset();
     _cloud_out_filtered_noise.reset(new pcl::PointCloud<PointType>);
 }
 
@@ -47,8 +47,8 @@ typename pcl::PointCloud<PointType>::Ptr Sf_Binary_Filter<PointType>::get_cloud_
 
 template<typename PointType>
 double Sf_Binary_Filter<PointType>::get_percentage() {
-    double in = SF_Abstract_Cloud<PointType>::_cloud_in->points.size();
-    double out = SF_Abstract_Filter<PointType>::_cloud_out_filtered->points.size()*100.0;
+    double in = SF_AbstractCloud<PointType>::_cloudIn->points.size();
+    double out = SF_AbstractFilter<PointType>::_cloudOutFiltered->points.size()*100.0;
     if(in==0) {
         return 0;
     }
@@ -56,12 +56,12 @@ double Sf_Binary_Filter<PointType>::get_percentage() {
 }
 
 template<typename PointType>
-void Sf_Binary_Filter<PointType>::create_index(PointType point,
+void Sf_Binary_Filter<PointType>::createIndex(PointType point,
                                                float sqrd_distance) {
-    if(Sf_Binary_Filter<PointType>::equals_by_sqrt_distance(sqrd_distance)) {
-        SF_Abstract_Cloud<PointType>::_indices.push_back(0);
+    if(Sf_Binary_Filter<PointType>::equalsBySqrtDistance(sqrd_distance)) {
+        SF_AbstractCloud<PointType>::_indices.push_back(0);
     } else {
-        SF_Abstract_Cloud<PointType>::_indices.push_back(1);
+        SF_AbstractCloud<PointType>::_indices.push_back(1);
         _cloud_out_filtered_noise->points.push_back(point);
     }
 }

@@ -33,7 +33,7 @@
 #include "qsm/algorithm/detection/sf_idetection.h"
 
 class SF_SphereFollowing: public SF_IDetection {
-    std::shared_ptr<SF_Model_Tree> _qsm;
+    std::shared_ptr<SF_ModelQSM> _qsm;
     SF_SphereFollowingParameters _params;
     std::vector<SF_SphereFollowingOptimizationParameters> _optimParams;
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr _cloud;
@@ -42,9 +42,9 @@ class SF_SphereFollowing: public SF_IDetection {
 public:
     SF_SphereFollowing(SF_SphereFollowingParameters params,
                        std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters);
-    const virtual std::shared_ptr<SF_Model_Tree> getQSM() override;
-    virtual void compute() override;
-    virtual void error() override;
+    const virtual std::shared_ptr<SF_ModelQSM> getQSM() override;
+    virtual void compute() override {}
+    virtual void error() override {}
 private:
     void initializeCloud();
 };

@@ -230,7 +230,7 @@ void SF_StepSpherefollowingRoot::configDialogGuruAddSphereFollowingGridSearch(CT
                          _GS_resolution);
     configDialog->addText("The [<em><b>grid number of computations</b></em>] is equal to the power of <em>grid dimensions</em> "
                           "to base <em>grid resolution</em> ");
-    configDialog->addBool("By potentially lowering <em>grid resolution</em> make sure the [<em><b>grid number of computations</b></em>] is smaller or equal to",
+    configDialog->addInt("By potentially lowering <em>grid resolution</em> make sure the [<em><b>grid number of computations</b></em>] is smaller or equal to",
                           ".",
                           10,
                           1000,
@@ -384,7 +384,7 @@ void SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup * outResult) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResIt.next();
         const CT_AbstractItemDrawableWithPointCloud*  ctCloud =
        (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
-        SF_ParamSpherefollowingBasic<SF_Point_N> param;
+        SF_ParamSpherefollowingBasic<SF_PointNormal> param;
         param._distanceParams = distanceParams;
         param._sphereFollowingParams = sphereFollowingParams;
         param._voxelSize = _PP_voxelSize;

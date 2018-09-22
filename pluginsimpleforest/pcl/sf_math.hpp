@@ -48,9 +48,7 @@ T SF_Math<T>::getAngleBetweenDeg(Eigen::Vector3f  axis1, Eigen::Vector3f  axis2)
 
 template<typename T>
 T SF_Math<T>::distance(const Eigen::Vector3f& pointA, const Eigen::Vector3f& pointB) {
-    T distance = std::sqrt( (pointA[0] - pointB[0])*(pointA[0] - pointB[0]) +
-                            (pointA[1] - pointB[1])*(pointA[1] - pointB[1]) +
-                            (pointA[2] - pointB[2])*(pointA[2] - pointB[2]) );
+    T distance = (pointA-pointB).norm();
     return distance;
 }
 
@@ -75,7 +73,6 @@ T SF_Math<T>::getMedian(std::vector<T> &vec) {
         }
     }
 }
-
 
 template<typename T>
 T SF_Math<T>::getMean(std::vector<T> &vec) {

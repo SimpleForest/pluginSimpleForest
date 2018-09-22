@@ -187,7 +187,7 @@ void SF_Step_Stem_Filter::adaptParametersToExpertLevel() {
 }
 
 void SF_Step_Stem_Filter::write_output_per_scence(CT_ResultGroup* out_result, size_t i) {
-    SF_Param_Stem_Filter<SF_Point_N> param = _paramList.at(i);
+    SF_Param_Stem_Filter<SF_PointNormal> param = _paramList.at(i);
     std::vector<CT_PointCloudIndexVector *> output_index_list = createOutputVectors(param._size_output);
     createOutputIndices(output_index_list, param._output_indices, param._itemCpyCloudIn);
     CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup( _out_grp.completeName(), out_result);
@@ -228,7 +228,7 @@ void SF_Step_Stem_Filter::create_param_list(CT_ResultGroup * out_result) {
     while(!isStopped() && out_res_it.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) out_res_it.next();
         const CT_AbstractItemDrawableWithPointCloud* ct_cloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
-        SF_Param_Stem_Filter<SF_Point_N> param;
+        SF_Param_Stem_Filter<SF_PointNormal> param;
 
         param._log = PS_LOG;
         param._x = _x;

@@ -30,17 +30,17 @@
 #define SF_EUCLIDEAN_CLUSTERING_HPP
 
 #include "sf_euclidean_clustering.h"
-#include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
+#include "converters/CT_To_PCL/sf_converterCTToPCL.h"
 
 #include <pcl/segmentation/extract_clusters.h>
 
 template <typename PointType>
 Sf_Euclidean_Clustering<PointType>::convertAndDownScale() {
-    SF_Converter_CT_To_PCL<PointType> converterCloud;
+    Sf_ConverterCTToPCL<PointType> converterCloud;
     converterCloud.setItemCpyCloudIn(_params._itemCpyCloudIn);
     converterCloud.compute();
-    SF_Abstract_Cloud<PointType>::_cloud_in = converterCloud.get_cloud_translated();
-    Sf_Multiple_Filter<PointType>::_downScaledCloud = down_scale(_params._cellSize);
+    SF_AbstractCloud<PointType>::_cloudIn = converterCloud.getCloudTranslated();
+    Sf_Multiple_Filter<PointType>::_downScaledCloud = downScale(_params._cellSize);
 }
 
 template <typename PointType>
@@ -76,7 +76,7 @@ void  Sf_Euclidean_Clustering<PointType>::compute(SF_Param_Euclidean_Clustering&
     std::vector<pcl::PointIndices> clusterIndices;
     extractClusterIndices(clusterIndices);
     extractClouds(clusterIndices);
-    create_indices();
+    createIndices();
 }
 
 #endif // SF_EUCLIDEAN_CLUSTERING_HPP

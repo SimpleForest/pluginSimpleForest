@@ -29,7 +29,7 @@
 #define SF_RADIUS_OUTLIER_FILTER_ADAPTER_H
 
 #include "steps/param/sf_abstract_param.h"
-#include <converters/CT_To_PCL/sf_converter_ct_to_pcl.h>
+#include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h>
 
 class SF_Radius_Outlier_Filter_Adapter {
@@ -49,8 +49,8 @@ public:
     ~SF_Radius_Outlier_Filter_Adapter () {
     }
 
-    void operator()(SF_Param_Radius_Outlier_Filter<SF_Point_N> & params) {
-        SF_Converter_CT_To_PCL<SF_Point_N> converter;
+    void operator()(SF_Param_Radius_Outlier_Filter<SF_PointNormal> & params) {
+        Sf_ConverterCTToPCL<SF_PointNormal> converter;
         {
             QMutexLocker m1(&*mMutex);
             converter.setItemCpyCloudIn(params._itemCpyCloudIn);
@@ -58,18 +58,18 @@ public:
         converter.compute();
         {
             QMutexLocker m1(&*mMutex);
-            params._cloud_in = converter.get_cloud_translated();
+            params._cloud_in = converter.getCloudTranslated();
         }
         params.log_import();
-        SF_Radius_Outlier_Filter<SF_Point_N> filter;
+        SF_Radius_Outlier_Filter<SF_PointNormal> filter;
         {
             QMutexLocker m1(&*mMutex);
-            filter.set_cloud_in(params._cloud_in);
+            filter.setCloudIn(params._cloud_in);
         }
         filter.compute(params);
         {
             QMutexLocker m1(&*mMutex);
-            params._output_indices = filter.get_indices();
+            params._output_indices = filter.getIndices();
         }
         params.log_filter(filter.get_percentage());
     }

@@ -17,21 +17,12 @@ TARGET = plug_simpleforest
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
-    qsm/sf_model_abstract_segment.h \
-    qsm/sf_model_abstract_buildingbrick.h \
     pcl/sf_point.h \
-    pcl/cloud/filter/sf_abstract_filter.h \
     pcl/cloud/filter/binary/sf_binary_filter.h \
-    pcl/cloud/sf_abstract_cloud.hpp \
-    pcl/cloud/sf_abstract_cloud.h \
-    pcl/cloud/filter/sf_abstract_filter.hpp \
     pcl/cloud/filter/binary/sf_binary_filter.hpp \
     pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h \
     pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.hpp \
     steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.h \
-    converters/CT_To_PCL/sf_converter_ct_to_pcl.h \
-    converters/CT_To_PCL/sf_converter_ct_to_pcl.hpp \
-    converters/sf_abstract_converter.h \
     steps/param/sf_abstract_param.h \
     steps/sf_abstract_step.h \
     steps/filter/sf_abstract_filter_step.h \
@@ -66,23 +57,16 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/filter/binary/stem_filter/sf_step_stem_filter_adapter.h \
     pcl/sf_math.h \
     pcl/sf_math.hpp \
-    pcl/geometry/sf_point_geometry.h \
     pcl/cloud/feature/pca/sf_pca.h \
     pcl/cloud/feature/pca/sf_pca.hpp \
     pcl/cloud/feature/growth_direction/sf_growth_direction.h \
     pcl/cloud/feature/growth_direction/sf_growth_direction.hpp \
     pcl/geometry/DTM/sf_pyramidlayer.h \
-    pcl/geometry/DTM/sf_cell.h \
     pcl/geometry/DTM/sf_pyramidlayer.hpp \
     pcl/geometry/DTM/sf_dtm.h \
     pcl/geometry/DTM/sf_dtm.hpp \
     steps/dtm/sf_dtm_step.h \
-    pcl/geometry/DTM/sf_cell.hpp \
-    plot/sf_plot_model.h \
-    plot/DTM/sf_dtm.h \
-    plot/sf_raster_model.h \
     math/interpolation/sf_interpolation.h \
-    converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.h \
     steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.h \
     steps/filter/binary/cut_cloud_above_dtm/sf_cut_above_dtm_adapter.h \
     pcl/cloud/filter/multiple/sf_multiple_filter.h \
@@ -98,26 +82,39 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/filter/binary/stem_filter/sf_step_stem_ransac_filter.h \
     pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.h \
     steps/filter/binary/stem_filter/sf_step_stem_filter_ransac_adapter.h \
-    qsm/sf_model_cylinder_buildingbrick.h \
-    qsm/sf_model_tree.h \
-    qsm/algorithm/sf_qsm_algorithm.h \
-    qsm/algorithm/sf_build_qsm.h \
     steps/qsm/modelling/sf_step_spherefollowing_basic.h \
     steps/qsm/modelling/sf_step_spherefollowing_basic_adapter.h \
     qsm/algorithm/spherefollowing/sf_spherefollowing_parameters.h \
     qsm/algorithm/spherefollowing/sf_sphere_following.h \
-    qsm/algorithm/sf_qsm_cylinder.h \
-    qsm/algorithm/distance/sf_cloud_to_model_distance.h \
-    qsm/algorithm/distance/sf_cloud_to_model_distance_parameters.h \
     qsm/algorithm/detection/sf_idetection.h \
     qsm/algorithm/optimization/gridsearch/sf_gridsearch.h \
-    qsm/algorithm/optimization/gridsearch/sf_gridsearchparameters.h
+    qsm/algorithm/optimization/gridsearch/sf_gridsearchparameters.h \
+    qsm/sf_modelAbstractBuildingbrick.h \
+    qsm/sf_modelCylinderBuildingbrick.h \
+    qsm/sf_modelQSM.h \
+    qsm/sf_modelAbstractSegment.h \
+    qsm/algorithm/sf_buildQSM.h \
+    qsm/algorithm/sf_QSMAlgorithm.h \
+    qsm/algorithm/sf_QSMCylinder.h \
+    qsm/algorithm/distance/sf_cloudToModelDistance.h \
+    qsm/algorithm/distance/sf_cloudToModelDistanceParameters.h \
+    plot/sf_modelRaster.h \
+    plot/sf_modelPlot.h \
+    plot/DTM/sf_modelDTM.h \
+    pcl/geometry/sf_geometryPoint.h \
+    pcl/geometry/DTM/sf_dtmCell.h \
+    pcl/geometry/DTM/sf_dtmCell.hpp \
+    pcl/cloud/sf_abstractCloud.h \
+    pcl/cloud/sf_abstractCloud.hpp \
+    pcl/cloud/filter/sf_abstractFilter.h \
+    pcl/cloud/filter/sf_abstractFilter.hpp \
+    converters/CT_To_PCL/sf_converterCTToPCL.h \
+    converters/CT_To_PCL/sf_converterCTToPCL.hpp \
+    converters/CT_To_PCL/sf_converterCTToPCLDTM.h \
+    converters/sf_abstractConverter.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
-    qsm/sf_model_abstract_segment.cpp \
-    qsm/sf_model_abstract_buildingbrick.cpp \
-    converters/sf_abstract_converter.cpp \
     steps/sf_abstract_step.cpp \
     steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.cpp \
     steps/filter/sf_abstract_filter_step.cpp \
@@ -127,13 +124,9 @@ SOURCES += \
     steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.cpp \
     steps/filter/binary/ground_filter/sf_step_ground_filter.cpp \
     steps/filter/binary/stem_filter/sf_step_stem_filter.cpp \
-    pcl/geometry/sf_point_geometry.cpp \
     steps/dtm/sf_dtm_step.cpp \
-    plot/sf_plot_model.cpp \
     plot/DTM/sf_dtm.cpp \
-    plot/sf_raster_model.cpp \
     math/interpolation/sf_interpolation.cpp \
-    converters/CT_To_PCL/sf_converter_ct_to_pcl_dtm.cpp \
     steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.cpp \
     steps/filter/multiple/euclideanclustering/sf_euclidean_clustering_step.cpp \
     steps/segmentation/dijkstra/sf_dijkstra_segemtation.cpp \
@@ -141,13 +134,20 @@ SOURCES += \
     steps/segmentation/voronoi/sf_voronoi_segmentation.cpp \
     steps/filter/binary/stem_filter/sf_step_stem_ransac_filter.cpp \
     pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.cpp \
-    qsm/sf_model_cylinder_buildingbrick.cpp \
-    qsm/sf_model_tree.cpp \
-    qsm/algorithm/sf_build_qsm.cpp \
     steps/qsm/modelling/sf_step_spherefollowing_basic.cpp \
     qsm/algorithm/spherefollowing/sf_sphere_following.cpp \
-    qsm/algorithm/distance/sf_cloud_to_model_distance.cpp \
-    qsm/algorithm/optimization/gridsearch/sf_gridsearch.cpp
+    qsm/algorithm/optimization/gridsearch/sf_gridsearch.cpp \
+    qsm/sf_modelCylinderBuildingbrick.cpp \
+    qsm/sf_modelAbstractSegment.cpp \
+    qsm/sf_modelQSM.cpp \
+    qsm/sf_modelAbstractBuildingbrick.cpp \
+    qsm/algorithm/sf_buildQSM.cpp \
+    qsm/algorithm/distance/sf_cloudToModelDistance.cpp \
+    converters/sf_abstractConverter.cpp \
+    converters/CT_To_PCL/sf_converterCTToPCLDTM.cpp \
+    plot/sf_modelRaster.cpp \
+    plot/sf_modelPlot.cpp \
+    pcl/geometry/sf_pointGeometry.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

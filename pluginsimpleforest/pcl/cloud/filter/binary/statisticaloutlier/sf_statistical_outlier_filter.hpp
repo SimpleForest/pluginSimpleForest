@@ -38,23 +38,23 @@ SF_Statistical_Outlier_Filter<PointType>::SF_Statistical_Outlier_Filter() {
 template <typename PointType>
 void  SF_Statistical_Outlier_Filter<PointType>::compute(const SF_Param_Statistical_Outlier_Filter<PointType> &params) {
     SF_Statistical_Outlier_Filter<PointType>::statistical_outlier_filter_iteratively(params);
-    SF_Statistical_Outlier_Filter<PointType>::create_indices();
+    SF_Statistical_Outlier_Filter<PointType>::createIndices();
 }
 
 template <typename PointType>
 void SF_Statistical_Outlier_Filter<PointType>::statistical_outlier_filter(SF_Param_Statistical_Outlier_Filter<PointType> std_params,typename pcl::PointCloud<PointType>::Ptr cloud) {
-    SF_Statistical_Outlier_Filter<PointType>::_cloud_out_filtered.reset(new  pcl::PointCloud<PointType>());
+    SF_Statistical_Outlier_Filter<PointType>::_cloudOutFiltered.reset(new  pcl::PointCloud<PointType>());
     pcl::StatisticalOutlierRemoval<PointType> sor;
     sor.setInputCloud (cloud);
     sor.setMeanK (std_params._k);
     sor.setStddevMulThresh (std_params._std_mult);
-    sor.filter (*SF_Statistical_Outlier_Filter<PointType>::_cloud_out_filtered);
+    sor.filter (*SF_Statistical_Outlier_Filter<PointType>::_cloudOutFiltered);
 }
 
 template <typename PointType>
 void SF_Statistical_Outlier_Filter<PointType>::statistical_outlier_filter_iteratively(SF_Param_Statistical_Outlier_Filter<PointType> std_params) {
     typename pcl::PointCloud<PointType>::Ptr cloud (new pcl::PointCloud<PointType>());
-    cloud = SF_Statistical_Outlier_Filter<PointType>::_cloud_in;
+    cloud = SF_Statistical_Outlier_Filter<PointType>::_cloudIn;
     SF_Statistical_Outlier_Filter<PointType>::iterate(std_params, cloud);
 }
 
@@ -63,7 +63,7 @@ void SF_Statistical_Outlier_Filter<PointType>::iterate(SF_Param_Statistical_Outl
     int iterations = params._iterations;
     while(iterations > 0) {
         SF_Statistical_Outlier_Filter<PointType>::statistical_outlier_filter(params, cloud);
-        cloud = SF_Statistical_Outlier_Filter<PointType>::_cloud_out_filtered;
+        cloud = SF_Statistical_Outlier_Filter<PointType>::_cloudOutFiltered;
         iterations--;
     }
 }

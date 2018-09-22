@@ -30,17 +30,17 @@
 
 #include "sf_gridsearch.h"
 
-const int SF_GridSearch::size(const int nDim, const int res) {
+const int SF_GridSearch::gridSize(const int nDim, const int res) {
     int size = static_cast<int>(std::pow(res, nDim));
     return size;
 }
 
 void SF_GridSearch::restrictSearchSpace() {
     int max = _params._maxNumberSearches;
-    int size = size(_params._nDimensions, _params._resolution);
+    int size = gridSize(_params._nDimensions, _params._resolution);
     while(size > max) {
         _params._resolution = _params._resolution - 1;
-        size = size(_params._nDimensions, _params._resolution);
+        size = gridSize(_params._nDimensions, _params._resolution);
     }
 }
 

@@ -45,7 +45,7 @@ public:
     QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_Param_Radius_Outlier_Filter<SF_Point_N> > _paramList;
+    QList<SF_Param_Radius_Outlier_Filter<SF_PointNormal> > _paramList;
     void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
     void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
     void createInResultModelListProtected();

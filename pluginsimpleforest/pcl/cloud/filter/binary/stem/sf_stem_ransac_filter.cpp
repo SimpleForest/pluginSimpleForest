@@ -126,16 +126,16 @@ void SF_Stem_RANSAC_Filter::filterIteratively(pcl::PointCloud<pcl::PointXYZINorm
 
 void SF_Stem_RANSAC_Filter::backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered) {
     _cloud_out_filtered_noise.reset(new typename pcl::PointCloud<pcl::PointXYZINormal>);
-    _cloud_out_filtered.reset(new typename pcl::PointCloud<pcl::PointXYZINormal>);
+    _cloudOutFiltered.reset(new typename pcl::PointCloud<pcl::PointXYZINormal>);
     pcl::KdTreeFLANN<pcl::PointXYZINormal> kdtree;
     kdtree.setInputCloud (downScaledCloudFiltered);
-    for(size_t i = 0; i < _cloud_in->points.size(); i++) {
-        pcl::PointXYZINormal point = _cloud_in->points[i];
+    for(size_t i = 0; i < _cloudIn->points.size(); i++) {
+        pcl::PointXYZINormal point = _cloudIn->points[i];
         std::vector<int> pointIdxNKNSearch(1);
         std::vector<float> pointNKNSquaredDistance(1);
         if ( kdtree.nearestKSearch (point, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ) {
             if(std::sqrt(pointNKNSquaredDistance[0]) < _params._voxel_size*2) {
-                _cloud_out_filtered->points.push_back(point);
+                _cloudOutFiltered->points.push_back(point);
             } else {
                 _cloud_out_filtered_noise->points.push_back(point);
             }
@@ -146,13 +146,13 @@ void SF_Stem_RANSAC_Filter::backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr
 }
 
 void SF_Stem_RANSAC_Filter::compute() {
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloud = down_scale(_params._voxel_size);
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloud = downScale(_params._voxel_size);
     computeNormals(downScaledCloud);
     initializeClouds(downScaledCloud);
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered(new SF_Cloud_Normal());
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered(new SF_CloudNormal());
     filterIteratively(downScaledCloudFiltered);
     backScale(downScaledCloudFiltered);
-    create_indices();
+    createIndices();
 }
 
 void SF_Stem_RANSAC_Filter::initializeClouds(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud) {

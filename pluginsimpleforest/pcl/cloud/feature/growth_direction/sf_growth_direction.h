@@ -43,8 +43,8 @@ private:
     static constexpr float MAX_LAMBDA3 = 0.9;
     void add_normals(std::vector<PCA_Values>& values);
     void add_growth_direction(std::vector<PCA_Values>& values);
-    virtual void create_indices(){; }
-    virtual void create_index(PointType point,
+    virtual void createIndices(){; }
+    virtual void createIndex(PointType point,
                          float sqrd_distance) {
         std::cout << "FOOO SF_Growth_Direction add_growth_direction 4ax " << " ; " << _range_gd << std::endl;; }
     virtual void reset(){_features_out.reset(new pcl::PointCloud<FeatureType>);}

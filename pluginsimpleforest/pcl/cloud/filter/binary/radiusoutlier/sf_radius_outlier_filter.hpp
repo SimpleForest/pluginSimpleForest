@@ -31,7 +31,7 @@
 #include <pcl/kdtree/kdtree_flann.h>
 #include <QDebug>
 #include "pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h"
-#include "converters/CT_To_PCL/sf_converter_ct_to_pcl.h"
+#include "converters/CT_To_PCL/sf_converterCTToPCL.h"
 
 template <typename PointType>
 SF_Radius_Outlier_Filter<PointType>::SF_Radius_Outlier_Filter() {
@@ -40,21 +40,21 @@ SF_Radius_Outlier_Filter<PointType>::SF_Radius_Outlier_Filter() {
 
 template <typename PointType>
 void  SF_Radius_Outlier_Filter<PointType>::compute(const SF_Param_Radius_Outlier_Filter<PointType> &params) {
-    if(SF_Abstract_Cloud<PointType>::_cloud_in->points.size() >= 1) {
+    if(SF_AbstractCloud<PointType>::_cloudIn->points.size() >= 1) {
         SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(params);
     } else {
         qDebug() << "SF_Radius_Outlier_Filter<PointType>::compute - not enough points.";
     }
-    SF_Radius_Outlier_Filter<PointType>::create_indices();
+    SF_Radius_Outlier_Filter<PointType>::createIndices();
 }
 
 template <typename PointType>
 void SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(typename SF_Param_Radius_Outlier_Filter<PointType> std_params) {
     if(std_params._radius>0.1f) {
-        SF_Converter_CT_To_PCL<PointType> converter;
+        Sf_ConverterCTToPCL<PointType> converter;
         converter.setItemCpyCloudIn(std_params._itemCpyCloudIn);
         pcl::PointCloud<PointType>::Ptr downscaled_cloud (new pcl::PointCloud<PointType>);
-        converter.down_scale(std_params._radius/5,downscaled_cloud);
+        converter.downScale(std_params._radius/5,downscaled_cloud);
         pcl::PointCloud<PointType>::Ptr downscaled_cloud_neighbors_number  (new pcl::PointCloud<PointType>);
         pcl::KdTreeFLANN<PointType> kdtree;
         kdtree.setInputCloud (downscaled_cloud);
@@ -72,22 +72,22 @@ void SF_Radius_Outlier_Filter<PointType>::radius_outlier_filter(typename SF_Para
         }
         pcl::KdTreeFLANN<PointType> kdtree_nn;
         kdtree_nn.setInputCloud (downscaled_cloud_neighbors_number);
-        for(size_t i = 0; i < SF_Abstract_Cloud<PointType>::_cloud_in->points.size(); i++) {
-            PointType p = SF_Abstract_Cloud<PointType>::_cloud_in->points[i];
+        for(size_t i = 0; i < SF_AbstractCloud<PointType>::_cloudIn->points.size(); i++) {
+            PointType p = SF_AbstractCloud<PointType>::_cloudIn->points[i];
             std::vector<int> pointIdxNNSearch;
             std::vector<float> pointNNSquaredDistance;
             if ( kdtree.nearestKSearch (p, 1, pointIdxNNSearch, pointNNSquaredDistance) > 0 ) {
                 if(downscaled_cloud_neighbors_number->points[ pointIdxNNSearch[0] ].intensity>= std_params._min_Pts) {
-                    SF_Abstract_Filter<PointType>::_cloud_out_filtered->points.push_back(p);
+                    SF_AbstractFilter<PointType>::_cloudOutFiltered->points.push_back(p);
                 }
             }
         }
     } else {
         pcl::RadiusOutlierRemoval<PointType> outrem;
-        outrem.setInputCloud (SF_Abstract_Cloud<PointType>::_cloud_in);
+        outrem.setInputCloud (SF_AbstractCloud<PointType>::_cloudIn);
         outrem.setRadiusSearch(std_params._radius);
         outrem.setMinNeighborsInRadius( std_params._min_Pts);
-        outrem.filter (*SF_Abstract_Filter<PointType>::_cloud_out_filtered);
+        outrem.filter (*SF_AbstractFilter<PointType>::_cloudOutFiltered);
     }
 
 }

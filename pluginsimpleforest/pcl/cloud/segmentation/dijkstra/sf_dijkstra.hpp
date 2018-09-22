@@ -6,8 +6,11 @@
 #include <pcl/search/kdtree.h>
 
 SF_Dijkstra::SF_Dijkstra( pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
-                                    const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
-                                    float range):_cloudIn(cloudIn), _cloudInSeeds(cloudInSeeds),_range(range) {
+                          const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
+                          float range):
+    _cloudIn(cloudIn),
+    _cloudInSeeds(cloudInSeeds),
+    _range(range) {
     initialize();
     compute();
 }
@@ -86,8 +89,9 @@ std::vector<int> SF_Dijkstra::getNeighbors(const pcl::PointXYZI &point) {
     return result;
 }
 
-float SF_Dijkstra::getDistance(const pcl::PointXYZI &p1, const pcl::PointXYZI &p2) {
-    float dx,dy,dz;
+float SF_Dijkstra::getDistance(const pcl::PointXYZI &p1,
+                               const pcl::PointXYZI &p2) {
+    float dx, dy, dz;
     dx = p1.x - p2.x;
     dy = p1.y - p2.y;
     dz = p1.z - p2.z;

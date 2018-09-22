@@ -29,11 +29,11 @@
 #ifndef SF_MULTIPLE_FILTER_H
 #define SF_MULTIPLE_FILTER_H
 
-#include "pcl/cloud/filter/sf_abstract_filter.h"
-#include <pcl/cloud/sf_abstract_cloud.h>
+#include "pcl/cloud/filter/sf_abstractFilter.h"
+#include <pcl/cloud/sf_abstractCloud.h>
 
 template <typename PointType>
-class Sf_Multiple_Filter: public  SF_Abstract_Filter<PointType> {
+class Sf_Multiple_Filter: public  SF_AbstractFilter<PointType> {
 
 private:
     typename pcl::PointCloud<PointType>::Ptr  _downScaledCloud;
@@ -41,7 +41,7 @@ private:
 
 protected:
     virtual void reset();
-    virtual void create_indices();
+    virtual void createIndices();
 
 public:
     Sf_Multiple_Filter();

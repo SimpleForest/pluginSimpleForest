@@ -52,6 +52,6 @@ _clusters(clusters){
     initializeCloud();
 }
 
-const std::shared_ptr<SF_Model_Tree> SF_SphereFollowing::getQSM() {
+const std::shared_ptr<SF_ModelQSM> SF_SphereFollowing::getQSM() {
     return _qsm;
 }

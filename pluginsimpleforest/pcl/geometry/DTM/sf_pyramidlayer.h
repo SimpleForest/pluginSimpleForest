@@ -32,39 +32,46 @@
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
 
-#include "sf_cell.h"
+#include "sf_dtmCell.h"
 #include "pcl/sf_math.h"
 
 template <typename PointType>
 class PyramidLayer {
-    typename pcl::PointCloud<PointType>::Ptr _ground_cloud;
+    typename pcl::PointCloud<PointType>::Ptr _groundCloud;
     std::vector<typename pcl::PointCloud<PointType>::Ptr> _clouds;
-    std::vector<Cell<PointType> > _cells;
+    std::vector<SF_DTMCell<PointType> > _cells;
     std::shared_ptr<CT_Image2D<float> > _DTM;
-    std::vector<pcl::ModelCoefficients> _plane_coeff;
+    std::vector<pcl::ModelCoefficients> _planeCoeff;
     Eigen::Vector2f _min;
     Eigen::Vector2f _max;
     CT_AutoRenameModels     _outDTM;
-    CT_ResultGroup * _out_result;
+    CT_ResultGroup * _outResult;
     void getMinMax();
     void initialize();
     void initializeRoot();
     pcl::ModelCoefficients computePlane(typename pcl::PointCloud<PointType>::Ptr cloud);
     int _depth;
 public:
-    PyramidLayer (typename pcl::PointCloud<PointType>::Ptr ground_cloud, CT_ResultGroup *out_result, CT_AutoRenameModels     outDTM);
-    PyramidLayer (typename pcl::PointCloud<PointType>::Ptr ground_cloud, int depth, CT_ResultGroup *out_result, CT_AutoRenameModels     outDTM);
+    PyramidLayer (typename pcl::PointCloud<PointType>::Ptr groundCloud,
+                  CT_ResultGroup *outResult,
+                  CT_AutoRenameModels outDTM);
+    PyramidLayer (typename pcl::PointCloud<PointType>::Ptr groundCloud,
+                  int depth,
+                  CT_ResultGroup *outResult,
+                  CT_AutoRenameModels outDTM);
     float getGridSize();
     pcl::ModelCoefficients computePlane(int index);
     bool canComputePlane(int index);
 
-    void setPlaneCoeff(const pcl::ModelCoefficients& coeff, const size_t index);
+    void setPlaneCoeff(const pcl::ModelCoefficients& coeff,
+                       const size_t index);
     void setDTM(const std::shared_ptr<CT_Image2D<float> > &DTM);
     void setPlaneCoeffs(const std::vector<pcl::ModelCoefficients> &plane_coeff);
     std::shared_ptr<CT_Image2D<float> > getDTM() const;
     std::vector<pcl::ModelCoefficients> getPlaneCoeff() const;
     pcl::ModelCoefficients getPlaneCoeff(const size_t index) const;
-    Eigen::Vector2f getMinMaxHeight(const pcl::ModelCoefficients& coeff, const size_t index);
+    Eigen::Vector2f getMinMaxHeight(const pcl::ModelCoefficients& coeff,
+                                    const size_t index);
     float getHeight(const size_t index);
 };
 

@@ -36,7 +36,7 @@ void Sf_Multiple_Filter<PointType>::reset() {
 }
 
 template<typename PointType>
-void Sf_Multiple_Filter<PointType>::create_indices() {
+void Sf_Multiple_Filter<PointType>::createIndices() {
     pcl::PointCloud<pcl::PointXYZI>::Ptr mergedCloudWithIndex(new pcl::PointCloud<pcl::PointXYZI>);
     for(size_t i = 0; i < _clouds.size(); i++) {
         pcl::PointCloud<PointType>::Ptr cloud = _clouds[i];
@@ -48,14 +48,14 @@ void Sf_Multiple_Filter<PointType>::create_indices() {
     }
     pcl::KdTreeFLANN<pcl::PointXYZI> kdtree;
     kdtree.setInputCloud (mergedCloudWithIndex);
-    for(size_t i = 0; i < SF_Abstract_Cloud<PointType>::_cloud_in->points.size(); i++) {
-        PointType p = SF_Abstract_Cloud<PointType>::_cloud_in->points[j];
+    for(size_t i = 0; i < SF_AbstractCloud<PointType>::_cloudIn->points.size(); i++) {
+        PointType p = SF_AbstractCloud<PointType>::_cloudIn->points[j];
         pcl::PointXYZI p2(p.x,p.y,p.z,0);
         std::vector<int> pointIdxNKNSearch(1);
         std::vector<float> pointNKNSquaredDistance(1);
         kdtree.nearestKSearch (p2, 1, pointIdxNKNSearch, pointNKNSquaredDistance);
         int index = mergedCloudWithIndex->points[pointIdxNKNSearch[0] ].intensity;
-        SF_Abstract_Cloud<PointType>::_indices.push_back(index);
+        SF_AbstractCloud<PointType>::_indices.push_back(index);
     }
 }
 

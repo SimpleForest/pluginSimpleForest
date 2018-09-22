@@ -46,7 +46,7 @@ public:
     QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_Param_Stem_Filter<SF_Point_N> > _paramList;
+    QList<SF_Param_Stem_Filter<SF_PointNormal> > _paramList;
     void createInResultModelListProtected();
     void createOutResultModelListProtected();
     void adaptParametersToExpertLevel();

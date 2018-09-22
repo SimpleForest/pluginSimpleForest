@@ -88,7 +88,7 @@ struct PCA_Values{
 };
 
 template <typename PointType>
-class SF_PCA: public  SF_Abstract_Cloud <PointType> {
+class SF_PCA: public  SF_AbstractCloud <PointType> {
 private:
     float _range;
     bool _use_range;
@@ -99,8 +99,8 @@ private:
 public:
     SF_PCA(typename pcl::PointCloud<PointType>::Ptr cloud_in);
     virtual void compute_features();    
-    virtual void create_indices(){}
-    virtual void create_index(PointType point, float sqrd_distance){}
+    virtual void createIndices(){}
+    virtual void createIndex(PointType point, float sqrd_distance){}
     virtual void reset(){pca_values.clear();}
     static PCA_Values compute_features_from_neighbors(typename pcl::PointCloud<PointType>::Ptr neighborhood, const Eigen::Vector4f& xyz_centroid);
     void compute_features_for_point(const PointType& p, typename pcl::KdTree<PointType>::Ptr kd_tree, int index);

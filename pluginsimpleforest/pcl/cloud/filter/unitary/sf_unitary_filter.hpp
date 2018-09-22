@@ -35,19 +35,19 @@ SF_Unitary_Filter<PointType>::SF_Unitary_Filter() {
 
 template<typename PointType>
 void SF_Unitary_Filter<PointType>::reset() {
-    SF_Abstract_Filter<PointType>::_cloud_in.reset(new pcl::PointCloud<PointType>);
-    SF_Abstract_Filter<PointType>::_cloud_out_filtered.reset(new pcl::PointCloud<PointType>);
-    SF_Abstract_Filter<PointType>::_indices.clear();
+    SF_AbstractFilter<PointType>::_cloudIn.reset(new pcl::PointCloud<PointType>);
+    SF_AbstractFilter<PointType>::_cloudOutFiltered.reset(new pcl::PointCloud<PointType>);
+    SF_AbstractFilter<PointType>::_indices.clear();
 }
 
 template<typename PointType>
-void SF_Unitary_Filter<PointType>::create_index(PointType point,
+void SF_Unitary_Filter<PointType>::createIndex(PointType point,
                                                 float sqrd_distance)
 {
-    if(SF_Unitary_Filter<PointType>::equals_by_sqrt_distance(sqrd_distance))
-    {SF_Abstract_Cloud<PointType>::_indices.push_back(0);}
+    if(SF_Unitary_Filter<PointType>::equalsBySqrtDistance(sqrd_distance))
+    {SF_AbstractCloud<PointType>::_indices.push_back(0);}
     else
-    {SF_Abstract_Cloud<PointType>::_indices.push_back(-1);}
+    {SF_AbstractCloud<PointType>::_indices.push_back(-1);}
 }
 
 #endif // SF_UNITARY_FILTER_HPP

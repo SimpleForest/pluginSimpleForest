@@ -35,7 +35,7 @@ class SF_GridSearch
 {
 protected:
     SF_GridSearchParameters _params;
-    const int size(const int nDim, const int res);
+    const int gridSize(const int nDim, const int res);
     void restrictSearchSpace();
 public:
     SF_GridSearch();

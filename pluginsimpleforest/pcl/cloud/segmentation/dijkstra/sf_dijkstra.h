@@ -77,12 +77,15 @@ private:
     void initializeKDTree();
     void transferIntensity();
     int getIndex(const pcl::PointXYZI& point);
-    float getDistance(const pcl::PointXYZI& p1, const pcl::PointXYZI& p2);
+    float getDistance(const pcl::PointXYZI& p1,
+                      const pcl::PointXYZI& p2);
     std::vector<int> getNeighbors(const pcl::PointXYZI& point);
     void compute();
 
 public:
-    SF_Dijkstra(typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn, const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds, float range);
+    SF_Dijkstra(typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
+                const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
+                float range);
 };
 
 #include "sf_dijkstra.hpp"
