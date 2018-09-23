@@ -32,7 +32,7 @@
 #include <QThreadPool>
 #include <iostream>
 
-#include "steps/param/sf_abstract_param.h"
+#include "steps/param/sf_paramAllSteps.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
 class SF_StepStemFilterAdapter {
 public:

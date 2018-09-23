@@ -32,9 +32,9 @@
 
 SF_StepStatisticalOutlierRemoval::SF_StepStatisticalOutlierRemoval(CT_StepInitializeData &dataInit):
     SF_AbstractFilterBinaryStep(dataInit) {
-    _nonExpertLevel.append(_less);
-    _nonExpertLevel.append(_intermediate);
-    _nonExpertLevel.append(_many);
+    _pointDensities.append(_less);
+    _pointDensities.append(_intermediate);
+    _pointDensities.append(_many);
 }
 
 SF_StepStatisticalOutlierRemoval::~SF_StepStatisticalOutlierRemoval() {
@@ -125,8 +125,8 @@ void SF_StepStatisticalOutlierRemoval::createPostConfigurationDialogExpert(CT_St
 void SF_StepStatisticalOutlierRemoval::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {
     configDialog->addStringChoice("Choose how many points should be removed",
                                    "",
-                                   _nonExpertLevel,
-                                   _choice);
+                                   _pointDensities,
+                                   _choicePointDensity);
     configDialog->addText("Low resulted clouds are affected more.");
 }
 
@@ -158,11 +158,11 @@ void SF_StepStatisticalOutlierRemoval::createOutResultModelListProtected() {
 
 void SF_StepStatisticalOutlierRemoval::adaptParametersToExpertLevel() {
     if(!_isExpert) {
-        if(_choice == _less) {
+        if(_choicePointDensity == _less) {
             _k = 9;
             _std_mult = 4;
             _iterations = 15;
-        } else if(_choice == _intermediate) {
+        } else if(_choicePointDensity == _intermediate) {
             _k = 9;
             _std_mult = 3;
             _iterations = 15;

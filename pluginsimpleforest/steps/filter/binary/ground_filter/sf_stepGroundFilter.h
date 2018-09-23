@@ -28,7 +28,7 @@
 #ifndef SF_STEP_GROUND_FILTER_H
 #define SF_STEP_GROUND_FILTER_H
 
-#include "steps/param/sf_abstract_param.h"
+#include "steps/param/sf_paramAllSteps.h"
 #include "steps/filter/binary/sf_abstractFilterBinaryStep.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
@@ -56,10 +56,6 @@ protected:
     virtual void writeLogger();
 
 private:
-    QString _less         = "less";
-    QString _intermediate = "intermediate";
-    QString _many         = "many";
-    QString _choice       = _intermediate;
     double _x = 0;
     double _y = 0;
     double _z = 1;

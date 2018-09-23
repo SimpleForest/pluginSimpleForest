@@ -32,9 +32,9 @@
 
 SF_StepSpherefollowingRoot::SF_StepSpherefollowingRoot(CT_StepInitializeData &dataInit):
     SF_AbstractStepSegmentation(dataInit) {
-    _nonExpertLevel.append(_low);
-    _nonExpertLevel.append(_medium);
-    _nonExpertLevel.append(_high);
+    _pointDensities.append(_lowDensity);
+    _pointDensities.append(_mediumDensity);
+    _pointDensities.append(_highDensity);
 }
 
 SF_StepSpherefollowingRoot::~SF_StepSpherefollowingRoot() {
@@ -283,8 +283,8 @@ void SF_StepSpherefollowingRoot::createPostConfigurationDialogExpert(CT_StepConf
 void SF_StepSpherefollowingRoot::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {
     configDialog->addStringChoice("Choose the quality of the point cloud",
                                   "",
-                                  _nonExpertLevel,
-                                  _choice);
+                                  _pointDensities,
+                                  _choicePointDensity);
 }
 
 void SF_StepSpherefollowingRoot::createOutResultModelListProtected() {
@@ -308,11 +308,11 @@ void SF_StepSpherefollowingRoot::adaptParametersToExpertLevel() {
         _SF_minPtsGeometry = 3;
         _SF_heightInitializationSlice = 0.1;
         _PP_voxelSize = 0.01;
-        if(_choice == _low) {
+        if(_choicePointDensity == _lowDensity) {
             _SF_OPT_euclideanClusteringDistance = 0.1;
             _SF_OPT_minRadius = 2;
             _SF_OPT_sphereEpsilon = 0.05;
-        } else if(_choice == _medium) {
+        } else if(_choicePointDensity == _mediumDensity) {
             _SF_OPT_euclideanClusteringDistance = 0.04;
             _SF_OPT_minRadius = 0.1;
             _SF_OPT_sphereEpsilon = 0.5;

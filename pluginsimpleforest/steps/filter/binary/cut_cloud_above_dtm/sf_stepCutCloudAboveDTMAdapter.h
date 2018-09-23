@@ -32,7 +32,7 @@
 #include <pcl/cloud/filter/binary/ground/sf_groundFilter.h>
 #include <QThreadPool>
 
-#include "steps/param/sf_abstract_param.h"
+#include "steps/param/sf_paramAllSteps.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCLDTM.h".h"
 
@@ -64,7 +64,7 @@ public:
         {
             QMutexLocker m1(&*mMutex);
             params._cloudIn = converterCloud.getCloudTranslated();
-            _cutHeight = params._cropHeight;
+            _cutHeight = params._sliceHeight;
             dtmCT = params._dtmCT;
         }
         SF_ConverterCTToPCLDTM dtmConverter(converterCloud.getCenterOfMass(), params._dtmCT);

@@ -125,21 +125,65 @@ void SF_EuclideanClusteringSegmentationStep::createOutResultModelListProtected()
     }
 }
 
-void SF_EuclideanClusteringSegmentationStep::compute() {
-    const QList<CT_ResultGroup*> &outResultList = getOutResultList();
-    CT_ResultGroup * outResult = outResultList.at(0);
-    identifyAndRemoveCorruptedScenes(outResult);
+void SF_EuclideanClusteringSegmentationStep::createCTIndices(std::vector<CT_PointCloudIndexVector *> &CTindexVec,
+                                                             std::vector<std::vector<size_t> > &indexVec)
+{
+    for(size_t i = 0; i < indexVec.size(); i++) {
+        CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
+        std::vector<size_t> indices = indexVec[i];
+        std::sort(indices.begin(), indices.end());
+        for(size_t j = 0; j < indices.size(); j++) {
+            mergedClouds->addIndex(indices[j]);
+        }
+        CTindexVec.push_back(mergedClouds);
+    }
+
+    std::sort(CTindexVec.begin(),
+              CTindexVec.end(),
+              sfCompareCTCloudsBySize);
+}
+
+void SF_EuclideanClusteringSegmentationStep::addResult(std::vector<std::vector<size_t> > &indexVec,
+                                                       CT_ResultGroup* outResult,
+                                                       const QString &uniqueName) {
+    std::vector<CT_PointCloudIndexVector *> CTindexVec;
+    createCTIndices(CTindexVec, indexVec);
+
+    CT_ResultGroupIterator outResItOut(outResult,
+                                       this,
+                                       uniqueName);
+    while(!isStopped() && outResItOut.hasNext()) {
+        CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResItOut.next();
+        for(size_t i = 0; i < CTindexVec.size(); i++) {
+            if(CTindexVec[i]->size() > _minPts ) {
+                CT_StandardItemGroup* cloudGrp = new CT_StandardItemGroup(_outGrpCluster.completeName(),
+                                                                          outResult);
+                group->addGroup(cloudGrp);
+                CTindexVec[i]->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
+                CT_Scene* outScene = new CT_Scene(_outCloudCluster.completeName(),
+                                                  outResult,
+                                                  PS_REPOSITORY->registerPointCloudIndex(CTindexVec[i]));
+                outScene->updateBoundingBox();
+                cloudGrp->addItemDrawable(outScene);
+            }
+        }
+    }
+}
+
+void SF_EuclideanClusteringSegmentationStep::mergeCTClustersIntoPCL(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL,
+                                                                    std::vector<size_t> &indices,
+                                                                    const QString &cloudStr,
+                                                                    const QString &grpStr,
+                                                                    CT_ResultGroup *outResult) {
     CT_ResultGroupIterator outResIt(outResult,
                                     this,
-                                    DEF_IN_GRP_CLUSTER);
-    pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL(new pcl::PointCloud<pcl::PointXYZI>);
-    std::vector<size_t> indices;
+                                    grpStr);
     bool first = true;
     Eigen::Vector3d centerOfMass;
     while(!isStopped() && outResIt.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResIt.next();
         const CT_AbstractItemDrawableWithPointCloud* ctCloud =
-                (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+                (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, cloudStr);
         if(first) {
             centerOfMass = ctCloud->getCenterCoordinate();
             first = false;
@@ -157,8 +201,25 @@ void SF_EuclideanClusteringSegmentationStep::compute() {
             cloudPCL->push_back(p);
         }
     }
+}
+
+void SF_EuclideanClusteringSegmentationStep::compute() {
+    const QList<CT_ResultGroup*> &outResultList = getOutResultList();
+    CT_ResultGroup * outResult = outResultList.at(0);
+    identifyAndRemoveCorruptedScenes(outResult);
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL(new pcl::PointCloud<pcl::PointXYZI>);
+    std::vector<size_t> indices;
+    QString grpStr = DEF_IN_GRP_CLUSTER;
+    QString cloudStr = DEF_IN_CLOUD_SEED;
+    mergeCTClustersIntoPCL(cloudPCL,
+                           indices,
+                           cloudStr,
+                           grpStr,
+                           outResult);
 
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled(new pcl::PointCloud<pcl::PointXYZI>);
+    std::vector<std::vector<size_t> > indexVec;
+
     pcl::VoxelGrid<pcl::PointXYZI> sor;
     sor.setInputCloud (cloudPCL);
     sor.setLeafSize (_voxelSize, _voxelSize, _voxelSize);
@@ -179,9 +240,8 @@ void SF_EuclideanClusteringSegmentationStep::compute() {
           cloudPCLDownscaled->points[*pit].intensity = index;
       index++;
     }
-    std::vector<CT_PointCloudIndexVector *> indexVec;
     for(size_t i = 0; i < clusterIndices.size(); i++) {
-        CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
+        std::vector<size_t> mergedClouds;
         indexVec.push_back(mergedClouds);
     }
     pcl::search::KdTree<pcl::PointXYZI>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZI>);
@@ -192,33 +252,10 @@ void SF_EuclideanClusteringSegmentationStep::compute() {
         std::vector<float> pointNKNSquaredDistance(1);
         if ( kdtree->nearestKSearch (point, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ) {
             int index = cloudPCLDownscaled->points[pointIdxNKNSearch[0] ].intensity;
-            indexVec[index]->addIndex(indices[i]);
+            indexVec[index].push_back(indices[i]);
         }
     }
-
-    std::sort(indexVec.begin(),
-              indexVec.end(),
-              sfCompareCTCloudsBySize);
-
-    CT_ResultGroupIterator outResItOut(outResult,
-                                       this,
-                                       DEF_IN_SCENE);
-    while(!isStopped() && outResItOut.hasNext()) {
-        CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResItOut.next();
-        for(size_t i = 0; i < indexVec.size(); i++) {
-            if(indexVec[i]->size() > _minPts ) {
-                CT_StandardItemGroup* cloudGrp = new CT_StandardItemGroup(_outGrpCluster.completeName(),
-                                                                          outResult);
-                group->addGroup(cloudGrp);
-                indexVec[i]->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
-                CT_Scene* outScene = new CT_Scene(_outCloudCluster.completeName(),
-                                                  outResult,
-                                                  PS_REPOSITORY->registerPointCloudIndex(indexVec[i]));
-                outScene->updateBoundingBox();
-                cloudGrp->addItemDrawable(outScene);
-            }
-        }
-    }
+    addResult(indexVec, outResult, DEF_IN_SCENE);
 }
 
 void SF_EuclideanClusteringSegmentationStep::createParamList(CT_ResultGroup *outResult) {

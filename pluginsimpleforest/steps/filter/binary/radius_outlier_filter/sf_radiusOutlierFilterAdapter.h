@@ -28,7 +28,7 @@
 #ifndef SF_RADIUS_OUTLIER_FILTER_ADAPTER_H
 #define SF_RADIUS_OUTLIER_FILTER_ADAPTER_H
 
-#include "steps/param/sf_abstract_param.h"
+#include "steps/param/sf_paramAllSteps.h"
 #include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/cloud/filter/binary/radiusoutlier/sf_radiusOutlierFilter.h>
 
@@ -60,7 +60,6 @@ public:
             QMutexLocker m1(&*mMutex);
             params._cloudIn = converter.getCloudTranslated();
         }
-        params.log_import();
         SF_RadiusOutlierFilter<SF_PointNormal> filter;
         {
             QMutexLocker m1(&*mMutex);
@@ -71,7 +70,6 @@ public:
             QMutexLocker m1(&*mMutex);
             params._outputIndices = filter.getIndices();
         }
-        params.logFilter(filter.getPercentage());
     }
 };
 

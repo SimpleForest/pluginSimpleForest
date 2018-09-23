@@ -28,7 +28,7 @@
 
 #include <pcl/features/normal_3d.h>
 
-#include "sf_dtm_step.h"
+#include "sf_stepDTM.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCLDTM.h"
 #include "pcl/geometry/DTM/sf_dtm.h"
@@ -36,9 +36,9 @@
 
 SF_StepDTM::SF_StepDTM(CT_StepInitializeData &dataInit):
     SF_AbstractStep(dataInit) {
-    _nonExpertLevel.append(_less);
-    _nonExpertLevel.append(_intermediate);
-    _nonExpertLevel.append(_many);
+    _pointDensities.append(_less);
+    _pointDensities.append(_intermediate);
+    _pointDensities.append(_many);
 }
 
 SF_StepDTM::~SF_StepDTM() {
@@ -160,7 +160,7 @@ void SF_StepDTM::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *
 }
 
 void SF_StepDTM::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {
-    configDialog->addStringChoice("Choose the slope of the terrain","",_nonExpertLevel, _choice);
+    configDialog->addStringChoice("Choose the slope of the terrain","",_pointDensities, _choicePointDensity);
 }
 
 void SF_StepDTM::createOutResultModelListProtected() {
@@ -175,11 +175,11 @@ void SF_StepDTM::createOutResultModelListProtected() {
 void SF_StepDTM::adaptParametersToExpertLevel() {
     _radiusNormal = std::max(3*_voxelSize,_radiusNormal);
     if(!_isExpert) {
-        if(_choice == _less) {
+        if(_choicePointDensity == _less) {
             _angle = 10;
             _radiusNormal = 0.15;
             _voxelSize = 0.05;
-        } else if(_choice == _intermediate) {
+        } else if(_choicePointDensity == _intermediate) {
             _angle = 20;
             _radiusNormal = 0.15;
             _voxelSize = 0.05;

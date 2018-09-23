@@ -32,9 +32,9 @@
 
 SF_StepStemFilter::SF_StepStemFilter(CT_StepInitializeData &dataInit):
     SF_AbstractFilterBinaryStep(dataInit) {
-    _nonExpertLevel.append(_less);
-    _nonExpertLevel.append(_intermediate);
-    _nonExpertLevel.append(_many);
+    _pointDensities.append(_less);
+    _pointDensities.append(_intermediate);
+    _pointDensities.append(_many);
 }
 
 SF_StepStemFilter::~SF_StepStemFilter() {
@@ -183,8 +183,8 @@ void SF_StepStemFilter::createPostConfigurationDialogExpert(CT_StepConfigurableD
 void SF_StepStemFilter::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {
     configDialog->addStringChoice("Choose how many points should be removed",
                                    "",
-                                   _nonExpertLevel,
-                                   _choice);
+                                   _pointDensities,
+                                   _choicePointDensity);
     configDialog->addText("For bended trees select a weaker filter level.");
 }
 
@@ -201,7 +201,7 @@ void SF_StepStemFilter::createOutResultModelListProtected() {
 
 void SF_StepStemFilter::adaptParametersToExpertLevel() {
     if(!_isExpert) {
-        if(_choice == _less) {
+        if(_choicePointDensity == _less) {
             _x = 0;
             _y = 0;
             _z = 1;
@@ -210,7 +210,7 @@ void SF_StepStemFilter::adaptParametersToExpertLevel() {
             _radiusNormal = 0.04;
             _voxelSize = 0.015;
             _sizeOutput = 2;
-        } else if(_choice == _intermediate) {
+        } else if(_choicePointDensity == _intermediate) {
             _x = 0;
             _y = 0;
             _z = 1;

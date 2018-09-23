@@ -31,7 +31,7 @@
 #include <pcl/cloud/filter/binary/ground/sf_groundFilter.h>
 #include <QThreadPool>
 
-#include "steps/param/sf_abstract_param.h"
+#include "steps/param/sf_paramAllSteps.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
 
 class SF_StepGroundFilterAdapter {
@@ -61,7 +61,6 @@ public:
             QMutexLocker m1(&*mMutex);
             params._cloudIn = converter.getCloudTranslated();
         }
-        params.log_import();
         SF_GroundFilter<SF_PointNormal> filter;
         {
             QMutexLocker m1(&*mMutex);
@@ -73,7 +72,6 @@ public:
             QMutexLocker m1(&*mMutex);
             params._outputIndices = filter.getIndices();
         }
-        params.logFilter(filter.getPercentage());
     }
 };
 

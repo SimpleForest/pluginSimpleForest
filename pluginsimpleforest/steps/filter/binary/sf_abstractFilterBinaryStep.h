@@ -36,6 +36,7 @@ public:
     SF_AbstractFilterBinaryStep(CT_StepInitializeData & data_init);
 
 protected:
+
     CT_AutoRenameModels _outGrp;
     CT_AutoRenameModels _outGrpNoise;
     CT_AutoRenameModels _outNoise;

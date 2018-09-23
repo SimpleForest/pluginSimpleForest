@@ -16,7 +16,7 @@
 #include "steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.h"
 #include "steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h"
 #include "steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h"
-#include "steps/dtm/sf_dtm_step.h"
+#include "steps/dtm/sf_stepDTM.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingRoot.h"
 
 #include "steps/filter/multiple/voxel/sf_filter3dGridSubCloud.h"

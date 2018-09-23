@@ -1,7 +1,7 @@
 #ifndef SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
 #define SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
 
-#include "steps/param/sf_abstract_param.h"
+#include "steps/param/sf_paramAllSteps.h"
 #include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/features/normal_3d.h>

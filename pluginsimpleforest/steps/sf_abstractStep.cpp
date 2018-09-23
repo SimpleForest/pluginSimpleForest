@@ -45,6 +45,14 @@ SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData &dataInit):
     _CMD_methodList.push_back(_FIRSTMOMENTUMORDER);
     _CMD_methodList.push_back(_SECONDMOMENTUMORDERMSAC);
     _CMD_methodList.push_back(_SECONDMOMENTUMORDER);
+
+    _pointDensities.push_back(_lowDensity);
+    _pointDensities.push_back(_mediumDensity);
+    _pointDensities.push_back(_highDensity);
+
+    _numberPoints.push_back(_few);
+    _numberPoints.push_back(_intermediate);
+    _numberPoints.push_back(_many);
 }
 void  SF_AbstractStep::recursiveRemoveIfEmpty(CT_AbstractItemGroup *parent,
                                               CT_AbstractItemGroup *group) {

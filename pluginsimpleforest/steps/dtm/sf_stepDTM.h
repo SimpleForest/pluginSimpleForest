@@ -29,7 +29,7 @@
 #ifndef SF_DTM_STEP_H
 #define SF_DTM_STEP_H
 
-#include "steps/param/sf_abstract_param.h"
+#include "steps/param/sf_paramAllSteps.h"
 #include "steps/filter/binary/sf_abstractFilterBinaryStep.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
@@ -61,7 +61,7 @@ private:
     QString _less         = "no slope";
     QString _intermediate = "intermediate slope";
     QString _many         = "hard slope";
-    QString _choice       = _intermediate;
+    QString _choicePointDensity       = _intermediate;
 
     double _angle = 20;
     double _radiusNormal = 0.2;

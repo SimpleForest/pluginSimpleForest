@@ -54,14 +54,21 @@ protected:
     void adaptParametersToExpertLevel(){}
     void createParamList(CT_ResultGroup * outResult);
     void compute();
-    void mergeClustersToPCLCloud(std::vector<size_t> indices,
-                                 pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL,
-                                 CT_ResultGroupIterator out_res_it);
     
 private:
     double _voxelSize = 0.04;
     double _euclideanDistance = 0.1;
     int    _minPts = 1;
+    void addResult(std::vector<std::vector<size_t> > &indexVec,
+                   CT_ResultGroup* outResult,
+                   const QString &uniqueName);
+    void createCTIndices(std::vector<CT_PointCloudIndexVector *> &CTindexVec,
+                         std::vector<std::vector<size_t> > &indexVec);
+    void mergeCTClustersIntoPCL(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL,
+                                std::vector<size_t> &indices,
+                                const QString &cloudStr,
+                                const QString &grpStr,
+                                CT_ResultGroup *outResult);
 };
 
 #endif // SF_EUCLIDEAN_CLUSTERING_STEP_H

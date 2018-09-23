@@ -18,7 +18,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
     pcl/sf_point.h \
-    steps/param/sf_abstract_param.h \
     steps/filter/multiple/euclideanclustering/sf_binary_filter.h \
     pcl/cloud/feature/normals/sf_normal.h \
     pcl/cloud/feature/normals/sf_normal.hpp \
@@ -30,7 +29,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/geometry/DTM/sf_pyramidlayer.hpp \
     pcl/geometry/DTM/sf_dtm.h \
     pcl/geometry/DTM/sf_dtm.hpp \
-    steps/dtm/sf_dtm_step.h \
     math/interpolation/sf_interpolation.h \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.h \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.hpp \
@@ -100,11 +98,12 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/segmentation/sf_AbstractStepSegmentation.h \
     steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h \
     steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h \
-    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.h
+    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.h \
+    steps/dtm/sf_stepDTM.h \
+    steps/param/sf_paramAllSteps.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
-    steps/dtm/sf_dtm_step.cpp \
     plot/DTM/sf_dtm.cpp \
     math/interpolation/sf_interpolation.cpp \
     qsm/algorithm/spherefollowing/sf_sphere_following.cpp \
@@ -136,7 +135,8 @@ SOURCES += \
     steps/segmentation/sf_AbstractStepSegmentation.cpp \
     steps/segmentation/voronoi/sf_stepSegmentationVoronoi.cpp \
     steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.cpp \
-    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.cpp
+    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.cpp \
+    steps/dtm/sf_stepDTM.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

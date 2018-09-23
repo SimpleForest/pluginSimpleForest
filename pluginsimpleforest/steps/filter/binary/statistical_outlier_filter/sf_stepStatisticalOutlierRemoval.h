@@ -32,7 +32,7 @@
 
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
-#include <steps/param/sf_abstract_param.h>
+#include <steps/param/sf_paramAllSteps.h>
 
 class SF_StepStatisticalOutlierRemoval:
         public SF_AbstractFilterBinaryStep {
@@ -61,7 +61,7 @@ private:
     QString _less = "less";
     QString _intermediate = "intermediate";
     QString _many         = "many";
-    QString _choice       = _intermediate;
+    QString _choicePointDensity       = _intermediate;
     double _std_mult = 3.0;
     int _iterations = 5;
     int _k = 2;

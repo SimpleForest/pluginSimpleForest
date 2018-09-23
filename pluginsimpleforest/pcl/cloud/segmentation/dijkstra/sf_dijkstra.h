@@ -32,7 +32,7 @@
 #include <pcl/sf_point.h>
 #include <pcl/octree/octree.h>
 #include <pcl/kdtree/kdtree.h>
-#include <steps/param/sf_abstract_param.h>
+#include <steps/param/sf_paramAllSteps.h>
 
 struct heapData;
 

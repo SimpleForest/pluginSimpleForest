@@ -40,9 +40,9 @@ protected:
                                const QString &outCloudCompleteName,
                                const QString &subGrpCompleteName);
     void addSceneToFilterGrp(CT_StandardItemGroup *grp,
-                       CT_ResultGroup *outResult,
-                       CT_PointCloudIndexVector *ctPointCloudIndex,
-                       const QString &outCloudCompleteName);
+                             CT_ResultGroup *outResult,
+                             CT_PointCloudIndexVector *ctPointCloudIndex,
+                             const QString &outCloudCompleteName);
 
 };
 

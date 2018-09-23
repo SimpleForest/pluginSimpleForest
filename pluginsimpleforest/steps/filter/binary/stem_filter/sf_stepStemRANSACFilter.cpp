@@ -157,8 +157,8 @@ void SF_StepStemRANSACFilter::createPostConfigurationDialogExpert(CT_StepConfigu
 void SF_StepStemRANSACFilter::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {
     configDialog->addStringChoice("Choose how many points should be removed",
                                    "",
-                                   _nonExpertLevel,
-                                   _choice);
+                                   _pointDensities,
+                                   _choicePointDensity);
     configDialog->addText("For bended trees select a weaker filter level. Also select weaker level for worse clouds.");
 }
 
@@ -190,7 +190,7 @@ void SF_StepStemRANSACFilter::createOutResultModelListProtected() {
 
 void SF_StepStemRANSACFilter::adaptParametersToExpertLevel() {
     if(!_isExpert) {
-        if(_choice == _less) {
+        if(_choicePointDensity == _less) {
             _x = 0;
             _y = 0;
             _z = 1;
@@ -199,7 +199,7 @@ void SF_StepStemRANSACFilter::adaptParametersToExpertLevel() {
             _inlierDistance = 0.05;
             _voxelSize = 0.015;
             _sizeOutput = 2;
-        } else if(_choice == _intermediate) {
+        } else if(_choicePointDensity == _intermediate) {
             _x = 0;
             _y = 0;
             _z = 1;

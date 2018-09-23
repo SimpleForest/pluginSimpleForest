@@ -37,18 +37,18 @@ class SF_RadiusOutlierFilterStep:
     Q_OBJECT
 
 public:
-    SF_RadiusOutlierFilterStep(CT_StepInitializeData &data_init);
+    SF_RadiusOutlierFilterStep(CT_StepInitializeData &dataInit);
     ~SF_RadiusOutlierFilterStep();
     QString getStepDescription() const;
     QString getStepDetailledDescription() const;
     QString getStepURL() const;
-    CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &data_init);
+    CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
     QStringList getStepRISCitations() const;
 
 protected:
     QList<SF_ParamRadiusOutlierFilter<SF_PointNormal> > _paramList;
-    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *config_dialog);
-    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *config_dialog);
+    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog);
+    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
     void createInResultModelListProtected();
     void createOutResultModelListProtected();
     void compute();
@@ -56,11 +56,8 @@ protected:
     void adaptParametersToExpertLevel();
 
 private:
-    QString _less         = "less";
-    QString _intermediate = "intermediate";
-    QString _many         = "many";
     QString _clearSky    = "clear sky";
-    QString _choice       = _intermediate;
+    QString _choicePointDensity       = _intermediate;
     double _radius = 0.03;
     int _minPts = 5;
     void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);

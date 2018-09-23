@@ -28,7 +28,7 @@
 #ifndef SF_ABSTRACT_STEP_H
 #define SF_ABSTRACT_STEP_H
 
-#include <steps/param/sf_abstract_param.h>
+#include <steps/param/sf_paramAllSteps.h>
 #include <ct_step/abstract/ct_abstractstep.h>
 #include <ct_itemdrawable/ct_grid3d_sparse.h>
 #include <ct_result/model/inModel/ct_inresultmodelgrouptocopy.h>
@@ -96,6 +96,7 @@ protected:
     Eigen::Vector3f getMin(const CT_Scene* ctCloud);
     Eigen::Vector3f getMax(const CT_Scene* ctCloud);
     std::vector<CT_PointCloudIndexVector*> createOutputVectors(size_t numberOutput);
+
     QList<SF_ParamCT> _paramList;
 
     bool _isExpert = true;
@@ -117,11 +118,17 @@ protected:
     QString _CMD_methodChoice = _SECONDMOMENTUMORDERMSAC;
     QStringList _CMD_methodList;
 
-    QStringList _nonExpertLevel;
-    QString _low    = "low";
-    QString _medium = "medium";
-    QString _high   = "high";
-    QString _choice = _medium;
+    QStringList _pointDensities;
+    QString _lowDensity    = "low";
+    QString _mediumDensity = "medium";
+    QString _highDensity   = "high";
+    QString _choicePointDensity = _mediumDensity;
+
+    QStringList _numberPoints;
+    QString _few          = "few";
+    QString _intermediate = "intermediate";
+    QString _many         = "many";
+    QString _choiceNumberPoints;
 
     const QString getRISCitationSimpleTree() const;
     const QString getRISCitationPCL() const;
