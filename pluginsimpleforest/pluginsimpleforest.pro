@@ -18,72 +18,22 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
     pcl/sf_point.h \
-    pcl/cloud/filter/binary/sf_binary_filter.h \
-    pcl/cloud/filter/binary/sf_binary_filter.hpp \
-    pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.h \
-    pcl/cloud/filter/binary/statisticaloutlier/sf_statistical_outlier_filter.hpp \
-    steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.h \
     steps/param/sf_abstract_param.h \
-    steps/sf_abstract_step.h \
-    steps/filter/sf_abstract_filter_step.h \
-    steps/filter/binary/sf_abstract_filter_binary_step.h \
-    steps/filter/multiple/sf_abstract_filter_multiple_step.h \
-    steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.h \
-    steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.h \
-    steps/filter/binary/ground_filter/sf_step_ground_filter_adapter.h \
-    steps/filter/binary/ground_filter/sf_step_ground_filter.h \
     steps/filter/multiple/euclideanclustering/sf_binary_filter.h \
-    pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.h \
-    pcl/cloud/filter/binary/radiusoutlier/sf_radius_outlier_filter.hpp \
-    steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_adapter.h \
-    steps/filter/binary/statistical_outlier_filter/sf_statistical_outlier_removal_adapter.h \
-    pcl/cloud/feature/sf_abstract_feature.h \
-    pcl/cloud/feature/sf_abstract_feature.hpp \
     pcl/cloud/feature/normals/sf_normal.h \
     pcl/cloud/feature/normals/sf_normal.hpp \
-    pcl/cloud/filter/unitary/sf_unitary_filter.h \
-    pcl/cloud/filter/unitary/sf_unitary_filter.hpp \
-    pcl/cloud/filter/unitary/voxelgrid/sf_voxel_grid_ds.h \
-    pcl/cloud/filter/unitary/voxelgrid/sf_voxel_grid_ds.hpp \
-    pcl/cloud/filter/unitary/pca/sf_pca.h \
-    pcl/cloud/filter/unitary/pca/sf_pca.hpp \
-    pcl/cloud/filter/unitary/growthdirection/sf_growth_direction.h \
-    pcl/cloud/filter/unitary/growthdirection/sf_growth_direction.hpp \
-    pcl/cloud/filter/binary/stem/sf_stem_filter.h \
-    pcl/cloud/filter/binary/stem/sf_stem_filter.hpp \
-    pcl/cloud/filter/binary/ground/sf_ground_filter.h \
-    pcl/cloud/filter/binary/ground/sf_ground_filter.hpp \
-    steps/filter/binary/stem_filter/sf_step_stem_filter.h \
-    steps/filter/binary/stem_filter/sf_step_stem_filter_adapter.h \
     pcl/sf_math.h \
     pcl/sf_math.hpp \
     pcl/cloud/feature/pca/sf_pca.h \
     pcl/cloud/feature/pca/sf_pca.hpp \
-    pcl/cloud/feature/growth_direction/sf_growth_direction.h \
-    pcl/cloud/feature/growth_direction/sf_growth_direction.hpp \
     pcl/geometry/DTM/sf_pyramidlayer.h \
     pcl/geometry/DTM/sf_pyramidlayer.hpp \
     pcl/geometry/DTM/sf_dtm.h \
     pcl/geometry/DTM/sf_dtm.hpp \
     steps/dtm/sf_dtm_step.h \
     math/interpolation/sf_interpolation.h \
-    steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.h \
-    steps/filter/binary/cut_cloud_above_dtm/sf_cut_above_dtm_adapter.h \
-    pcl/cloud/filter/multiple/sf_multiple_filter.h \
-    pcl/cloud/filter/multiple/sf_multiple_filter.hpp \
-    pcl/cloud/filter/multiple/euclideanclustering/sf_euclidean_clustering.h \
-    pcl/cloud/filter/multiple/euclideanclustering/sf_euclidean_clustering.hpp \
-    steps/filter/multiple/euclideanclustering/sf_euclidean_clustering_step.h \
-    steps/segmentation/dijkstra/sf_dijkstra_segemtation.h \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.h \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.hpp \
-    steps/segmentation/sf_segmentation_step.h \
-    steps/segmentation/voronoi/sf_voronoi_segmentation.h \
-    steps/filter/binary/stem_filter/sf_step_stem_ransac_filter.h \
-    pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.h \
-    steps/filter/binary/stem_filter/sf_step_stem_filter_ransac_adapter.h \
-    steps/qsm/modelling/sf_step_spherefollowing_basic.h \
-    steps/qsm/modelling/sf_step_spherefollowing_basic_adapter.h \
     qsm/algorithm/spherefollowing/sf_spherefollowing_parameters.h \
     qsm/algorithm/spherefollowing/sf_sphere_following.h \
     qsm/algorithm/detection/sf_idetection.h \
@@ -111,30 +61,52 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     converters/CT_To_PCL/sf_converterCTToPCL.h \
     converters/CT_To_PCL/sf_converterCTToPCL.hpp \
     converters/CT_To_PCL/sf_converterCTToPCLDTM.h \
-    converters/sf_abstractConverter.h
+    converters/sf_abstractConverter.h \
+    pcl/cloud/filter/binary/sf_abstractBinaryFilter.h \
+    pcl/cloud/filter/binary/sf_abstractBinaryFilter.hpp \
+    pcl/cloud/filter/binary/stem/sf_stemFilter.h \
+    pcl/cloud/filter/binary/stem/sf_stemFilter.hpp \
+    pcl/cloud/filter/binary/stem/sf_stemRansacFilter.h \
+    pcl/cloud/filter/binary/statisticaloutlier/sf_statisticalOutlierFilter.hpp \
+    pcl/cloud/filter/binary/statisticaloutlier/sf_statisticalOutlierFilter.h \
+    pcl/cloud/filter/binary/radiusoutlier/sf_radiusOutlierFilter.h \
+    pcl/cloud/filter/binary/radiusoutlier/sf_radiusOutlierFilter.hpp \
+    pcl/cloud/filter/binary/ground/sf_groundFilter.h \
+    pcl/cloud/filter/binary/ground/sf_groundFilter.hpp \
+    pcl/cloud/feature/sf_abstractFeature.h \
+    pcl/cloud/feature/sf_abstractFeature.hpp \
+    pcl/cloud/feature/pca/sf_pcavalues.h \
+    pcl/cloud/feature/growth_direction/sf_growthDirection.h \
+    pcl/cloud/feature/growth_direction/sf_growthDirection.hpp \
+    steps/sf_abstractStep.h \
+    steps/filter/sf_abstractFilterStep.h \
+    steps/filter/multiple/voxel/sf_filter3dGridSubCloud.h \
+    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringStep.h \
+    steps/filter/multiple/sf_abstractFilterMultipleStep.h \
+    steps/filter/binary/sf_abstractFilterBinaryStep.h \
+    steps/filter/binary/stem_filter/sf_stepStemFilter.h \
+    steps/filter/binary/stem_filter/sf_stepStemFilterAdapter.h \
+    steps/filter/binary/stem_filter/sf_stepStemRANSACFilter.h \
+    steps/filter/binary/stem_filter/sf_stepStemFilterRANSACAdapter.h \
+    steps/filter/binary/statistical_outlier_filter/sf_stepStatisticalOutlierRemoval.h \
+    steps/filter/binary/statistical_outlier_filter/sf_statisticalOutlierRemovalAdapter.h \
+    steps/filter/binary/radius_outlier_filter/sf_radiusOutlierFilterStep.h \
+    steps/filter/binary/radius_outlier_filter/sf_radiusOutlierFilterAdapter.h \
+    steps/filter/binary/ground_filter/sf_stepGroundFilter.h \
+    steps/filter/binary/ground_filter/sf_stepGroundFilterAdapter.h \
+    steps/filter/binary/cut_cloud_above_dtm/sf_stepCutCloudAboveDTM.h \
+    steps/filter/binary/cut_cloud_above_dtm/sf_stepCutCloudAboveDTMAdapter.h \
+    steps/qsm/modelling/sf_stepSpherefollowingRoot.h \
+    steps/qsm/modelling/sf_stepSpherefollowingBasicAdapter.h \
+    steps/segmentation/sf_AbstractStepSegmentation.h \
+    steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h \
+    steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
-    steps/sf_abstract_step.cpp \
-    steps/filter/binary/statistical_outlier_filter/sf_step_statistical_outlier_removal.cpp \
-    steps/filter/sf_abstract_filter_step.cpp \
-    steps/filter/binary/sf_abstract_filter_binary_step.cpp \
-    steps/filter/multiple/sf_abstract_filter_multiple_step.cpp \
-    steps/filter/multiple/voxel/sf_filter_3d_grid_sub_cloud.cpp \
-    steps/filter/binary/radius_outlier_filter/sf_radius_outlier_filter_step.cpp \
-    steps/filter/binary/ground_filter/sf_step_ground_filter.cpp \
-    steps/filter/binary/stem_filter/sf_step_stem_filter.cpp \
     steps/dtm/sf_dtm_step.cpp \
     plot/DTM/sf_dtm.cpp \
     math/interpolation/sf_interpolation.cpp \
-    steps/filter/binary/cut_cloud_above_dtm/sf_step_cut_cloud_above_dtm.cpp \
-    steps/filter/multiple/euclideanclustering/sf_euclidean_clustering_step.cpp \
-    steps/segmentation/dijkstra/sf_dijkstra_segemtation.cpp \
-    steps/segmentation/sf_segmentation_step.cpp \
-    steps/segmentation/voronoi/sf_voronoi_segmentation.cpp \
-    steps/filter/binary/stem_filter/sf_step_stem_ransac_filter.cpp \
-    pcl/cloud/filter/binary/stem/sf_stem_ransac_filter.cpp \
-    steps/qsm/modelling/sf_step_spherefollowing_basic.cpp \
     qsm/algorithm/spherefollowing/sf_sphere_following.cpp \
     qsm/algorithm/optimization/gridsearch/sf_gridsearch.cpp \
     qsm/sf_modelCylinderBuildingbrick.cpp \
@@ -147,7 +119,24 @@ SOURCES += \
     converters/CT_To_PCL/sf_converterCTToPCLDTM.cpp \
     plot/sf_modelRaster.cpp \
     plot/sf_modelPlot.cpp \
-    pcl/geometry/sf_pointGeometry.cpp
+    pcl/geometry/sf_pointGeometry.cpp \
+    pcl/cloud/filter/binary/stem/sf_stemRansacFilter.cpp \
+    steps/sf_abstractStep.cpp \
+    steps/filter/sf_abstractFilterStep.cpp \
+    steps/filter/multiple/sf_abstractFilterMultipleStep.cpp \
+    steps/filter/multiple/voxel/sf_filter3dGridSubCloud.cpp \
+    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringStep.cpp \
+    steps/filter/binary/sf_abstractFilterBinaryStep.cpp \
+    steps/filter/binary/stem_filter/sf_stepStemFilter.cpp \
+    steps/filter/binary/stem_filter/sf_stepStemRANSACFilter.cpp \
+    steps/filter/binary/statistical_outlier_filter/sf_stepStatisticalOutlierRemoval.cpp \
+    steps/filter/binary/radius_outlier_filter/sf_radiusOutlierFilterStep.cpp \
+    steps/filter/binary/ground_filter/sf_stepGroundFilter.cpp \
+    steps/filter/binary/cut_cloud_above_dtm/sf_stepCutCloudAboveDTM.cpp \
+    steps/qsm/modelling/sf_stepSpherefollowingRoot.cpp \
+    steps/segmentation/sf_AbstractStepSegmentation.cpp \
+    steps/segmentation/voronoi/sf_stepSegmentationVoronoi.cpp \
+    steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,28 +25,27 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_H
-#define SF_ABSTRACT_FILTER_H
+#ifndef SF_STEM_FILTER_H
+#define SF_STEM_FILTER_H
 
-#include <pcl/cloud/sf_abstractCloud.h>
+#include <pcl/cloud/filter/binary/sf_abstractBinaryFilter.h>
+#include <pcl/features/normal_3d.h>
+#include <pcl/filters/filter.h>
+
+#include "pcl/sf_math.h"
+#include "pcl/cloud/feature/pca/sf_pca.h"
 
 template <typename PointType>
-class SF_AbstractFilter:
-        public  SF_AbstractCloud<PointType> {
-
+class SF_StemFilter: public Sf_AbstractBinaryFilter<PointType> {
+    SF_ParamStemFilter<PointType> _params;
+    void transferStem(const SF_ParamStemFilter<PointType> &params,
+                      typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud,
+                      typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction);
 public:
-    SF_AbstractFilter() ;
-    typename pcl::PointCloud<PointType>::Ptr getCloudOutFiltered() const;
-
-protected:
-    void reset();
-    virtual void writeEmpty();
-    virtual void iterate();
-    virtual void createIndices();
-    int _percentageRemaining;
-    typename pcl::PointCloud<PointType>::Ptr _cloudOutFiltered;
+    SF_StemFilter();
+    virtual void compute();
+    void setParams(SF_ParamStemFilter<PointType> &params);
 };
 
-#include "pcl/cloud/filter/sf_abstractFilter.hpp"
-
-#endif // SF_ABSTRACT_FILTER_H
+#include "pcl/cloud/filter/binary/stem/sf_stemFilter.hpp"
+#endif // SF_STEM_FILTER_H

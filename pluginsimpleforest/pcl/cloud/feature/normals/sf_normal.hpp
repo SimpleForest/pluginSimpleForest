@@ -27,30 +27,36 @@
 *****************************************************************************/
 #ifndef SF_NORMAL_HPP
 #define SF_NORMAL_HPP
-#include "sf_normal.h"
+
 #include <pcl/features/normal_3d.h>
+
+#include "sf_normal.h"
+
 template <typename PointType, typename FeatureType>
-SF_Normal<PointType, FeatureType>::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloud_in, pcl::PointCloud::Ptr features_out):
-    _cloudIn(cloud_in), _features_out(features_out) {    
+SF_Normal<PointType, FeatureType>::SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloudIn,
+                                             pcl::PointCloud::Ptr featuresOut):
+    _cloudIn(cloudIn),
+    _featuresOut(featuresOut) {
 
 }
 
 template <typename PointType, typename FeatureType>
-void SF_Normal<PointType, FeatureType>::set_parameters(float range, bool use_range){
+void SF_Normal<PointType, FeatureType>::setParameters(float range,
+                                                      bool useRange){
     _range = range;
     _k =5;
-    _use_range = use_range;
+    _useRange = useRange;
 }
 
 template <typename PointType, typename FeatureType>
-void SF_Normal<PointType, FeatureType>::set_parameters(int k) {
+void SF_Normal<PointType, FeatureType>::setParameters(int k) {
     _k = k;
     _range = 0.03;
-    _use_range = false;
+    _useRange = false;
 }
 
 template <typename PointType, typename FeatureType>
-void SF_Normal<PointType, FeatureType>::compute_features_range() {
+void SF_Normal<PointType, FeatureType>::computeFeaturesRange() {
     pcl::NormalEstimation<PointType, FeatureType> ne;
     ne.setInputCloud (_cloudIn);
     pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType> ());
@@ -61,7 +67,7 @@ void SF_Normal<PointType, FeatureType>::compute_features_range() {
 }
 
 template <typename PointType, typename FeatureType>
-void SF_Normal<PointType, FeatureType>::compute_features_knn() {
+void SF_Normal<PointType, FeatureType>::computeFeaturesKnn() {
     pcl::NormalEstimation<PointType, FeatureType> ne;
     ne.setInputCloud (_cloudIn);
     pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType> ());
@@ -71,11 +77,11 @@ void SF_Normal<PointType, FeatureType>::compute_features_knn() {
 }
 
 template <typename PointType, typename FeatureType>
-void SF_Normal<PointType, FeatureType>::compute_features() {
-    if(_use_range) {
-        compute_features_range();
+void SF_Normal<PointType, FeatureType>::computeFeatures() {
+    if(_useRange) {
+        computeFeaturesRange();
     } else {
-        compute_features_knn();
+        computeFeaturesKnn();
     }
 }
 

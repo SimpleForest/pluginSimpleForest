@@ -25,28 +25,24 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_H
-#define SF_ABSTRACT_FILTER_H
+#ifndef SF_STATISTICAL_OUTLIER_FILTER_H
+#define SF_STATISTICAL_OUTLIER_FILTER_H
 
-#include <pcl/cloud/sf_abstractCloud.h>
+#include "pcl/cloud/filter/binary/sf_abstractBinaryFilter.h"
 
 template <typename PointType>
-class SF_AbstractFilter:
-        public  SF_AbstractCloud<PointType> {
+class SF_StatisticalOutlierFilter: public Sf_AbstractBinaryFilter<PointType> {
+    void statisticalOutlierFilterIteratively(SF_ParamStatisticalOutlierFilter<PointType> stdParams);
+    void iterate(SF_ParamStatisticalOutlierFilter<PointType> params, typename pcl::PointCloud<PointType>::Ptr cloud);
+    void statisticalOutlierFilter(SF_ParamStatisticalOutlierFilter<PointType> stdParams,
+                                  typename pcl::PointCloud<PointType>::Ptr cloud);
 
 public:
-    SF_AbstractFilter() ;
-    typename pcl::PointCloud<PointType>::Ptr getCloudOutFiltered() const;
-
-protected:
-    void reset();
-    virtual void writeEmpty();
-    virtual void iterate();
-    virtual void createIndices();
-    int _percentageRemaining;
-    typename pcl::PointCloud<PointType>::Ptr _cloudOutFiltered;
+    SF_StatisticalOutlierFilter();
+    virtual void compute(const SF_ParamStatisticalOutlierFilter<PointType> &params);
 };
 
-#include "pcl/cloud/filter/sf_abstractFilter.hpp"
+#include "pcl/cloud/filter/binary/statisticaloutlier/sf_statisticalOutlierFilter.hpp"
 
-#endif // SF_ABSTRACT_FILTER_H
+#endif // SF_STATISTICAL_OUTLIER_FILTER_H
+

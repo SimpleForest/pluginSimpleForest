@@ -37,24 +37,24 @@
 #include "qsm/algorithm/distance/sf_cloudToModelDistanceParameters.h"
 #include "qsm/sf_modelQSM.h"
 
-struct SF_Param_CT{
+struct SF_ParamCT{
     CT_StandardItemGroup* _grpCpyGrp;
     LogInterface* _log;
     const CT_AbstractItemDrawableWithPointCloud* _itemCpyCloudIn;
-    CT_ResultGroup* _resCpy_res;
+    CT_ResultGroup* _resCpyRes;
     virtual QString toString() {
         QString str;
         return str;
     }
 
     virtual void log_import() {
-        QString str = to_string_import();
+        QString str = toStringImport();
         _log->addMessage(LogInterface::info, LogInterface::step, str);
     }
 
 private:
 
-    virtual QString to_string_import() {
+    virtual QString toStringImport() {
         QString str = "A cloud with ";
         str.append(QString::number(_itemCpyCloudIn->getPointCloudIndex()->size()));
         str.append(" points was successfully converted.");
@@ -63,20 +63,21 @@ private:
 };
 
 template <typename PointType>
-struct SF_Param_Cloud: public SF_Param_CT{
+struct SF_ParamCloud: public SF_ParamCT{
 
-    typename pcl::PointCloud<PointType>::Ptr _cloud_in;
+    typename pcl::PointCloud<PointType>::Ptr _cloudIn;
 
-    virtual void log_filter(double percentage) {
-        QString str = to_string_filter(percentage);
-        _log->addMessage(LogInterface::info, LogInterface::step, str);
+    virtual void logFilter(double percentage) {
+        QString str = toStringFilter(percentage);
+        _log->addMessage(LogInterface::info,
+                         LogInterface::step, str);
     }
 
 private:
 
-    virtual QString to_string_filter(double percentage) {
+    virtual QString toStringFilter(double percentage) {
         QString str = "From the cloud with ";
-        str.append(QString::number(_cloud_in->points.size()));
+        str.append(QString::number(_cloudIn->points.size()));
         str.append(" points remain after filtering ");
         str.append(QString::number(percentage, 'f', 2));
         str.append(" percent remain.");
@@ -85,64 +86,70 @@ private:
 };
 
 template <typename PointType>
-struct SF_Param_Filter: public SF_Param_Cloud<PointType>{
-    int _size_output;
-    std::vector<int> _output_indices;
+struct SF_ParamFilter:
+        public SF_ParamCloud<PointType>{
+    int _sizeOutput;
+    std::vector<int> _outputIndices;
 };
 
 template <typename PointType>
-struct SF_Param_Euclidean_Clustering: public SF_Param_Filter<PointType>{
+struct SF_ParamEuclideanClustering:
+        public SF_ParamFilter<PointType>{
     float _cellSize;
     float _euclideanDistance;
     int _minSize;
-    std::vector<int> _output_indices;
+    std::vector<int> _outputIndices;
 };
 
 template <typename PointType>
-struct SF_Param_DTM_Height: public SF_Param_Filter<PointType>{
+struct SF_ParamDTMHeight:
+        public SF_ParamFilter<PointType>{
     float _cropHeight;
     CT_Image2D<float> * _dtmCT;
-    std::vector<int> _output_indices;
+    std::vector<int> _outputIndices;
 };
 
 template <typename PointType>
-struct SF_Param_Growth_direction: public SF_Param_Cloud<PointType>{
-    float gd_range   = 0.03f;
-    float normal_range = 0.01f;
+struct SF_ParamGrowthDirection:
+        public SF_ParamCloud<PointType>{
+    float _gdRange   = 0.03f;
+    float _normalRange = 0.01f;
     virtual QString toString() {
         QString str = "The growth direction computation with parameter (";
-        str.append(QString::number(gd_range));
+        str.append(QString::number(_gdRange));
         str.append(" growth direction range) has started.");
         return str;
     }
 };
 
 template <typename PointType>
-struct SF_Param_Voxel_Grid_Downscale: public SF_Param_Cloud<PointType>{
-    float voxel_size   = 0.01f;
-    float voxel_size_x = 0.01f;
-    float voxel_size_y = 0.01f;
-    float voxel_size_z = 0.01f;
+struct SF_ParamVoxelGridDownscale:
+        public SF_ParamCloud<PointType>{
+    float voxelSize   = 0.01f;
+    float voxelSizeX = 0.01f;
+    float voxelSizeY = 0.01f;
+    float voxelSizeZ = 0.01f;
     virtual QString toString() {
         QString str = "The voxelgrid downscale filter with parameters (cell_size_x = ";
-        str.append(QString::number(voxel_size_x));
+        str.append(QString::number(voxelSizeX));
         str.append("; cell_size_y = ");
-        str.append(QString::number(voxel_size_y));
+        str.append(QString::number(voxelSizeY));
         str.append("; cell_size_z = ");
-        str.append(QString::number(voxel_size_z));
+        str.append(QString::number(voxelSizeZ));
         str.append(") is started.");
         return str;
     }
 };
 
 template <typename PointType, typename FeatureType>
-struct SF_Param_Normals: public SF_Param_Cloud<PointType> {
-    bool _use_radius = true;
+struct SF_ParamNormals:
+        public SF_ParamCloud<PointType> {
+    bool _useRadius = true;
     float _radius = 0.03f;
     int _kn = 25;
     virtual QString toString() {
         QString str = "The normal estimtion with a neighborhood size of ";
-        if(_use_radius) {
+        if(_useRadius) {
             str.append(QString::number(_radius));
             str.append(" m ");
         } else {
@@ -155,9 +162,10 @@ struct SF_Param_Normals: public SF_Param_Cloud<PointType> {
 };
 
 template <typename PointType>
-struct SF_Param_Ground_Filter : public SF_Param_Filter<PointType> {
-    float _voxel_size = 0.04f;
-    float _radius_normal = 0.2f;
+struct SF_ParamGroundFilter :
+        public SF_ParamFilter<PointType> {
+    float _voxelSize = 0.04f;
+    float _radiusNormal = 0.2f;
     float _x = 0;
     float _y = 0;
     float _z = 1;
@@ -172,34 +180,36 @@ struct SF_Param_Ground_Filter : public SF_Param_Filter<PointType> {
         str.append("; ");
         str.append(QString::number(_z));
         str.append("); radius_normal = ");
-        str.append(QString::number(_radius_normal));
+        str.append(QString::number(_radiusNormal));
         str.append(" and voxel_down_scale_size = ");
-        str.append(QString::number(_voxel_size));
+        str.append(QString::number(_voxelSize));
         str.append(") is started.");
         return str;
     }
 };
 
 template <typename PointType>
-struct SF_Param_DTM : public SF_Param_Filter<PointType> {
-    float _voxel_size = 0.03f;
-    float _radius_normal = 0.1f;
-    float _min_cell_size = 0.2;
+struct SF_ParamDtm :
+        public SF_ParamFilter<PointType> {
+    float _voxelSize = 0.03f;
+    float _radiusNormal = 0.1f;
+    float _minCellSize = 0.2;
     virtual QString toString() {
         QString str = "The DTM generation with parameters (voxel_size = ";
-        str.append(QString::number(_voxel_size));
+        str.append(QString::number(_voxelSize));
         str.append("; radius_normal = ");
-        str.append(QString::number(_radius_normal));
+        str.append(QString::number(_radiusNormal));
         str.append(" and _min_size = ");
-        str.append(QString::number(_min_cell_size));
+        str.append(QString::number(_minCellSize));
         str.append(") is started.");
         return str;
     }
 };
 
-struct SF_Param_Stem_RANSAC_Filter : public SF_Param_Filter<pcl::PointXYZINormal> {
-    float _voxel_size = 0.01f;
-    float _radius_normal = 0.03f;
+struct SF_ParamStemRansacFilter :
+        public SF_ParamFilter<pcl::PointXYZINormal> {
+    float _voxelSize = 0.01f;
+    float _radiusNormal = 0.03f;
     float _inlierDistance = 0.1f;
     float _x = 0;
     float _y = 0;
@@ -213,10 +223,11 @@ struct SF_Param_Stem_RANSAC_Filter : public SF_Param_Filter<pcl::PointXYZINormal
 };
 
 template <typename PointType>
-struct SF_Param_Stem_Filter : public SF_Param_Filter<PointType> {
-    float _voxel_size = 0.02f;
-    float _radius_normal = 0.05f;
-    float _radius_growth_direction = 0.1f;
+struct SF_ParamStemFilter :
+        public SF_ParamFilter<PointType> {
+    float _voxelSize = 0.02f;
+    float _radiusNormal = 0.05f;
+    float _radiusGrowthDirection = 0.1f;
     float _x = 0;
     float _y = 0;
     float _z = 1;
@@ -231,18 +242,19 @@ struct SF_Param_Stem_Filter : public SF_Param_Filter<PointType> {
         str.append("; ");
         str.append(QString::number(_z));
         str.append("); radius_growth_direction =");
-        str.append(QString::number(_radius_growth_direction));
+        str.append(QString::number(_radiusGrowthDirection));
         str.append("); radius_normal = ");
-        str.append(QString::number(_radius_normal));
+        str.append(QString::number(_radiusNormal));
         str.append(" and voxel_down_scale_size = ");
-        str.append(QString::number(_voxel_size));
+        str.append(QString::number(_voxelSize));
         str.append(") is started.");
         return str;
     }
 };
 
 template <typename PointType>
-struct SF_ParamSpherefollowingBasic : public SF_Param_Filter<PointType> {
+struct SF_ParamSpherefollowingBasic :
+        public SF_ParamFilter<PointType> {
     SF_SphereFollowingParameters _sphereFollowingParams;
     SF_CloudToModelDistanceParameters _distanceParams;
     Eigen::Vector3d _translation;
@@ -328,15 +340,16 @@ struct SF_ParamSpherefollowingBasic : public SF_Param_Filter<PointType> {
 };
 
 template <typename PointType>
-struct SF_Param_Statistical_Outlier_Filter : public SF_Param_Filter<PointType> {
+struct SF_ParamStatisticalOutlierFilter :
+        public SF_ParamFilter<PointType> {
     int _k = 25;
-    float _std_mult = 3.5;
+    float _stdMult = 3.5;
     int _iterations = 15;
     virtual QString toString() {
         QString str = "The statistical outlier filter with parameters (kn = ";
         str.append(QString::number(_k));
         str.append("; std_mult = ");
-        str.append(QString::number(_std_mult));
+        str.append(QString::number(_stdMult));
         str.append("; iterations = ");
         str.append(QString::number(_iterations));
         str.append("; iterations = ");
@@ -346,12 +359,13 @@ struct SF_Param_Statistical_Outlier_Filter : public SF_Param_Filter<PointType> {
 };
 
 template <typename PointType>
-struct SF_Param_Radius_Outlier_Filter : public SF_Param_Filter<PointType> {
-    int _min_Pts = 15;
+struct SF_ParamRadiusOutlierFilter :
+        public SF_ParamFilter<PointType> {
+    int _minPts = 15;
     double _radius = 10;
     virtual QString toString() {
         QString str = "The radius outlier filter with parameters (_min_pts = ";
-        str.append(QString::number(_min_Pts));
+        str.append(QString::number(_minPts));
         str.append("; radius = ");
         str.append(QString::number(_radius));
         str.append(") is started.");

@@ -25,28 +25,31 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_H
-#define SF_ABSTRACT_FILTER_H
+#ifndef SF_ABSTRACT_FILTER_MULTIPLE_STEP_H
+#define SF_ABSTRACT_FILTER_MULTIPLE_STEP_H
 
-#include <pcl/cloud/sf_abstractCloud.h>
+#include "steps/filter/sf_abstractFilterStep.h"
 
-template <typename PointType>
-class SF_AbstractFilter:
-        public  SF_AbstractCloud<PointType> {
+inline bool sfCompareCTCloudsBySize(CT_PointCloudIndexVector * cloud1,
+                                    CT_PointCloudIndexVector * cloud2){
+    return(cloud1->size()>cloud2->size());
+}
 
+class SF_AbstractFilterMultipleStep:
+        public SF_AbstractFilterStep {
 public:
-    SF_AbstractFilter() ;
-    typename pcl::PointCloud<PointType>::Ptr getCloudOutFiltered() const;
+    SF_AbstractFilterMultipleStep(CT_StepInitializeData & data_init);
 
 protected:
-    void reset();
-    virtual void writeEmpty();
-    virtual void iterate();
-    virtual void createIndices();
-    int _percentageRemaining;
-    typename pcl::PointCloud<PointType>::Ptr _cloudOutFiltered;
+    CT_AutoRenameModels _outGrp;
+    CT_AutoRenameModels _outGrpCluster;
+    CT_AutoRenameModels _outCloudCluster;
+    void writeOutputPerScence(CT_ResultGroup* outResult,
+                              CT_PointCloudIndexVector *outputCluster,
+                              CT_StandardItemGroup *group);
+    void writeOutput(CT_ResultGroup* outResult,
+                     std::vector<CT_PointCloudIndexVector *> clusterVec,
+                     CT_StandardItemGroup *group);
 };
 
-#include "pcl/cloud/filter/sf_abstractFilter.hpp"
-
-#endif // SF_ABSTRACT_FILTER_H
+#endif // SF_ABSTRACT_FILTER_MULTIPLE_STEP_H

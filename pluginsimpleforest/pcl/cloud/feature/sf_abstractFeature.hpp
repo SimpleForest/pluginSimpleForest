@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -25,28 +25,17 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_H
-#define SF_ABSTRACT_FILTER_H
+#ifndef SF_ABSTRACT_FEATURE_HPP
+#define SF_ABSTRACT_FEATURE_HPP
+#include "sf_abstractFeature.h"
 
-#include <pcl/cloud/sf_abstractCloud.h>
+template <typename PointType, typename FeatureType>
+SF_AbstractFeature<PointType, FeatureType>::SF_AbstractFeature(typename pcl::PointCloud<PointType>::Ptr cloudIn,
+                                                               typename pcl::PointCloud<FeatureType>::Ptr featuresOut):
+     SF_AbstractCloud<PointType>(cloudIn),
+     SF_AbstractFeature::_featuresOut(featuresOut) {
 
-template <typename PointType>
-class SF_AbstractFilter:
-        public  SF_AbstractCloud<PointType> {
+}
 
-public:
-    SF_AbstractFilter() ;
-    typename pcl::PointCloud<PointType>::Ptr getCloudOutFiltered() const;
 
-protected:
-    void reset();
-    virtual void writeEmpty();
-    virtual void iterate();
-    virtual void createIndices();
-    int _percentageRemaining;
-    typename pcl::PointCloud<PointType>::Ptr _cloudOutFiltered;
-};
-
-#include "pcl/cloud/filter/sf_abstractFilter.hpp"
-
-#endif // SF_ABSTRACT_FILTER_H
+#endif // SF_ABSTRACT_FEATURE_HPP

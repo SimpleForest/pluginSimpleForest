@@ -25,28 +25,30 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_H
-#define SF_ABSTRACT_FILTER_H
 
+#ifndef SF_BINARY_FILTER_H
+#define SF_BINARY_FILTER_H
+
+#include "pcl/cloud/filter/sf_abstractFilter.h"
 #include <pcl/cloud/sf_abstractCloud.h>
 
 template <typename PointType>
-class SF_AbstractFilter:
-        public  SF_AbstractCloud<PointType> {
-
-public:
-    SF_AbstractFilter() ;
-    typename pcl::PointCloud<PointType>::Ptr getCloudOutFiltered() const;
+class Sf_AbstractBinaryFilter: public  SF_AbstractFilter<PointType> {
 
 protected:
-    void reset();
-    virtual void writeEmpty();
-    virtual void iterate();
-    virtual void createIndices();
-    int _percentageRemaining;
-    typename pcl::PointCloud<PointType>::Ptr _cloudOutFiltered;
+    typename pcl::PointCloud<PointType>::Ptr _cloudOutFilteredNoise;
+    virtual void reset();
+    virtual void createIndex(PointType point,
+                      float sqrd_distance);
+
+public:
+    Sf_AbstractBinaryFilter();
+    typename pcl::PointCloud<PointType>::Ptr getCloudOutFilteredNoise() const;
+    double getPercentage();
 };
 
-#include "pcl/cloud/filter/sf_abstractFilter.hpp"
+#include "sf_abstractBinaryFilter.hpp"
 
-#endif // SF_ABSTRACT_FILTER_H
+#endif // SF_BINARY_FILTER_H
+
+

@@ -25,28 +25,20 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_ABSTRACT_FILTER_H
-#define SF_ABSTRACT_FILTER_H
+#ifndef SF_RADIUS_OUTLIER_FILTER_H
+#define SF_RADIUS_OUTLIER_FILTER_H
 
-#include <pcl/cloud/sf_abstractCloud.h>
+#include "pcl/cloud/filter/binary/sf_abstractBinaryFilter.h"
 
 template <typename PointType>
-class SF_AbstractFilter:
-        public  SF_AbstractCloud<PointType> {
+class SF_RadiusOutlierFilter: public Sf_AbstractBinaryFilter<PointType> {
+    void radiusOutlierFilter(typename SF_ParamRadiusOutlierFilter<PointType> stdParams);
 
 public:
-    SF_AbstractFilter() ;
-    typename pcl::PointCloud<PointType>::Ptr getCloudOutFiltered() const;
-
-protected:
-    void reset();
-    virtual void writeEmpty();
-    virtual void iterate();
-    virtual void createIndices();
-    int _percentageRemaining;
-    typename pcl::PointCloud<PointType>::Ptr _cloudOutFiltered;
+    SF_RadiusOutlierFilter();
+    virtual void compute(const SF_ParamRadiusOutlierFilter<PointType> &params);
 };
 
-#include "pcl/cloud/filter/sf_abstractFilter.hpp"
+#include <pcl/cloud/filter/binary/radiusoutlier/sf_radiusOutlierFilter.hpp>
 
-#endif // SF_ABSTRACT_FILTER_H
+#endif // SF_RADIUS_OUTLIER_FILTER_H

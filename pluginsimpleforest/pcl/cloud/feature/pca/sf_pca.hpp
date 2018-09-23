@@ -32,76 +32,82 @@
 template <typename PointType>
 SF_PCA<PointType>::SF_PCA(typename pcl::PointCloud<PointType>::Ptr cloud_in):
     SF_AbstractCloud<PointType>(cloud_in) {
-    pca_values.resize(cloud_in->points.size());
+    pcaValues.resize(cloud_in->points.size());
 }
 
 template <typename PointType>
-void SF_PCA<PointType>::set_parameters(float range, bool center_zero, bool use_range){
+void SF_PCA<PointType>::setParameters(float range,
+                                      bool centerZero,
+                                      bool useRange){
     _range = range;
-    _center_zero = center_zero;
+    _centerZero = centerZero;
     _k =5;
-    _use_range = use_range;
+    _useRange = useRange;
 }
 
 template <typename PointType>
-void SF_PCA<PointType>::set_parameters(int k, bool center_zero) {
+void SF_PCA<PointType>::setParameters(int k,
+                                      bool centerZero) {
     _k = k;
-    _center_zero = center_zero;
+    _centerZero = centerZero;
     _k = 0.03;
-    _use_range = false;
+    _useRange = false;
 }
 
 template <typename PointType>
-void SF_PCA<PointType>::extract_neighbors(typename pcl::KdTree<PointType>::Ptr kd_tree, PointType p, typename pcl::PointCloud<PointType>::Ptr neighborhood) {
-    if(_use_range) {
-        extractNeighborsByRange(kd_tree,p,neighborhood, _range);
+void SF_PCA<PointType>::extractNeighbors(typename pcl::KdTree<PointType>::Ptr kdTree,
+                                          PointType p,
+                                          typename pcl::PointCloud<PointType>::Ptr neighborhood) {
+    if(_useRange) {
+        extractNeighborsByRange(kdTree,p,neighborhood, _range);
     } else {
-        extractNeighborsByKnn(kd_tree,p,neighborhood, _k);
+        extractNeighborsByKnn(kdTree,p,neighborhood, _k);
     }
 }
 
 template <typename PointType>
-PCA_Values SF_PCA<PointType>::compute_features_from_neighbors(typename pcl::PointCloud<PointType>::Ptr neighborhood, const Eigen::Vector4f& xyz_centroid) {
+SF_PCAValues SF_PCA<PointType>::computeFeaturesFromNeighbors(typename pcl::PointCloud<PointType>::Ptr neighborhood,
+                                                           const Eigen::Vector4f& xyz_centroid) {
     Eigen::Matrix3f covariance_matrix;
     pcl::computeCovarianceMatrix (*neighborhood, xyz_centroid, covariance_matrix);
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> eig(covariance_matrix);
-    PCA_Values ppca;
+    SF_PCAValues ppca;
     ppca.lambdas = eig.eigenvalues();
     ppca.vectors = eig.eigenvectors();
     return ppca;
 }
 
 template <typename PointType>
-void SF_PCA<PointType>::compute_features_for_point(const PointType& p, typename pcl::KdTree<PointType>::Ptr kd_tree, int index) {
+void SF_PCA<PointType>::computeFeaturesForPoint(const PointType& p,
+                                                typename pcl::KdTree<PointType>::Ptr kdTree,
+                                                int index) {
     Eigen::Vector4f xyz_centroid;
     typename pcl::PointCloud<PointType>::Ptr neighborhood(new typename pcl::PointCloud<PointType>);
-    extract_neighbors(kd_tree,p,neighborhood);
+    extractNeighbors(kdTree,p,neighborhood);
     pcl::compute3DCentroid (*neighborhood, xyz_centroid);
     Eigen::Vector4f origin(0,0,0,1) ;
-    PCA_Values ppca = compute_features_from_neighbors(neighborhood, (_center_zero ?  origin : xyz_centroid) );
-    pca_values[index] = ppca;
+    SF_PCAValues ppca = computeFeaturesFromNeighbors(neighborhood, (_centerZero ?  origin : xyz_centroid) );
+    pcaValues[index] = ppca;
 }
 
 
 template <typename PointType>
-void SF_PCA<PointType>::compute_features() {
-    if(pca_values.size() != SF_PCA<PointType>::_cloudIn->points.size()) {
-        pca_values.resize(SF_PCA<PointType>::_cloudIn->points.size());
+void SF_PCA<PointType>::computeFeatures() {
+    if(pcaValues.size() != SF_PCA<PointType>::_cloudIn->points.size()) {
+        pcaValues.resize(SF_PCA<PointType>::_cloudIn->points.size());
     }
 
     typename pcl::KdTreeFLANN<PointType>::Ptr kd_tree (new typename pcl::KdTreeFLANN<PointType> ());
     kd_tree->setInputCloud(SF_PCA<PointType>::_cloudIn);
     for(size_t i = 0; i < SF_PCA<PointType>::_cloudIn->points.size(); i++) {
         PointType p = SF_PCA<PointType>::_cloudIn->points[i];
-        compute_features_for_point(p, kd_tree, i);
+        computeFeaturesForPoint(p, kd_tree, i);
     }
 }
 
 template <typename PointType>
-std::vector<PCA_Values> SF_PCA<PointType>::get_pca_values() const {
-    return pca_values;
+std::vector<SF_PCAValues> SF_PCA<PointType>::getPcaValues() const {
+    return pcaValues;
 }
-
-
 
 #endif // SF_PCA_HPP

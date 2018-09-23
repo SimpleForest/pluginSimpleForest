@@ -25,31 +25,34 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_NORMAL_H
-#define SF_NORMAL_H
-
+#ifndef SF_GROWTH_DIRECTION_H
+#define SF_GROWTH_DIRECTION_H
 
 #include "pcl/cloud/feature/sf_abstractFeature.h"
+#include "../pca/sf_pca.h"
 
 template <typename PointType, typename FeatureType>
-class SF_Normal:
-        public  SF_AbstractFeature<PointType, FeatureType> {
-private:
-    int _k = 5;
-    bool _useRange = false;
-    float _range = 0.03f;
+class SF_GrowthDirection: public  SF_AbstractFeature<PointType, FeatureType> {
+    float _rangeNormal = 0.1f;
+    float _rangeGd = 0.3f;
+    typename pcl::KdTree<PointType>::Ptr _kdTree;
+    static constexpr float MAX_LAMBDA3 = 0.9;
+    void addNormals(std::vector<SF_PCAValues>& values);
+    void addGrowthDirection(std::vector<SF_PCAValues>& values);
+    virtual void createIndices(){; }
+    virtual void createIndex(PointType point,
+                         float sqrdDistance) {}
+    virtual void reset(){_featuresOut.reset(new pcl::PointCloud<FeatureType>);}
+
 
 public:
-    SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloudIn,
-              typename pcl::PointCloud<FeatureType>::Ptr featuresOut);
-    virtual void computeFeatures();
-    virtual void computeFeaturesRange();
-    virtual void computeFeaturesKnn();
-    void setParameters(float range,
-                       bool useRange = true);
-    void setParameters(int k);
-}
+    SF_GrowthDirection(typename pcl::PointCloud<PointType>::Ptr cloudIn,
+                       typename pcl::PointCloud<FeatureType>::Ptr featuresOut);
+    void computeFeatures();
+    std::vector<SF_PCAValues> computeNormalPca();
+    void setParameters(float rangeNormal, float rangeGd);
+};
 
-#include "sf_normal.hpp"
+#include "sf_growthDirection.hpp"
 
-#endif // SF_NORMAL_H
+#endif // SF_GROWTH_DIRECTION_H
