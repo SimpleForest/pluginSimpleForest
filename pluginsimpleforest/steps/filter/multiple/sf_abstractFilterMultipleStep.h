@@ -41,7 +41,6 @@ public:
     SF_AbstractFilterMultipleStep(CT_StepInitializeData & data_init);
 
 protected:
-    CT_AutoRenameModels _outGrp;
     CT_AutoRenameModels _outGrpCluster;
     CT_AutoRenameModels _outCloudCluster;
     void writeOutputPerScence(CT_ResultGroup* outResult,

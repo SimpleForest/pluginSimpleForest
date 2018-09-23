@@ -31,13 +31,13 @@
 
 #include "steps/filter/multiple/sf_abstractFilterMultipleStep.h"
 
-class SF_EuclideanClusteringStep:
+class SF_EuclideanClusteringSegmentationStep:
         public SF_AbstractFilterMultipleStep {
     Q_OBJECT
 
 public:
-    SF_EuclideanClusteringStep(CT_StepInitializeData &dataInit);
-    ~SF_EuclideanClusteringStep();
+    SF_EuclideanClusteringSegmentationStep(CT_StepInitializeData &dataInit);
+    ~SF_EuclideanClusteringSegmentationStep();
     QString getStepDescription() const;
     QString getStepDetailledDescription() const;
     QString getStepURL() const;

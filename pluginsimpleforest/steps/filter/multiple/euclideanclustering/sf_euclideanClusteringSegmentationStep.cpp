@@ -26,106 +26,116 @@
 
 *****************************************************************************/
 
-#include "sf_euclideanClusteringStep.h"
+#include "sf_euclideanClusteringSegmentationStep.h"
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/segmentation/extract_clusters.h>
 
-SF_EuclideanClusteringStep::SF_EuclideanClusteringStep(CT_StepInitializeData &dataInit):
+SF_EuclideanClusteringSegmentationStep::SF_EuclideanClusteringSegmentationStep(CT_StepInitializeData &dataInit):
     SF_AbstractFilterMultipleStep(dataInit) {
 
 }
 
-SF_EuclideanClusteringStep::~SF_EuclideanClusteringStep() {
+SF_EuclideanClusteringSegmentationStep::~SF_EuclideanClusteringSegmentationStep() {
 
 }
 
-QString SF_EuclideanClusteringStep::getStepDescription() const {
-    return tr("Euclidean Clustering");
+QString SF_EuclideanClusteringSegmentationStep::getStepDescription() const {
+    return tr("Segmentation Euclidean Clustering");
 }
 
-QString SF_EuclideanClusteringStep::getStepDetailledDescription() const {
-    return tr("Performs an Euclidean Clustering Operation.");
+QString SF_EuclideanClusteringSegmentationStep::getStepDetailledDescription() const {
+    return tr("Performs an Euclidean Clustering Operation to produce Segmentation Seeds.");
 }
 
-QString SF_EuclideanClusteringStep::getStepURL() const {
+QString SF_EuclideanClusteringSegmentationStep::getStepURL() const {
     return tr("");
 }
 
-CT_VirtualAbstractStep* SF_EuclideanClusteringStep::createNewInstance(CT_StepInitializeData &dataInit) {
-    return new SF_EuclideanClusteringStep(dataInit);
+CT_VirtualAbstractStep* SF_EuclideanClusteringSegmentationStep::createNewInstance(CT_StepInitializeData &dataInit) {
+    return new SF_EuclideanClusteringSegmentationStep(dataInit);
 }
 
-QStringList SF_EuclideanClusteringStep::getStepRISCitations() const {
-    QStringList _RIS_citation_list;
-    _RIS_citation_list.append(QString("TY  - JOUR\n"
-                                      "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
-                                      "A1  - Hackenberg, Jan\n"
-                                      "A1  - Spiecker, Heinrich\n"
-                                      "A1  - Calders, Kim\n"
-                                      "A1  - Disney, Mathias\n"
-                                      "A1  - Raumonen, Pasi\n"
-                                      "JO  - Forests\n"
-                                      "VL  - 6\n"
-                                      "IS  - 11\n"
-                                      "SP  - 4245\n"
-                                      "EP  - 4294\n"
-                                      "Y1  - 2015\n"
-                                      "PB  - Multidisciplinary Digital Publishing Institute\n"
-                                      "UL  - http://www.simpletree.uni-freiburg.de/\n"
-                                      "ER  - \n"));
-
-    _RIS_citation_list.append(QString("TY  - CONF\n"
-                                      "T1  - 3d is here: Point cloud library (pcl)\n"
-                                      "A1  - Rusu, Radu Bogdan\n"
-                                      "A1  - Cousins, Steve\n"
-                                      "JO  - Robotics and Automation (ICRA), 2011 IEEE International Conference on\n"
-                                      "SP  - 1\n"
-                                      "EP  - 4\n"
-                                      "SN  - 1612843859\n"
-                                      "Y1  - 2011\n"
-                                      "PB  - IEEE\n"
-                                      "UL  - http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
-                                      "ER  - \n"));
-    return _RIS_citation_list;
+QStringList SF_EuclideanClusteringSegmentationStep::getStepRISCitations() const {
+    QStringList _risCitationList;
+    _risCitationList.append(getRISCitationSimpleTree());
+    _risCitationList.append(getRISCitationPCL());
+    return _risCitationList;
 }
 
-
-void SF_EuclideanClusteringStep::createInResultModelListProtected() {
-    CT_InResultModelGroupToCopy *resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
+void SF_EuclideanClusteringSegmentationStep::createInResultModelListProtected() {
+    CT_InResultModelGroupToCopy *resModel = createNewInResultModelForCopy(DEF_IN_RESULT,
+                                                                          tr("Point Cloud"));
     resModel->setZeroOrMoreRootGroup();
-    resModel->addGroupModel("", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(), tr("Input Cloud Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Point Cloud"));
-    resModel->addGroupModel("", DEF_IN_SCENE, CT_AbstractItemGroup::staticGetType(), tr("Input Scene Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    resModel->addItemModel(DEF_IN_SCENE, DEF_IN_SCENE_CLOUD, CT_Scene::staticGetType(), tr("Input Scene"));
+    resModel->addGroupModel("",
+                            DEF_IN_GRP_CLUSTER,
+                            CT_AbstractItemGroup::staticGetType(),
+                            tr("Input Cloud Group"),
+                            "",
+                            CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    resModel->addItemModel(DEF_IN_GRP_CLUSTER,
+                           DEF_IN_CLOUD_SEED,
+                           CT_Scene::staticGetType(),
+                           tr("Point Cloud"));
+    resModel->addGroupModel("",
+                            DEF_IN_SCENE,
+                            CT_AbstractItemGroup::staticGetType(),
+                            tr("Input Scene Group"),
+                            "",
+                            CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    resModel->addItemModel(DEF_IN_SCENE,
+                           DEF_IN_SCENE_CLOUD,
+                           CT_Scene::staticGetType(),
+                           tr("Input Scene"));
 }
 
-void SF_EuclideanClusteringStep::createPostConfigurationDialog() {
+void SF_EuclideanClusteringSegmentationStep::createPostConfigurationDialog() {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
-    configDialog->addDouble("The cloud is firstly downscaled with voxel size  ", " (m).", 0.01, 10, 4, _voxelSize);
-    configDialog->addDouble("Than an euclidean clustering routine is performed with threshold  ", " (m)." , 0.01, 10, 4, _euclideanDistance);
-    configDialog->addInt("A cluster has to contain at minimum ", " points.", 1, 9999, _minPts);
+    configDialog->addText("All input clusters are merged in a preprocessing routine.");
+    configDialog->addDouble("The cloud is firstly downscaled with voxel size  ",
+                            " (m).",
+                            0.01,
+                            10,
+                            4,
+                            _voxelSize);
+    configDialog->addDouble("Than an euclidean clustering routine is performed with threshold  ",
+                            " (m).",
+                            0.01,
+                            10,
+                            4,
+                            _euclideanDistance);
+    configDialog->addInt("A cluster has to contain at minimum ",
+                         " points.",
+                         1,
+                         9999,
+                         _minPts);
     createPostConfigurationDialogCitation(configDialog);
 }
 
-void SF_EuclideanClusteringStep::createOutResultModelListProtected() {
+void SF_EuclideanClusteringSegmentationStep::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(resModelw != NULL) {
-        resModelw->addGroupModel(DEF_IN_SCENE, _outGrpCluster, new CT_StandardItemGroup(), tr ("Euclidean Clustering") );
-        resModelw->addItemModel(_outGrpCluster, _outCloudCluster, new CT_Scene(), tr("Tree seeds"));
+        resModelw->addGroupModel(DEF_IN_SCENE,
+                                 _outGrpCluster,
+                                 new CT_StandardItemGroup(),
+                                 tr ("Segmentation"));
+        resModelw->addItemModel(_outGrpCluster,
+                                _outCloudCluster,
+                                new CT_Scene(),
+                                tr("Seeds Euclidean Cluster"));
     }
 }
 
-void SF_EuclideanClusteringStep::compute() {
+void SF_EuclideanClusteringSegmentationStep::compute() {
     const QList<CT_ResultGroup*> &outResultList = getOutResultList();
     CT_ResultGroup * outResult = outResultList.at(0);
     identifyAndRemoveCorruptedScenes(outResult);
-
-    CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
+    CT_ResultGroupIterator outResIt(outResult,
+                                    this,
+                                    DEF_IN_GRP_CLUSTER);
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL(new pcl::PointCloud<pcl::PointXYZI>);
     std::vector<size_t> indices;
     bool first = true;
     Eigen::Vector3d centerOfMass;
-
     while(!isStopped() && outResIt.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResIt.next();
         const CT_AbstractItemDrawableWithPointCloud* ctCloud =
@@ -163,20 +173,17 @@ void SF_EuclideanClusteringStep::compute() {
     ec.setSearchMethod (tree);
     ec.setInputCloud (cloudPCLDownscaled);
     ec.extract (clusterIndices);
-
     int index = 0;
     for (std::vector<pcl::PointIndices>::const_iterator it = clusterIndices.begin (); it != clusterIndices.end (); ++it) {
       for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); ++pit)
           cloudPCLDownscaled->points[*pit].intensity = index;
       index++;
     }
-
     std::vector<CT_PointCloudIndexVector *> indexVec;
     for(size_t i = 0; i < clusterIndices.size(); i++) {
         CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
         indexVec.push_back(mergedClouds);
     }
-
     pcl::search::KdTree<pcl::PointXYZI>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZI>);
     kdtree->setInputCloud (cloudPCLDownscaled);
     for(size_t i = 0; i < cloudPCL->points.size(); i++) {
@@ -188,6 +195,10 @@ void SF_EuclideanClusteringStep::compute() {
             indexVec[index]->addIndex(indices[i]);
         }
     }
+
+    std::sort(indexVec.begin(),
+              indexVec.end(),
+              sfCompareCTCloudsBySize);
 
     CT_ResultGroupIterator outResItOut(outResult,
                                        this,
@@ -210,7 +221,7 @@ void SF_EuclideanClusteringStep::compute() {
     }
 }
 
-void SF_EuclideanClusteringStep::createParamList(CT_ResultGroup *outResult) {
+void SF_EuclideanClusteringSegmentationStep::createParamList(CT_ResultGroup *outResult) {
     adaptParametersToExpertLevel();
     CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_SCENE);
     while(!isStopped() && outResIt.hasNext()) {

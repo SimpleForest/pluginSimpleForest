@@ -36,14 +36,13 @@ SF_AbstractFilterMultipleStep::SF_AbstractFilterMultipleStep(CT_StepInitializeDa
 void SF_AbstractFilterMultipleStep::writeOutputPerScence(CT_ResultGroup* outResult,
                                                          CT_PointCloudIndexVector *outputCluster,
                                                          CT_StandardItemGroup* group) {
-    CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup(_outGrp.completeName(),
+    CT_StandardItemGroup* filterGrp = new CT_StandardItemGroup(_outGrpCluster.completeName(),
                                                                 outResult);
-    group->addGroup(filter_grp);
-    addSceneInSubgrpToGrp(filter_grp,
-                          outResult,
-                          outputCluster,
-                          _outCloudCluster.completeName(),
-                          _outGrpCluster.completeName());
+    group->addGroup(filterGrp);
+    addSceneToFilterGrp(filterGrp,
+                        outResult,
+                        outputCluster,
+                        _outCloudCluster.completeName());
 }
 
 void SF_AbstractFilterMultipleStep::writeOutput(CT_ResultGroup *outResult,

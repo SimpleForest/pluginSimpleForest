@@ -81,7 +81,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/sf_abstractStep.h \
     steps/filter/sf_abstractFilterStep.h \
     steps/filter/multiple/voxel/sf_filter3dGridSubCloud.h \
-    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringStep.h \
     steps/filter/multiple/sf_abstractFilterMultipleStep.h \
     steps/filter/binary/sf_abstractFilterBinaryStep.h \
     steps/filter/binary/stem_filter/sf_stepStemFilter.h \
@@ -100,7 +99,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/qsm/modelling/sf_stepSpherefollowingBasicAdapter.h \
     steps/segmentation/sf_AbstractStepSegmentation.h \
     steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h \
-    steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h
+    steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h \
+    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -125,7 +125,6 @@ SOURCES += \
     steps/filter/sf_abstractFilterStep.cpp \
     steps/filter/multiple/sf_abstractFilterMultipleStep.cpp \
     steps/filter/multiple/voxel/sf_filter3dGridSubCloud.cpp \
-    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringStep.cpp \
     steps/filter/binary/sf_abstractFilterBinaryStep.cpp \
     steps/filter/binary/stem_filter/sf_stepStemFilter.cpp \
     steps/filter/binary/stem_filter/sf_stepStemRANSACFilter.cpp \
@@ -136,7 +135,8 @@ SOURCES += \
     steps/qsm/modelling/sf_stepSpherefollowingRoot.cpp \
     steps/segmentation/sf_AbstractStepSegmentation.cpp \
     steps/segmentation/voronoi/sf_stepSegmentationVoronoi.cpp \
-    steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.cpp
+    steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.cpp \
+    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

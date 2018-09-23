@@ -52,9 +52,8 @@
 #define DEF_IN_SCENE    "igrp2"
 #define DEF_IN_SCENE_CLOUD  "icloud2"
 
-enum MethodType {};
-
-class SF_AbstractStep: public CT_AbstractStep {
+class SF_AbstractStep:
+        public CT_AbstractStep {
     Q_OBJECT
 
     QList<CT_AbstractItemGroup*> _groupsToBeRemoved;
@@ -124,10 +123,11 @@ protected:
     QString _high   = "high";
     QString _choice = _medium;
 
-
+    const QString getRISCitationSimpleTree() const;
+    const QString getRISCitationPCL() const;
 
 public:
-    SF_AbstractStep(CT_StepInitializeData & dataInit);
+    SF_AbstractStep(CT_StepInitializeData &dataInit);
     virtual CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit) = 0;
 };
 
