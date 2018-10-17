@@ -57,36 +57,8 @@ CT_VirtualAbstractStep* SF_StepStemRANSACFilter::createNewInstance(CT_StepInitia
 
 QStringList SF_StepStemRANSACFilter::getStepRISCitations() const {
     QStringList _risCitationList;
-    _risCitationList.append(QString("TY  - JOUR\n"
-                                      "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
-                                      "A1  - Hackenberg, Jan\n"
-                                      "A1  - Spiecker, Heinrich\n"
-                                      "A1  - Calders, Kim\n"
-                                      "A1  - Disney, Mathias\n"
-                                      "A1  - Raumonen, Pasi\n"
-                                      "JO  - Forests\n"
-                                      "VL  - 6\n"
-                                      "IS  - 11\n"
-                                      "SP  - 4245\n"
-                                      "EP  - 4294\n"
-                                      "Y1  - 2015\n"
-                                      "PB  - Multidisciplinary Digital Publishing Institute\n"
-                                      "UL  - http://www.simpletree.uni-freiburg.de/\n"
-                                      "ER  - \n"));
-
-
-    _risCitationList.append(QString("TY  - CONF\n"
-                                      "T1  - 3d is here: Point cloud library (pcl)\n"
-                                      "A1  - Rusu, Radu Bogdan\n"
-                                      "A1  - Cousins, Steve\n"
-                                      "JO  - Robotics and Automation (ICRA), 2011 IEEE International Conference on\n"
-                                      "SP  - 1\n"
-                                      "EP  - 4\n"
-                                      "SN  - 1612843859\n"
-                                      "Y1  - 2011\n"
-                                      "PB  - IEEE\n"
-                                      "UL  - http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
-                                      "ER  - \n"));
+    _risCitationList.append(getRISCitationSimpleTree());
+    _risCitationList.append(getRISCitationPCL());
     return _risCitationList;
 }
 
@@ -98,13 +70,13 @@ void SF_StepStemRANSACFilter::createInResultModelListProtected() {
     resModel->addGroupModel("",
                              DEF_IN_GRP_CLUSTER,
                              CT_AbstractItemGroup::staticGetType(),
-                             tr("Cloud Grp "),
+                             tr("Group to be denoised"),
                              "",
                              CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
     resModel->addItemModel(DEF_IN_GRP_CLUSTER,
                             DEF_IN_CLOUD_SEED,
                             CT_Scene::staticGetType(),
-                            tr("Point Cloud"));
+                            tr("Clouod to be denoised"));
 }
 
 void SF_StepStemRANSACFilter::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {
@@ -127,38 +99,20 @@ void SF_StepStemRANSACFilter::createPostConfigurationDialogExpert(CT_StepConfigu
                              2,
                              _inlierDistance );
     configDialog->addText(" inlier Distance. All inliers per slice are set to stem if the cylinder passes the following test:");
-    configDialog->addDouble("The angle for each point between this cylinder axis and the adjusted z axis is computed and is not allowed to deviate more than ",
+    configDialog->addDouble("The angle for each point between this cylinder axis and the z axis is computed and is not allowed to deviate more than ",
                              " ",
                              0.5,
                              180,
                              1,
                              _angle);
     configDialog->addText("degrees.");
-    configDialog->addDouble("The x-component of the adjusted z-axis",
-                             " ",
-                             0.01,
-                             1,
-                             2,
-                             _x);
-    configDialog->addDouble("The y-component of the adjusted z-axis",
-                             " ",
-                             0.01,
-                             1,
-                             2,
-                             _y);
-    configDialog->addDouble("The z-component of the adjusted z-axis",
-                             " ",
-                             0.01,
-                             1,
-                             2,
-                             _z);
 }
 
 void SF_StepStemRANSACFilter::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {
     configDialog->addStringChoice("Choose how many points should be removed",
                                    "",
-                                   _pointDensities,
-                                   _choicePointDensity);
+                                   _numberPoints,
+                                   _choiceNumberPoints);
     configDialog->addText("For bended trees select a weaker filter level. Also select weaker level for worse clouds.");
 }
 
@@ -166,31 +120,23 @@ void SF_StepStemRANSACFilter::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(resModelw != NULL) {
         resModelw->addGroupModel(DEF_IN_GRP_CLUSTER,
-                                  _outGrp,
-                                  new CT_StandardItemGroup(),
-                                  tr ("Stem RANSAC filter"));
-        resModelw->addGroupModel(_outGrp,
-                                  _outGrpCloud,
-                                  new CT_StandardItemGroup(),
-                                  tr ("stem"));
-        resModelw->addGroupModel(_outGrp,
-                                  _outGrpNoise,
-                                  new CT_StandardItemGroup(),
-                                  tr ("not stem") );
-        resModelw->addItemModel(_outGrpCloud,
-                                 _outCloud,
-                                 new CT_Scene(),
-                                 tr("cloud"));
-        resModelw->addItemModel(_outGrpNoise,
-                                 _outNoise,
-                                 new CT_Scene(),
-                                 tr("cloud"));
+                                 _outGrp,
+                                 new CT_StandardItemGroup(),
+                                 tr ("Stem RANSAC Filter"));
+        resModelw->addItemModel(_outGrp,
+                                _outCloud,
+                                new CT_Scene(),
+                                tr("Cloud"));
+        resModelw->addItemModel(_outGrp,
+                                _outNoise,
+                                new CT_Scene(),
+                                tr("Noise"));
     }
 }
 
 void SF_StepStemRANSACFilter::adaptParametersToExpertLevel() {
     if(!_isExpert) {
-        if(_choicePointDensity == _less) {
+        if(_choiceNumberPoints == _few) {
             _x = 0;
             _y = 0;
             _z = 1;
@@ -199,7 +145,7 @@ void SF_StepStemRANSACFilter::adaptParametersToExpertLevel() {
             _inlierDistance = 0.05;
             _voxelSize = 0.015;
             _sizeOutput = 2;
-        } else if(_choicePointDensity == _intermediate) {
+        } else if(_choiceNumberPoints == _intermediate) {
             _x = 0;
             _y = 0;
             _z = 1;
@@ -208,7 +154,7 @@ void SF_StepStemRANSACFilter::adaptParametersToExpertLevel() {
             _inlierDistance = 0.1;
             _voxelSize = 0.015;
             _sizeOutput = 2;
-        } else {
+        } else if(_choiceNumberPoints == _many) {
             _x = 0;
             _y = 0;
             _z = 1;
@@ -223,23 +169,21 @@ void SF_StepStemRANSACFilter::adaptParametersToExpertLevel() {
 
 void SF_StepStemRANSACFilter::writeOutputPerScence(CT_ResultGroup* outResult, size_t i) {
     SF_ParamStemRansacFilter param = _paramList.at(i);
-    std::vector<CT_PointCloudIndexVector *> output_index_list = createOutputVectors(param._sizeOutput);
-    createOutputIndices(output_index_list,
+    std::vector<CT_PointCloudIndexVector *> outputIndexList = createOutputVectors(param._sizeOutput);
+    createOutputIndices(outputIndexList,
                         param._outputIndices,
                         param._itemCpyCloudIn);
-    CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup(_outGrp.completeName(),
-                                                                outResult);
-    param._grpCpyGrp->addGroup(filter_grp);
-    addSceneInSubgrpToGrp(filter_grp,
-                          outResult,
-                          output_index_list[0],
-                          _outCloud.completeName(),
-                          _outGrpCloud.completeName());
-    addSceneInSubgrpToGrp(filter_grp,
-                          outResult,
-                          output_index_list[1],
-                          _outNoise.completeName(),
-                          _outGrpNoise.completeName());
+    CT_StandardItemGroup *filterGrp = new CT_StandardItemGroup(_outGrp.completeName(),
+                                                               outResult);
+    param._grpCpyGrp->addGroup(filterGrp);
+    addSceneToFilterGrp(filterGrp,
+                        outResult,
+                        outputIndexList[0],
+            _outCloud.completeName());
+    addSceneToFilterGrp(filterGrp,
+                        outResult,
+                        outputIndexList[1],
+            _outNoise.completeName());
 }
 
 void SF_StepStemRANSACFilter::writeOutput(CT_ResultGroup* outResult) {
@@ -250,30 +194,55 @@ void SF_StepStemRANSACFilter::writeOutput(CT_ResultGroup* outResult) {
 }
 
 void SF_StepStemRANSACFilter::compute() {
-    const QList<CT_ResultGroup*> &out_result_list = getOutResultList();
-    CT_ResultGroup * out_result = out_result_list.at(0);
-    identifyAndRemoveCorruptedScenes(out_result);
-    createParamList(out_result);
+    const QList<CT_ResultGroup*> &outResultList = getOutResultList();
+    CT_ResultGroup * outResult = outResultList.at(0);
+    identifyAndRemoveCorruptedScenes(outResult);
+    createParamList(outResult);
+    QFuture<void> future = QtConcurrent::map(_paramList,
+                                             SF_StepStemFilterRANSACAdapter() );
+    setProgressByFuture(future,
+                        10,
+                        85);
+    writeOutput(outResult);
     writeLogger();
-
-    QFuture<void> future = QtConcurrent::map(_paramList,SF_StepStemFilterRANSACAdapter() );
-    setProgressByFuture(future,10,85);
-    writeOutput(out_result);
+    _paramList.clear();
 }
 
 void SF_StepStemRANSACFilter::writeLogger() {
     if(!_paramList.empty()) {
-        QString str = _paramList[0].toString();
-        PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);
+        auto strList = _paramList[0].toStringList();
+        for(auto &str : strList) {
+            PS_LOG->addMessage(LogInterface::info,
+                               LogInterface::step,
+                               str);
+        }
+        size_t filtered = 0;
+        size_t total = 0;
+        for(auto const &param : _paramList) {
+            auto vector = param._outputIndices;
+            for(auto i : vector) {
+                total++;
+                filtered += static_cast<size_t> (i);
+            }
+        }
+        auto str2 = _paramList[0].toFilterString(total,
+                                                    filtered);
+        PS_LOG->addMessage(LogInterface::info,
+                           LogInterface::step,
+                           str2);
     }
 }
 
 void SF_StepStemRANSACFilter::createParamList(CT_ResultGroup * outResult) {
     adaptParametersToExpertLevel();
-    CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
+    CT_ResultGroupIterator outResIt(outResult,
+                                    this,
+                                    DEF_IN_GRP_CLUSTER);
     while(!isStopped() && outResIt.hasNext()) {
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResIt.next();
-        const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+        const CT_AbstractItemDrawableWithPointCloud* ctCloud =
+                (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this,
+                                                                                             DEF_IN_CLOUD_SEED);
         SF_ParamStemRansacFilter param;
         param._log = PS_LOG;
         param._x = _x;

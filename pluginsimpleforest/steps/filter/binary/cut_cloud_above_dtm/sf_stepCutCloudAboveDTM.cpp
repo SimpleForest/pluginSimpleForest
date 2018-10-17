@@ -87,13 +87,13 @@ void SF_StepCutCloudAboveDTM::createInResultModelListProtected() {
     res_model->addGroupModel("",
                              DEF_IN_GRP_CLUSTER,
                              CT_AbstractItemGroup::staticGetType(),
-                             tr("Point Cloud Grp In"),
+                             tr("Group to be sliced"),
                              "",
                              CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
     res_model->addItemModel(DEF_IN_GRP_CLUSTER,
                             DEF_IN_CLOUD_SEED,
                             CT_Scene::staticGetType(),
-                            tr("Point Cloud"));
+                            tr("Cloud to be sliced"));
 }
 
 void SF_StepCutCloudAboveDTM::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {

@@ -54,12 +54,12 @@ public:
         Sf_ConverterCTToPCL<SF_PointNormal> converter;
         {
             QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudIn(params._itemCpyCloudIn);
+            converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
         }
         converter.compute();
         {
             QMutexLocker m1(&*mMutex);
-            params._cloudIn = converter.getCloudTranslated();
+            params._cloudIn = converter.cloudTranslated();
         }
         SF_GroundFilter<SF_PointNormal> filter;
         {

@@ -31,35 +31,35 @@
 #include "sf_abstractFilter.h"
 
 template <typename PointType>
-SF_AbstractFilter<PointType>::SF_AbstractFilter() {
+SF_AbstractFilterDeprecated<PointType>::SF_AbstractFilterDeprecated() {
 
 }
 
 template <typename PointType>
-void SF_AbstractFilter<PointType>::reset() {
+void SF_AbstractFilterDeprecated<PointType>::reset() {
     _percentageRemaining = 0;
-    SF_AbstractFilter<PointType>::_cloudIn.reset(new pcl::PointCloud<PointType> ());
-    SF_AbstractFilter<PointType>::_cloudOutFiltered.reset(new pcl::PointCloud<PointType> ());
-    SF_AbstractFilter<PointType>::_indices.clear();
+    SF_AbstractFilterDeprecated<PointType>::_cloudIn.reset(new pcl::PointCloud<PointType> ());
+    SF_AbstractFilterDeprecated<PointType>::_cloudOutFiltered.reset(new pcl::PointCloud<PointType> ());
+    SF_AbstractFilterDeprecated<PointType>::_indices.clear();
 }
 
 template<typename PointType>
-void SF_AbstractFilter<PointType>::writeEmpty() {
-    size_t size = SF_AbstractFilter<PointType>::_cloudIn->size();
+void SF_AbstractFilterDeprecated<PointType>::writeEmpty() {
+    size_t size = SF_AbstractFilterDeprecated<PointType>::_cloudIn->size();
     for(size_t i = 0; i < size; i++) {
         SF_AbstractCloud<PointType>::_indices.push_back(1);
     }
 }
 
 template<typename PointType>
-void SF_AbstractFilter<PointType>::iterate() {
+void SF_AbstractFilterDeprecated<PointType>::iterate() {
     pcl::KdTreeFLANN<PointType> kdtree;
     kdtree.setInputCloud (_cloudOutFiltered);
     SF_AbstractCloud<PointType>::iterateOverCloud(kdtree);
 }
 
 template <typename PointType>
-void SF_AbstractFilter<PointType>::createIndices() {
+void SF_AbstractFilterDeprecated<PointType>::createIndices() {
     if(_cloudOutFiltered->points.size()>0) {
         iterate();
     } else {
@@ -68,7 +68,7 @@ void SF_AbstractFilter<PointType>::createIndices() {
 }
 
 template <typename PointType>
-typename pcl::PointCloud<PointType>::Ptr SF_AbstractFilter<PointType>::getCloudOutFiltered() const {
+typename pcl::PointCloud<PointType>::Ptr SF_AbstractFilterDeprecated<PointType>::getCloudOutFiltered() const {
     return _cloudOutFiltered;
 }
 

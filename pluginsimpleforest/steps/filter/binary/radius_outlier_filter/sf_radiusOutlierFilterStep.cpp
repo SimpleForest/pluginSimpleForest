@@ -38,11 +38,11 @@ SF_RadiusOutlierFilterStep::~SF_RadiusOutlierFilterStep() {
 }
 
 QString SF_RadiusOutlierFilterStep::getStepDescription() const {
-    return tr("Radius Outlier Removal");
+    return tr("Radius Outlier Filter");
 }
 
 QString SF_RadiusOutlierFilterStep::getStepDetailledDescription() const {
-    return tr("Radius Outlier Removal - Frontend to PCL filter. Points with not enough neighbors in a supported range are eliminated.");
+    return tr("Radius Outlier Filter - Frontend to PCL filter. Points with not enough neighbors in a supported range are eliminated.");
 }
 
 QString SF_RadiusOutlierFilterStep::getStepURL() const {
@@ -67,13 +67,13 @@ void SF_RadiusOutlierFilterStep::createInResultModelListProtected() {
     res_model->setZeroOrMoreRootGroup();
     res_model->addGroupModel("", DEF_IN_GRP_CLUSTER,
                              CT_AbstractItemGroup::staticGetType(),
-                             tr("Point Cloud Grp In"),
+                             tr("Group to be denoised"),
                              "",
                              CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
     res_model->addItemModel(DEF_IN_GRP_CLUSTER,
                             DEF_IN_CLOUD_SEED,
                             CT_Scene::staticGetType(),
-                            tr("Point Cloud"));
+                            tr("Cloud to be denoised"));
 }
 
 void SF_RadiusOutlierFilterStep::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {
@@ -112,7 +112,7 @@ void SF_RadiusOutlierFilterStep::createOutResultModelListProtected() {
         resModelw->addItemModel(_outGrp,
                                 _outNoise,
                                 new CT_Scene(),
-                                tr("Filtered"));
+                                tr("Noise"));
     }
 }
 
@@ -124,7 +124,6 @@ void SF_RadiusOutlierFilterStep::writeOutputPerScence(CT_ResultGroup* outResult,
                         param._itemCpyCloudIn);
     CT_StandardItemGroup *filterGrp = new CT_StandardItemGroup(_outGrp.completeName(),
                                                                outResult);
-
     param._grpCpyGrp->addGroup(filterGrp);
     addSceneToFilterGrp(filterGrp,
                         outResult,

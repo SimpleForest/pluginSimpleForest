@@ -33,15 +33,15 @@ public:
         Sf_ConverterCTToPCL<SF_PointNormal> converter;
         {
             QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudIn(params._itemCpyCloudIn);
+            converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
         }
         SF_CloudNormal::Ptr cloud;
         SF_CloudNormal::Ptr cloudDownscaled (new SF_CloudNormal());
         converter.compute();
         {
             QMutexLocker m1(&*mMutex);
-            params._translation = converter.getCenterOfMass();
-            cloud = converter.getCloudTranslated();
+            params._translation = converter.translation();
+            cloud = converter.cloudTranslated();
         }
         pcl::VoxelGrid<SF_PointNormal> sor;
         sor.setInputCloud (cloud);

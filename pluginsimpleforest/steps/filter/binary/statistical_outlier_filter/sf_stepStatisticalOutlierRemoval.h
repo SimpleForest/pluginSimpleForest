@@ -58,10 +58,6 @@ protected:
     virtual void writeLogger();
 
 private:
-    QString _less = "less";
-    QString _intermediate = "intermediate";
-    QString _many         = "many";
-    QString _choicePointDensity       = _intermediate;
     double _std_mult = 3.0;
     int _iterations = 5;
     int _k = 2;

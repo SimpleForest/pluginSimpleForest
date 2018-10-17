@@ -35,11 +35,6 @@
 
 template <typename PointType>
 Sf_ConverterCTToPCL<PointType>:: Sf_ConverterCTToPCL() {
-    reset();
-}
-
-template <typename PointType>
-void Sf_ConverterCTToPCL<PointType>::reset() {
     _cloudOriginal.reset(new pcl::PointCloud<PointType>);
     _cloudTranslated.reset(new pcl::PointCloud<PointType>);
 }
@@ -52,7 +47,7 @@ pcl::PointCloud<PointType>::Ptr Sf_ConverterCTToPCL<PointType>::getCloudOriginal
 
 template <typename PointType>
 typename
-pcl::PointCloud<PointType>::Ptr Sf_ConverterCTToPCL<PointType>::getCloudTranslated() const {
+pcl::PointCloud<PointType>::Ptr Sf_ConverterCTToPCL<PointType>::cloudTranslated() const {
     return _cloudTranslated;
 }
 
@@ -65,9 +60,9 @@ void Sf_ConverterCTToPCL<PointType>::convertPoint(CT_PointIterator& it) {
     origin.z = internalPoint[2];
     PointType translated;
 
-    translated.x = internalPoint[0]-_centerOfMass[0];
-    translated.y = internalPoint[1]-_centerOfMass[1];
-    translated.z = internalPoint[2]-_centerOfMass[2];
+    translated.x = internalPoint[0]-m_translation[0];
+    translated.y = internalPoint[1]-m_translation[1];
+    translated.z = internalPoint[2]-m_translation[2];
     _cloudOriginal->push_back(origin);
     _cloudTranslated->push_back(translated);
 }
@@ -89,14 +84,14 @@ void Sf_ConverterCTToPCL<PointType>::compute() {
 
 template <typename PointType>
 void Sf_ConverterCTToPCL<PointType>::convert() {
-    const CT_AbstractPointCloudIndex* index =_itemCpyCloudIn->getPointCloudIndex();
+    const CT_AbstractPointCloudIndex* index =m_itemCpyCloudIn->getPointCloudIndex();
     assert( index->size() > 0);
     iterateCloudAndConvert(index);
 }
 
 template<typename PointType>
 std::vector<typename pcl::PointCloud<PointType>::Ptr> Sf_ConverterCTToPCL<PointType>::mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices) {
-    const CT_AbstractPointCloudIndex* index =_itemCpyCloudIn->getPointCloudIndex();
+    const CT_AbstractPointCloudIndex* index =m_itemCpyCloudIn->getPointCloudIndex();
     assert( index->size() > 0);
     CT_PointIterator it(index);
     std::vector<pcl::PointCloud<PointType>::Ptr> clouds;
@@ -113,9 +108,9 @@ std::vector<typename pcl::PointCloud<PointType>::Ptr> Sf_ConverterCTToPCL<PointT
             indices->setValueAtIndex(index, value_at);
         }
         PointType p;
-        p.x = ct_point(0) - _centerOfMass[0];
-        p.y = ct_point(1) - _centerOfMass[1];
-        p.z = ct_point(2) - _centerOfMass[2];
+        p.x = ct_point(0) - m_translation[0];
+        p.y = ct_point(1) - m_translation[1];
+        p.z = ct_point(2) - m_translation[2];
         clouds[value_at]->points.push_back(p);
     }
     return clouds;
@@ -154,12 +149,12 @@ void Sf_ConverterCTToPCL<PointType>::downScale(float range,
     CT_Grid3D_Sparse<int>* indices = CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords(
                                                                      NULL,
                                                                      NULL,
-                                                                     _itemCpyCloudIn->minX(),
-                                                                     _itemCpyCloudIn->minY(),
-                                                                     _itemCpyCloudIn->minZ(),
-                                                                     _itemCpyCloudIn->maxX(),
-                                                                     _itemCpyCloudIn->maxY(),
-                                                                     _itemCpyCloudIn->maxZ(),
+                                                                     m_itemCpyCloudIn->minX(),
+                                                                     m_itemCpyCloudIn->minY(),
+                                                                     m_itemCpyCloudIn->minZ(),
+                                                                     m_itemCpyCloudIn->maxX(),
+                                                                     m_itemCpyCloudIn->maxY(),
+                                                                     m_itemCpyCloudIn->maxZ(),
                                                                      range,
                                                                      -2,
                                                                      -1);

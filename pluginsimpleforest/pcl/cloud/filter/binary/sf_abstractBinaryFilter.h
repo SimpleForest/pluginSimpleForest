@@ -33,7 +33,7 @@
 #include <pcl/cloud/sf_abstractCloud.h>
 
 template <typename PointType>
-class Sf_AbstractBinaryFilter: public  SF_AbstractFilter<PointType> {
+class Sf_AbstractBinaryFilter: public  SF_AbstractFilterDeprecated<PointType> {
 
 protected:
     typename pcl::PointCloud<PointType>::Ptr _cloudOutFilteredNoise;

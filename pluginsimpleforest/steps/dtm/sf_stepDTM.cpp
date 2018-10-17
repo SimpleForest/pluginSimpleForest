@@ -36,6 +36,7 @@
 
 SF_StepDTM::SF_StepDTM(CT_StepInitializeData &dataInit):
     SF_AbstractStep(dataInit) {
+    _pointDensities.clear();
     _pointDensities.append(_less);
     _pointDensities.append(_intermediate);
     _pointDensities.append(_many);
@@ -328,10 +329,10 @@ pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_StepDTM::downScale(pcl::PointCloud
 
 pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_StepDTM::convert(CT_Scene* scene) {
     Sf_ConverterCTToPCL<pcl::PointXYZINormal> converter;
-    converter.setItemCpyCloudIn(scene);
+    converter.setItemCpyCloudInDeprecated(scene);
     converter.compute();
-    _translate =  converter.getCenterOfMass();
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = converter.getCloudTranslated();
+    _translate =  converter.translation();
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = converter.cloudTranslated();
     return cloud;
 }
 

@@ -38,7 +38,6 @@ class SF_ConverterCTToPCLDTM:
     std::shared_ptr<SF_ModelDTM> _dtmPCL;
     CT_Image2D<float> * _dtmCT;
     virtual void computeTranslationToOrigin();
-    virtual void reset(){}
     virtual void compute();
 public:
     SF_ConverterCTToPCLDTM(CT_Image2D<float> * dtmCT);

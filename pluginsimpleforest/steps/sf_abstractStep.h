@@ -132,6 +132,7 @@ protected:
 
     const QString getRISCitationSimpleTree() const;
     const QString getRISCitationPCL() const;
+    const QString getRISCitationRaumonen() const;
 
 public:
     SF_AbstractStep(CT_StepInitializeData &dataInit);

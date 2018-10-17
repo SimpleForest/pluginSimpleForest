@@ -33,37 +33,41 @@
 #include "ct_iterator/ct_pointiterator.h"
 #include <ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h>
 
+/**
+ * @brief The SF_AbstractConverter class Abstract class for conversion
+ * of CT structs to PCL or SimpleForest structs
+ */
 class SF_AbstractConverter
 {
 public:
+    /**
+     * @brief SF_AbstractConverter Standard constructor
+     */
     SF_AbstractConverter();
-    void setItemCpyCloudIn(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in);
-    void setItemCpyCloudInVector(const std::vector<CT_AbstractItemDrawableWithPointCloud *> itemCpy_cloud_inVector);
-
-    Eigen::Vector3d getCenterOfMass() const;
-    void setCenterOfMass(const Eigen::Vector3d &centerOfMass);
+    void setItemCpyCloudInDeprecated(const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in);
+    /**
+     * @brief translation Getter for \ref m_translation.
+     * @return \ref m_translation
+     */
+    Eigen::Vector3d translation() const;
+    /**
+     * @brief compute virtual method to be implemented
+     */
+    virtual void compute()=0;
 
 protected:
-    void sumVector(CT_PointIterator &it);
     /**
-     * @brief _centerOfMass The translation vector pointing from the origin to the original cloud center of mass
+     * @brief m_translation The translation of \ref m_itemCpyCloudIn T towards the origin (0,0,0).
      */
-    Eigen::Vector3d _centerOfMass;
+    Eigen::Vector3d m_translation;
     /**
-     * @brief _itemCpyCloudIn The input CT cloud
+     * @brief m_itemCpyCloudIn The CT input cloud.
      */
-    const CT_AbstractItemDrawableWithPointCloud * _itemCpyCloudIn;
+    const CT_AbstractItemDrawableWithPointCloud * m_itemCpyCloudIn;
     /**
-     * @brief computeTranslationToOrigin Computes the @see _centerOfMass
+     * @brief computeTranslationToOrigin Computes the \ref m_translation.
      */
     virtual void computeTranslationToOrigin();
-    virtual void reset()=0;
-    virtual void compute()=0;
-    void computeCenterOfMass(size_t size, const CT_AbstractPointCloudIndex* index);
-
-private:
-    void normalizeSumVectorBySize(size_t size);
-    void addPointVec(CT_PointIterator &it);
 };
 
 #endif // SF_ABSTRACT_CONVERTER_H

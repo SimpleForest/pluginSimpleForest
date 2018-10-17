@@ -3,6 +3,7 @@ exists(../../computreev5) {
     CT_PREFIX = ../../computreev5
     DEFINES += COMPUTREE_V5
 }
+QMAKE_CXXFLAGS += /bigobj
 
 MUST_USE_PCL = 1
 MUST_USE_OPENCV = 1
@@ -100,7 +101,20 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h \
     steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.h \
     steps/dtm/sf_stepDTM.h \
-    steps/param/sf_paramAllSteps.h
+    steps/param/sf_paramAllSteps.h \
+    parameter/sf_abstractParameterSet.h \
+    parameter/sf_parameterSetVoxelization.h \
+    converters/CT_To_PCL/sf_converterCTCloudToPCLCloud.h \
+    converters/CT_To_PCL/sf_converterCTCloudToPCLCloud.h \
+    converters/CT_To_PCL/sf_converterCTCloudToPCLCloud.hpp \
+    cloud/filter/sf_abstractfilter.h \
+    cloud/sf_includestypedefs.h \
+    cloud/filter/multiple/sf_abstractmultiplefilter.h \
+    cloud/filter/multiple/voxel/sf_filtervoxelclustering.h \
+    cloud/filter/multiple/voxel/sf_filtervoxelclustering.hpp \
+    cloud/filter/binary/sf_abstractbinaryfilter.h \
+    cloud/filter/binary/voxelgriddownscale/sf_voxelgriddownscale.h \
+    cloud/filter/binary/voxelgriddownscale/sf_voxelgriddownscale.hpp
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \

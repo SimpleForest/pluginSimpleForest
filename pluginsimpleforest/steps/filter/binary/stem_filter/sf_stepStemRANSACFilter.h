@@ -57,10 +57,6 @@ protected:
     virtual void writeLogger();
 
 private:
-    QString _less         = "less";
-    QString _intermediate = "intermediate";
-    QString _many         = "many";
-    QString _choicePointDensity       = _intermediate;
     double _x = 0;
     double _y = 0;
     double _z = 1;
@@ -72,6 +68,6 @@ private:
     void writeOutputPerScence(CT_ResultGroup* outResult,
                               size_t i);
     void writeOutput(CT_ResultGroup* outResult);
-    void createParamList(CT_ResultGroup *out_result);
+    void createParamList(CT_ResultGroup *outResult);
 };
 #endif

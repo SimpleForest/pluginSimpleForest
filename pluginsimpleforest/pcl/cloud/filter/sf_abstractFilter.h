@@ -31,11 +31,11 @@
 #include <pcl/cloud/sf_abstractCloud.h>
 
 template <typename PointType>
-class SF_AbstractFilter:
+class SF_AbstractFilterDeprecated:
         public  SF_AbstractCloud<PointType> {
 
 public:
-    SF_AbstractFilter() ;
+    SF_AbstractFilterDeprecated() ;
     typename pcl::PointCloud<PointType>::Ptr getCloudOutFiltered() const;
 
 protected:

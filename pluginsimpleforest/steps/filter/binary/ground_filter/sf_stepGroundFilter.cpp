@@ -39,11 +39,11 @@ SF_StepGroundFilter::~SF_StepGroundFilter() {
 }
 
 QString SF_StepGroundFilter::getStepDescription() const {
-    return tr("Ground Filter");
+    return tr("Ground Point Filter");
 }
 
 QString SF_StepGroundFilter::getStepDetailledDescription() const {
-    return tr("Ground Filter - This Filter estimates for each point the normal. The angle between the normal vector and the z axis is computed. "
+    return tr("Ground Point Filter - This Filter estimates for each point the normal. The angle between the normal vector and the z axis is computed. "
               "If the angle is small, the point is detected as ground, if large the point is considered non ground.");
 }
 
@@ -92,31 +92,13 @@ void SF_StepGroundFilter::createPostConfigurationDialogExpert(CT_StepConfigurabl
                             0.2,
                             3,
                             _radiusNormal );
-    configDialog->addDouble("The angle for each point between the normal and the adjusted z axis is computed and is not allowed to deviate more than ",
+    configDialog->addDouble("The angle for each point between the normal and the z axis is computed and is not allowed to deviate more than ",
                             " ",
                             0.5,
                             180,
                             1,
                             _angle);
     configDialog->addText("degrees.");
-    configDialog->addDouble("The x-component of the adjusted z-axis",
-                            " ",
-                            0.01,
-                            1,
-                            2,
-                            _x);
-    configDialog->addDouble("The y-component of the adjusted z-axis",
-                            " ",
-                            0.01,
-                            1,
-                            2,
-                            _y);
-    configDialog->addDouble("The z-component of the adjusted z-axis",
-                            " ",
-                            0.01,
-                            1,
-                            2,
-                            _z);
 }
 
 void SF_StepGroundFilter::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {
@@ -141,36 +123,24 @@ void SF_StepGroundFilter::createOutResultModelListProtected() {
         resModelw->addItemModel(_outGrp,
                                 _outNoise,
                                 new CT_Scene(),
-                                tr("Filtered"));
+                                tr("Noise"));
     }
 }
 
 void SF_StepGroundFilter::adaptParametersToExpertLevel() {
     if(!_isExpert) {
+        _x = 0;
+        _y = 0;
+        _z = 1;
+        _radiusNormal = 0.04;
+        _voxelSize = 0.015;
+        _sizeOutput = 2;
         if(_choiceNumberPoints == _few) {
-            _x = 0;
-            _y = 0;
-            _z = 1;
             _angle = 15;
-            _radiusNormal = 0.04;
-            _voxelSize = 0.015;
-            _sizeOutput = 2;
         } else if(_choiceNumberPoints == _intermediate) {
-            _x = 0;
-            _y = 0;
-            _z = 1;
             _angle = 30;
-            _radiusNormal = 0.04;
-            _voxelSize = 0.015;
-            _sizeOutput = 2;
         } else if(_choiceNumberPoints == _many) {
-            _x = 0;
-            _y = 0;
-            _z = 1;
             _angle = 45;
-            _radiusNormal = 0.04;
-            _voxelSize = 0.015;
-            _sizeOutput = 2;
         } else {
             throw std::runtime_error("SF_StepGroundFilter parameter adaptation error.");
         }

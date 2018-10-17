@@ -32,9 +32,6 @@
 
 SF_StepStemFilter::SF_StepStemFilter(CT_StepInitializeData &dataInit):
     SF_AbstractFilterBinaryStep(dataInit) {
-    _pointDensities.append(_less);
-    _pointDensities.append(_intermediate);
-    _pointDensities.append(_many);
 }
 
 SF_StepStemFilter::~SF_StepStemFilter() {
@@ -59,59 +56,11 @@ CT_VirtualAbstractStep* SF_StepStemFilter::createNewInstance(CT_StepInitializeDa
 }
 
 QStringList SF_StepStemFilter::getStepRISCitations() const {
-    QStringList _RIS_citation_list;
-    _RIS_citation_list.append(QString("TY  - JOUR\n"
-                                      "T1  - SimpleTree - an efficient open source tool to build tree models from TLS clouds\n"
-                                      "A1  - Hackenberg, Jan\n"
-                                      "A1  - Spiecker, Heinrich\n"
-                                      "A1  - Calders, Kim\n"
-                                      "A1  - Disney, Mathias\n"
-                                      "A1  - Raumonen, Pasi\n"
-                                      "JO  - Forests\n"
-                                      "VL  - 6\n"
-                                      "IS  - 11\n"
-                                      "SP  - 4245\n"
-                                      "EP  - 4294\n"
-                                      "Y1  - 2015\n"
-                                      "PB  - Multidisciplinary Digital Publishing Institute\n"
-                                      "UL  - http://www.simpletree.uni-freiburg.de/\n"
-                                      "ER  - \n"));
-
-
-    _RIS_citation_list.append(QString("TY  - CONF\n"
-                                      "T1  - 3d is here: Point cloud library (pcl)\n"
-                                      "A1  - Rusu, Radu Bogdan\n"
-                                      "A1  - Cousins, Steve\n"
-                                      "JO  - Robotics and Automation (ICRA), 2011 IEEE International Conference on\n"
-                                      "SP  - 1\n"
-                                      "EP  - 4\n"
-                                      "SN  - 1612843859\n"
-                                      "Y1  - 2011\n"
-                                      "PB  - IEEE\n"
-                                      "UL  - http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
-                                      "ER  - \n"));
-
-
-    _RIS_citation_list.append(QString("TY  - EJOU\n"
-                                      "T1  - Fast Automatic Precision Tree Models from Terrestrial Laser Scanner Data\n"
-                                      "A1  - Raumonen, Pasi\n"
-                                      "A1  - Kaasalainen, Mikko\n"
-                                      "A1  - Akerblom, Markku\n"
-                                      "A1  - Kaasalainen, Sanna\n"
-                                      "A1  - Kaartinen, Harri\n"
-                                      "A1  - Vastaranta, Mikko\n"
-                                      "A1  - Holopainen, Markus\n"
-                                      "A1  - Disney, Mathias\n"
-                                      "A1  - Lewis, Philip\n"
-                                      "JO  - Remote Sensing\n"
-                                      "SP  - 5\n"
-                                      "EP  - 2\n"
-                                      "SN  - 2072-4292\n"
-                                      "Y1  - 2013\n"
-                                      "PB  - MDPI\n"
-                                      "UL  - http://www.mdpi.com/2072-4292/5/2/491\n"
-                                      "ER  - \n"));
-    return _RIS_citation_list;
+    QStringList _risCitationList;
+    _risCitationList.append(getRISCitationSimpleTree());
+    _risCitationList.append(getRISCitationPCL());
+    _risCitationList.append(getRISCitationRaumonen());
+    return _risCitationList;
 }
 
 void SF_StepStemFilter::createInResultModelListProtected() {
@@ -122,13 +71,13 @@ void SF_StepStemFilter::createInResultModelListProtected() {
     res_model->addGroupModel("",
                              DEF_IN_GRP_CLUSTER,
                              CT_AbstractItemGroup::staticGetType(),
-                             tr("Point Cloud Grp In"),
+                             tr("Group to be denoised"),
                              "",
                              CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
     res_model->addItemModel(DEF_IN_GRP_CLUSTER,
                             DEF_IN_CLOUD_SEED,
                             CT_Scene::staticGetType(),
-                            tr("Point Cloud"));
+                            tr("Cloud to be denoised"));
 }
 
 void SF_StepStemFilter::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {
@@ -153,55 +102,45 @@ void SF_StepStemFilter::createPostConfigurationDialogExpert(CT_StepConfigurableD
     configDialog->addText("The second range should be larger than the first, which should be larger than the downscale size.");
     configDialog->addText("For each point the Covariance matrix on all neighboring points within the second range is build and a PCA performed.");
     configDialog->addText("The eigenvector representing the direction along the smallest variance is taken as the growth direction of the point.");
-    configDialog->addDouble("The angle for each point between this eigenvector and the adjusted z axis is computed and is not allowed to deviate more than ",
+    configDialog->addDouble("The angle for each point between this eigenvector and the z axis is computed and is not allowed to deviate more than ",
                              " ",
                              0.5,
                              180,
                              1,
                              _angle);
     configDialog->addText("degrees.");
-    configDialog->addDouble("The x-component of the adjusted z-axis",
-                             " ",
-                             0.01,
-                             1,
-                             2,
-                             _x);
-    configDialog->addDouble("The y-component of the adjusted z-axis", " ",
-                             0.01,
-                             1,
-                             2,
-                             _y);
-    configDialog->addDouble("The z-component of the adjusted z-axis",
-                             " ",
-                             0.01,
-                             1,
-                             2,
-                             _z);
     configDialog->addText("Please read Raumonen <b>2013</b> (see Citation menu) for more information, this step is based on knowledge gained there.");
 }
 
 void SF_StepStemFilter::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {
     configDialog->addStringChoice("Choose how many points should be removed",
-                                   "",
-                                   _pointDensities,
-                                   _choicePointDensity);
+                                  "",
+                                  _numberPoints,
+                                  _choiceNumberPoints);
     configDialog->addText("For bended trees select a weaker filter level.");
 }
 
 void SF_StepStemFilter::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(resModelw != NULL) {
-        resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outGrp, new CT_StandardItemGroup(), tr ("stem filtered removal") );
-        resModelw->addGroupModel(_outGrp, _outGrpCloud, new CT_StandardItemGroup(), tr ("stem") );
-        resModelw->addGroupModel(_outGrp, _outGrpNoise, new CT_StandardItemGroup(), tr ("not stem") );
-        resModelw->addItemModel(_outGrpCloud, _outCloud, new CT_Scene(), tr("cloud"));
-        resModelw->addItemModel(_outGrpNoise, _outNoise, new CT_Scene(), tr("cloud"));
+        resModelw->addGroupModel(DEF_IN_GRP_CLUSTER,
+                                 _outGrp,
+                                 new CT_StandardItemGroup(),
+                                 tr ("Stem Point Filter"));
+        resModelw->addItemModel(_outGrp,
+                                _outCloud,
+                                new CT_Scene(),
+                                tr("Cloud"));
+        resModelw->addItemModel(_outGrp,
+                                _outNoise,
+                                new CT_Scene(),
+                                tr("Noise"));
     }
 }
 
 void SF_StepStemFilter::adaptParametersToExpertLevel() {
     if(!_isExpert) {
-        if(_choicePointDensity == _less) {
+        if(_choiceNumberPoints == _few) {
             _x = 0;
             _y = 0;
             _z = 1;
@@ -210,7 +149,7 @@ void SF_StepStemFilter::adaptParametersToExpertLevel() {
             _radiusNormal = 0.04;
             _voxelSize = 0.015;
             _sizeOutput = 2;
-        } else if(_choicePointDensity == _intermediate) {
+        } else if(_choiceNumberPoints == _intermediate) {
             _x = 0;
             _y = 0;
             _z = 1;
@@ -219,7 +158,7 @@ void SF_StepStemFilter::adaptParametersToExpertLevel() {
             _radiusNormal = 0.04;
             _voxelSize = 0.015;
             _sizeOutput = 2;
-        } else {
+        } else if(_choiceNumberPoints == _many) {
             _x = 0;
             _y = 0;
             _z = 1;
@@ -232,51 +171,71 @@ void SF_StepStemFilter::adaptParametersToExpertLevel() {
     }
 }
 
-void SF_StepStemFilter::writeOutputPerScence(CT_ResultGroup* out_result,
+void SF_StepStemFilter::writeOutputPerScence(CT_ResultGroup* outResult,
                                                   size_t i) {
     SF_ParamStemFilter<SF_PointNormal> param = _paramList.at(i);
-    std::vector<CT_PointCloudIndexVector *> output_index_list = createOutputVectors(param._sizeOutput);
-    createOutputIndices(output_index_list,
+    std::vector<CT_PointCloudIndexVector *> outputIndexList = createOutputVectors(param._sizeOutput);
+    createOutputIndices(outputIndexList,
                         param._outputIndices,
                         param._itemCpyCloudIn);
-    CT_StandardItemGroup* filter_grp = new CT_StandardItemGroup(_outGrp.completeName(),
-                                                                out_result);
-    param._grpCpyGrp->addGroup(filter_grp);
-    addSceneInSubgrpToGrp(filter_grp,
-                          out_result,
-                          output_index_list[0],
-                         _outCloud.completeName(),
-                         _outGrpCloud.completeName());
-    addSceneInSubgrpToGrp(filter_grp,
-                          out_result,
-                          output_index_list[1],
-                          _outNoise.completeName(),
-                          _outGrpNoise.completeName());
+    CT_StandardItemGroup *filterGrp = new CT_StandardItemGroup(_outGrp.completeName(),
+                                                               outResult);
+    param._grpCpyGrp->addGroup(filterGrp);
+    addSceneToFilterGrp(filterGrp,
+                        outResult,
+                        outputIndexList[0],
+            _outCloud.completeName());
+    addSceneToFilterGrp(filterGrp,
+                        outResult,
+                        outputIndexList[1],
+            _outNoise.completeName());
 }
 
-void SF_StepStemFilter::writeOutput(CT_ResultGroup* out_result) {
+void SF_StepStemFilter::writeOutput(CT_ResultGroup* outResult) {
     size_t size = _paramList.size();
     for(size_t i = 0; i < size; i ++) {
-        writeOutputPerScence(out_result, i);
+        writeOutputPerScence(outResult,
+                             i);
     }
 }
 
 void SF_StepStemFilter::compute() {
     const QList<CT_ResultGroup*> &outResultList = getOutResultList();
-    CT_ResultGroup * out_result = outResultList.at(0);
-    identifyAndRemoveCorruptedScenes(out_result);
-    createParamList(out_result);
+    CT_ResultGroup * outResult = outResultList.at(0);
+    identifyAndRemoveCorruptedScenes(outResult);
+    createParamList(outResult);
+    QFuture<void> future = QtConcurrent::map(_paramList,
+                                             SF_StepStemFilterAdapter() );
+    setProgressByFuture(future,
+                        10,
+                        85);
+    writeOutput(outResult);
     writeLogger();
-
-    QFuture<void> future = QtConcurrent::map(_paramList,SF_StepStemFilterAdapter() );
-    setProgressByFuture(future,10,85);
-    writeOutput(out_result);
+    _paramList.clear();
 }
 
 void SF_StepStemFilter::writeLogger() {
     if(!_paramList.empty()) {
-        QString str = _paramList[0].toString();
-        PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);
+        auto strList = _paramList[0].toStringList();
+        for(auto &str : strList) {
+            PS_LOG->addMessage(LogInterface::info,
+                               LogInterface::step,
+                               str);
+        }
+        size_t filtered = 0;
+        size_t total = 0;
+        for(auto const &param : _paramList) {
+            auto vector = param._outputIndices;
+            for(auto i : vector) {
+                total++;
+                filtered += static_cast<size_t> (i);
+            }
+        }
+        auto str2 = _paramList[0].toFilterString(total,
+                                                    filtered);
+        PS_LOG->addMessage(LogInterface::info,
+                           LogInterface::step,
+                           str2);
     }
 }
 

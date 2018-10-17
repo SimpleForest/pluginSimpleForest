@@ -37,10 +37,18 @@ template <typename PointType>
 class Sf_ConverterCTToPCL:
         public SF_AbstractConverter
 {
+public:
+    Sf_ConverterCTToPCL();
+    void compute();
+    void downScale(float range,
+                    typename pcl::PointCloud<PointType>::Ptr downscaledCloud);
+    typename
+    pcl::PointCloud<PointType>::Ptr cloudTranslated() const;
+    typename
+    pcl::PointCloud<PointType>::Ptr getCloudOriginal() const;
 private:
     typename pcl::PointCloud<PointType>::Ptr _cloudTranslated;
     typename pcl::PointCloud<PointType>::Ptr _cloudOriginal;
-    virtual void reset();
     void iterateCloudAndConvert(const CT_AbstractPointCloudIndex *index);
     void convertPoint(CT_PointIterator &it);
     void convert();
@@ -49,16 +57,6 @@ private:
     void mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices,
                                 std::vector<typename pcl::PointCloud<PointType>::Ptr> cloudsVec,
                                 typename pcl::PointCloud<PointType>::Ptr downscaled_cloud);
-
-public:
-    Sf_ConverterCTToPCL();
-    void compute();
-    void downScale(float range,
-                    typename pcl::PointCloud<PointType>::Ptr downscaledCloud);
-    typename
-    pcl::PointCloud<PointType>::Ptr getCloudTranslated() const;
-    typename
-    pcl::PointCloud<PointType>::Ptr getCloudOriginal() const;
 };
 
 #include "sf_converterCTToPCL.hpp"

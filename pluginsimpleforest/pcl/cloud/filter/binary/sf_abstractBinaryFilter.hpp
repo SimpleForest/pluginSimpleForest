@@ -36,7 +36,7 @@ Sf_AbstractBinaryFilter<PointType>::Sf_AbstractBinaryFilter() {
 
 template<typename PointType>
 void Sf_AbstractBinaryFilter<PointType>::reset() {
-    SF_AbstractFilter<PointType>::reset();
+    SF_AbstractFilterDeprecated<PointType>::reset();
     _cloudOutFilteredNoise.reset(new pcl::PointCloud<PointType>);
 }
 
@@ -48,7 +48,7 @@ typename pcl::PointCloud<PointType>::Ptr Sf_AbstractBinaryFilter<PointType>::get
 template<typename PointType>
 double Sf_AbstractBinaryFilter<PointType>::getPercentage() {
     double in = SF_AbstractCloud<PointType>::_cloudIn->points.size();
-    double out = SF_AbstractFilter<PointType>::_cloudOutFiltered->points.size()*100.0;
+    double out = SF_AbstractFilterDeprecated<PointType>::_cloudOutFiltered->points.size()*100.0;
     if(in==0) {
         return 0;
     }

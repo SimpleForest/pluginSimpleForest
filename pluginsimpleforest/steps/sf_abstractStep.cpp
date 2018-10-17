@@ -232,6 +232,28 @@ const QString SF_AbstractStep::getRISCitationPCL() const {
                    "ER  - \n");
 }
 
+const QString SF_AbstractStep::getRISCitationRaumonen() const {
+    return QString("TY  - EJOU\n"
+                   "T1  - Fast Automatic Precision Tree Models from Terrestrial Laser Scanner Data\n"
+                   "A1  - Raumonen, Pasi\n"
+                   "A1  - Kaasalainen, Mikko\n"
+                   "A1  - Akerblom, Markku\n"
+                   "A1  - Kaasalainen, Sanna\n"
+                   "A1  - Kaartinen, Harri\n"
+                   "A1  - Vastaranta, Mikko\n"
+                   "A1  - Holopainen, Markus\n"
+                   "A1  - Disney, Mathias\n"
+                   "A1  - Lewis, Philip\n"
+                   "JO  - Remote Sensing\n"
+                   "SP  - 5\n"
+                   "EP  - 2\n"
+                   "SN  - 2072-4292\n"
+                   "Y1  - 2013\n"
+                   "PB  - MDPI\n"
+                   "UL  - http://www.mdpi.com/2072-4292/5/2/491\n"
+                   "ER  - \n");
+}
+
 void SF_AbstractStep::createOutputIndex(std::vector<CT_PointCloudIndexVector *> &indexVectors,
                                         const std::vector<int> &indices,
                                         size_t counter,

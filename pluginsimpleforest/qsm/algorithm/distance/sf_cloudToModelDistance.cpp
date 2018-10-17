@@ -151,6 +151,7 @@ const std::vector<float> Sf_CloudToModelDistance::getCloudToModelDistances() {
             distances.push_back(adaptDistanceToMethod(_INLIERDISTANCE));
         }
     }
+    return distances;
 }
 
 const float Sf_CloudToModelDistance::getNumberInliers(const std::vector<float> &distances) {

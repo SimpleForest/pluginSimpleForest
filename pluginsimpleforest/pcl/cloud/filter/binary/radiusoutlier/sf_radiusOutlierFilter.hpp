@@ -55,7 +55,7 @@ template <typename PointType>
 void SF_RadiusOutlierFilter<PointType>::radiusOutlierFilter(typename SF_ParamRadiusOutlierFilter<PointType> stdParams) {
     if(stdParams._radius>0.1f) {
         Sf_ConverterCTToPCL<PointType> converter;
-        converter.setItemCpyCloudIn(stdParams._itemCpyCloudIn);
+        converter.setItemCpyCloudInDeprecated(stdParams._itemCpyCloudIn);
         pcl::PointCloud<PointType>::Ptr downscaledCloud (new pcl::PointCloud<PointType>);
         converter.downScale(stdParams._radius/5,downscaledCloud);
         pcl::PointCloud<PointType>::Ptr downscaledCloudNeighborsNumber  (new pcl::PointCloud<PointType>);
@@ -81,7 +81,7 @@ void SF_RadiusOutlierFilter<PointType>::radiusOutlierFilter(typename SF_ParamRad
             std::vector<float> pointNNSquaredDistance;
             if ( kdtree.nearestKSearch (p, 1, pointIdxNNSearch, pointNNSquaredDistance) > 0 ) {
                 if(downscaledCloudNeighborsNumber->points[ pointIdxNNSearch[0] ].intensity>= stdParams._minPts) {
-                    SF_AbstractFilter<PointType>::_cloudOutFiltered->points.push_back(p);
+                    SF_AbstractFilterDeprecated<PointType>::_cloudOutFiltered->points.push_back(p);
                 }
             }
         }
@@ -90,7 +90,7 @@ void SF_RadiusOutlierFilter<PointType>::radiusOutlierFilter(typename SF_ParamRad
         outrem.setInputCloud (SF_AbstractCloud<PointType>::_cloudIn);
         outrem.setRadiusSearch(stdParams._radius);
         outrem.setMinNeighborsInRadius( stdParams._minPts);
-        outrem.filter (*SF_AbstractFilter<PointType>::_cloudOutFiltered);
+        outrem.filter (*SF_AbstractFilterDeprecated<PointType>::_cloudOutFiltered);
     }
 }
 

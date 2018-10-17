@@ -120,9 +120,10 @@ template <typename PointType>
 struct SF_ParamDTMHeight:
         public SF_ParamFilter<PointType>{
     float _sliceHeight;
-    CT_Image2D<float> * _dtmCT;    virtual QStringList toStringList() {
+    CT_Image2D<float> * _dtmCT;
+    virtual QStringList toStringList() {
         QStringList list;
-        QString str = "The with the DTM normalized Cloud has been sliced at ";
+        QString str = "The with the DTM normalized Cloud has been sliced at (";
         list.push_back(str);
         str = ("height                  = ");
         str.append(QString::number(_sliceHeight));
@@ -134,11 +135,21 @@ struct SF_ParamDTMHeight:
 
     virtual QString toFilterString(size_t lower,
                                    size_t upper) {
+        if(lower+upper == 0) {
+            return QString("The cloud to be sliced is empty.");
+        }
+        double lowerPerc = static_cast<double>(lower)*100.0/(static_cast<double>(lower)+static_cast<double>(upper));
+        double upperPerc = static_cast<double>(upper)*100.0/(static_cast<double>(lower)+static_cast<double>(upper));
         QString str = "In the lower slice are  ";
-        str.append(QString::number(lower));
+        str.append(QString::number(lower/1000));
+        str.append("k (");
+        str.append(QString::number(lowerPerc, 'f', 2));
+        str.append(" %)");
         str.append(" points, in the upper ");
-        str.append(QString::number(upper));
-        str.append(".");
+        str.append(QString::number(upper/1000));
+        str.append("k (");
+        str.append(QString::number(upperPerc, 'f', 2));
+        str.append(" %).");
         return str;
     }
 };
@@ -208,7 +219,7 @@ struct SF_ParamGroundFilter :
 
     virtual QStringList toStringList() {
         QStringList list;
-        QString str = "The ground point filter with parameters ( </br>";
+        QString str = "The ground point filter with parameters (";
         list.push_back(str);
         str = ("angle                  = ");
         str.append(QString::number(_angle));
@@ -261,10 +272,32 @@ struct SF_ParamStemRansacFilter :
     float _y = 0;
     float _z = 1;
     int _angle = 20;
+
     virtual QString toString() {
         QString str = "The stem RANSAC filter ";
         str.append(" is started.");
         return str;
+    }
+
+    virtual QStringList toStringList() {
+        QStringList list;
+        QString str = "The stem RANSAC filter with parameters (";
+        list.push_back(str);
+        str = ("_voxelSize = ");
+        str.append(QString::number(_voxelSize));
+        list.push_back(str);
+        str = ("radius for normal computation = ");
+        str.append(QString::number(_radiusNormal));
+        list.push_back(str);
+        str = ("_inlierDistance = ");
+        str.append(QString::number(_inlierDistance));
+        list.push_back(str);
+        str = ("maximum angle = ");
+        str.append(QString::number(_angle));
+        list.push_back(str);
+        str = (") is finished.");
+        list.push_back(str);
+        return list;
     }
 };
 
@@ -281,12 +314,6 @@ struct SF_ParamStemFilter :
     virtual QString toString() {
         QString str = "The stem filter with parameters (angle = ";
         str.append(QString::number(_angle));
-        str.append("; axis = (");
-        str.append(QString::number(_x));
-        str.append("; ");
-        str.append(QString::number(_y));
-        str.append("; ");
-        str.append(QString::number(_z));
         str.append("); radius_growth_direction =");
         str.append(QString::number(_radiusGrowthDirection));
         str.append("); radius_normal = ");
@@ -295,6 +322,27 @@ struct SF_ParamStemFilter :
         str.append(QString::number(_voxelSize));
         str.append(") is started.");
         return str;
+    }    
+
+    virtual QStringList toStringList() {
+        QStringList list;
+        QString str = "The stem filter with parameters (";
+        list.push_back(str);
+        str = ("_voxelSize = ");
+        str.append(QString::number(_voxelSize));
+        list.push_back(str);
+        str = ("radius for normal computation = ");
+        str.append(QString::number(_radiusNormal));
+        list.push_back(str);
+        str = ("radius for growth direction computation = ");
+        str.append(QString::number(_radiusGrowthDirection));
+        list.push_back(str);
+        str = ("maximum angle = ");
+        str.append(QString::number(_angle));
+        list.push_back(str);
+        str = (") is finished.");
+        list.push_back(str);
+        return list;
     }
 };
 
@@ -401,6 +449,25 @@ struct SF_ParamStatisticalOutlierFilter :
         str.append("; iterations = ");
         str.append(") is started.");
         return str;
+    }
+
+
+    virtual QStringList toStringList() {
+        QStringList list;
+        QString str = "The statistical outlier filter with parameters (";
+        list.push_back(str);
+        str = ("number nearest neighbors = ");
+        str.append(QString::number(_k));
+        list.push_back(str);
+        str = ("standard devation multiplier = ");
+        str.append(QString::number(_stdMult));
+        list.push_back(str);
+        str = ("iterations              = ");
+        str.append(QString::number(_iterations));
+        list.push_back(str);
+        str = (") is finished.");
+        list.push_back(str);
+        return list;
     }
 };
 
