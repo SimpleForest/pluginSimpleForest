@@ -43,10 +43,9 @@ class SF_VoxelGridDownscale:
 {
 public:
     /**
-     * @brief Standard constructor receiving as input \ref m_cloudIn.
-     * @param cloudIn \ref m_cloudIn
+     * @brief Standard constructor.
      */
-    SF_VoxelGridDownscale(std::pair<pcl::PointCloud<PointType>::Ptr,std::vector<size_t> > cloudIn);
+    SF_VoxelGridDownscale();
     /**
      * @brief compute Does the actual voxelgrid downscaling of \ref m_cloudIn.
      */

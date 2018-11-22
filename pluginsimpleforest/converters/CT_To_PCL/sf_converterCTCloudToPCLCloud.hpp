@@ -67,9 +67,10 @@ void SF_ConverterCTCloudToPCLCloud<pcl::PointXYZ>::compute()
     {
         const CT_Point &internalPoint = it.next().currentPoint();
         m_CTIndices[index] = it.currentGlobalIndex();
-        m_cloudOut[index++] = pcl::PointXYZ(internalPoint[0]-m_translation[0],
+        m_cloudOut[index++] = std::move(pcl::PointXYZ(
+                internalPoint[0]-m_translation[0],
                 internalPoint[1]-m_translation[1],
-                internalPoint[2]-m_translation[2]);
+                internalPoint[2]-m_translation[2]));
     }
 }
 
@@ -83,14 +84,15 @@ void SF_ConverterCTCloudToPCLCloud<pcl::PointXYZINormal>::compute()
     {
         const CT_Point &internalPoint = it.next().currentPoint();
         m_CTIndices[index] = it.currentGlobalIndex();
-        m_cloudOut[index++] = pcl::PointXYZINormal(internalPoint[0]-m_translation[0],
+        m_cloudOut[index++] = std::move(pcl::PointXYZINormal(
+                internalPoint[0]-m_translation[0],
                 internalPoint[1]-m_translation[1],
                 internalPoint[2]-m_translation[2],
                 0,
                 0,
                 0,
                 0,
-                0);
+                0));
     }
 }
 

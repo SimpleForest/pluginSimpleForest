@@ -2,7 +2,7 @@
 
     Copyright (C) 2017-2018 , Dr. Jan Hackenberg
 
-    sf_filtervoxelclustering.h is part of SimpleForest - a plugin for the
+    sf_clusterscaling.h is part of SimpleForest - a plugin for the
     Computree platform.
 
     SimpleForest is free software: you can redistribute it and/or modify
@@ -20,28 +20,22 @@
 
 *****************************************************************************/
 
-#ifndef SF_FILTERVOXELCLUSTERING_H
-#define SF_FILTERVOXELCLUSTERING_H
+#ifndef SF_CLUSTERSCALING_H
+#define SF_CLUSTERSCALING_H
 
-#include "cloud/filter/multiple/sf_abstractmultiplefilter.h"
-#include "parameter/sf_parametersetvoxelization.h"
+#include "../sf_abstractmultiplefilter.h"
 
-/**
- * @brief The SF_VoxelClustering class  This class is producing a voxel
- * over \ref m_cloudIn. All points contained in one raster cell build
- * a cluster. The VoxelSize is passed by the input parameter set.
- */
 template <typename PointType>
-class SF_VoxelClustering:
+class SF_ClusterScaling:
         public SF_AbstractMultipleFilter
 {
 public:
     /**
      * @brief Standard constructor.
      */
-    SF_VoxelClustering();
+    SF_ClusterScaling();
     /**
-     * @brief compute Does the actual voxelization of \ref m_cloudIn.
+     * @brief compute Does the actual scaling of of \ref m_cloudIn.
      */
     void compute() override;
     /**
@@ -69,8 +63,4 @@ private:
      */
     PointType m_max;
 };
-
-#include "sf_filtervoxelclustering.hpp"
-
-#endif // SF_FILTERVOXELCLUSTERING_H
-
+#endif // SF_CLUSTERSCALING_H

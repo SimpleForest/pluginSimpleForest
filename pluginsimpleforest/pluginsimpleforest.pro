@@ -114,7 +114,15 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     cloud/filter/multiple/voxel/sf_filtervoxelclustering.hpp \
     cloud/filter/binary/sf_abstractbinaryfilter.h \
     cloud/filter/binary/voxelgriddownscale/sf_voxelgriddownscale.h \
-    cloud/filter/binary/voxelgriddownscale/sf_voxelgriddownscale.hpp
+    cloud/filter/binary/voxelgriddownscale/sf_voxelgriddownscale.hpp \
+    cloud/feature/principaldirection/sf_principaldirection.h \
+    cloud/feature/principaldirection/sf_principaldirection.hpp \
+    cloud/sf_abstractcloud.h \
+    parameter/sf_parametersetprincipaldirection.h \
+    steps/feature/principaldirection/sf_stepprincipaldirection.h \
+    steps/feature/sf_abstractstepfeature.h \
+    cloud/filter/multiple/clusterscaling/sf_clusterscaling.h \
+    cloud/filter/multiple/clusterscaling/sf_clusterscaling.hpp
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -150,7 +158,9 @@ SOURCES += \
     steps/segmentation/voronoi/sf_stepSegmentationVoronoi.cpp \
     steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.cpp \
     steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.cpp \
-    steps/dtm/sf_stepDTM.cpp
+    steps/dtm/sf_stepDTM.cpp \
+    steps/feature/principaldirection/sf_stepprincipaldirection.cpp \
+    steps/feature/sf_abstractstepfeature.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

@@ -29,7 +29,9 @@ template<typename PointType>
 void SF_VoxelGridDownscale<PointType>::compute()
 {
     SF_ParameterSetVoxelization param;
-    SF_VoxelClustering vc(param);
+//    param.m_cloud = m_pap
+    SF_VoxelClustering vc;
+    vc.setParam(param);
     vc.compute();
     std::vector<std::pair<pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > >  clusters = vc.clusterOut();
     auto centroids = computeCentroids(clusters);

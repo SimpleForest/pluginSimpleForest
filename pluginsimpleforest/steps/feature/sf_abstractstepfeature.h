@@ -2,7 +2,7 @@
 
     Copyright (C) 2017-2018 , Dr. Jan Hackenberg
 
-    sf_abstractfilter.h is part of SimpleForest - a plugin for the
+    sf_abstractstepfeature.h is part of SimpleForest - a plugin for the
     Computree platform.
 
     SimpleForest is free software: you can redistribute it and/or modify
@@ -20,29 +20,26 @@
 
 *****************************************************************************/
 
-#ifndef SF_ABSTRACTFILTER_H
-#define SF_ABSTRACTFILTER_H
+#ifndef SF_ABSTRACTSTEPFEATURE_H
+#define SF_ABSTRACTSTEPFEATURE_H
 
-#include "cloud/sf_abstractcloud.h".h"
+#include "../sf_abstractStep.h"
 
-/**
- * @brief The SF_AbstractFilter class Abstract class for producing segmented or denoised
- * clusters out of a templated PCL cloud
- */
-template <typename PointType>
-class SF_AbstractFilter: public SF_AbstractCloud
+
+class SF_AbstractStepFeature:
+        public SF_AbstractStep
 {
+protected:
+    CT_AutoRenameModels _outGrpCluster;
+    CT_AutoRenameModels _outCloudCluster;
+    void writeOutputPerScence(CT_ResultGroup* outResult,
+                              CT_PointCloudIndexVector *outputCluster,
+                              CT_StandardItemGroup *group);
+    void writeOutput(CT_ResultGroup* outResult,
+                     std::vector<CT_PointCloudIndexVector *> clusterVec,
+                     CT_StandardItemGroup *group);
 public:
-    /**
-     * @brief SF_AbstractFilter Standard constructor.
-     */
-    SF_AbstractFilter();
+    SF_AbstractStepFeature();
 };
 
-#endif // SF_ABSTRACTFILTER_H
-
-template<typename PointType>
-SF_AbstractFilter<PointType>::SF_AbstractFilter()
-{
-
-}
+#endif // SF_ABSTRACTSTEPFEATURE_H

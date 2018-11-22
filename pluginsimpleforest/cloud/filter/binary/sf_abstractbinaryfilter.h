@@ -52,7 +52,6 @@ protected:
     std::pair<std::pair<pcl::PointCloud::Ptr, std::vector<size_t> > > m_clusterOut;
 };
 
-#endif // SF_ABSTRACTBINARYFILTER_H
 
 template<typename PointType>
 std::pair<std::pair<pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > > SF_AbstractBinaryFilter<PointType>::clusterOut() const
@@ -66,3 +65,5 @@ SF_AbstractBinaryFilter<PointType>::SF_AbstractBinaryFilter(std::pair<pcl::Point
 {
 
 }
+
+#endif // SF_ABSTRACTBINARYFILTER_H

@@ -53,7 +53,7 @@ struct SF_ParameterSetVoxelization:
         list.push_back(str);
         str = (" ). into ");
         str.append(QString::number(m_clusters.size()));
-        str.append(" clusters.");
+        str.append(" number of clusters.");
         list.push_back(str);
         return list;
     }

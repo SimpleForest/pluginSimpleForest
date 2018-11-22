@@ -2,7 +2,7 @@
 
     Copyright (C) 2017-2018 , Dr. Jan Hackenberg
 
-    sf_abstractfilter.h is part of SimpleForest - a plugin for the
+    sf_clusterscaling.hpp is part of SimpleForest - a plugin for the
     Computree platform.
 
     SimpleForest is free software: you can redistribute it and/or modify
@@ -20,29 +20,7 @@
 
 *****************************************************************************/
 
-#ifndef SF_ABSTRACTFILTER_H
-#define SF_ABSTRACTFILTER_H
+#ifndef SF_CLUSTERSCALING_HPP
+#define SF_CLUSTERSCALING_HPP
 
-#include "cloud/sf_abstractcloud.h".h"
-
-/**
- * @brief The SF_AbstractFilter class Abstract class for producing segmented or denoised
- * clusters out of a templated PCL cloud
- */
-template <typename PointType>
-class SF_AbstractFilter: public SF_AbstractCloud
-{
-public:
-    /**
-     * @brief SF_AbstractFilter Standard constructor.
-     */
-    SF_AbstractFilter();
-};
-
-#endif // SF_ABSTRACTFILTER_H
-
-template<typename PointType>
-SF_AbstractFilter<PointType>::SF_AbstractFilter()
-{
-
-}
+#endif // SF_CLUSTERSCALING_HPP

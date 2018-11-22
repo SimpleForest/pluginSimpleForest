@@ -25,17 +25,18 @@
 
 #include "sf_filtervoxelclustering.h"
 #include <ct_itemdrawable/ct_grid3d_sparse.h>
+#include <utility>
 
 template<typename PointType>
-SF_VoxelClustering::SF_VoxelClustering(const SF_ParameterSetVoxelization &param):
-    SF_AbstractMultipleFilter(param.m_cloud), m_param(param)
+SF_VoxelClustering::SF_VoxelClustering()
 {
-    initialize();
+
 }
 
 template<typename PointType>
 void SF_VoxelClustering<PointType>::compute()
 {
+    initialize();
     std::unique_ptr<CT_Grid3D_Sparse<int> > clusterIndices (CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords(
                                                                      NULL,
                                                                      NULL,
@@ -48,7 +49,6 @@ void SF_VoxelClustering<PointType>::compute()
                                                                      m_param.m_voxelSize,
                                                                      -2,
                                                                      -1));
-    std::vector<std::pair<pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > > clusters;
     int numberInitializedClouds = 0;
     for(size_t i = 0; i < m_param.m_cloud.first->points().size(); i++)
     {
@@ -63,14 +63,14 @@ void SF_VoxelClustering<PointType>::compute()
         if(clusterIndex <= -1) {
             pcl::PointCloud<PointType>::Ptr cluster(new pcl::PointCloud<PointType>);
             std::vector<size_t> CT_indices;
-            clusters.push_back(std::pair<pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > (cluster,
+            m_clusterOut.push_back(std::pair<pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > (cluster,
                                                                                                  CT_indices));
             clusterIndex = numberInitializedClouds++;
             clusterIndices->setValueAtIndex(index,
                                             clusterIndex);
         }
-        clusters[clusterIndex].first->points.push_back(point);
-        clusters[clusterIndex].second.push_back(CTIndex);
+        m_clusterOut[clusterIndex].first->points.push_back(std::move(point));
+        m_clusterOut[clusterIndex].second.push_back(std::move(CTIndex));
     }
 }
 
@@ -81,6 +81,10 @@ void SF_VoxelClustering<PointType>::initialize()
      pcl::getMinMax3D (*m_param.cloud.first, m_min, m_max);
 }
 
-
+template<typename PointType>
+void SF_VoxelClustering::setParam(const SF_ParameterSetVoxelization<PointType> &param)
+{
+    m_param = param;
+}
 
 #endif // SF_FILTERVOXELCLUSTERING_HPP
