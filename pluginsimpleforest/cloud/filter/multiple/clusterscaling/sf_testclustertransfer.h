@@ -2,7 +2,7 @@
 
     Copyright (C) 2017-2018 , Dr. Jan Hackenberg
 
-    sf_abstractstepfeature.h is part of SimpleForest - a plugin for the
+    sf_testclustertransfer.h is part of SimpleForest - a plugin for the
     Computree platform.
 
     SimpleForest is free software: you can redistribute it and/or modify
@@ -20,26 +20,22 @@
 
 *****************************************************************************/
 
-#ifndef SF_ABSTRACTSTEPFEATURE_H
-#define SF_ABSTRACTSTEPFEATURE_H
+#ifndef SF_TESTCLUSTERTRANSFER_H
+#define SF_TESTCLUSTERTRANSFER_H
 
-#include "../sf_abstractStep.h"
+#include <QtTest/QtTest>
 
-
-class SF_AbstractStepFeature:
-        public SF_AbstractStep
+class TestClusterTransfer: public QObject
 {
-protected:
-    CT_AutoRenameModels _outGrpCluster;
-    CT_AutoRenameModels _outCloudCluster;
-    void writeOutputPerScence(CT_ResultGroup* outResult,
-                              CT_PointCloudIndexVector *outputCluster,
-                              CT_StandardItemGroup *group);
-    void writeOutput(CT_ResultGroup* outResult,
-                     std::vector<CT_PointCloudIndexVector *> clusterVec,
-                     CT_StandardItemGroup *group);
-public:
-    SF_AbstractStepFeature(CT_StepInitializeData &dataInit);
+    Q_OBJECT
+private slots:
+    void initTestCase();
+    void myFirstTest();
+    void mySecondTest();
+    void cleanupTestCase();
 };
 
-#endif // SF_ABSTRACTSTEPFEATURE_H
+//#include "sf_testclustertransfer.moc"
+//QTEST_MAIN(TestClusterTransfer)
+
+#endif // SF_TESTCLUSTERTRANSFER_H

@@ -62,7 +62,7 @@ QString SF_StepPrincipalDirection::getStepURL() const
 
 CT_VirtualAbstractStep* SF_StepPrincipalDirection::createNewInstance(CT_StepInitializeData &dataInit)
 {
-    return new SF_AbstractStepFeature(dataInit);
+    return new SF_StepPrincipalDirection(dataInit);
 }
 
 QStringList SF_StepPrincipalDirection::getStepRISCitations() const
@@ -73,7 +73,6 @@ QStringList SF_StepPrincipalDirection::getStepRISCitations() const
     _risCitationList.append(getRISCitationRaumonen());
     return _risCitationList;
 }
-
 
 void SF_StepPrincipalDirection::createInResultModelListProtected() {
     CT_InResultModelGroupToCopy *resModel = createNewInResultModelForCopy(DEF_IN_RESULT,
@@ -95,31 +94,32 @@ void SF_StepPrincipalDirection::createInResultModelListProtected() {
 
 void SF_StepPrincipalDirection::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroup *resOutModel = createNewOutResultModelToCopy(DEF_IN_RESULT);
+    CT_OutResultModelGroupToCopyPossibilities *resOutModel = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(resOutModel != NULL)
     {
         resOutModel->addItemModel(DEF_IN_GRP_CLUSTER,
                                   m_outCloudItem,
-                                  CT_PointsAttributesColor(),
+                                  new CT_PointsAttributesColor(),
                                   tr("Principal Component"));
     }
 }
 
-void SF_StepPrincipalDirection::createPostConfigurationDialog(CT_StepConfigurableDialog *configDialog) {
+void SF_StepPrincipalDirection::createPostConfigurationDialog() {
+    CT_StepConfigurableDialog *configDialog =  newStandardPostConfigurationDialog();
     configDialog->addText("First to enable multithreading, the point cloud is clustered with voxelization.");
-    configDialog->addInt("A voxelization with [<em><b>voxel size</b></em>]:",
+    configDialog->addDouble("A voxelization with [<em><b>voxel size</b></em>]:",
                             " (m) sized voxels divides the cloud in n clusters.",
                             1,
                             20,
-                            &m_param.m_parameterVoxelization.m_voxelSize,
-                            "");
+                            1,
+                            m_voxelSize);
     configDialog->addText("This step computes the <b>principal direction</b>, e.g. the second normal derivate, for a point cloud.");
     configDialog->addDouble("The [<em><b>normal radius</b></em>]:",
                             " (m)",
                             0.01,
                             0.5,
                             2,
-                            &m_param.m_normalRadius,
+                            m_normalRadius,
                             1,
                             "Used for the normal computation.");
     configDialog->addDouble("The [<em><b>principal direction radius</b></em>]:",
@@ -127,7 +127,7 @@ void SF_StepPrincipalDirection::createPostConfigurationDialog(CT_StepConfigurabl
                             0.01,
                             0.5,
                             2,
-                            &m_param.m_pdRadius,
+                            m_pdRadius,
                             1,
                             "Used for the principal curvature computation.");
 }
@@ -147,10 +147,10 @@ void SF_StepPrincipalDirection::compute() {
     identifyAndRemoveCorruptedScenes(outResult);
     createParamList(outResult);
     writeLogger();
-    QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingRootAdapter());
-    setProgressByFuture(future,
-                        10,
-                        85);
+    //QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingRootAdapter());
+//    setProgressByFuture(future,
+  //                      10,
+    //                    85);
 }
 
 void SF_StepPrincipalDirection::createParamList(CT_ResultGroup * outResult)
@@ -161,19 +161,11 @@ void SF_StepPrincipalDirection::createParamList(CT_ResultGroup * outResult)
         CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResIt.next();
         const CT_AbstractItemDrawableWithPointCloud*  ctCloud =
        (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
-        SF_ParamSpherefollowingBasic<SF_PointNormal> param;
-        m_param.
+        SF_ParameterSetPrincipalDirection<SF_PointNormal> param;
+        param.m_parameterVoxelization.m_voxelSize = m_voxelSize;
+        param.m_normalRadius = m_normalRadius;
+        param.m_pdRadius = m_pdRadius;
 
-        param._distanceParams = distanceParams;
-        param._sphereFollowingParams = sphereFollowingParams;
-        param._voxelSize = _PP_voxelSize;
-        param._clusteringDistance = _PP_euclideanClusteringDistance;
-        param._maxError  = -1337;
-        param._minError  = 1337;
-        param._fittedGeometries = 0;
-        param._log = PS_LOG;
-        param._itemCpyCloudIn = ctCloud;
-        param._grpCpyGrp = group;
         _paramList.append(param);
     }
 }

@@ -8,6 +8,10 @@ QMAKE_CXXFLAGS += /bigobj
 MUST_USE_PCL = 1
 MUST_USE_OPENCV = 1
 QT += concurrent
+QT +=  testlib
+CONFIG += testcase
+CONFIG   += console
+
 COMPUTREE += ctlibpcl
 
 include($${CT_PREFIX}/shared.pri)
@@ -121,8 +125,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     parameter/sf_parametersetprincipaldirection.h \
     steps/feature/principaldirection/sf_stepprincipaldirection.h \
     steps/feature/sf_abstractstepfeature.h \
-    cloud/filter/multiple/clusterscaling/sf_clusterscaling.h \
-    cloud/filter/multiple/clusterscaling/sf_clusterscaling.hpp
+    cloud/filter/multiple/clusterscaling/sf_clustertransfer.h \
+    cloud/filter/multiple/clusterscaling/sf_clustertransfer.hpp \
+    cloud/filter/multiple/clusterscaling/sf_testclustertransfer.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -160,7 +165,8 @@ SOURCES += \
     steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.cpp \
     steps/dtm/sf_stepDTM.cpp \
     steps/feature/principaldirection/sf_stepprincipaldirection.cpp \
-    steps/feature/sf_abstractstepfeature.cpp
+    steps/feature/sf_abstractstepfeature.cpp \
+    cloud/filter/multiple/clusterscaling/sf_testclustertransfer.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

@@ -32,12 +32,12 @@
  */
 template <typename T>
 struct SF_ParameterSetPrincipalDirection:
-        public SF_AbstractParameterSet
+        public SF_AbstractParameterSet<T>
 {
     /**
      * @brief m_parameterVoxelization The parameter set storing the \ref m_voxelSize of voxel clustering routine to enable multithreading.
      */
-    SF_ParameterSetVoxelization m_parameterVoxelization;
+    SF_ParameterSetVoxelization<T> m_parameterVoxelization;
 
     /**
      * @brief m_normalRadius The radius of the normal computation of \ref  m_cloud.
@@ -51,7 +51,12 @@ struct SF_ParameterSetPrincipalDirection:
     SF_ParameterSetPrincipalDirection() {}
     QStringList paramsToString() override {
         QStringList list;
-        list.push_back(SF_ParameterSetVoxelization::paramsToString());
+        QStringList subList = m_parameterVoxelization.paramsToString();
+        for(QString subStr : subList)
+        {
+            list.push_back(std::move(subStr));
+
+        }
         QString str = "The principal direction has been computed with (";
         list.push_back(str);
         str = ("radius normal                = ");

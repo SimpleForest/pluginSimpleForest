@@ -2,7 +2,7 @@
 
     Copyright (C) 2017-2018 , Dr. Jan Hackenberg
 
-    sf_clusterscaling.h is part of SimpleForest - a plugin for the
+    sf_clustertransfer.h is part of SimpleForest - a plugin for the
     Computree platform.
 
     SimpleForest is free software: you can redistribute it and/or modify
@@ -20,47 +20,48 @@
 
 *****************************************************************************/
 
-#ifndef SF_CLUSTERSCALING_H
-#define SF_CLUSTERSCALING_H
+#ifndef SF_CLUSTERTRANSFER_H
+#define SF_CLUSTERTRANSFER_H
 
 #include "../sf_abstractmultiplefilter.h"
 
+#include <pcl/kdtree/kdtree_flann.h>
+#include <utility>
+
 template <typename PointType>
-class SF_ClusterScaling:
+class SF_ClusterTransfer:
         public SF_AbstractMultipleFilter
 {
 public:
     /**
      * @brief Standard constructor.
      */
-    SF_ClusterScaling();
+    SF_ClusterTransfer();
     /**
-     * @brief compute Does the actual scaling of of \ref m_cloudIn.
+     * @brief compute Does the actual transform of of \ref m_clusterIn to original resoluted cloud.
      */
     void compute() override;
-    /**
-     * @brief setParam Setter for \ref m_param.
-     * @param param \ref m_param.
-     */
-    void setParam(const SF_ParameterSetVoxelization<PointType> &param);
-
 private:
     /**
-     * @brief m_param The parameter set storing \ref m_cloudIn and
-     * the cell size of the voxels.
-     */
-    SF_ParameterSetVoxelization m_param;
-    /**
-     * @brief initialize
+     * @brief initialize creates \ref m_cloudInMerged out of \ref m_clusterIn.
      */
     void initialize();
     /**
-     * @brief m_min Stores minX, minY and minZ of \ref m_cloudIn.
+     * @brief m_cloudInMerged All input clusters merged to one cloud.
      */
-    PointType m_min;
+    pcl::PointCloud<PointType>::Ptr m_cloudInMerged;
     /**
-     * @brief m_max Stores maxX, maxY and maxZ of \ref m_cloudIn.
+     * @brief m_ClusterIndices For each point in \ref m_cloudInMerged the input clusters index is stored.
      */
-    PointType m_max;
+    std::vector<size_t> m_ClusterIndices;
+    /**
+     * @brief m_kdtree The search structure storing the merged clusters.
+     */
+    pcl::KdTreeFLANN<PointType>::Ptr m_kdtree;
 };
-#endif // SF_CLUSTERSCALING_H
+
+#include "sf_clustertransfer.hpp"
+
+#endif // SF_CLUSTERTRANSFER_H
+
+

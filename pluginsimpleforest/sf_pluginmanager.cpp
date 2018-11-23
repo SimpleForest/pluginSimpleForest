@@ -18,6 +18,9 @@
 #include "steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h"
 #include "steps/dtm/sf_stepDTM.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingRoot.h"
+#include "cloud/filter/multiple/clusterscaling/sf_testclustertransfer.h"
+
+#include "sf_testclustertransfer.moc"
 
 #include "steps/filter/multiple/voxel/sf_filter3dGridSubCloud.h"
 
@@ -53,6 +56,7 @@ QString SF_PluginManager::getPluginRISCitation() const {
 }
 
 bool SF_PluginManager::init() {
+
     return CT_AbstractStepPlugin::init();
 }
 
@@ -112,4 +116,3 @@ bool SF_PluginManager::loadReaders() {
 
     return true;
 }
-

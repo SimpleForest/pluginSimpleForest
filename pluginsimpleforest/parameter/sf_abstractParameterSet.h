@@ -24,6 +24,7 @@
 #define SF_ABSTRACTPARAMETERSET_H
 
 #include "pcl/sf_point.h"
+#include <QStringList>
 
 template <typename T>
 struct SF_AbstractParameterSet {
@@ -31,7 +32,7 @@ struct SF_AbstractParameterSet {
      * @brief m_cloud The first member of m_cloud is the point cloud itself,
      * the second a vector of the Computree indices
      */
-    std::pair<pcl::PointCloud<T>::Ptr, std::vector<size_t> > m_cloud;
+    std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> > m_cloud;
     /**
      * @brief SF_AbstractParameterSet Default contructor
      */

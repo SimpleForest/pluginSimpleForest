@@ -41,20 +41,28 @@ public:
     QString getStepDescription() const;
     QString getStepDetailledDescription() const;
     QString getStepURL() const;
-    CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &data_init);
+    CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &data_init) ;
     QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_ParameterSetPrincipalDirection> _paramList;
+    QList<SF_ParameterSetPrincipalDirection<pcl::PointXYZINormal>> _paramList;
     void createInResultModelListProtected();
+    void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog *configDialog);
     void createOutResultModelListProtected();
-    void adaptParametersToExpertLevel();
-    void createPostConfigurationDialog();
+    void createPostConfigurationDialog() override ;
+    void adaptParametersToExpertLevel() {}
     void compute();
-    virtual void writeLogger();
+    virtual void writeLogger() {}
+
+    void createPreConfigurationDialog() {}
+    virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {configDialog;}
+    virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {configDialog;}
 
 private:
-    SF_ParameterSetPrincipalDirection m_param;
+    double m_voxelSize    = 0.02;
+    double m_normalRadius = 0.075;
+    double m_pdRadius     = 0.15;
+    SF_ParameterSetPrincipalDirection<pcl::PointXYZINormal> m_param;
     CT_AutoRenameModels m_outCloudItem;
     void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);
     void writeOutput(CT_ResultGroup* outResult);

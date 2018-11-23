@@ -31,7 +31,7 @@
  */
 template <typename T>
 struct SF_ParameterSetVoxelization:
-        public SF_AbstractParameterSet {
+        public SF_AbstractParameterSet<T> {
     /**
      * @brief m_voxelSize For \ref  m_cloud a 3d Raster of voxelsize m_voxelSize is
      * created. For each cell all contained points build a sub cloud in the \ref  m_clusters output.
@@ -40,7 +40,7 @@ struct SF_ParameterSetVoxelization:
     /**
      * @brief m_clustersOut Contains subclouds and their according CT indices.
      */
-    std::vector<std::pair<pcl::PointCloud<T>::Ptr, std::vector<size_t> > > m_clustersOut;
+    std::vector<std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> > > m_clustersOut;
 
     SF_ParameterSetVoxelization() {}
     QStringList paramsToString() override {
@@ -52,7 +52,7 @@ struct SF_ParameterSetVoxelization:
         str.append("(m)");
         list.push_back(str);
         str = (" ). into ");
-        str.append(QString::number(m_clusters.size()));
+        str.append(QString::number(m_clustersOut.size()));
         str.append(" number of clusters.");
         list.push_back(str);
         return list;

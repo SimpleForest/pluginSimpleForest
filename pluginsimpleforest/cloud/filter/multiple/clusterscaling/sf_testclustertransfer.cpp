@@ -2,7 +2,7 @@
 
     Copyright (C) 2017-2018 , Dr. Jan Hackenberg
 
-    sf_clusterscaling.hpp is part of SimpleForest - a plugin for the
+    sf_testclustertransfer.h is part of SimpleForest - a plugin for the
     Computree platform.
 
     SimpleForest is free software: you can redistribute it and/or modify
@@ -20,7 +20,18 @@
 
 *****************************************************************************/
 
-#ifndef SF_CLUSTERSCALING_HPP
-#define SF_CLUSTERSCALING_HPP
+#ifndef SF_TESTCLUSTERTRANSFER_CPP
+#define SF_TESTCLUSTERTRANSFER_CPP
 
-#endif // SF_CLUSTERSCALING_HPP
+#include "sf_testclustertransfer.h"
+
+void TestClusterTransfer::initTestCase()
+{ qDebug("called before everything else"); }
+void TestClusterTransfer::myFirstTest()
+{ QVERIFY(1 == 1); }
+void TestClusterTransfer::mySecondTest()
+{ QVERIFY(1 != 2); }
+void TestClusterTransfer::cleanupTestCase()
+{ qDebug("called after myFirstTest and mySecondTest"); }
+
+#endif // SF_TESTCLUSTERTRANSFER_H
