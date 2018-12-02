@@ -33,11 +33,23 @@ SF_AbstractStepSegmentation::SF_AbstractStepSegmentation(CT_StepInitializeData &
 }
 
 void SF_AbstractStepSegmentation::initializeIndexVec(size_t size,
-                                             std::vector<CT_PointCloudIndexVector *>& indexVec) {
+    std::vector<CT_PointCloudIndexVector *>& indexVec)
+{
     for(size_t i = 0; i < size; i++) {
         CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
         indexVec.push_back(mergedClouds);
     }
+
+
+}
+
+void SF_AbstractStepSegmentation::initializeIndexVec(CT_ResultGroupIterator &resultGrpIterator2,
+                                                     std::vector<CT_PointCloudIndexVector *>& indexVec)
+{
+        while(!isStopped() && resultGrpIterator2.hasNext()) {
+            CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
+            indexVec.push_back(mergedClouds);
+        }
 }
 
 void SF_AbstractStepSegmentation::createPCLCloud(const QString& clusterGrpStr,
@@ -108,7 +120,8 @@ void SF_AbstractStepSegmentation::fillIndexVec(pcl::PointCloud<pcl::PointXYZI>::
                                        std::vector<CT_PointCloudIndexVector *>& indexVec,
                                        std::vector<size_t>& indices,
                                        pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled,
-                                       float maxRange) {
+                                       float maxRange)
+{
     pcl::search::KdTree<pcl::PointXYZI>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZI>);
     kdtree->setInputCloud (cloudPCLDownscaled);
     for(size_t i = 0; i < cloudPCL->points.size(); i++) {

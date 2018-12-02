@@ -23,8 +23,8 @@
 #ifndef SF_PARAMETERSETPRINCIPALDIRECTION_H
 #define SF_PARAMETERSETPRINCIPALDIRECTION_H
 
-#include "sf_abstractparameterset.h"
-#include "sf_parametersetvoxelization.h"
+#include "sf_abstractParameterSet.h"
+#include "sf_parameterSetVoxelgridDownscaling.h"
 
 /*! \brief SF_ParameterSetPrincipalDirection.
  *
@@ -33,12 +33,10 @@
 template <typename T>
 struct SF_ParameterSetPrincipalDirection:
         public SF_AbstractParameterSet<T>
-{
-    /**
-     * @brief m_parameterVoxelization The parameter set storing the \ref m_voxelSize of voxel clustering routine to enable multithreading.
+{    /**
+     * @brief m_paramVoxelGridDownscaling The cloud is downscaled before processing.
      */
-    SF_ParameterSetVoxelization<T> m_parameterVoxelization;
-
+    SF_ParameterSetVoxelgridDownscaling<T> m_paramVoxelGridDownscaling;
     /**
      * @brief m_normalRadius The radius of the normal computation of \ref  m_cloud.
      */
@@ -47,16 +45,15 @@ struct SF_ParameterSetPrincipalDirection:
      * @brief m_pdRadius The radius of the principal direction computation of \ref  m_cloud.
      */
     float m_pdRadius;
+    /**
+     * @brief m_principalCurvatures The principal curvatures.
+     */
+    pcl::PointCloud<pcl::PrincipalCurvatures>::Ptr m_principalCurvatures;
 
     SF_ParameterSetPrincipalDirection() {}
+
     QStringList paramsToString() override {
         QStringList list;
-        QStringList subList = m_parameterVoxelization.paramsToString();
-        for(QString subStr : subList)
-        {
-            list.push_back(std::move(subStr));
-
-        }
         QString str = "The principal direction has been computed with (";
         list.push_back(str);
         str = ("radius normal                = ");

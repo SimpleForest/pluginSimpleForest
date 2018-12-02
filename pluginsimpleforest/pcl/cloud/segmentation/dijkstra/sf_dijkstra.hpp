@@ -15,11 +15,16 @@ SF_Dijkstra::SF_Dijkstra( pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
     compute();
 }
 
+std::vector<float> SF_Dijkstra::getDistances() const
+{
+    return _distances;
+}
+
 void SF_Dijkstra::transferIntensity(){
     pcl::search::KdTree<pcl::PointXYZI>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZI>);
     kdtree->setInputCloud (_cloudInSeeds);
     size_t size = _cloudIn->points.size();
-    float sqrdRange =  _range*_range;
+    float sqrdRange = _range*_range*0.1f;
     for(size_t i = 0; i < size; i++) {
         pcl::PointXYZI point = _cloudIn->points[i];
         std::vector<int>   pointIdxNKNSearch(1);
@@ -100,6 +105,7 @@ float SF_Dijkstra::getDistance(const pcl::PointXYZI &p1,
 
 void SF_Dijkstra::compute() {
     bool finished = false;
+    _maxDistance = 0;
     while(!finished && !_priorityQueue.empty()) {
         Point pointStruct = _priorityQueue.top()._point;
         pcl::PointXYZI point = pointStruct._point;
@@ -109,13 +115,19 @@ void SF_Dijkstra::compute() {
         } else {
             _priorityQueue.pop();
             _points[index]._visited = true;
+            _distances[index] = pointStruct._distance;
             std::vector<int> neighbors = getNeighbors(point);
             for(int i = 0; i < neighbors.size(); i++) {
                 int indexNeighbor = neighbors[i];
                 Point neighbor  = (*_handle[indexNeighbor])._point;
                 float distBetween = getDistance(point, neighbor._point);
                 if(pointStruct._distance + distBetween < neighbor._distance) {
-                    (*_handle[indexNeighbor])._point._distance = pointStruct._distance + distBetween;
+                    float d = pointStruct._distance + distBetween;
+                    if(_maxDistance < d && d != 1000)
+                    {
+                        _maxDistance = d;
+                    }
+                    (*_handle[indexNeighbor])._point._distance = d;
                     (*_handle[indexNeighbor])._point._point.intensity = pointStruct._point.intensity;
                     _cloudIn->points[indexNeighbor].intensity = pointStruct._point.intensity;
                     _priorityQueue.decrease(_handle[indexNeighbor]);
@@ -123,6 +135,11 @@ void SF_Dijkstra::compute() {
             }
         }
     }
+}
+
+float SF_Dijkstra::getMaxDistance() const
+{
+    return _maxDistance;
 }
 
 #endif // SF_DIJKSTRA_HPP

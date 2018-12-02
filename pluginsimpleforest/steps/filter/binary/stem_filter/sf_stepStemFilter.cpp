@@ -30,6 +30,8 @@
 #include "sf_stepStemFilterAdapter.h"
 #include <QtConcurrent/QtConcurrent>
 
+#include "ct_itemdrawable/ct_pointsattributescolor.h"
+
 SF_StepStemFilter::SF_StepStemFilter(CT_StepInitializeData &dataInit):
     SF_AbstractFilterBinaryStep(dataInit) {
 }
@@ -123,6 +125,10 @@ void SF_StepStemFilter::createPostConfigurationDialogBeginner(CT_StepConfigurabl
 void SF_StepStemFilter::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(resModelw != NULL) {
+        resModelw->addItemModel(DEF_IN_GRP_CLUSTER,
+                                  m_outCloudItem,
+                                  new CT_PointsAttributesColor(),
+                                  tr("Growth direction"));
         resModelw->addGroupModel(DEF_IN_GRP_CLUSTER,
                                  _outGrp,
                                  new CT_StandardItemGroup(),
@@ -211,6 +217,19 @@ void SF_StepStemFilter::compute() {
                         85);
     writeOutput(outResult);
     writeLogger();
+    size_t index = 0;
+    CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
+    while(!isStopped() && outResIt.hasNext()) {
+        CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResIt.next();
+        const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
+                (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+        SF_ParamStemFilter<SF_PointNormal> param = _paramList[index++];
+        CT_PointsAttributesColor* colorAttribute = new CT_PointsAttributesColor(m_outCloudItem.completeName(),
+                                                                                outResult,
+                                                                                ct_cloud->getPointCloudIndexRegistered(),
+                                                                                param._colors);
+        group->addItemDrawable(colorAttribute);
+    }
     _paramList.clear();
 }
 

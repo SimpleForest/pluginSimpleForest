@@ -63,6 +63,7 @@ private:
     double _radiusNormal = 0.2;
     double _voxelSize = 0.04;
     double _sizeOutput = 2;
+    CT_AutoRenameModels m_outCloudItem;
     void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);
     void writeOutput(CT_ResultGroup* outResult);
     void createParamList(CT_ResultGroup *outResult);

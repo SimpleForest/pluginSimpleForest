@@ -20,8 +20,8 @@
 
 *****************************************************************************/
 
-#ifndef SF_PARAMETERSETVOXELIZATION_H
-#define SF_PARAMETERSETVOXELIZATION_H
+#ifndef SF_PARAMETERSETVOXELGRIDDOWNSCALE_H
+#define SF_PARAMETERSETVOXELGRIDDOWNSCALE_H
 
 #include "sf_abstractParameterSet.h"
 
@@ -30,7 +30,7 @@
  *  Parameter set to convert a cloud into subclouds by voxelization.
  */
 template <typename T>
-struct SF_ParameterSetVoxelization:
+struct SF_ParameterSetDownscale:
         public SF_AbstractParameterSet<T> {
     /**
      * @brief m_voxelSize For \ref  m_cloud a 3d Raster of voxelsize m_voxelSize is
@@ -38,22 +38,20 @@ struct SF_ParameterSetVoxelization:
      */
     float m_voxelSize;
     /**
-     * @brief m_clustersOut Contains subclouds and their according CT indices.
+     * @brief m_cloudOut Contains the downscaled input cloud, the according CT indices are not filled.
      */
-    std::vector<std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> > > m_clustersOut;
+    std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> >  m_cloudOut;
 
     SF_ParameterSetVoxelization() {}
     QStringList paramsToString() override {
         QStringList list;
-        QString str = "To enable multithreaded processing the input point cloud was clustered with voxelization with (";
+        QString str = "To speed up processing, each cloud is downscaled with (";
         list.push_back(str);
         str = ("voxelSize                = ");
         str.append(QString::number(m_voxelSize));
         str.append("(m)");
         list.push_back(str);
-        str = (" ). into ");
-        str.append(QString::number(m_clustersOut.size()));
-        str.append(" number of clusters.");
+        str = (" ). into a new cloud.");
         list.push_back(str);
         return list;
     }

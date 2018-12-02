@@ -29,40 +29,54 @@
 #include <pcl/features/principal_curvatures.h>
 
 template<typename PointType>
-SF_PrincipalDirection::SF_PrincipalDirection()
+SF_PrincipalDirection<PointType>::SF_PrincipalDirection()
 {
 
 }
+template<typename PointType>
+pcl::PointCloud<pcl::PrincipalCurvatures>::Ptr
+SF_PrincipalDirection<PointType>::principalCurvatures()
+{
+    return m_principalCurvatures;
+}
 
 template<typename PointType>
-void SF_PrincipalDirection::compute()
+SF_ParameterSetPrincipalDirection<PointType>
+SF_PrincipalDirection<PointType>::params() const
 {
-    pcl::PointCloud<PointType>::Ptr cloud = m_cloudIn.first;
+    return m_params;
+}
 
+template<typename PointType>
+void
+SF_PrincipalDirection<PointType>::compute()
+{
+    typename pcl::PointCloud<PointType>::Ptr cloud = m_params.m_cloud.first;
+    m_principalCurvatures.reset(new pcl::PointCloud<pcl::PrincipalCurvatures>);
     // Compute the normals
-    pcl::NormalEstimation<PointType, pcl::Normal> normalEstimation;
+    pcl::NormalEstimation<PointType, PointType> normalEstimation;
     normalEstimation.setInputCloud (cloud);
-    pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType>);
+    typename pcl::search::KdTree<PointType>::Ptr tree (new pcl::search::KdTree<PointType>);
     normalEstimation.setSearchMethod (tree);
-    pcl::PointCloud<pcl::Normal>::Ptr cloudWithNormals (new pcl::PointCloud<pcl::Normal>);
     normalEstimation.setRadiusSearch (m_params.m_normalRadius);
-    normalEstimation.compute (*cloudWithNormals);
+    normalEstimation.compute (*cloud);
 
     // Setup the principal curvatures computation
-    pcl::PrincipalCurvaturesEstimation<PointType, pcl::Normal, pcl::PrincipalCurvatures> principalCurvaturesEstimation;
+    pcl::PrincipalCurvaturesEstimation<PointType, PointType, pcl::PrincipalCurvatures> principalCurvaturesEstimation;
     principalCurvaturesEstimation.setInputCloud (cloud);
-    principalCurvaturesEstimation.setInputNormals(cloudWithNormals);
+    principalCurvaturesEstimation.setInputNormals(cloud);
     principalCurvaturesEstimation.setSearchMethod (tree);
     principalCurvaturesEstimation.setRadiusSearch(m_params.m_pdRadius);
     m_principalCurvatures.reset(new pcl::PointCloud<pcl::PrincipalCurvatures> ());
     principalCurvaturesEstimation.compute (*m_principalCurvatures);
+    m_params.m_principalCurvatures = m_principalCurvatures;
 }
 
 template<typename PointType>
-void SF_PrincipalDirection::compute(SF_ParameterSetPrincipalDirection &params)
+void
+SF_PrincipalDirection<PointType>::setParams(SF_ParameterSetPrincipalDirection<PointType> &params)
 {
     m_params = params;
-    m_cloudIn = m_params.m_cloud;
     compute();
 }
 

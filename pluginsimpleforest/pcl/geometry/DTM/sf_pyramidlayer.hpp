@@ -87,7 +87,7 @@ void PyramidLayer<PointType>::initialize() {
         for(size_t j = 0; j < _DTM->yArraySize(); j++) {
             size_t index = -1;
             _DTM->index(i,j, index);
-            pcl::PointCloud<PointType>::Ptr cloud(new pcl::PointCloud<PointType>);
+            typename pcl::PointCloud<PointType>::Ptr cloud(new pcl::PointCloud<PointType>);
             _clouds.push_back(cloud);
             SF_DTMCell<PointType> cell = SF_DTMCell<PointType>(_DTM, index);
             _cells[index] = (cell);
@@ -119,7 +119,7 @@ void PyramidLayer<PointType>::initializeRoot() {
 
 template<typename PointType>
 pcl::ModelCoefficients PyramidLayer<PointType>::computePlane(int index) {
-    pcl::PointCloud<PointType>::Ptr cloud = _clouds[index];
+    typename pcl::PointCloud<PointType>::Ptr cloud = _clouds[index];
     return computePlane(cloud);
 }
 
@@ -175,7 +175,7 @@ std::shared_ptr<CT_Image2D<float> > PyramidLayer<PointType>::getDTM() const {
 
 template<typename PointType>
 bool PyramidLayer<PointType>::canComputePlane(int index) {
-    pcl::PointCloud<PointType>::Ptr cloud = _clouds[index];
+    typename pcl::PointCloud<PointType>::Ptr cloud = _clouds[index];
     if(cloud->points.size()> 7) {
         return true;
     }

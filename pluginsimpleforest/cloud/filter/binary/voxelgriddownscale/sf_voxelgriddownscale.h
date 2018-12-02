@@ -23,6 +23,8 @@
 #ifndef SF_VOXELGRIDDOWNSCALE_H
 #define SF_VOXELGRIDDOWNSCALE_H
 
+#include "parameter/sf_parameterSetVoxelgridDownscaling.h"
+
 #include "cloud/filter/binary/sf_abstractbinaryfilter.h"
 #include "cloud/filter/multiple/voxel/sf_filtervoxelclustering.h"
 
@@ -39,24 +41,32 @@
  */
 template <typename PointType>
 class SF_VoxelGridDownscale:
-        public SF_AbstractBinaryFilter
+        public SF_AbstractBinaryFilter<PointType>
 {
 public:
     /**
-     * @brief Standard constructor.
+     * @brief Standard constructor receiving as input \ref m_cloudIn.
+     * @param param \ref m_param
      */
     SF_VoxelGridDownscale();
+
+    /**
+     * @brief m_param Parameterset containing the \ref m_cloudIn and the \ref m_voxelSize.
+     */
+    SF_ParameterSetVoxelgridDownscaling<PointType> m_param;
     /**
      * @brief compute Does the actual voxelgrid downscaling of \ref m_cloudIn.
      */
     void compute() override;
+
+    void setParams(SF_ParameterSetVoxelgridDownscaling<PointType> &params);
 private:
     /**
      * @brief computeCentroids Computes the centroid for each cluster
      * @param clusters The input clusters
      * @return A cloud consisting of a centroid per cluster
      */
-    pcl::PointCloud<PointType>::Ptr computeCentroids(const std::vector<std::pair<pcl::PointCloud<PointType>::Ptr,
+    typename pcl::PointCloud<PointType>::Ptr computeCentroids(const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr,
                                                      std::vector<size_t> > > &clusters);
     /**
      * @brief downScale Downscales each cluster to the closest point to the centroid which is stored in
@@ -65,12 +75,11 @@ private:
      * @param clusters The input clusters
      * @param centroids The input centroids
      */
-    void downScale(const std::vector<std::pair<pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > > &clusters,
-                   pcl::PointCloud<PointType>::Ptr centroids);
+    void downScale(const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > > &clusters,
+                   typename pcl::PointCloud<PointType>::Ptr centroids);
 };
 
 #include "sf_voxelgriddownscale.hpp"
 
 #endif // SF_VOXELGRIDDOWNSCALE_H
-
 

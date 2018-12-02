@@ -60,6 +60,7 @@ private:
     QString _choicePointDensity       = _intermediate;
     double _radius = 0.03;
     int _minPts = 5;
+    CT_AutoRenameModels m_outCloudItem;
     void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);
     void writeOutput(CT_ResultGroup* outResult);
     void createParamList(CT_ResultGroup *outResult);

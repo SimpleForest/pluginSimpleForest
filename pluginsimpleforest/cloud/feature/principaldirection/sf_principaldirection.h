@@ -24,14 +24,15 @@
 #define SF_PRINCIPALDIRECTION_H
 
 #include "cloud/sf_abstractcloud.h"
-#include "parameter/sf_parametersetprincipaldirection.h"
+#include "parameter/sf_parameterSetPrincipalDirection.h"
 
 /**
  * @brief The SF_PrincipalDirection class. The for the input cloud
  * the principal curvature is computed.
  */
 template <typename PointType>
-class SF_PrincipalDirection: public SF_AbstractCloud
+class SF_PrincipalDirection:
+        public SF_AbstractCloudI<PointType>
 {
 public:
     /**
@@ -47,17 +48,24 @@ public:
      * @brief setParams Setter for \ref m_params.
      * @param params \ref m_params.
      */
-    void setParams(SF_ParameterSetPrincipalDirection &params);
+    void setParams(SF_ParameterSetPrincipalDirection<PointType> &params);
     /**
      * @brief principalCurvatures Getter for \ref m_principalCurvatures.
      * @return \ref m_principalCurvatures.
      */
     pcl::PointCloud<pcl::PrincipalCurvatures>::Ptr principalCurvatures();
+
+    /**
+     * @brief params Getter for \ref m_params.
+     * @return \ref m_params
+     */
+    SF_ParameterSetPrincipalDirection<PointType> params() const;
+
 private:
     /**
      * @brief m_params The parameter set including normal and principal direction radius.
      */
-    SF_ParameterSetPrincipalDirection m_params;
+    SF_ParameterSetPrincipalDirection<PointType> m_params;
     /**
      * @brief m_principalCurvatures A cloud of principal curvatures.
      */

@@ -25,13 +25,13 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
+
 #ifndef SF_CONVERTER_CT_TO_PCL_HPP
 #define SF_CONVERTER_CT_TO_PCL_HPP
 
 #include <pcl/common/centroid.h>
 
 #include "sf_converterCTToPCL.h"
-#include <ct_itemdrawable/ct_grid3d_sparse.h>
 
 template <typename PointType>
 Sf_ConverterCTToPCL<PointType>:: Sf_ConverterCTToPCL() {
@@ -94,7 +94,7 @@ std::vector<typename pcl::PointCloud<PointType>::Ptr> Sf_ConverterCTToPCL<PointT
     const CT_AbstractPointCloudIndex* index =m_itemCpyCloudIn->getPointCloudIndex();
     assert( index->size() > 0);
     CT_PointIterator it(index);
-    std::vector<pcl::PointCloud<PointType>::Ptr> clouds;
+    std::vector<typename pcl::PointCloud<PointType>::Ptr> clouds;
     int number_initialized_clouds = 0;
     while(it.hasNext()) {
         const CT_Point &ct_point = it.next().currentPoint();
@@ -102,7 +102,7 @@ std::vector<typename pcl::PointCloud<PointType>::Ptr> Sf_ConverterCTToPCL<PointT
         indices->indexAtXYZ(ct_point(0),ct_point(1),ct_point(2),index);
         int value_at = indices->valueAtIndex(index);
         if(value_at <= -1) {
-            pcl::PointCloud<PointType>::Ptr cell_cloud(new pcl::PointCloud<PointType>);
+            typename pcl::PointCloud<PointType>::Ptr cell_cloud(new pcl::PointCloud<PointType>);
             value_at = number_initialized_clouds++;
             clouds.push_back(cell_cloud);
             indices->setValueAtIndex(index, value_at);
@@ -125,7 +125,7 @@ void Sf_ConverterCTToPCL<PointType>::mergeSubCloudsToVector(CT_Grid3D_Sparse<int
             for(size_t k = 0; k < indices->zArraySize(); k++) {
                 int index = indices->value(i,j,k);
                 if(index>=0) {
-                    pcl::PointCloud<PointType>::Ptr cell_cloud = cloudsVec[index];
+                    typename pcl::PointCloud<PointType>::Ptr cell_cloud = cloudsVec[index];
                     if(cell_cloud!=nullptr) {
                         Eigen::Vector4d centroid;
                         pcl::compute3DCentroid (*cell_cloud, centroid);
@@ -158,7 +158,7 @@ void Sf_ConverterCTToPCL<PointType>::downScale(float range,
                                                                      range,
                                                                      -2,
                                                                      -1);
-    std::vector<pcl::PointCloud<PointType>::Ptr> cloudsVec = mergeSubCloudsToVector(indices);
+    std::vector<typename pcl::PointCloud<PointType>::Ptr> cloudsVec = mergeSubCloudsToVector(indices);
     mergeSubCloudsToVector(indices, cloudsVec, downscaledCloud);
 }
 

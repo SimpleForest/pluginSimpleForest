@@ -36,6 +36,8 @@
 #include "qsm/algorithm/spherefollowing/sf_spherefollowing_parameters.h"
 #include "qsm/algorithm/distance/sf_cloudToModelDistanceParameters.h"
 #include "qsm/sf_modelQSM.h"
+#include "ct_colorcloud/ct_colorcloudstdvector.h"
+#include "ct_itemdrawable/ct_pointsattributescolor.h"
 
 struct SF_ParamCT{
     CT_StandardItemGroup* _grpCpyGrp;
@@ -215,7 +217,7 @@ struct SF_ParamGroundFilter :
     float _y = 0;
     float _z = 1;
     int _angle = 20;
-
+    CT_ColorCloudStdVector *_colors;
 
     virtual QStringList toStringList() {
         QStringList list;
@@ -311,6 +313,7 @@ struct SF_ParamStemFilter :
     float _y = 0;
     float _z = 1;
     int _angle = 10;
+    CT_ColorCloudStdVector *_colors;
     virtual QString toString() {
         QString str = "The stem filter with parameters (angle = ";
         str.append(QString::number(_angle));
@@ -476,6 +479,7 @@ struct SF_ParamRadiusOutlierFilter :
         public SF_ParamFilter<PointType> {
     int _minPts = 15;
     double _radius = 10;
+    CT_ColorCloudStdVector *_colors;
     virtual QString toString() {
         QString str = "The radius outlier filter with parameters (_min_pts = ";
         str.append(QString::number(_minPts));

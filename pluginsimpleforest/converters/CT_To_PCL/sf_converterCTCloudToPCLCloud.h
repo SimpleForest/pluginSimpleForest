@@ -24,7 +24,6 @@
 
 #include "converters/sf_abstractConverter.h"
 #include "ct_iterator/ct_pointiterator.h"
-#include "parameter/sf_parametersetvoxelization.h"
 #include "pcl/sf_point.h"
 
 template <typename PointType>
@@ -44,19 +43,17 @@ public:
      * @brief computes first a \ref m_translation of \ref m_itemCpyCloudIn and then converts the translated cloud to \ref m_cloudOut.
      */
     void compute();
-    void SF_ConverterCTCloudToPCLCloud<pcl::PointXYZ>::compute();
-    void SF_ConverterCTCloudToPCLCloud<pcl::PointXYZINormal>::compute();
     /**
      * @brief cloudOut Getter method for a \ref std::pair consisting of the PCL converted cloud
      * \ref m_cloudOut and the vector of according CT indices \ref m_CTIndices.
      * @return The described getter pair.
      */
-    std::pair<pcl::PointCloud<PointType>::Ptr,std::vector<size_t> > cloudOut();
+    std::pair<typename pcl::PointCloud<PointType>::Ptr,std::vector<size_t> > cloudOut();
 private:
     /**
      * @brief m_cloudOut The templated PCL output cloud.
      */
-    pcl::PointCloud<PointType>::Ptr m_cloudOut;
+    typename pcl::PointCloud<PointType>::Ptr m_cloudOut;
     /**
      * @brief m_CTIndices Stores the internal CT indices in same order as \ref m_cloudOut.
      */

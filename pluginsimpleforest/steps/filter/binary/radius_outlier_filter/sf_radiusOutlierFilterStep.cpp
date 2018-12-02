@@ -29,6 +29,8 @@
 #include "steps/filter/binary/radius_outlier_filter/sf_radiusOutlierFilterAdapter.h"
 #include <QtConcurrent/QtConcurrent>
 
+#include "ct_itemdrawable/ct_pointsattributescolor.h"
+
 SF_RadiusOutlierFilterStep::SF_RadiusOutlierFilterStep(CT_StepInitializeData &dataInit): SF_AbstractFilterBinaryStep(dataInit) {
     _numberPoints.append(_clearSky);
 }
@@ -101,6 +103,10 @@ void SF_RadiusOutlierFilterStep::createPostConfigurationDialogBeginner(CT_StepCo
 void SF_RadiusOutlierFilterStep::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(resModelw != NULL) {
+        resModelw->addItemModel(DEF_IN_GRP_CLUSTER,
+                                  m_outCloudItem,
+                                  new CT_PointsAttributesColor(),
+                                  tr("Point Density"));
         resModelw->addGroupModel(DEF_IN_GRP_CLUSTER,
                                  _outGrp,
                                  new CT_StandardItemGroup(),
@@ -154,13 +160,27 @@ void SF_RadiusOutlierFilterStep::compute() {
                         85);
     writeOutput(outResult);
     writeLogger();
+    CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
+    size_t index = 0;
+    while(!isStopped() && outResIt.hasNext()) {
+        CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResIt.next();
+        const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
+                (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+        SF_ParamRadiusOutlierFilter<SF_PointNormal> param = _paramList[index++];
+        CT_PointsAttributesColor* colorAttribute = new CT_PointsAttributesColor(m_outCloudItem.completeName(),
+                                                                                outResult,
+                                                                                ct_cloud->getPointCloudIndexRegistered(),
+                                                                                param._colors);
+        group->addItemDrawable(colorAttribute);
+    }
     _paramList.clear();
 }
 
 void SF_RadiusOutlierFilterStep::writeLogger() {
     if(!_paramList.empty()) {
         auto strList = _paramList[0].toStringList();
-        for(auto &str : strList) {
+        for(auto &str : strList)
+        {
             PS_LOG->addMessage(LogInterface::info,
                                LogInterface::step,
                                str);
@@ -169,7 +189,8 @@ void SF_RadiusOutlierFilterStep::writeLogger() {
         size_t total = 0;
         for(auto const &param : _paramList) {
             auto vector = param._outputIndices;
-            for(auto i : vector) {
+            for(auto i : vector)
+            {
                 total++;
                 filtered += static_cast<size_t> (i);
             }

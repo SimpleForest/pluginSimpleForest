@@ -54,6 +54,17 @@ SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData &dataInit):
     _numberPoints.push_back(_intermediate);
     _numberPoints.push_back(_many);
 }
+
+void SF_AbstractStep::addCitationRaumonen(CT_StepConfigurableDialog *configDialog)
+{
+    configDialog->addText(QObject::tr("For this step please cite in addition:"),
+                          "Pasi Raumonen, Mikko Kaasalainen, Markku Åkerblom, Sanna Kaasalainen, Harri Kaartinen, Mikko Vastaranta, Markus Holopainen, Mathias Disney and Philip Lewis");
+    configDialog->addText("",
+                          "<em>Fast Automatic Precision Tree Models from Terrestrial Laser Scanner Data.</em>");
+    configDialog->addText("",
+                          "Remote Sensing<b>2013</b>, 5, 491-520.");
+}
+
 void  SF_AbstractStep::recursiveRemoveIfEmpty(CT_AbstractItemGroup *parent,
                                               CT_AbstractItemGroup *group) {
     if(parent != NULL) {

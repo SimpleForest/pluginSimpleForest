@@ -24,7 +24,7 @@
 #define SF_FILTERVOXELCLUSTERING_H
 
 #include "cloud/filter/multiple/sf_abstractmultiplefilter.h"
-#include "parameter/sf_parametersetvoxelization.h"
+#include "parameter/sf_parameterSetVoxelization.h"
 
 /**
  * @brief The SF_VoxelClustering class  This class is producing a voxel
@@ -33,7 +33,7 @@
  */
 template <typename PointType>
 class SF_VoxelClustering:
-        public SF_AbstractMultipleFilter
+        public SF_AbstractMultipleFilter<PointType>
 {
 public:
     /**
@@ -55,7 +55,7 @@ private:
      * @brief m_param The parameter set storing \ref m_cloudIn and
      * the cell size of the voxels.
      */
-    SF_ParameterSetVoxelization m_param;
+    SF_ParameterSetVoxelization<PointType> m_param;
     /**
      * @brief initialize
      */

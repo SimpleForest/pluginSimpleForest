@@ -35,16 +35,20 @@
 #include "pcl/sf_math.h"
 #include "pcl/cloud/feature/pca/sf_pca.h"
 
+#include "ct_itemdrawable/ct_pointsattributescolor.h"
+
 template <typename PointType>
 class SF_GroundFilter: public Sf_AbstractBinaryFilter<PointType> {
     SF_ParamGroundFilter<PointType> _params;
     void transferNormalAndFilter(const SF_ParamGroundFilter<PointType> &params,
                                  typename pcl::PointCloud<PointType>::Ptr cloudIn,
                                  typename pcl::PointCloud<PointType>::Ptr cloudWithGrowthDirection);
+    CT_ColorCloudStdVector *_colors;
 public:
     SF_GroundFilter();
     virtual void compute();
     void setParams(SF_ParamGroundFilter<PointType> &params);
+    CT_ColorCloudStdVector *colors() const;
 };
 
 #include "pcl/cloud/filter/binary/ground/sf_groundFilter.hpp"

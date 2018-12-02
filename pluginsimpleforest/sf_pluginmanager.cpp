@@ -18,11 +18,9 @@
 #include "steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h"
 #include "steps/dtm/sf_stepDTM.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingRoot.h"
-#include "cloud/filter/multiple/clusterscaling/sf_testclustertransfer.h"
+#include "steps/feature/principaldirection/sf_stepprincipaldirection.h"
 
-#include "sf_testclustertransfer.moc"
-
-#include "steps/filter/multiple/voxel/sf_filter3dGridSubCloud.h"
+//#include "steps/filter/multiple/voxel/sf_filter3dGridSubCloud.h"
 
 // Inclure ici les entetes des classes definissant des Ã©tapes/actions/exporters ou readers
 
@@ -61,13 +59,13 @@ bool SF_PluginManager::init() {
 }
 
 bool SF_PluginManager::loadGenericsStep() {
+    addNewPointsStep<SF_StepPrincipalDirection>(CT_StepsMenu::LP_Classify);
     addNewPointsStep<SF_StepStatisticalOutlierRemoval>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_RadiusOutlierFilterStep>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_StepStemFilter>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_StepStemRANSACFilter>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_StepGroundFilter>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<SF_StepCutCloudAboveDTM>(CT_StepsMenu::LP_Filter);
-    addNewPointsStep<SF_Filter3dGridSubCloud>(CT_StepsMenu::LP_Voxels);
     addNewPointsStep<SF_EuclideanClusteringSegmentationStep>(CT_StepsMenu::LP_Clusters);
     addNewPointsStep<SF_StepSegmentationDijkstra>(CT_StepsMenu::LP_Clusters);
     addNewPointsStep<SF_StepSegmentationVoronoi>(CT_StepsMenu::LP_Clusters);

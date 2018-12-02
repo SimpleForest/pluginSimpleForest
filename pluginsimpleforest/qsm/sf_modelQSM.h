@@ -32,8 +32,8 @@
 #include "sf_modelAbstractSegment.h"
 
 class SF_ModelQSM {
-    std::string _species;
     int _ID;
+    std::string _species;
     std::shared_ptr<SF_ModelAbstractSegment> _rootSegment;
 
 public:

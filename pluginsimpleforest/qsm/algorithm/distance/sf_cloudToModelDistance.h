@@ -47,8 +47,10 @@ class Sf_CloudToModelDistance {
     void initializeKdTree();
     void compute();
     const std::vector<float> cropDistances(std::vector<float> distances);
-    const float getDistance(const pcl::PointXYZ &point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
-    const float getDistance(const pcl::PointXYZINormal &point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+    const float getDistance(const pcl::PointXYZ &point,
+                            std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+    const float getDistance(const pcl::PointXYZINormal &point,
+                            std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
     const std::vector<float> getCloudToModelDistances();
     const float getNumberInliers(const std::vector<float> &distances);
     const float adaptDistanceToMethod(float distance);

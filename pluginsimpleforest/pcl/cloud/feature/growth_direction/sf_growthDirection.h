@@ -32,17 +32,18 @@
 #include "../pca/sf_pca.h"
 
 template <typename PointType, typename FeatureType>
-class SF_GrowthDirection: public  SF_AbstractFeature<PointType, FeatureType> {
+class SF_GrowthDirection:
+        public  SF_AbstractFeature<PointType, FeatureType> {
     float _rangeNormal = 0.1f;
     float _rangeGd = 0.3f;
     typename pcl::KdTree<PointType>::Ptr _kdTree;
-    static constexpr float MAX_LAMBDA3 = 0.9;
+    static constexpr float MAX_LAMBDA3 = 0.9f;
     void addNormals(std::vector<SF_PCAValues>& values);
     void addGrowthDirection(std::vector<SF_PCAValues>& values);
     virtual void createIndices(){; }
     virtual void createIndex(PointType point,
                          float sqrdDistance) {}
-    virtual void reset(){_featuresOut.reset(new pcl::PointCloud<FeatureType>);}
+    virtual void reset(){SF_AbstractFeature<PointType,FeatureType>::_featuresOut.reset(new pcl::PointCloud<FeatureType>);}
 
 
 public:
@@ -53,6 +54,7 @@ public:
     void setParameters(float rangeNormal, float rangeGd);
 };
 
-#include "sf_growthDirection.hpp"
 
 #endif // SF_GROWTH_DIRECTION_H
+
+#include "sf_growthDirection.hpp"

@@ -23,26 +23,27 @@
 #ifndef SF_ABSTRACTFILTER_H
 #define SF_ABSTRACTFILTER_H
 
-#include "cloud/sf_abstractcloud.h".h"
+#include "cloud/sf_abstractcloud.h"
 
 /**
  * @brief The SF_AbstractFilter class Abstract class for producing segmented or denoised
  * clusters out of a templated PCL cloud
  */
 template <typename PointType>
-class SF_AbstractFilter: public SF_AbstractCloud
+class SF_AbstractFilterI: public SF_AbstractCloudI<PointType>
 {
 public:
     /**
      * @brief SF_AbstractFilter Standard constructor.
      */
-    SF_AbstractFilter();
+    SF_AbstractFilterI();
 };
 
-#endif // SF_ABSTRACTFILTER_H
-
 template<typename PointType>
-SF_AbstractFilter<PointType>::SF_AbstractFilter()
+SF_AbstractFilterI<PointType>::SF_AbstractFilterI()
 {
 
 }
+
+#endif // SF_ABSTRACTFILTER_H
+

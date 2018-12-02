@@ -23,7 +23,7 @@
 #ifndef SF_ABSTRACTSTEPFEATURE_H
 #define SF_ABSTRACTSTEPFEATURE_H
 
-#include "../sf_abstractStep.h"
+#include "steps/sf_abstractStep.h"
 
 
 class SF_AbstractStepFeature:
@@ -38,6 +38,7 @@ protected:
     void writeOutput(CT_ResultGroup* outResult,
                      std::vector<CT_PointCloudIndexVector *> clusterVec,
                      CT_StandardItemGroup *group);
+
 public:
     SF_AbstractStepFeature(CT_StepInitializeData &dataInit);
 };

@@ -63,6 +63,8 @@ struct heapData {
 
 class SF_Dijkstra {
 private:
+    float _maxDistance;
+
     Heap _priorityQueue;
     std::vector<Heap::handle_type> _handle;
     std::vector<Point> _points;
@@ -86,11 +88,11 @@ public:
     SF_Dijkstra(typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
                 const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
                 float range);
+    std::vector<float> getDistances() const;
+    float getMaxDistance() const;
 };
 
 #include "sf_dijkstra.hpp"
 
 #endif // SF_DIJKSTRA_H
-
-
 

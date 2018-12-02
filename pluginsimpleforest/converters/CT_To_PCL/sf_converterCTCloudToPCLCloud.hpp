@@ -26,21 +26,23 @@
 #include "sf_converterCTCloudToPCLCloud.h"
 
 template<typename PointType>
-SF_ConverterCTCloudToPCLCloud<PointType>::SF_ConverterCTCloudToPCLCloud(CT_AbstractItemDrawableWithPointCloud *itemCpyCloudIn):
-    m_itemCpyCloudIn(itemCpyCloudIn)
+SF_ConverterCTCloudToPCLCloud<PointType>::SF_ConverterCTCloudToPCLCloud(CT_AbstractItemDrawableWithPointCloud *itemCpyCloudIn)
 {
+    m_itemCpyCloudIn = itemCpyCloudIn;
     initialize();
 }
 
 template<typename PointType>
-std::pair<pcl::PointCloud::Ptr, std::vector<size_t> > SF_ConverterCTCloudToPCLCloud<PointType>::cloudOut()
+std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> >
+SF_ConverterCTCloudToPCLCloud<PointType>::cloudOut()
 {
-    return std::pair<pcl::PointCloud::Ptr, std::vector<size_t> >(m_cloudOut, m_CTIndices);
+    return std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> >(m_cloudOut, m_CTIndices);
 }
 
 
 template<typename PointType>
-void SF_ConverterCTCloudToPCLCloud<PointType>::compute()
+void
+SF_ConverterCTCloudToPCLCloud<PointType>::compute()
 {
     const CT_AbstractPointCloudIndex* indices = m_itemCpyCloudIn->getPointCloudIndex();
     CT_PointIterator it(indices);
@@ -53,46 +55,7 @@ void SF_ConverterCTCloudToPCLCloud<PointType>::compute()
         translated.x = internalPoint[0]-m_translation[0];
         translated.y = internalPoint[1]-m_translation[1];
         translated.z = internalPoint[2]-m_translation[2];
-        m_cloudOut[index++] = std::move(translated);
-    }
-}
-
-template<typename pcl::PointXYZ>
-void SF_ConverterCTCloudToPCLCloud<pcl::PointXYZ>::compute()
-{
-    const CT_AbstractPointCloudIndex* indices = m_itemCpyCloudIn->getPointCloudIndex();
-    CT_PointIterator it(indices);
-    size_t index = 0;
-    while(it.hasNext())
-    {
-        const CT_Point &internalPoint = it.next().currentPoint();
-        m_CTIndices[index] = it.currentGlobalIndex();
-        m_cloudOut[index++] = std::move(pcl::PointXYZ(
-                internalPoint[0]-m_translation[0],
-                internalPoint[1]-m_translation[1],
-                internalPoint[2]-m_translation[2]));
-    }
-}
-
-template<typename pcl::PointXYZINormal>
-void SF_ConverterCTCloudToPCLCloud<pcl::PointXYZINormal>::compute()
-{
-    const CT_AbstractPointCloudIndex* indices = m_itemCpyCloudIn->getPointCloudIndex();
-    CT_PointIterator it(indices);
-    size_t index = 0;
-    while(it.hasNext())
-    {
-        const CT_Point &internalPoint = it.next().currentPoint();
-        m_CTIndices[index] = it.currentGlobalIndex();
-        m_cloudOut[index++] = std::move(pcl::PointXYZINormal(
-                internalPoint[0]-m_translation[0],
-                internalPoint[1]-m_translation[1],
-                internalPoint[2]-m_translation[2],
-                0,
-                0,
-                0,
-                0,
-                0));
+        m_cloudOut->points[index++] = std::move(translated);
     }
 }
 

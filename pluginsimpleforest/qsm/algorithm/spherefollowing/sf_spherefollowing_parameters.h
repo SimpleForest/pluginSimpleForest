@@ -34,9 +34,9 @@
 #include <pcl/segmentation/sac_segmentation.h>
 
 struct SF_SphereFollowingOptimizationParameters {
+    float _euclideanClusteringDistance = 0.03f;
     float _sphereRadiusMultiplier      = 2.0f;
     float _epsilonSphere               = 0.035f;
-    float _euclideanClusteringDistance = 0.03f;
     float _minRadius                   = 0.07f;
     SF_SphereFollowingOptimizationParameters(){}
     SF_SphereFollowingOptimizationParameters(float euclideanClusteringDistance,

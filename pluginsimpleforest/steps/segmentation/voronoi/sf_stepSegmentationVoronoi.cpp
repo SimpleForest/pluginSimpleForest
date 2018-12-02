@@ -160,7 +160,7 @@ void SF_StepSegmentationVoronoi::compute() {
                    clustersPCL,
                    indicesCluster,
                    _zFactor);
-    int size = getClusterNumber(clustersPCL);
+    int size = getClusterNumber(clustersPCL)+10;
     initializeIndexVec(size,
                        indexVec);
     fillIndexVec(cloudPCL,

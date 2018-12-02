@@ -1,9 +1,27 @@
 CT_PREFIX = ../../computreev3
+
 exists(../../computreev5) {
     CT_PREFIX = ../../computreev5
     DEFINES += COMPUTREE_V5
 }
-QMAKE_CXXFLAGS += /bigobj
+
+CHECK_CAN_USE_PCL = 1
+CHECK_CAN_USE_GDAL = 1
+CHECK_CAN_USE_OPENCV = 1
+
+
+include($${CT_PREFIX}/shared.pri)
+include($${PLUGIN_SHARED_DIR}/include.pri)
+
+COMPUTREE += ctliblas ctlibfilters ctlibmetrics
+
+contains(DEFINES, COMPUTREE_V5) {
+    COMPUTREE += ctlibstdactions
+}
+
+include($${CT_PREFIX}/include_ct_library.pri)
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
 
 MUST_USE_PCL = 1
 MUST_USE_OPENCV = 1
@@ -122,12 +140,15 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     cloud/feature/principaldirection/sf_principaldirection.h \
     cloud/feature/principaldirection/sf_principaldirection.hpp \
     cloud/sf_abstractcloud.h \
-    parameter/sf_parametersetprincipaldirection.h \
     steps/feature/principaldirection/sf_stepprincipaldirection.h \
     steps/feature/sf_abstractstepfeature.h \
     cloud/filter/multiple/clusterscaling/sf_clustertransfer.h \
     cloud/filter/multiple/clusterscaling/sf_clustertransfer.hpp \
-    cloud/filter/multiple/clusterscaling/sf_testclustertransfer.h
+    cloud/filter/multiple/clusterscaling/sf_testclustertransfer.h \
+    parameter/sf_parametersetvoxelgriddownscale.h \
+    parameter/sf_parameterSetVoxelgridDownscaling.h \
+    parameter/sf_parameterSetPrincipalDirection.h \
+    steps/feature/principaldirection/sf_adapterprincipaldirection.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \

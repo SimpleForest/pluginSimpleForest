@@ -25,53 +25,51 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_RADIUS_OUTLIER_FILTER_ADAPTER_H
-#define SF_RADIUS_OUTLIER_FILTER_ADAPTER_H
 
-#include "steps/param/sf_paramAllSteps.h"
-#include <converters/CT_To_PCL/sf_converterCTToPCL.h>
-#include <pcl/cloud/filter/binary/radiusoutlier/sf_radiusOutlierFilter.h>
+#ifndef SF_ADAPTERPRINCIPALDIRECTION_H
+#define SF_ADAPTERPRINCIPALDIRECTION_H
 
-class SF_RadiusOutlierFilterAdapter {
+#include <QThreadPool>
 
-public:    
+#include "parameter/sf_parameterSetPrincipalDirection.h"
+#include "cloud/filter/binary/voxelgriddownscale/sf_voxelgriddownscale.h"
+#include "cloud/feature/principaldirection/sf_principaldirection.h"
 
+
+class SF_AdapterPrincipalDirection {
+public:
     std::shared_ptr<QMutex>  mMutex;
 
-    SF_RadiusOutlierFilterAdapter(const SF_RadiusOutlierFilterAdapter &obj) {
+    SF_AdapterPrincipalDirection(const SF_AdapterPrincipalDirection &obj) {
         mMutex = obj.mMutex;
     }
 
-    SF_RadiusOutlierFilterAdapter () {
+    SF_AdapterPrincipalDirection () {
         mMutex.reset(new QMutex);
     }
 
-    ~SF_RadiusOutlierFilterAdapter () {
+    ~SF_AdapterPrincipalDirection () {
     }
 
-    void operator()(SF_ParamRadiusOutlierFilter<SF_PointNormal> & params) {
-        Sf_ConverterCTToPCL<SF_PointNormal> converter;
+    void operator()(SF_ParameterSetPrincipalDirection<SF_PointNormal> & params) {
+
+        SF_VoxelGridDownscale<SF_PointNormal> downscale;
         {
             QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
+            downscale.setParams(params.m_paramVoxelGridDownscaling);
         }
-        converter.compute();
+        downscale.compute();
+        SF_PrincipalDirection<SF_PointNormal> pd;
         {
             QMutexLocker m1(&*mMutex);
-            params._cloudIn = converter.cloudTranslated();
+            params.m_cloud = downscale.clusterOut().first;
+            pd.setParams(params);
         }
-        SF_RadiusOutlierFilter<SF_PointNormal> filter;
+        pd.compute();
         {
             QMutexLocker m1(&*mMutex);
-            filter.setCloudIn(params._cloudIn);
-        }
-        filter.compute(params);
-        {
-            QMutexLocker m1(&*mMutex);
-            params._outputIndices = filter.getIndices();
-            params._colors = filter.colors();
+            params.m_principalCurvatures = pd.principalCurvatures();
         }
     }
 };
-
-#endif // SF_RADIUS_OUTLIER_FILTER_ADAPTER_H
+#endif // SF_ADAPTERPRINCIPALDIRECTION_H

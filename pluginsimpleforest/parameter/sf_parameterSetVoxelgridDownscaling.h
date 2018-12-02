@@ -20,8 +20,8 @@
 
 *****************************************************************************/
 
-#ifndef SF_PARAMETERSETVOXELIZATION_H
-#define SF_PARAMETERSETVOXELIZATION_H
+#ifndef SF_PARAMETERSETVOXELGRIDDOWNSCALING_H
+#define SF_PARAMETERSETVOXELGRIDDOWNSCALING_H
 
 #include "sf_abstractParameterSet.h"
 
@@ -30,33 +30,48 @@
  *  Parameter set to convert a cloud into subclouds by voxelization.
  */
 template <typename T>
-struct SF_ParameterSetVoxelization:
-        public SF_AbstractParameterSet<T> {
+struct SF_ParameterSetVoxelgridDownscaling:
+        public SF_AbstractParameterSet<T>
+{
     /**
-     * @brief m_voxelSize For \ref  m_cloud a 3d Raster of voxelsize m_voxelSize is
-     * created. For each cell all contained points build a sub cloud in the \ref  m_clusters output.
+     * @brief m_voxelSize The \ref  m_cloud is downscaled and the expected distance between two neighbor points is
+     * \ref m_voxelSize afterwards.
      */
     float m_voxelSize;
     /**
-     * @brief m_clustersOut Contains subclouds and their according CT indices.
+     * @brief m_cloudOut Contains one cloud containing the remaining points and one cloud containing the filtered out points.
      */
-    std::vector<std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> > > m_clustersOut;
+    std::pair<std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> >, std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> > > m_cloudOut;
 
-    SF_ParameterSetVoxelization() {}
-    QStringList paramsToString() override {
+    SF_ParameterSetVoxelgridDownscaling() {}
+
+    QStringList paramsToString(size_t remaining, size_t filtered) {
+        float percentage = 0;
+        if((remaining + filtered) > 0)
+        {
+            percentage = static_cast<float>(remaining)/(static_cast<float>(remaining+ filtered))*100.0f;
+        }
         QStringList list;
-        QString str = "To enable multithreaded processing the input point cloud was clustered with voxelization with (";
+        QString str = "The input cloud was downscaled with a  (";
         list.push_back(str);
         str = ("voxelSize                = ");
         str.append(QString::number(m_voxelSize));
         str.append("(m)");
         list.push_back(str);
-        str = (" ). into ");
-        str.append(QString::number(m_clustersOut.size()));
-        str.append(" number of clusters.");
+        str = (" ). into a cloud of ");
+        str.append(QString::number(remaining));
+        str.append( " / ");
+        str.append(QString::number(remaining+ filtered));
+        str.append( " (");
+        str.append(QString::number(percentage));
+        str.append( " %) points.");
         list.push_back(str);
         return list;
     }
-};
 
-#endif // SF_PARAMETERSETVOXELIZATION_H
+private:
+    QStringList paramsToString() override {
+        return QStringList();
+    }
+};
+#endif // SF_PARAMETERSETVOXELGRIDDOWNSCALING_H

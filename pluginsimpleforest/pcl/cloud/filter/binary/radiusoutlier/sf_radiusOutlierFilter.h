@@ -30,15 +30,19 @@
 
 #include "pcl/cloud/filter/binary/sf_abstractBinaryFilter.h"
 
+#include "ct_itemdrawable/ct_pointsattributescolor.h"
+
 template <typename PointType>
 class SF_RadiusOutlierFilter: public Sf_AbstractBinaryFilter<PointType> {
-    void radiusOutlierFilter(typename SF_ParamRadiusOutlierFilter<PointType> stdParams);
-
+    void radiusOutlierFilter(SF_ParamRadiusOutlierFilter<PointType> stdParams);
+    CT_ColorCloudStdVector *_colors;
 public:
     SF_RadiusOutlierFilter();
     virtual void compute(const SF_ParamRadiusOutlierFilter<PointType> &params);
+    CT_ColorCloudStdVector *colors() const;
 };
 
 #include <pcl/cloud/filter/binary/radiusoutlier/sf_radiusOutlierFilter.hpp>
 
 #endif // SF_RADIUS_OUTLIER_FILTER_H
+

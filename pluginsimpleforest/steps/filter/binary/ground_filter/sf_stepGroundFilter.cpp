@@ -30,6 +30,8 @@
 #include "sf_stepGroundFilterAdapter.h"
 #include <QtConcurrent/QtConcurrent>
 
+#include "ct_itemdrawable/ct_pointsattributescolor.h"
+
 SF_StepGroundFilter::SF_StepGroundFilter(CT_StepInitializeData &dataInit):
     SF_AbstractFilterBinaryStep(dataInit) {
 }
@@ -70,13 +72,13 @@ void SF_StepGroundFilter::createInResultModelListProtected() {
     resModel->addGroupModel("",
                             DEF_IN_GRP_CLUSTER,
                             CT_AbstractItemGroup::staticGetType(),
-                            tr("Point Cloud Grp In"),
+                            tr("Group to be denoised"),
                             "",
                             CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
     resModel->addItemModel(DEF_IN_GRP_CLUSTER,
                            DEF_IN_CLOUD_SEED,
                            CT_Scene::staticGetType(),
-                           tr("Point Cloud"));
+                           tr("Cloud to be denoised"));
 }
 
 void SF_StepGroundFilter::createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {
@@ -112,6 +114,10 @@ void SF_StepGroundFilter::createPostConfigurationDialogBeginner(CT_StepConfigura
 void SF_StepGroundFilter::createOutResultModelListProtected() {
     CT_OutResultModelGroupToCopyPossibilities *resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
     if(resModelw != NULL) {
+        resModelw->addItemModel(DEF_IN_GRP_CLUSTER,
+                                  m_outCloudItem,
+                                  new CT_PointsAttributesColor(),
+                                  tr("Normal Direction"));
         resModelw->addGroupModel(DEF_IN_GRP_CLUSTER,
                                  _outGrp,
                                  new CT_StandardItemGroup(),
@@ -185,6 +191,19 @@ void SF_StepGroundFilter::compute() {
     setProgressByFuture(future,10,85);
     writeOutput(outResult);
     writeLogger();
+    size_t index = 0;
+    CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
+    while(!isStopped() && outResIt.hasNext()) {
+        CT_StandardItemGroup* group = (CT_StandardItemGroup*) outResIt.next();
+        const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
+                (const CT_AbstractItemDrawableWithPointCloud*) group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+        SF_ParamGroundFilter<SF_PointNormal> param = _paramList[index++];
+        CT_PointsAttributesColor* colorAttribute = new CT_PointsAttributesColor(m_outCloudItem.completeName(),
+                                                                                outResult,
+                                                                                ct_cloud->getPointCloudIndexRegistered(),
+                                                                                param._colors);
+        group->addItemDrawable(colorAttribute);
+    }
     _paramList.clear();
 }
 

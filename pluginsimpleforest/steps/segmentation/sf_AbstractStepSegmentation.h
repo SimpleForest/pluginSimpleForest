@@ -44,6 +44,8 @@ protected:
     void downscale(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL,
                    float voxelSize,
                    pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled);
+    void initializeIndexVec(CT_ResultGroupIterator &resultGrpIterator2,
+                            std::vector<CT_PointCloudIndexVector *>& indexVec);
     void initializeIndexVec(size_t size,
                             std::vector<CT_PointCloudIndexVector *>& indexVec);
     void createPCLCloud(const QString &clusterGrpStr,

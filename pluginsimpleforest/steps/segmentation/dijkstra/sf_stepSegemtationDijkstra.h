@@ -59,6 +59,7 @@ private:
     double _voxelSize = 0.1;
     double _euclideanDistance = 0.2;
     double _zFactor = 0.3;
+    CT_AutoRenameModels m_outCloudItem;
 };
 
 #endif // SF_EUCLIDEAN_CLUSTERING_STEP_H

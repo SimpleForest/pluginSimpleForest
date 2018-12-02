@@ -31,6 +31,7 @@
 #include <pcl/sf_point.h>
 
 #include <converters/sf_abstractConverter.h>
+#include <ct_itemdrawable/ct_grid3d_sparse.h>
 #include "ct_iterator/ct_pointiterator.h"
 
 template <typename PointType>
@@ -59,6 +60,7 @@ private:
                                 typename pcl::PointCloud<PointType>::Ptr downscaled_cloud);
 };
 
-#include "sf_converterCTToPCL.hpp"
 
 #endif // SF_CONVERTER_CT_TO_PCL_H
+
+#include "sf_converterCTToPCL.hpp"

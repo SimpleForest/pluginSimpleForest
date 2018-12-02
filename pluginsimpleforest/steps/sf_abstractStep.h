@@ -43,6 +43,9 @@
 #include <QFuture>
 #include <QString>
 
+#include "converters/CT_To_PCL/sf_converterCTCloudToPCLCloud.h"
+#include "cloud/filter/multiple/voxel/sf_filtervoxelclustering.h"
+
 #define DEF_IN_RESULT "ires"
 #define DEF_IN_GRP_CLUSTER    "igrp"
 #define DEF_IN_RESULT_DTM "idtmres"
@@ -133,6 +136,7 @@ protected:
     const QString getRISCitationSimpleTree() const;
     const QString getRISCitationPCL() const;
     const QString getRISCitationRaumonen() const;
+    void addCitationRaumonen(CT_StepConfigurableDialog *configDialog);
 
 public:
     SF_AbstractStep(CT_StepInitializeData &dataInit);

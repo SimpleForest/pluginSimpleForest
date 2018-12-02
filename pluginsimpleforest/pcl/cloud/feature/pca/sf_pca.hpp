@@ -59,9 +59,9 @@ void SF_PCA<PointType>::extractNeighbors(typename pcl::KdTree<PointType>::Ptr kd
                                           PointType p,
                                           typename pcl::PointCloud<PointType>::Ptr neighborhood) {
     if(_useRange) {
-        extractNeighborsByRange(kdTree,p,neighborhood, _range);
+        SF_AbstractCloud<PointType>::extractNeighborsByRange(kdTree,p,neighborhood, _range);
     } else {
-        extractNeighborsByKnn(kdTree,p,neighborhood, _k);
+        SF_AbstractCloud<PointType>::extractNeighborsByKnn(kdTree,p,neighborhood, _k);
     }
 }
 

@@ -30,19 +30,19 @@
  * a templated PCL cloud
  */
 template <typename PointType>
-class SF_AbstractCloud
+class SF_AbstractCloudI
 {
 public:
     /**
      * @brief SF_AbstractCloud Standard constructor.
      */
-    SF_AbstractCloud();
+    SF_AbstractCloudI();
     /**
      * @brief compute virtual method to be implemented
      */
     virtual void compute() = 0;
 
-    void setCoudIn(std::pair<pcl::PointCloud<PointType>::Ptr,std::vector<size_t> > cloudIn);
+    void setCoudIn(std::pair<typename pcl::PointCloud<PointType>::Ptr,std::vector<size_t> > cloudIn);
 
 protected:
     /**
@@ -50,17 +50,17 @@ protected:
      * is a shared pointer to the PCL cloud itself, the second member is a vector
      * of accordingly sortedCT indices
      */
-     std::pair<pcl::PointCloud<PointType>::Ptr,std::vector<size_t> > m_cloudIn;
+     std::pair<typename pcl::PointCloud<PointType>::Ptr,std::vector<size_t> > m_cloudIn;
 };
 
 template<typename PointType>
-SF_AbstractCloud<PointType>::SF_AbstractCloud()
+SF_AbstractCloudI<PointType>::SF_AbstractCloudI()
 {
 
 }
 
 template<typename PointType>
-void SF_AbstractCloud::setCoudIn(std::pair<pcl::PointCloud::Ptr, std::vector<size_t> > cloudIn)
+void SF_AbstractCloudI<PointType>::setCoudIn(std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > cloudIn)
 {
     m_cloudIn = cloudIn;
 }

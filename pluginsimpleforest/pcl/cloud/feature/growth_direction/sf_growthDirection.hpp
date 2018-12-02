@@ -47,7 +47,7 @@ void SF_GrowthDirection<PointType, FeatureType>::setParameters(float rangeNormal
 
 template<typename PointType, typename FeatureType>
 std::vector<SF_PCAValues> SF_GrowthDirection<PointType,FeatureType>::computeNormalPca() {
-    SF_PCA<PointType> sfpca(_cloudIn);
+    SF_PCA<PointType> sfpca(SF_AbstractCloud<PointType>::_cloudIn);
     sfpca.setParameters(_rangeNormal, false, true);
     sfpca.computeFeatures();
     return sfpca.getPcaValues();
@@ -57,28 +57,28 @@ template<typename PointType, typename FeatureType>
 void SF_GrowthDirection<PointType,FeatureType>::addNormals(std::vector<SF_PCAValues> &values) {
     for(size_t i = 0; i < values.size(); i++) {
         SF_PCAValues val = values[i];
-        _cloudIn->points[i].normal_x = val.getVector3()[0];
-        _cloudIn->points[i].normal_y = val.getVector3()[1];
-        _cloudIn->points[i].normal_z = val.getVector3()[2];
+        SF_AbstractCloud<PointType>::_cloudIn->points[i].normal_x = val.getVector3()[0];
+        SF_AbstractCloud<PointType>::_cloudIn->points[i].normal_y = val.getVector3()[1];
+        SF_AbstractCloud<PointType>::_cloudIn->points[i].normal_z = val.getVector3()[2];
     }
 }
 
 template<typename PointType, typename FeatureType>
 void SF_GrowthDirection<PointType,FeatureType>::addGrowthDirection(std::vector<SF_PCAValues> &values) {
     for(size_t i = 0; i < values.size(); i++) {
-        typename FeatureType pointGd;
-        pointGd.x = _cloudIn->points[i].x;
-        pointGd.y = _cloudIn->points[i].y;
-        pointGd.z = _cloudIn->points[i].z;
+        FeatureType pointGd;
+        pointGd.x = SF_AbstractCloud<PointType>::_cloudIn->points[i].x;
+        pointGd.y = SF_AbstractCloud<PointType>::_cloudIn->points[i].y;
+        pointGd.z = SF_AbstractCloud<PointType>::_cloudIn->points[i].z;
         SF_PCAValues val = values[i];
         if (val.getLambda1() > MAX_LAMBDA3) {
             pointGd.normal_x = val.getVector1()[0];
             pointGd.normal_y = val.getVector1()[1];
             pointGd.normal_z = val.getVector1()[2];
         } else {
-            typename PointType p = _cloudIn->points[i];
+            PointType p = SF_AbstractCloud<PointType>::_cloudIn->points[i];
             typename pcl::PointCloud<PointType>::Ptr neighborhood (new pcl::PointCloud<PointType>);
-            extractNeighborsByRange(_kdTree,p,neighborhood, _rangeGd);
+            SF_AbstractCloud<PointType>::extractNeighborsByRange(_kdTree,p,neighborhood, _rangeGd);
             for(size_t j = 0; j < neighborhood->points.size(); j++) {
                 neighborhood->points[j].x = neighborhood->points[j].normal_x;
                 neighborhood->points[j].y = neighborhood->points[j].normal_y;
@@ -90,7 +90,7 @@ void SF_GrowthDirection<PointType,FeatureType>::addGrowthDirection(std::vector<S
             pointGd.normal_y = valGd.getVector3()[1];
             pointGd.normal_z = valGd.getVector3()[2];
         }
-        _featuresOut->points[i] = pointGd;
+        SF_AbstractFeature<PointType, FeatureType>::_featuresOut->points[i] = pointGd;
     }
 }
 

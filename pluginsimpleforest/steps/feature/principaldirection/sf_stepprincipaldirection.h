@@ -23,10 +23,9 @@
 #ifndef SF_STEPPRINCIPALDIRECTION_H
 #define SF_STEPPRINCIPALDIRECTION_H
 
-#include <parameter/sf_parametersetprincipaldirection.h>
+#include <parameter/sf_parameterSetPrincipalDirection.h>
 
-#include "steps/param/sf_paramAllSteps.h"
-#include "../sf_abstractstepfeature.h"
+#include "steps/feature/sf_abstractstepfeature.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
@@ -49,24 +48,26 @@ protected:
     void createInResultModelListProtected();
     void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog *configDialog);
     void createOutResultModelListProtected();
-    void createPostConfigurationDialog() override ;
     void adaptParametersToExpertLevel() {}
     void compute();
     virtual void writeLogger() {}
+    virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog);
+    virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
 
-    void createPreConfigurationDialog() {}
-    virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {configDialog;}
-    virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {configDialog;}
+    std::vector<std::pair<pcl::PointCloud<SF_PointNormal>::Ptr, std::vector<size_t> > >
+    voxelizeInput (SF_ConverterCTCloudToPCLCloud<SF_PointNormal> &converter);
 
 private:
-    double m_voxelSize    = 0.02;
+    SF_ParameterSetVoxelization<SF_PointNormal> m_parameterVoxelization;
+    double m_voxelSizeCluster = 3.00;
+    double m_voxelSizeDownscaling = 0.02;
     double m_normalRadius = 0.075;
     double m_pdRadius     = 0.15;
     SF_ParameterSetPrincipalDirection<pcl::PointXYZINormal> m_param;
     CT_AutoRenameModels m_outCloudItem;
     void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);
     void writeOutput(CT_ResultGroup* outResult);
-    void createParamList(CT_ResultGroup *out_result);
+    void processInput(CT_ResultGroup *out_result);
 };
 
 #endif // SF_STEPPRINCIPALDIRECTION_H

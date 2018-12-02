@@ -71,6 +71,7 @@ public:
         {
             QMutexLocker m1(&*mMutex);
             params._outputIndices = filter.getIndices();
+            params._colors = filter.colors();
         }
     }
 };

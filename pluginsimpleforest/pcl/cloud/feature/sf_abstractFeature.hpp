@@ -33,7 +33,7 @@ template <typename PointType, typename FeatureType>
 SF_AbstractFeature<PointType, FeatureType>::SF_AbstractFeature(typename pcl::PointCloud<PointType>::Ptr cloudIn,
                                                                typename pcl::PointCloud<FeatureType>::Ptr featuresOut):
      SF_AbstractCloud<PointType>(cloudIn),
-     SF_AbstractFeature::_featuresOut(featuresOut) {
+     _featuresOut(featuresOut) {
 
 }
 

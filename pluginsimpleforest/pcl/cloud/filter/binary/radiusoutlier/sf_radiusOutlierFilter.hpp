@@ -35,6 +35,8 @@
 
 #include "pcl/cloud/filter/binary/radiusoutlier/sf_radiusOutlierFilter.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
+#include "ct_colorcloud/ct_colorcloudstdvector.h"
+#include "ct_itemdrawable/ct_pointsattributescolor.h"
 
 template <typename PointType>
 SF_RadiusOutlierFilter<PointType>::SF_RadiusOutlierFilter() {
@@ -50,15 +52,27 @@ void  SF_RadiusOutlierFilter<PointType>::compute(const SF_ParamRadiusOutlierFilt
     }
     SF_RadiusOutlierFilter<PointType>::createIndices();
 }
+template<typename PointType>
+CT_ColorCloudStdVector
+*SF_RadiusOutlierFilter<PointType>::colors() const
+{
+    return _colors;
+}
+
 
 template <typename PointType>
-void SF_RadiusOutlierFilter<PointType>::radiusOutlierFilter(typename SF_ParamRadiusOutlierFilter<PointType> stdParams) {
-    if(stdParams._radius>0.1f) {
+void SF_RadiusOutlierFilter<PointType>::radiusOutlierFilter(SF_ParamRadiusOutlierFilter<PointType> stdParams)
+{
+    _colors = new CT_ColorCloudStdVector(SF_AbstractCloud<PointType>::_cloudIn->points.size());
+    float maxNumber = 0;
+    float minNumber = std::numeric_limits<float>::max();
+    if(stdParams._radius>0.1f)
+    {
         Sf_ConverterCTToPCL<PointType> converter;
         converter.setItemCpyCloudInDeprecated(stdParams._itemCpyCloudIn);
-        pcl::PointCloud<PointType>::Ptr downscaledCloud (new pcl::PointCloud<PointType>);
+        typename pcl::PointCloud<PointType>::Ptr downscaledCloud (new pcl::PointCloud<PointType>);
         converter.downScale(stdParams._radius/5,downscaledCloud);
-        pcl::PointCloud<PointType>::Ptr downscaledCloudNeighborsNumber  (new pcl::PointCloud<PointType>);
+        typename pcl::PointCloud<PointType>::Ptr downscaledCloudNeighborsNumber  (new pcl::PointCloud<PointType>);
         pcl::KdTreeFLANN<PointType> kdtree;
         kdtree.setInputCloud (downscaledCloud);
         for(size_t i = 0; i < downscaledCloud->points.size(); i++) {
@@ -71,16 +85,32 @@ void SF_RadiusOutlierFilter<PointType>::radiusOutlierFilter(typename SF_ParamRad
                     numberneighbors += downscaledCloud->points[ pointIdxRadiusSearch[j] ].intensity;
             }
             p.intensity = numberneighbors;
+            if(numberneighbors > maxNumber)
+            {
+                maxNumber = numberneighbors;
+            }
+            if(numberneighbors < minNumber)
+            {
+                minNumber = numberneighbors;
+            }
             downscaledCloudNeighborsNumber->push_back(p);
         }
+        float range = maxNumber- minNumber;
+        float sqrdRange = std::sqrt(std::sqrt(range));
         pcl::KdTreeFLANN<PointType> kdtree_nn;
         kdtree_nn.setInputCloud (downscaledCloudNeighborsNumber);
         for(size_t i = 0; i < SF_AbstractCloud<PointType>::_cloudIn->points.size(); i++) {
+            CT_Color &col = _colors->colorAt(i);
             PointType p = SF_AbstractCloud<PointType>::_cloudIn->points[i];
             std::vector<int> pointIdxNNSearch;
             std::vector<float> pointNNSquaredDistance;
             if ( kdtree.nearestKSearch (p, 1, pointIdxNNSearch, pointNNSquaredDistance) > 0 ) {
-                if(downscaledCloudNeighborsNumber->points[ pointIdxNNSearch[0] ].intensity>= stdParams._minPts) {
+                float neighbors = downscaledCloudNeighborsNumber->points[ pointIdxNNSearch[0] ].intensity;
+                float perc = (range == 0) ? 0 : std::sqrt(std::sqrt(neighbors - minNumber))/sqrdRange;
+                col.r() = (255 - perc*255);
+                col.g() = (perc*255);
+                col.b() = (0);
+                if(neighbors>= stdParams._minPts) {
                     SF_AbstractFilterDeprecated<PointType>::_cloudOutFiltered->points.push_back(p);
                 }
             }
