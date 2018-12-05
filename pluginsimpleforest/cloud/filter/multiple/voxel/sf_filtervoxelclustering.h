@@ -32,45 +32,42 @@
  * a cluster. The VoxelSize is passed by the input parameter set.
  */
 template <typename PointType>
-class SF_VoxelClustering:
-        public SF_AbstractMultipleFilter<PointType>
-{
+class SF_VoxelClustering : public SF_AbstractMultipleFilter<PointType> {
 public:
-    /**
-     * @brief Standard constructor.
-     */
-    SF_VoxelClustering();
-    /**
-     * @brief compute Does the actual voxelization of \ref m_cloudIn.
-     */
-    void compute() override;
-    /**
-     * @brief setParam Setter for \ref m_param.
-     * @param param \ref m_param.
-     */
-    void setParam(const SF_ParameterSetVoxelization<PointType> &param);
+  /**
+   * @brief Standard constructor.
+   */
+  SF_VoxelClustering();
+  /**
+   * @brief compute Does the actual voxelization of \ref m_cloudIn.
+   */
+  void compute() override;
+  /**
+   * @brief setParam Setter for \ref m_param.
+   * @param param \ref m_param.
+   */
+  void setParam(const SF_ParameterSetVoxelization<PointType> &param);
 
 private:
-    /**
-     * @brief m_param The parameter set storing \ref m_cloudIn and
-     * the cell size of the voxels.
-     */
-    SF_ParameterSetVoxelization<PointType> m_param;
-    /**
-     * @brief initialize
-     */
-    void initialize();
-    /**
-     * @brief m_min Stores minX, minY and minZ of \ref m_cloudIn.
-     */
-    PointType m_min;
-    /**
-     * @brief m_max Stores maxX, maxY and maxZ of \ref m_cloudIn.
-     */
-    PointType m_max;
+  /**
+   * @brief m_param The parameter set storing \ref m_cloudIn and
+   * the cell size of the voxels.
+   */
+  SF_ParameterSetVoxelization<PointType> m_param;
+  /**
+   * @brief initialize
+   */
+  void initialize();
+  /**
+   * @brief m_min Stores minX, minY and minZ of \ref m_cloudIn.
+   */
+  PointType m_min;
+  /**
+   * @brief m_max Stores maxX, maxY and maxZ of \ref m_cloudIn.
+   */
+  PointType m_max;
 };
 
 #include "sf_filtervoxelclustering.hpp"
 
 #endif // SF_FILTERVOXELCLUSTERING_H
-

@@ -30,20 +30,20 @@
 #define SF_CONVERTER_CT_TO_PCL_DTM_H
 
 #include "converters/sf_abstractConverter.h"
-#include "plot/DTM/sf_modelDTM.h"
 #include "ct_itemdrawable/ct_image2d.h"
+#include "plot/DTM/sf_modelDTM.h"
 
-class SF_ConverterCTToPCLDTM:
-        public SF_AbstractConverter {
-    std::shared_ptr<SF_ModelDTM> _dtmPCL;
-    CT_Image2D<float> * _dtmCT;
-    virtual void computeTranslationToOrigin();
-    virtual void compute();
+class SF_ConverterCTToPCLDTM : public SF_AbstractConverter {
+  std::shared_ptr<SF_ModelDTM> _dtmPCL;
+  CT_Image2D<float> *_dtmCT;
+  virtual void computeTranslationToOrigin();
+  virtual void compute();
+
 public:
-    SF_ConverterCTToPCLDTM(CT_Image2D<float> * dtmCT);
-    SF_ConverterCTToPCLDTM(Eigen::Vector3d centerOfMass,
-                           CT_Image2D<float> * dtmCT);
-    std::shared_ptr<SF_ModelDTM> dtmPCL() const;
+  SF_ConverterCTToPCLDTM(CT_Image2D<float> *dtmCT);
+  SF_ConverterCTToPCLDTM(Eigen::Vector3d centerOfMass,
+                         CT_Image2D<float> *dtmCT);
+  std::shared_ptr<SF_ModelDTM> dtmPCL() const;
 };
 
 #endif // SF_CONVERTER_CT_TO_PCL_DTM_H

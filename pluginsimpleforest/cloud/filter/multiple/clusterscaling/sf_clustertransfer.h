@@ -29,39 +29,38 @@
 #include <utility>
 
 template <typename PointType>
-class SF_ClusterTransfer:
-        public SF_AbstractMultipleFilter
-{
+class SF_ClusterTransfer : public SF_AbstractMultipleFilter {
 public:
-    /**
-     * @brief Standard constructor.
-     */
-    SF_ClusterTransfer();
-    /**
-     * @brief compute Does the actual transform of of \ref m_clusterIn to original resoluted cloud.
-     */
-    void compute() override;
+  /**
+   * @brief Standard constructor.
+   */
+  SF_ClusterTransfer();
+  /**
+   * @brief compute Does the actual transform of of \ref m_clusterIn to original
+   * resoluted cloud.
+   */
+  void compute() override;
+
 private:
-    /**
-     * @brief initialize creates \ref m_cloudInMerged out of \ref m_clusterIn.
-     */
-    void initialize();
-    /**
-     * @brief m_cloudInMerged All input clusters merged to one cloud.
-     */
-    pcl::PointCloud<PointType>::Ptr m_cloudInMerged;
-    /**
-     * @brief m_ClusterIndices For each point in \ref m_cloudInMerged the input clusters index is stored.
-     */
-    std::vector<size_t> m_ClusterIndices;
-    /**
-     * @brief m_kdtree The search structure storing the merged clusters.
-     */
-    pcl::KdTreeFLANN<PointType>::Ptr m_kdtree;
+  /**
+   * @brief initialize creates \ref m_cloudInMerged out of \ref m_clusterIn.
+   */
+  void initialize();
+  /**
+   * @brief m_cloudInMerged All input clusters merged to one cloud.
+   */
+  pcl::PointCloud<PointType>::Ptr m_cloudInMerged;
+  /**
+   * @brief m_ClusterIndices For each point in \ref m_cloudInMerged the input
+   * clusters index is stored.
+   */
+  std::vector<size_t> m_ClusterIndices;
+  /**
+   * @brief m_kdtree The search structure storing the merged clusters.
+   */
+  pcl::KdTreeFLANN<PointType>::Ptr m_kdtree;
 };
 
 #include "sf_clustertransfer.hpp"
 
 #endif // SF_CLUSTERTRANSFER_H
-
-

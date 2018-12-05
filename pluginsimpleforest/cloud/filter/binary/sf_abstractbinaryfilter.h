@@ -31,41 +31,42 @@
  * a noise and a denoised cluster.
  */
 template <typename PointType>
-class SF_AbstractBinaryFilter:
-        public SF_AbstractFilterI<PointType>
-{
+class SF_AbstractBinaryFilter : public SF_AbstractFilterI<PointType> {
 public:
-    /**
-     * @brief Standard constructor receiving as input \ref m_cloudIn.
-     * @param cloudIn \ref m_cloudIn
-     */
-    SF_AbstractBinaryFilter();
-    /**
-     * @brief clusterOut Getter for \ref m_clusterOut.
-     * @return \ref m_clusterOut
-     */
-    std::pair<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> >
-    , std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > > clusterOut() const;
+  /**
+   * @brief Standard constructor receiving as input \ref m_cloudIn.
+   * @param cloudIn \ref m_cloudIn
+   */
+  SF_AbstractBinaryFilter();
+  /**
+   * @brief clusterOut Getter for \ref m_clusterOut.
+   * @return \ref m_clusterOut
+   */
+  std::pair<
+      std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>,
+      std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>
+  clusterOut() const;
+
 protected:
-    /**
-     * @brief m_clusterOut A pair of two clusters. Each cluster is a pair of a PCL cloud and a CT index vector.
-     */
-    std::pair<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> >
-    , std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > > m_clusterOut;
+  /**
+   * @brief m_clusterOut A pair of two clusters. Each cluster is a pair of a PCL
+   * cloud and a CT index vector.
+   */
+  std::pair<
+      std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>,
+      std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>
+      m_clusterOut;
 };
 
-
-template<typename PointType>
-std::pair<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> >
-, std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > > SF_AbstractBinaryFilter<PointType>::clusterOut() const
-{
-    return m_clusterOut;
+template <typename PointType>
+std::pair<
+    std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>,
+    std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>
+SF_AbstractBinaryFilter<PointType>::clusterOut() const {
+  return m_clusterOut;
 }
 
-template<typename PointType>
-SF_AbstractBinaryFilter<PointType>::SF_AbstractBinaryFilter()
-{
-
-}
+template <typename PointType>
+SF_AbstractBinaryFilter<PointType>::SF_AbstractBinaryFilter() {}
 
 #endif // SF_ABSTRACTBINARYFILTER_H

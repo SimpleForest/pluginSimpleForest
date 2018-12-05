@@ -110,10 +110,6 @@ void SF_StemRANSACFilter::filterIteratively(pcl::PointCloud<pcl::PointXYZINormal
                 if(dist<radius) {
                     cloudInlier->points.push_back(cloud->points[i]);
                 }
-//                else
-//                {
-//                    std::cout << "not a distance " << dist << std::endl;
-//                }
             }
             cloud = cloudInlier;
         }
@@ -145,22 +141,15 @@ void SF_StemRANSACFilter::backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr d
 }
 
 void SF_StemRANSACFilter::compute() {
-    std::cout<<"foo1"<<std::endl;
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloud = downScale(_params._voxelSize);
-    std::cout<<"foo2"<<std::endl;
     computeNormals(downScaledCloud);
-    std::cout<<"foo3 downScaledCloud " << downScaledCloud->points.size() <<std::endl;
     initializeClouds(downScaledCloud);
-    std::cout<<"foo4"<<std::endl;
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered(new SF_CloudNormal());
-    std::cout<<"foo5"<<std::endl;
     filterIteratively(downScaledCloudFiltered);
-    std::cout<<"foo6 downScaledCloudFiltered" << downScaledCloudFiltered->points.size() <<std::endl;
     if(downScaledCloudFiltered->points.size() > 0)
     {
         backScale(downScaledCloudFiltered);
     }
-    std::cout<<"foo7"<<std::endl;
     createIndices();
 }
 

@@ -26,24 +26,19 @@
 #include "cloud/sf_abstractcloud.h"
 
 /**
- * @brief The SF_AbstractFilter class Abstract class for producing segmented or denoised
- * clusters out of a templated PCL cloud
+ * @brief The SF_AbstractFilter class Abstract class for producing segmented or
+ * denoised clusters out of a templated PCL cloud
  */
 template <typename PointType>
-class SF_AbstractFilterI: public SF_AbstractCloudI<PointType>
-{
+class SF_AbstractFilterI : public SF_AbstractCloudI<PointType> {
 public:
-    /**
-     * @brief SF_AbstractFilter Standard constructor.
-     */
-    SF_AbstractFilterI();
+  /**
+   * @brief SF_AbstractFilter Standard constructor.
+   */
+  SF_AbstractFilterI();
 };
 
-template<typename PointType>
-SF_AbstractFilterI<PointType>::SF_AbstractFilterI()
-{
-
-}
+template <typename PointType>
+SF_AbstractFilterI<PointType>::SF_AbstractFilterI() {}
 
 #endif // SF_ABSTRACTFILTER_H
-

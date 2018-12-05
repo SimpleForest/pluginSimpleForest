@@ -28,10 +28,10 @@
 
 #include <pcl/common/common.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/kdtree/impl/kdtree_flann.hpp>
-#include <pcl/point_types.h>
+#include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 
 typedef pcl::PointXYZ SF_Point;
 typedef pcl::PointCloud<SF_Point> SF_Cloud;

@@ -25,17 +25,16 @@
 
 #include <QtTest/QtTest>
 
-class TestClusterTransfer: public QObject
-{
-    Q_OBJECT
+class TestClusterTransfer : public QObject {
+  Q_OBJECT
 private slots:
-    void initTestCase();
-    void myFirstTest();
-    void mySecondTest();
-    void cleanupTestCase();
+  void initTestCase();
+  void myFirstTest();
+  void mySecondTest();
+  void cleanupTestCase();
 };
 
 //#include "sf_testclustertransfer.moc"
-//QTEST_MAIN(TestClusterTransfer)
+// QTEST_MAIN(TestClusterTransfer)
 
 #endif // SF_TESTCLUSTERTRANSFER_H

@@ -166,16 +166,16 @@ void SF_RadiusOutlierFilterStep::writeLogger() {
     for (auto &str : strList) {
       PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);
     }
-    size_t filtered = 0;
-    size_t total = 0;
+    size_t numberFilteredPoints = 0;
+    size_t numberInputPoints = 0;
     for (auto const &param : _paramList) {
       auto vector = param._outputIndices;
       for (auto i : vector) {
-        total++;
-        filtered += static_cast<size_t>(i);
+        numberInputPoints++;
+        numberFilteredPoints += static_cast<size_t>(i);
       }
     }
-    auto str2 = _paramList[0].toFilterString(total, filtered);
+    auto str2 = _paramList[0].toFilterString(numberInputPoints, numberFilteredPoints);
     PS_LOG->addMessage(LogInterface::info, LogInterface::step, str2);
   }
 }

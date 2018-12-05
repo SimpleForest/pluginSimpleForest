@@ -27,65 +27,48 @@
 #include <ct_itemdrawable/ct_grid3d_sparse.h>
 #include <utility>
 
-template<typename PointType>
-SF_VoxelClustering<PointType>::SF_VoxelClustering()
-{
+template <typename PointType>
+SF_VoxelClustering<PointType>::SF_VoxelClustering() {}
 
-}
-
-template<typename PointType>
-void SF_VoxelClustering<PointType>::compute()
-{
-    initialize();
-    std::unique_ptr<CT_Grid3D_Sparse<int> > clusterIndices (CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords(
-                                                                     NULL,
-                                                                     NULL,
-                                                                     m_min.x,
-                                                                     m_min.y,
-                                                                     m_min.z,
-                                                                     m_max.x,
-                                                                     m_max.y,
-                                                                     m_max.z,
-                                                                     m_param.m_voxelSize,
-                                                                     -2,
-                                                                     -1));
-    int numberInitializedClouds = 0;
-    for(size_t i = 0; i < m_param.m_cloud.first->points.size(); i++)
-    {
-        PointType point = m_param.m_cloud.first->points[i];
-        size_t CTIndex = m_param.m_cloud.second[i];
-        size_t index;
-        clusterIndices->indexAtXYZ(point.x,
-                                   point.y,
-                                   point.z,
-                                   index);
-        int clusterIndex = clusterIndices->valueAtIndex(index);
-        if(clusterIndex <= -1) {
-            typename pcl::PointCloud<PointType>::Ptr cluster(new pcl::PointCloud<PointType>);
-            std::vector<size_t> CT_indices;
-            SF_AbstractMultipleFilter<PointType>::m_clusterOut.push_back(std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> >
-                                                                         (cluster, CT_indices));
-            clusterIndex = numberInitializedClouds++;
-            clusterIndices->setValueAtIndex(index,
-                                            clusterIndex);
-        }
-        SF_AbstractMultipleFilter<PointType>::m_clusterOut[clusterIndex].first->points.push_back(std::move(point));
-        SF_AbstractMultipleFilter<PointType>::m_clusterOut[clusterIndex].second.push_back(std::move(CTIndex));
+template <typename PointType> void SF_VoxelClustering<PointType>::compute() {
+  initialize();
+  std::unique_ptr<CT_Grid3D_Sparse<int>> clusterIndices(
+      CT_Grid3D_Sparse<int>::createGrid3DFromXYZCoords(
+          NULL, NULL, m_min.x, m_min.y, m_min.z, m_max.x, m_max.y, m_max.z,
+          m_param.m_voxelSize, -2, -1));
+  int numberInitializedClouds = 0;
+  for (size_t i = 0; i < m_param.m_cloud.first->points.size(); i++) {
+    PointType point = m_param.m_cloud.first->points[i];
+    size_t CTIndex = m_param.m_cloud.second[i];
+    size_t index;
+    clusterIndices->indexAtXYZ(point.x, point.y, point.z, index);
+    int clusterIndex = clusterIndices->valueAtIndex(index);
+    if (clusterIndex <= -1) {
+      typename pcl::PointCloud<PointType>::Ptr cluster(
+          new pcl::PointCloud<PointType>);
+      std::vector<size_t> CT_indices;
+      SF_AbstractMultipleFilter<PointType>::m_clusterOut.push_back(
+          std::pair<typename pcl::PointCloud<PointType>::Ptr,
+                    std::vector<size_t>>(cluster, CT_indices));
+      clusterIndex = numberInitializedClouds++;
+      clusterIndices->setValueAtIndex(index, clusterIndex);
     }
-    m_param.m_clustersOut = SF_AbstractMultipleFilter<PointType>::m_clusterOut;
+    SF_AbstractMultipleFilter<PointType>::m_clusterOut[clusterIndex]
+        .first->points.push_back(std::move(point));
+    SF_AbstractMultipleFilter<PointType>::m_clusterOut[clusterIndex]
+        .second.push_back(std::move(CTIndex));
+  }
+  m_param.m_clustersOut = SF_AbstractMultipleFilter<PointType>::m_clusterOut;
 }
 
-
-template<typename PointType>
-void SF_VoxelClustering<PointType>::initialize()
-{
-     pcl::getMinMax3D (*m_param.m_cloud.first, m_min, m_max);
+template <typename PointType> void SF_VoxelClustering<PointType>::initialize() {
+  pcl::getMinMax3D(*m_param.m_cloud.first, m_min, m_max);
 }
 
-template<typename PointType>
-void SF_VoxelClustering<PointType>::setParam(const SF_ParameterSetVoxelization<PointType> &param)
-{
-    m_param = param;
+template <typename PointType>
+void SF_VoxelClustering<PointType>::setParam(
+    const SF_ParameterSetVoxelization<PointType> &param) {
+  m_param = param;
 }
 
 #endif // SF_FILTERVOXELCLUSTERING_HPP

@@ -29,40 +29,39 @@
  * @brief The SF_AbstractCloud class Abstract class for manipulating
  * a templated PCL cloud
  */
-template <typename PointType>
-class SF_AbstractCloudI
-{
+template <typename PointType> class SF_AbstractCloudI {
 public:
-    /**
-     * @brief SF_AbstractCloud Standard constructor.
-     */
-    SF_AbstractCloudI();
-    /**
-     * @brief compute virtual method to be implemented
-     */
-    virtual void compute() = 0;
+  /**
+   * @brief SF_AbstractCloud Standard constructor.
+   */
+  SF_AbstractCloudI();
+  /**
+   * @brief compute virtual method to be implemented
+   */
+  virtual void compute() = 0;
 
-    void setCoudIn(std::pair<typename pcl::PointCloud<PointType>::Ptr,std::vector<size_t> > cloudIn);
+  void setCoudIn(
+      std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>
+          cloudIn);
 
 protected:
-    /**
-     * @brief m_cloudIn The templated input cloud stored in a pair. The first member
-     * is a shared pointer to the PCL cloud itself, the second member is a vector
-     * of accordingly sortedCT indices
-     */
-     std::pair<typename pcl::PointCloud<PointType>::Ptr,std::vector<size_t> > m_cloudIn;
+  /**
+   * @brief m_cloudIn The templated input cloud stored in a pair. The first
+   * member is a shared pointer to the PCL cloud itself, the second member is a
+   * vector of accordingly sortedCT indices
+   */
+  std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>
+      m_cloudIn;
 };
 
-template<typename PointType>
-SF_AbstractCloudI<PointType>::SF_AbstractCloudI()
-{
+template <typename PointType>
+SF_AbstractCloudI<PointType>::SF_AbstractCloudI() {}
 
-}
-
-template<typename PointType>
-void SF_AbstractCloudI<PointType>::setCoudIn(std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t> > cloudIn)
-{
-    m_cloudIn = cloudIn;
+template <typename PointType>
+void SF_AbstractCloudI<PointType>::setCoudIn(
+    std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>
+        cloudIn) {
+  m_cloudIn = cloudIn;
 }
 
 #endif // SF_ABSTRACTCLOUD_H

@@ -25,52 +25,53 @@
 
 #include "sf_clustertransfer.h"
 
-template<typename PointType>
-void SF_ClusterTransfer::compute()
-{
-    initialize();
-    pcl::PointCloud<PointType>::Ptr cloud = m_cloudIn.first;
-    std::vector<size_t> indicesCT = m_cloudIn.second;
-    size_t indexCTVec = 0;
-    std::for_each(cloud->points.begin(), cloud->points.end(),[this, &indicesCT](PointType point){
-        size_t indexCT = indicesCT[indexCTVec++];
-        std::vector<int> knnSearchIndex(1);
-        std::vector<float> knnSquaredDistance(1);
-        if(m_kdtree->nearestKSearch(point,1,knnSearchIndex,knnSquaredDistance))
-        {
-            PointType closestPoint = m_cloudInMerged[knnSearchIndex[0]];
-            point.x = closestPoint.x;
-            point.y = closestPoint.y;
-            point.z = closestPoint.z;
-            size_t indexCluster = m_ClusterIndices[knnSearchIndex[0]];
-            m_clusterOut[indexCluster].first.push_back(point);
-            m_clusterOut[indexCluster].second.push_back(indexCT);
-        }
-    });
+template <typename PointType> void SF_ClusterTransfer::compute() {
+  initialize();
+  pcl::PointCloud<PointType>::Ptr cloud = m_cloudIn.first;
+  std::vector<size_t> indicesCT = m_cloudIn.second;
+  size_t indexCTVec = 0;
+  std::for_each(cloud->points.begin(), cloud->points.end(),
+                [this, &indicesCT](PointType point) {
+                  size_t indexCT = indicesCT[indexCTVec++];
+                  std::vector<int> knnSearchIndex(1);
+                  std::vector<float> knnSquaredDistance(1);
+                  if (m_kdtree->nearestKSearch(point, 1, knnSearchIndex,
+                                               knnSquaredDistance)) {
+                    PointType closestPoint = m_cloudInMerged[knnSearchIndex[0]];
+                    point.x = closestPoint.x;
+                    point.y = closestPoint.y;
+                    point.z = closestPoint.z;
+                    size_t indexCluster = m_ClusterIndices[knnSearchIndex[0]];
+                    m_clusterOut[indexCluster].first.push_back(point);
+                    m_clusterOut[indexCluster].second.push_back(indexCT);
+                  }
+                });
 }
 
-template<typename PointType>
-void SF_ClusterTransfer::initialize()
-{
-    m_cloudInMerged.reset(new pcl::PointCloud<PointType>());
-    size_t clusterIndex = 0;
-    for(const auto &pair : m_clusterIn)
-    {
-        pcl::PointCloud<PointType>::Ptr cluster = pair.first;
-        std::for_each(cluster->points.begin(), cluster->points.end(),[this](const PointType &point){
-            m_cloudInMerged->push_back(PointType(point));
-        });
-        std::vector<size_t> indicesCTCluster = pair.second;
-        std::for_each(indicesCTCluster.begin(), indicesCTCluster.end(), [this, clusterIndex](size_t index){
-            m_ClusterIndices.push_back(clusterIndex);
-        });
-        pcl::PointCloud<PointType>::Ptr clusterOut(new pcl::PointCloud<PointType>());
-        std::vector<size_t> indicesCTOut;
-        m_clusterOut.push_back(std::pair<pcl::PointCloud<PointType>::Ptr, std::vector<size_t> >(clusterOut, indicesCTOut));
-        clusterIndex++;
-    }
-    m_kdtree.reset(new pcl::KdTreeFLANN<PointType>());
-    m_kdtree->setInputCloud(m_cloudInMerged);
+template <typename PointType> void SF_ClusterTransfer::initialize() {
+  m_cloudInMerged.reset(new pcl::PointCloud<PointType>());
+  size_t clusterIndex = 0;
+  for (const auto &pair : m_clusterIn) {
+    pcl::PointCloud<PointType>::Ptr cluster = pair.first;
+    std::for_each(cluster->points.begin(), cluster->points.end(),
+                  [this](const PointType &point) {
+                    m_cloudInMerged->push_back(PointType(point));
+                  });
+    std::vector<size_t> indicesCTCluster = pair.second;
+    std::for_each(indicesCTCluster.begin(), indicesCTCluster.end(),
+                  [this, clusterIndex](size_t index) {
+                    m_ClusterIndices.push_back(clusterIndex);
+                  });
+    pcl::PointCloud<PointType>::Ptr clusterOut(
+        new pcl::PointCloud<PointType>());
+    std::vector<size_t> indicesCTOut;
+    m_clusterOut.push_back(
+        std::pair<pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>(
+            clusterOut, indicesCTOut));
+    clusterIndex++;
+  }
+  m_kdtree.reset(new pcl::KdTreeFLANN<PointType>());
+  m_kdtree->setInputCloud(m_cloudInMerged);
 }
 
 #endif // SF_CLUSTERTRANSFER_HPP

@@ -31,47 +31,46 @@
  * the principal curvature is computed.
  */
 template <typename PointType>
-class SF_PrincipalDirection:
-        public SF_AbstractCloudI<PointType>
-{
+class SF_PrincipalDirection : public SF_AbstractCloudI<PointType> {
 public:
-    /**
-     * @brief Standard constructor receiving as input \ref m_cloudIn.
-     * @param cloudIn \ref m_cloudIn
-     */
-    SF_PrincipalDirection();
-    /**
-     * @brief compute Does the computation of the principal curvature of \ref m_cloudIn.
-     */
-    void compute() override;
-    /**
-     * @brief setParams Setter for \ref m_params.
-     * @param params \ref m_params.
-     */
-    void setParams(SF_ParameterSetPrincipalDirection<PointType> &params);
-    /**
-     * @brief principalCurvatures Getter for \ref m_principalCurvatures.
-     * @return \ref m_principalCurvatures.
-     */
-    pcl::PointCloud<pcl::PrincipalCurvatures>::Ptr principalCurvatures();
+  /**
+   * @brief Standard constructor receiving as input \ref m_cloudIn.
+   * @param cloudIn \ref m_cloudIn
+   */
+  SF_PrincipalDirection();
+  /**
+   * @brief compute Does the computation of the principal curvature of \ref
+   * m_cloudIn.
+   */
+  void compute() override;
+  /**
+   * @brief setParams Setter for \ref m_params.
+   * @param params \ref m_params.
+   */
+  void setParams(SF_ParameterSetPrincipalDirection<PointType> &params);
+  /**
+   * @brief principalCurvatures Getter for \ref m_principalCurvatures.
+   * @return \ref m_principalCurvatures.
+   */
+  pcl::PointCloud<pcl::PrincipalCurvatures>::Ptr principalCurvatures();
 
-    /**
-     * @brief params Getter for \ref m_params.
-     * @return \ref m_params
-     */
-    SF_ParameterSetPrincipalDirection<PointType> params() const;
+  /**
+   * @brief params Getter for \ref m_params.
+   * @return \ref m_params
+   */
+  SF_ParameterSetPrincipalDirection<PointType> params() const;
 
 private:
-    /**
-     * @brief m_params The parameter set including normal and principal direction radius.
-     */
-    SF_ParameterSetPrincipalDirection<PointType> m_params;
-    /**
-     * @brief m_principalCurvatures A cloud of principal curvatures.
-     */
-    pcl::PointCloud<pcl::PrincipalCurvatures>::Ptr m_principalCurvatures;
+  /**
+   * @brief m_params The parameter set including normal and principal direction
+   * radius.
+   */
+  SF_ParameterSetPrincipalDirection<PointType> m_params;
+  /**
+   * @brief m_principalCurvatures A cloud of principal curvatures.
+   */
+  pcl::PointCloud<pcl::PrincipalCurvatures>::Ptr m_principalCurvatures;
 };
-
 
 #include "sf_principaldirection.hpp"
 

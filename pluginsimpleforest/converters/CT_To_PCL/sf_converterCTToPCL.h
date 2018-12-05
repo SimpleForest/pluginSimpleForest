@@ -30,36 +30,34 @@
 
 #include <pcl/sf_point.h>
 
+#include "ct_iterator/ct_pointiterator.h"
 #include <converters/sf_abstractConverter.h>
 #include <ct_itemdrawable/ct_grid3d_sparse.h>
-#include "ct_iterator/ct_pointiterator.h"
 
 template <typename PointType>
-class Sf_ConverterCTToPCL:
-        public SF_AbstractConverter
-{
+class Sf_ConverterCTToPCL : public SF_AbstractConverter {
 public:
-    Sf_ConverterCTToPCL();
-    void compute();
-    void downScale(float range,
-                    typename pcl::PointCloud<PointType>::Ptr downscaledCloud);
-    typename
-    pcl::PointCloud<PointType>::Ptr cloudTranslated() const;
-    typename
-    pcl::PointCloud<PointType>::Ptr getCloudOriginal() const;
+  Sf_ConverterCTToPCL();
+  void compute();
+  void downScale(float range,
+                 typename pcl::PointCloud<PointType>::Ptr downscaledCloud);
+  typename pcl::PointCloud<PointType>::Ptr cloudTranslated() const;
+  typename pcl::PointCloud<PointType>::Ptr getCloudOriginal() const;
+
 private:
-    typename pcl::PointCloud<PointType>::Ptr _cloudTranslated;
-    typename pcl::PointCloud<PointType>::Ptr _cloudOriginal;
-    void iterateCloudAndConvert(const CT_AbstractPointCloudIndex *index);
-    void convertPoint(CT_PointIterator &it);
-    void convert();
+  typename pcl::PointCloud<PointType>::Ptr _cloudTranslated;
+  typename pcl::PointCloud<PointType>::Ptr _cloudOriginal;
+  void iterateCloudAndConvert(const CT_AbstractPointCloudIndex *index);
+  void convertPoint(CT_PointIterator &it);
+  void convert();
 
-    std::vector<typename pcl::PointCloud<PointType>::Ptr> mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices);
-    void mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices,
-                                std::vector<typename pcl::PointCloud<PointType>::Ptr> cloudsVec,
-                                typename pcl::PointCloud<PointType>::Ptr downscaled_cloud);
+  std::vector<typename pcl::PointCloud<PointType>::Ptr>
+  mergeSubCloudsToVector(CT_Grid3D_Sparse<int> *indices);
+  void mergeSubCloudsToVector(
+      CT_Grid3D_Sparse<int> *indices,
+      std::vector<typename pcl::PointCloud<PointType>::Ptr> cloudsVec,
+      typename pcl::PointCloud<PointType>::Ptr downscaled_cloud);
 };
-
 
 #endif // SF_CONVERTER_CT_TO_PCL_H
 
