@@ -41,8 +41,8 @@ class Sf_CloudToModelDistance {
   float _averageDistance;
   std::vector<float> _distances;
   std::shared_ptr<SF_ModelQSM> _tree;
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr _cloud;
   pcl::KdTreeFLANN<pcl::PointXYZINormal>::Ptr _kdtreeQSM;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr _cloud;
 
   void initializeKdTree();
   void compute();
