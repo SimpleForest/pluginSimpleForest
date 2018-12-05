@@ -38,6 +38,8 @@ SF_StatisticalOutlierFilter<PointType>::SF_StatisticalOutlierFilter() {}
 template <typename PointType>
 void SF_StatisticalOutlierFilter<PointType>::compute(
     const SF_ParamStatisticalOutlierFilter<PointType> &params) {
+  SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered.reset(
+      new pcl::PointCloud<PointType>());
   SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilterIteratively(
       params);
   SF_StatisticalOutlierFilter<PointType>::createIndices();
@@ -74,6 +76,11 @@ void SF_StatisticalOutlierFilter<PointType>::iterate(
   while (iterations > 0) {
     SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilter(params,
                                                                      cloud);
+    if (cloud->points.size() ==
+        SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered->points
+            .size()) {
+      break;
+    }
     cloud = SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered;
     iterations--;
   }
