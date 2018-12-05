@@ -200,6 +200,7 @@ void SF_StepStemRANSACFilter::compute() {
     createParamList(outResult);
     QFuture<void> future = QtConcurrent::map(_paramList,
                                              SF_StepStemFilterRANSACAdapter() );
+    std::cout<<"bar"<<std::endl;
     setProgressByFuture(future,
                         10,
                         85);

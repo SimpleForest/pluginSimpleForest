@@ -46,34 +46,37 @@ public:
     }
 
     SF_StepStemFilterRANSACAdapter () {
+        QThreadPool::globalInstance()->setMaxThreadCount(1);
         mMutex.reset(new QMutex);
     }
 
     ~SF_StepStemFilterRANSACAdapter () {
     }
 
-    void operator()(SF_ParamStemRansacFilter & params) {
+    void operator()(SF_ParamStemRansacFilter & params)
+    {
         Sf_ConverterCTToPCL<pcl::PointXYZINormal> converter;
         {
             QMutexLocker m1(&*mMutex);
             converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
         }
-        converter.compute();
+        converter.compute();        
         {
             QMutexLocker m1(&*mMutex);
             params._cloudIn = converter.cloudTranslated();
-        }
+        }        
         SF_StemRANSACFilter filter;
         {
             QMutexLocker m1(&*mMutex);
             filter.setCloudIn(params._cloudIn);
             filter.setParams(params);
         }
-        filter.compute();
+        filter.compute();        
         {
             QMutexLocker m1(&*mMutex);
             params._outputIndices = filter.getIndices();
         }
+
     }
 };
 #endif // SF_STEP_STEM_FILTER_RANSAC_ADAPTER_H

@@ -81,6 +81,7 @@ template<typename PointType>
 typename pcl::PointCloud<PointType>::Ptr SF_AbstractCloud<PointType>::downScale(float voxelSize) {
     typename pcl::PointCloud<PointType>::Ptr downscaled_cloud(new typename pcl::PointCloud<PointType>);
     pcl::VoxelGrid<PointType> sor;
+    std::cout<<"foo2s _cloudIn " << _cloudIn->points.size() <<std::endl;
     sor.setInputCloud (_cloudIn);
     sor.setLeafSize (voxelSize, voxelSize, voxelSize);
     sor.filter (*downscaled_cloud);

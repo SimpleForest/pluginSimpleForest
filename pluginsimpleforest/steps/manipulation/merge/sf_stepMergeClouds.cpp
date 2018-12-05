@@ -142,7 +142,6 @@ void SF_StepMergeClouds::compute() {
             this, DEF_IN_CLOUD2);
     clouds2.push_back(ct_cloud);
   }
-  std::cout << clouds1.size() << " ; " << clouds2.size() << std::endl;
   if (clouds1.size() == clouds2.size()) {
     CT_ResultGroupIterator outResIt3(outResult, this, DEF_IN_GRP1);
     for (size_t i = 0; i < clouds1.size(); i++) {

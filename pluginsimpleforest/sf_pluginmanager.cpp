@@ -19,6 +19,7 @@
 #include "steps/dtm/sf_stepDTM.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingRoot.h"
 #include "steps/feature/principaldirection/sf_stepprincipaldirection.h"
+#include "steps/manipulation/merge/sf_stepMergeClouds.h"
 
 //#include "steps/filter/multiple/voxel/sf_filter3dGridSubCloud.h"
 
@@ -70,6 +71,7 @@ bool SF_PluginManager::loadGenericsStep() {
     addNewPointsStep<SF_StepSegmentationDijkstra>(CT_StepsMenu::LP_Clusters);
     addNewPointsStep<SF_StepSegmentationVoronoi>(CT_StepsMenu::LP_Clusters);
     addNewRastersStep<SF_StepDTM>(CT_StepsMenu::LP_DEM);
+    addNewPointsStep<SF_StepMergeClouds>(CT_StepsMenu::LP_Clusters);
     addNewGeometricalShapesStep<SF_StepSpherefollowingRoot> ("QSM");
 
     return true;

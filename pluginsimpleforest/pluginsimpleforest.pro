@@ -100,6 +100,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/feature/growth_direction/sf_growthDirection.h \
     pcl/cloud/feature/growth_direction/sf_growthDirection.hpp \
     steps/sf_abstractStep.h \
+    steps/manipulation/merge/sf_stepMergeClouds.h \
     steps/filter/sf_abstractFilterStep.h \
     steps/filter/multiple/voxel/sf_filter3dGridSubCloud.h \
     steps/filter/multiple/sf_abstractFilterMultipleStep.h \
@@ -175,6 +176,7 @@ SOURCES += \
     steps/filter/binary/sf_abstractFilterBinaryStep.cpp \
     steps/filter/binary/stem_filter/sf_stepStemFilter.cpp \
     steps/filter/binary/stem_filter/sf_stepStemRANSACFilter.cpp \
+    steps/manipulation/merge/sf_stepMergeClouds.cpp \
     steps/filter/binary/statistical_outlier_filter/sf_stepStatisticalOutlierRemoval.cpp \
     steps/filter/binary/radius_outlier_filter/sf_radiusOutlierFilterStep.cpp \
     steps/filter/binary/ground_filter/sf_stepGroundFilter.cpp \

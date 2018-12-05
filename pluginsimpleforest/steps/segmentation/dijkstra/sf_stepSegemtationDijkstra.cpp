@@ -224,14 +224,12 @@ void SF_StepSegmentationDijkstra::compute() {
     pcl::search::KdTree<pcl::PointXYZI>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZI>);
     kdtree->setInputCloud (cloudPCLDownscaled);
     float _maxDistance = djik.getMaxDistance();
-    float maxRange = _voxelSize;
     for(size_t i = 0; i < cloudPCL->points.size(); i++) {
         pcl::PointXYZI point = cloudPCL->points[i];
         CT_Color &col = _colors->colorAt(i);
         std::vector<int>   pointIdxNKNSearch(1);
         std::vector<float> pointNKNSquaredDistance(1);
         if ( kdtree->nearestKSearch (point, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 ) {
-//            if(std::sqrt(pointNKNSquaredDistance[0]) < maxRange ) {
                 float distance = distances[pointIdxNKNSearch[0] ];
                 if(distance == 1000)
                 {
@@ -241,17 +239,14 @@ void SF_StepSegmentationDijkstra::compute() {
                 }
                 else
                 {
-                    std::cout << "distance " << distance << std::endl;
                     float perc = (_maxDistance == 0) ? 0 : distance/_maxDistance;
                     perc = std::min(1.0f,perc);
                     col.r() = (std::abs(255*perc));
                     col.g() = (std::abs(255 - 255*perc));
                     col.b() = (0);
                 }
-//            }
         }
     }
-    std::cout << "maxDistance " << _maxDistance << std::endl;
     CT_ResultGroupIterator resultGrpIterator2(outResult,
                                              this,
                                              DEF_IN_GRP_CLUSTER);

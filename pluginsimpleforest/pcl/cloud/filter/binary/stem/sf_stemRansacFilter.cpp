@@ -72,19 +72,13 @@ void SF_StemRANSACFilter::addInliers(pcl::PointCloud<pcl::PointXYZINormal>::Ptr 
                                      pcl::PointIndices::Ptr inliersCylinder) {
     if(inliersCylinder->indices.size() > std::max<int>((int)(std::ceil(1/_params._voxelSize)/2),
                                                        10) ) {
-        Eigen::Vector3f zAxis;
-        zAxis[0] = _params._x;
-        zAxis[1] = _params._y;
-        zAxis[2] = _params._z;
+        Eigen::Vector3f zAxis (_params._x, _params._y, _params._z);
         if(lastCoeffCylinder->values.size()==7) {
             zAxis[0] = lastCoeffCylinder->values[3];
             zAxis[1] = lastCoeffCylinder->values[4];
             zAxis[2] = lastCoeffCylinder->values[5];
         }
-        Eigen::Vector3f cylinderAxis;
-        cylinderAxis[0] = coeffCylinder->values[3];
-        cylinderAxis[1] = coeffCylinder->values[4];
-        cylinderAxis[2] = coeffCylinder->values[5];
+        Eigen::Vector3f cylinderAxis (coeffCylinder->values[3], coeffCylinder->values[4], coeffCylinder->values[5]);
         float angle =  SF_Math<float>::getAngleBetweenDeg(zAxis,
                                                           cylinderAxis);
         if(!(angle>_params._angle && angle < (180-_params._angle)) ) {
@@ -103,19 +97,11 @@ void SF_StemRANSACFilter::filterIteratively(pcl::PointCloud<pcl::PointXYZINormal
         pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = _clouds[i];
         if(lastcoeffCylinder->values.size()==7) {
             pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudInlier (new pcl::PointCloud<pcl::PointXYZINormal>());
-            Eigen::Vector3d x1;
-            x1[0] = lastcoeffCylinder->values[0];
-            x1[1] = lastcoeffCylinder->values[1];
-            x1[2] = lastcoeffCylinder->values[2];
-            Eigen::Vector3d x2;
-            x2[0] = lastcoeffCylinder->values[0] + lastcoeffCylinder->values[3];
-            x2[1] = lastcoeffCylinder->values[1] + lastcoeffCylinder->values[4];
-            x2[2] = lastcoeffCylinder->values[2] + lastcoeffCylinder->values[5];
+            Eigen::Vector3d x1 (lastcoeffCylinder->values[0], lastcoeffCylinder->values[1], lastcoeffCylinder->values[2]);
+            Eigen::Vector3d x2 (lastcoeffCylinder->values[0] + lastcoeffCylinder->values[3], lastcoeffCylinder->values[1] +
+                    lastcoeffCylinder->values[4], lastcoeffCylinder->values[2] + lastcoeffCylinder->values[5]);
             for(size_t i = 0; i < cloud->points.size(); i++) {
-                Eigen::Vector3d x0;
-                x0[0] = cloud->points[i].x;
-                x0[1] = cloud->points[i].y;
-                x0[2] = cloud->points[i].z;
+                Eigen::Vector3d x0 (cloud->points[i].x, cloud->points[i].y, cloud->points[i].z);
                 Eigen::Vector3d a = x0-x1;
                 Eigen::Vector3d b = x0-x2;
                 Eigen::Vector3d c = x2-x1;
@@ -124,6 +110,10 @@ void SF_StemRANSACFilter::filterIteratively(pcl::PointCloud<pcl::PointXYZINormal
                 if(dist<radius) {
                     cloudInlier->points.push_back(cloud->points[i]);
                 }
+//                else
+//                {
+//                    std::cout << "not a distance " << dist << std::endl;
+//                }
             }
             cloud = cloudInlier;
         }
@@ -137,6 +127,7 @@ void SF_StemRANSACFilter::backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr d
     _cloudOutFiltered.reset(new typename pcl::PointCloud<pcl::PointXYZINormal>);
     pcl::KdTreeFLANN<pcl::PointXYZINormal> kdtree;
     kdtree.setInputCloud (downScaledCloudFiltered);
+    //TODO it today
     for(size_t i = 0; i < _cloudIn->points.size(); i++) {
         pcl::PointXYZINormal point = _cloudIn->points[i];
         std::vector<int> pointIdxNKNSearch(1);
@@ -154,12 +145,19 @@ void SF_StemRANSACFilter::backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr d
 }
 
 void SF_StemRANSACFilter::compute() {
+    std::cout<<"foo1"<<std::endl;
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloud = downScale(_params._voxelSize);
+    std::cout<<"foo2"<<std::endl;
     computeNormals(downScaledCloud);
+    std::cout<<"foo3 downScaledCloud " << downScaledCloud->points.size() <<std::endl;
     initializeClouds(downScaledCloud);
+    std::cout<<"foo4"<<std::endl;
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered(new SF_CloudNormal());
+    std::cout<<"foo5"<<std::endl;
     filterIteratively(downScaledCloudFiltered);
+    std::cout<<"foo6 downScaledCloudFiltered" << downScaledCloudFiltered->points.size() <<std::endl;
     backScale(downScaledCloudFiltered);
+    std::cout<<"foo7"<<std::endl;
     createIndices();
 }
 
