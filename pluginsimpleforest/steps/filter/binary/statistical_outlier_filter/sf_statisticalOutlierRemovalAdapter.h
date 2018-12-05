@@ -35,42 +35,39 @@
 
 class SF_StatisticalOutlierRemovalAdapter {
 public:
+  std::shared_ptr<QMutex> mMutex;
 
-    std::shared_ptr<QMutex>  mMutex;
+  SF_StatisticalOutlierRemovalAdapter(
+      const SF_StatisticalOutlierRemovalAdapter &obj) {
+    mMutex = obj.mMutex;
+  }
 
-    SF_StatisticalOutlierRemovalAdapter(const SF_StatisticalOutlierRemovalAdapter &obj) {
-        mMutex = obj.mMutex;
+  SF_StatisticalOutlierRemovalAdapter() { mMutex.reset(new QMutex); }
+
+  ~SF_StatisticalOutlierRemovalAdapter() {}
+
+  void operator()(SF_ParamStatisticalOutlierFilter<SF_Point> &params) {
+    Sf_ConverterCTToPCL<SF_Point> converter;
+    {
+      QMutexLocker m1(&*mMutex);
+      converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
     }
-
-    SF_StatisticalOutlierRemovalAdapter () {
-        mMutex.reset(new QMutex);
+    converter.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params._cloudIn = converter.cloudTranslated();
     }
-
-    ~SF_StatisticalOutlierRemovalAdapter () {
+    SF_StatisticalOutlierFilter<SF_Point> filter;
+    {
+      QMutexLocker m1(&*mMutex);
+      filter.setCloudIn(params._cloudIn);
     }
-
-    void operator()(SF_ParamStatisticalOutlierFilter<SF_Point> & params) {
-        Sf_ConverterCTToPCL<SF_Point> converter;
-        {
-            QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
-        }
-        converter.compute();
-        {
-            QMutexLocker m1(&*mMutex);
-            params._cloudIn = converter.cloudTranslated();
-        }
-        SF_StatisticalOutlierFilter<SF_Point> filter;
-        {
-            QMutexLocker m1(&*mMutex);
-            filter.setCloudIn(params._cloudIn);
-        }
-        filter.compute(params);
-        {
-            QMutexLocker m1(&*mMutex);
-            params._outputIndices = filter.getIndices();
-        }
+    filter.compute(params);
+    {
+      QMutexLocker m1(&*mMutex);
+      params._outputIndices = filter.getIndices();
     }
+  }
 };
 
 #endif // SF_STATISTICAL_OUTLIER_REMOVAL_ADAPTER_H

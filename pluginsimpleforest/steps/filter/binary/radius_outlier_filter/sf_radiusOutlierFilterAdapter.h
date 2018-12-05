@@ -34,44 +34,40 @@
 
 class SF_RadiusOutlierFilterAdapter {
 
-public:    
+public:
+  std::shared_ptr<QMutex> mMutex;
 
-    std::shared_ptr<QMutex>  mMutex;
+  SF_RadiusOutlierFilterAdapter(const SF_RadiusOutlierFilterAdapter &obj) {
+    mMutex = obj.mMutex;
+  }
 
-    SF_RadiusOutlierFilterAdapter(const SF_RadiusOutlierFilterAdapter &obj) {
-        mMutex = obj.mMutex;
+  SF_RadiusOutlierFilterAdapter() { mMutex.reset(new QMutex); }
+
+  ~SF_RadiusOutlierFilterAdapter() {}
+
+  void operator()(SF_ParamRadiusOutlierFilter<SF_PointNormal> &params) {
+    Sf_ConverterCTToPCL<SF_PointNormal> converter;
+    {
+      QMutexLocker m1(&*mMutex);
+      converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
     }
-
-    SF_RadiusOutlierFilterAdapter () {
-        mMutex.reset(new QMutex);
+    converter.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params._cloudIn = converter.cloudTranslated();
     }
-
-    ~SF_RadiusOutlierFilterAdapter () {
+    SF_RadiusOutlierFilter<SF_PointNormal> filter;
+    {
+      QMutexLocker m1(&*mMutex);
+      filter.setCloudIn(params._cloudIn);
     }
-
-    void operator()(SF_ParamRadiusOutlierFilter<SF_PointNormal> & params) {
-        Sf_ConverterCTToPCL<SF_PointNormal> converter;
-        {
-            QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
-        }
-        converter.compute();
-        {
-            QMutexLocker m1(&*mMutex);
-            params._cloudIn = converter.cloudTranslated();
-        }
-        SF_RadiusOutlierFilter<SF_PointNormal> filter;
-        {
-            QMutexLocker m1(&*mMutex);
-            filter.setCloudIn(params._cloudIn);
-        }
-        filter.compute(params);
-        {
-            QMutexLocker m1(&*mMutex);
-            params._outputIndices = filter.getIndices();
-            params._colors = filter.colors();
-        }
+    filter.compute(params);
+    {
+      QMutexLocker m1(&*mMutex);
+      params._outputIndices = filter.getIndices();
+      params._colors = filter.colors();
     }
+  }
 };
 
 #endif // SF_RADIUS_OUTLIER_FILTER_ADAPTER_H

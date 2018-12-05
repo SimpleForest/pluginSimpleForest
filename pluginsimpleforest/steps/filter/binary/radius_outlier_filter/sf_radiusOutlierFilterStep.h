@@ -28,41 +28,42 @@
 #ifndef SF_RADIUS_OUTLIER_FILTER_STEP_H
 #define SF_RADIUS_OUTLIER_FILTER_STEP_H
 
-#include "steps/filter/binary/sf_abstractFilterBinaryStep.h"
-#include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_view/ct_stepconfigurabledialog.h"
+#include "steps/filter/binary/sf_abstractFilterBinaryStep.h"
 
-class SF_RadiusOutlierFilterStep:
-        public SF_AbstractFilterBinaryStep {
-    Q_OBJECT
+class SF_RadiusOutlierFilterStep : public SF_AbstractFilterBinaryStep {
+  Q_OBJECT
 
 public:
-    SF_RadiusOutlierFilterStep(CT_StepInitializeData &dataInit);
-    ~SF_RadiusOutlierFilterStep();
-    QString getStepDescription() const;
-    QString getStepDetailledDescription() const;
-    QString getStepURL() const;
-    CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
-    QStringList getStepRISCitations() const;
+  SF_RadiusOutlierFilterStep(CT_StepInitializeData &dataInit);
+  ~SF_RadiusOutlierFilterStep();
+  QString getStepDescription() const;
+  QString getStepDetailledDescription() const;
+  QString getStepURL() const;
+  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &dataInit);
+  QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_ParamRadiusOutlierFilter<SF_PointNormal> > _paramList;
-    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog);
-    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
-    void createInResultModelListProtected();
-    void createOutResultModelListProtected();
-    void compute();
-    virtual void writeLogger();
-    void adaptParametersToExpertLevel();
+  QList<SF_ParamRadiusOutlierFilter<SF_PointNormal>> _paramList;
+  void createPostConfigurationDialogBeginner(
+      CT_StepConfigurableDialog *configDialog);
+  void
+  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
+  void createInResultModelListProtected();
+  void createOutResultModelListProtected();
+  void compute();
+  virtual void writeLogger();
+  void adaptParametersToExpertLevel();
 
 private:
-    QString _clearSky    = "clear sky";
-    QString _choicePointDensity       = _intermediate;
-    double _radius = 0.03;
-    int _minPts = 5;
-    CT_AutoRenameModels m_outCloudItem;
-    void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);
-    void writeOutput(CT_ResultGroup* outResult);
-    void createParamList(CT_ResultGroup *outResult);
+  QString _clearSky = "clear sky";
+  QString _choicePointDensity = _intermediate;
+  double _radius = 0.03;
+  int _minPts = 5;
+  CT_AutoRenameModels m_outCloudItem;
+  void writeOutputPerScence(CT_ResultGroup *outResult, size_t i);
+  void writeOutput(CT_ResultGroup *outResult);
+  void createParamList(CT_ResultGroup *outResult);
 };
 #endif // SF_RADIUS_OUTLIER_FILTER_STEP_H

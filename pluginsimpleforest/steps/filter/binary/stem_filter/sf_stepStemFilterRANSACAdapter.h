@@ -33,50 +33,46 @@
 #include <QThreadPool>
 #include <iostream>
 
-#include "steps/param/sf_paramAllSteps.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
+#include "steps/param/sf_paramAllSteps.h"
 
 class SF_StepStemFilterRANSACAdapter {
 public:
+  std::shared_ptr<QMutex> mMutex;
 
-    std::shared_ptr<QMutex>  mMutex;
+  SF_StepStemFilterRANSACAdapter(const SF_StepStemFilterRANSACAdapter &obj) {
+    mMutex = obj.mMutex;
+  }
 
-    SF_StepStemFilterRANSACAdapter(const SF_StepStemFilterRANSACAdapter &obj) {
-        mMutex = obj.mMutex;
-    }
+  SF_StepStemFilterRANSACAdapter() {
+    QThreadPool::globalInstance()->setMaxThreadCount(1);
+    mMutex.reset(new QMutex);
+  }
 
-    SF_StepStemFilterRANSACAdapter () {
-        QThreadPool::globalInstance()->setMaxThreadCount(1);
-        mMutex.reset(new QMutex);
-    }
+  ~SF_StepStemFilterRANSACAdapter() {}
 
-    ~SF_StepStemFilterRANSACAdapter () {
-    }
-
-    void operator()(SF_ParamStemRansacFilter & params)
+  void operator()(SF_ParamStemRansacFilter &params) {
+    Sf_ConverterCTToPCL<pcl::PointXYZINormal> converter;
     {
-        Sf_ConverterCTToPCL<pcl::PointXYZINormal> converter;
-        {
-            QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
-        }
-        converter.compute();        
-        {
-            QMutexLocker m1(&*mMutex);
-            params._cloudIn = converter.cloudTranslated();
-        }        
-        SF_StemRANSACFilter filter;
-        {
-            QMutexLocker m1(&*mMutex);
-            filter.setCloudIn(params._cloudIn);
-            filter.setParams(params);
-        }
-        filter.compute();        
-        {
-            QMutexLocker m1(&*mMutex);
-            params._outputIndices = filter.getIndices();
-        }
-
+      QMutexLocker m1(&*mMutex);
+      converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
     }
+    converter.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params._cloudIn = converter.cloudTranslated();
+    }
+    SF_StemRANSACFilter filter;
+    {
+      QMutexLocker m1(&*mMutex);
+      filter.setCloudIn(params._cloudIn);
+      filter.setParams(params);
+    }
+    filter.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params._outputIndices = filter.getIndices();
+    }
+  }
 };
 #endif // SF_STEP_STEM_FILTER_RANSAC_ADAPTER_H

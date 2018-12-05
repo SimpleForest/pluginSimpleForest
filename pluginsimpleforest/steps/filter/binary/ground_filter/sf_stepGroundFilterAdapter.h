@@ -28,52 +28,48 @@
 #ifndef SF_STEP_GROUND_FILTER_ADAPTER_H
 #define SF_STEP_GROUND_FILTER_ADAPTER_H
 
-#include <pcl/cloud/filter/binary/ground/sf_groundFilter.h>
 #include <QThreadPool>
+#include <pcl/cloud/filter/binary/ground/sf_groundFilter.h>
 
-#include "steps/param/sf_paramAllSteps.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
+#include "steps/param/sf_paramAllSteps.h"
 
 class SF_StepGroundFilterAdapter {
 public:
+  std::shared_ptr<QMutex> mMutex;
 
-    std::shared_ptr<QMutex>  mMutex;
+  SF_StepGroundFilterAdapter(const SF_StepGroundFilterAdapter &obj) {
+    mMutex = obj.mMutex;
+  }
 
-    SF_StepGroundFilterAdapter(const SF_StepGroundFilterAdapter &obj) {
-        mMutex = obj.mMutex;
+  SF_StepGroundFilterAdapter() { mMutex.reset(new QMutex); }
+
+  ~SF_StepGroundFilterAdapter() {}
+
+  void operator()(SF_ParamGroundFilter<SF_PointNormal> &params) {
+    Sf_ConverterCTToPCL<SF_PointNormal> converter;
+    {
+      QMutexLocker m1(&*mMutex);
+      converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
     }
-
-    SF_StepGroundFilterAdapter () {
-        mMutex.reset(new QMutex);
+    converter.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params._cloudIn = converter.cloudTranslated();
     }
-
-    ~SF_StepGroundFilterAdapter () {
+    SF_GroundFilter<SF_PointNormal> filter;
+    {
+      QMutexLocker m1(&*mMutex);
+      filter.setCloudIn(params._cloudIn);
+      filter.setParams(params);
     }
-
-    void operator()(SF_ParamGroundFilter<SF_PointNormal> & params) {
-        Sf_ConverterCTToPCL<SF_PointNormal> converter;
-        {
-            QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
-        }
-        converter.compute();
-        {
-            QMutexLocker m1(&*mMutex);
-            params._cloudIn = converter.cloudTranslated();
-        }
-        SF_GroundFilter<SF_PointNormal> filter;
-        {
-            QMutexLocker m1(&*mMutex);
-            filter.setCloudIn(params._cloudIn);
-            filter.setParams(params);
-        }
-        filter.compute();
-        {
-            QMutexLocker m1(&*mMutex);
-            params._outputIndices = filter.getIndices();
-            params._colors = filter.colors();
-        }
+    filter.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params._outputIndices = filter.getIndices();
+      params._colors = filter.colors();
     }
+  }
 };
 
 #endif // SF_STEP_GROUND_FILTER_ADAPTER_H

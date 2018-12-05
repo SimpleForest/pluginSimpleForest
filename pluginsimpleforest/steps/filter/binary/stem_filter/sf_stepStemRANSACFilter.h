@@ -28,46 +28,46 @@
 #ifndef SF_STEP_STEM_RANSAC_FILTER_H
 #define SF_STEP_STEM_RANSAC_FILTER_H
 
-#include "steps/param/sf_paramAllSteps.h"
-#include "steps/filter/binary/sf_abstractFilterBinaryStep.h"
-#include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_view/ct_stepconfigurabledialog.h"
+#include "steps/filter/binary/sf_abstractFilterBinaryStep.h"
+#include "steps/param/sf_paramAllSteps.h"
 
-class SF_StepStemRANSACFilter:
-        public SF_AbstractFilterBinaryStep {
-    Q_OBJECT
+class SF_StepStemRANSACFilter : public SF_AbstractFilterBinaryStep {
+  Q_OBJECT
 
 public:
-    SF_StepStemRANSACFilter(CT_StepInitializeData &dataInit);
-    ~SF_StepStemRANSACFilter();
-    QString getStepDescription() const;
-    QString getStepDetailledDescription() const;
-    QString getStepURL() const;
-    CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
-    QStringList getStepRISCitations() const;
+  SF_StepStemRANSACFilter(CT_StepInitializeData &dataInit);
+  ~SF_StepStemRANSACFilter();
+  QString getStepDescription() const;
+  QString getStepDetailledDescription() const;
+  QString getStepURL() const;
+  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &dataInit);
+  QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_ParamStemRansacFilter> _paramList;
-    void createInResultModelListProtected();
-    void createOutResultModelListProtected();
-    void adaptParametersToExpertLevel();
-    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog);
-    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
-    void compute();
-    virtual void writeLogger();
+  QList<SF_ParamStemRansacFilter> _paramList;
+  void createInResultModelListProtected();
+  void createOutResultModelListProtected();
+  void adaptParametersToExpertLevel();
+  void createPostConfigurationDialogBeginner(
+      CT_StepConfigurableDialog *configDialog);
+  void
+  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
+  void compute();
+  virtual void writeLogger();
 
 private:
-    double _x = 0;
-    double _y = 0;
-    double _z = 1;
-    double _angle = 25;
-    double _radiusNormal = 0.03;
-    double _voxelSize = 0.01;
-    double _sizeOutput = 2;
-    double _inlierDistance = 0.1;
-    void writeOutputPerScence(CT_ResultGroup* outResult,
-                              size_t i);
-    void writeOutput(CT_ResultGroup* outResult);
-    void createParamList(CT_ResultGroup *outResult);
+  double _x = 0;
+  double _y = 0;
+  double _z = 1;
+  double _angle = 25;
+  double _radiusNormal = 0.03;
+  double _voxelSize = 0.01;
+  double _sizeOutput = 2;
+  double _inlierDistance = 0.1;
+  void writeOutputPerScence(CT_ResultGroup *outResult, size_t i);
+  void writeOutput(CT_ResultGroup *outResult);
+  void createParamList(CT_ResultGroup *outResult);
 };
 #endif

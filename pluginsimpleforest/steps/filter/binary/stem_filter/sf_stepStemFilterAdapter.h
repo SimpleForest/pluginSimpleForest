@@ -28,52 +28,48 @@
 #ifndef SF_STEP_STEM_FILTER_ADAPTER_H
 #define SF_STEP_STEM_FILTER_ADAPTER_H
 
-#include <pcl/cloud/filter/binary/stem/sf_stemFilter.h>
 #include <QThreadPool>
 #include <iostream>
+#include <pcl/cloud/filter/binary/stem/sf_stemFilter.h>
 
-#include "steps/param/sf_paramAllSteps.h"
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
+#include "steps/param/sf_paramAllSteps.h"
 class SF_StepStemFilterAdapter {
 public:
+  std::shared_ptr<QMutex> mMutex;
 
-    std::shared_ptr<QMutex>  mMutex;
+  SF_StepStemFilterAdapter(const SF_StepStemFilterAdapter &obj) {
+    mMutex = obj.mMutex;
+  }
 
-    SF_StepStemFilterAdapter(const SF_StepStemFilterAdapter &obj) {
-        mMutex = obj.mMutex;
+  SF_StepStemFilterAdapter() { mMutex.reset(new QMutex); }
+
+  ~SF_StepStemFilterAdapter() {}
+
+  void operator()(SF_ParamStemFilter<SF_PointNormal> &params) {
+    Sf_ConverterCTToPCL<SF_PointNormal> converter;
+    {
+      QMutexLocker m1(&*mMutex);
+      converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
     }
-
-    SF_StepStemFilterAdapter () {
-        mMutex.reset(new QMutex);
+    converter.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params._cloudIn = converter.cloudTranslated();
     }
-
-    ~SF_StepStemFilterAdapter () {
+    SF_StemFilter<SF_PointNormal> filter;
+    {
+      QMutexLocker m1(&*mMutex);
+      filter.setCloudIn(params._cloudIn);
+      filter.setParams(params);
     }
-
-    void operator()(SF_ParamStemFilter<SF_PointNormal> & params) {
-        Sf_ConverterCTToPCL<SF_PointNormal> converter;
-        {
-            QMutexLocker m1(&*mMutex);
-            converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
-        }
-        converter.compute();
-        {
-            QMutexLocker m1(&*mMutex);
-            params._cloudIn = converter.cloudTranslated();
-        }
-        SF_StemFilter<SF_PointNormal> filter;
-        {
-            QMutexLocker m1(&*mMutex);
-            filter.setCloudIn(params._cloudIn);
-            filter.setParams(params);
-        }
-        filter.compute();
-        {
-            QMutexLocker m1(&*mMutex);
-            params._outputIndices = filter.getIndices();
-            params._colors = filter.colors();
-        }
+    filter.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params._outputIndices = filter.getIndices();
+      params._colors = filter.colors();
     }
+  }
 };
 
 #endif // SF_STEP_STEM_FILTER_ADAPTER_H

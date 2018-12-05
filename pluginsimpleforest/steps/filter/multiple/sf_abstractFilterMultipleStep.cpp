@@ -28,28 +28,26 @@
 
 #include "sf_abstractFilterMultipleStep.h"
 
-SF_AbstractFilterMultipleStep::SF_AbstractFilterMultipleStep(CT_StepInitializeData &data_init):
-    SF_AbstractFilterStep(data_init) {
+SF_AbstractFilterMultipleStep::SF_AbstractFilterMultipleStep(
+    CT_StepInitializeData &data_init)
+    : SF_AbstractFilterStep(data_init) {}
 
+void SF_AbstractFilterMultipleStep::writeOutputPerScence(
+    CT_ResultGroup *outResult, CT_PointCloudIndexVector *outputCluster,
+    CT_StandardItemGroup *group) {
+  CT_StandardItemGroup *filterGrp =
+      new CT_StandardItemGroup(_outGrpCluster.completeName(), outResult);
+  group->addGroup(filterGrp);
+  addSceneToFilterGrp(filterGrp, outResult, outputCluster,
+                      _outCloudCluster.completeName());
 }
 
-void SF_AbstractFilterMultipleStep::writeOutputPerScence(CT_ResultGroup* outResult,
-                                                         CT_PointCloudIndexVector *outputCluster,
-                                                         CT_StandardItemGroup* group) {
-    CT_StandardItemGroup* filterGrp = new CT_StandardItemGroup(_outGrpCluster.completeName(),
-                                                                outResult);
-    group->addGroup(filterGrp);
-    addSceneToFilterGrp(filterGrp,
-                        outResult,
-                        outputCluster,
-                        _outCloudCluster.completeName());
-}
-
-void SF_AbstractFilterMultipleStep::writeOutput(CT_ResultGroup *outResult,
-                                                std::vector<CT_PointCloudIndexVector *> clusterVec,
-                                                CT_StandardItemGroup* group) {
-    size_t size = clusterVec.size();
-    for(size_t i = 0; i < size; i ++) {
-        writeOutputPerScence(outResult, clusterVec.at(i), group);
-    }
+void SF_AbstractFilterMultipleStep::writeOutput(
+    CT_ResultGroup *outResult,
+    std::vector<CT_PointCloudIndexVector *> clusterVec,
+    CT_StandardItemGroup *group) {
+  size_t size = clusterVec.size();
+  for (size_t i = 0; i < size; i++) {
+    writeOutputPerScence(outResult, clusterVec.at(i), group);
+  }
 }

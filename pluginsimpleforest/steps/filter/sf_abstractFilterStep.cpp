@@ -28,33 +28,30 @@
 
 #include "sf_abstractFilterStep.h"
 
-SF_AbstractFilterStep::SF_AbstractFilterStep(CT_StepInitializeData &data_init):
-    SF_AbstractStep(data_init) {
+SF_AbstractFilterStep::SF_AbstractFilterStep(CT_StepInitializeData &data_init)
+    : SF_AbstractStep(data_init) {}
 
+void SF_AbstractFilterStep::addSceneInSubgrpToGrp(
+    CT_StandardItemGroup *filterGrp, CT_ResultGroup *outResult,
+    CT_PointCloudIndexVector *ctPointCloudIndex,
+    const QString &outCloudCompleteName, const QString &subGrpCompleteName) {
+  CT_StandardItemGroup *cloudGrp =
+      new CT_StandardItemGroup(subGrpCompleteName, outResult);
+  filterGrp->addGroup(cloudGrp);
+  CT_Scene *outScene =
+      new CT_Scene(outCloudCompleteName, outResult,
+                   PS_REPOSITORY->registerPointCloudIndex(ctPointCloudIndex));
+  outScene->updateBoundingBox();
+  cloudGrp->addItemDrawable(outScene);
 }
 
-void SF_AbstractFilterStep::addSceneInSubgrpToGrp(CT_StandardItemGroup *filterGrp,
-                                                  CT_ResultGroup *outResult,
-                                                  CT_PointCloudIndexVector *ctPointCloudIndex,
-                                                  const QString &outCloudCompleteName,
-                                                  const QString &subGrpCompleteName) {
-    CT_StandardItemGroup* cloudGrp = new CT_StandardItemGroup(subGrpCompleteName,
-                                                              outResult);
-    filterGrp->addGroup(cloudGrp);
-    CT_Scene* outScene = new CT_Scene(outCloudCompleteName,
-                                      outResult,
-                                      PS_REPOSITORY->registerPointCloudIndex(ctPointCloudIndex));
-    outScene->updateBoundingBox();
-    cloudGrp->addItemDrawable(outScene);
-}
-
-void SF_AbstractFilterStep::addSceneToFilterGrp(CT_StandardItemGroup *grp,
-                                                CT_ResultGroup *outResult,
-                                                CT_PointCloudIndexVector *ctPointCloudIndex,
-                                                const QString &outCloudCompleteName) {
-    CT_Scene* outScene = new CT_Scene(outCloudCompleteName,
-                                      outResult,
-                                      PS_REPOSITORY->registerPointCloudIndex(ctPointCloudIndex));
-    outScene->updateBoundingBox();
-    grp->addItemDrawable(outScene);
+void SF_AbstractFilterStep::addSceneToFilterGrp(
+    CT_StandardItemGroup *grp, CT_ResultGroup *outResult,
+    CT_PointCloudIndexVector *ctPointCloudIndex,
+    const QString &outCloudCompleteName) {
+  CT_Scene *outScene =
+      new CT_Scene(outCloudCompleteName, outResult,
+                   PS_REPOSITORY->registerPointCloudIndex(ctPointCloudIndex));
+  outScene->updateBoundingBox();
+  grp->addItemDrawable(outScene);
 }

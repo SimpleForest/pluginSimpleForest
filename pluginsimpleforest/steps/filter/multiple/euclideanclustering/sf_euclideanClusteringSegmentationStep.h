@@ -31,44 +31,48 @@
 
 #include "steps/filter/multiple/sf_abstractFilterMultipleStep.h"
 
-class SF_EuclideanClusteringSegmentationStep:
-        public SF_AbstractFilterMultipleStep {
-    Q_OBJECT
+class SF_EuclideanClusteringSegmentationStep
+    : public SF_AbstractFilterMultipleStep {
+  Q_OBJECT
 
 public:
-    SF_EuclideanClusteringSegmentationStep(CT_StepInitializeData &dataInit);
-    ~SF_EuclideanClusteringSegmentationStep();
-    QString getStepDescription() const;
-    QString getStepDetailledDescription() const;
-    QString getStepURL() const;
-    CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
-    QStringList getStepRISCitations() const;
+  SF_EuclideanClusteringSegmentationStep(CT_StepInitializeData &dataInit);
+  ~SF_EuclideanClusteringSegmentationStep();
+  QString getStepDescription() const;
+  QString getStepDetailledDescription() const;
+  QString getStepURL() const;
+  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &dataInit);
+  QStringList getStepRISCitations() const;
 
 protected:
-    void createInResultModelListProtected();
-    void createPostConfigurationDialog();
-    void createOutResultModelListProtected();
-    void createPreConfigurationDialog(){}
-    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog) {configDialog->addEmpty();}
-    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {configDialog->addEmpty();}
-    void adaptParametersToExpertLevel(){}
-    void createParamList(CT_ResultGroup * outResult);
-    void compute();
-    
+  void createInResultModelListProtected();
+  void createPostConfigurationDialog();
+  void createOutResultModelListProtected();
+  void createPreConfigurationDialog() {}
+  void createPostConfigurationDialogBeginner(
+      CT_StepConfigurableDialog *configDialog) {
+    configDialog->addEmpty();
+  }
+  void
+  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {
+    configDialog->addEmpty();
+  }
+  void adaptParametersToExpertLevel() {}
+  void createParamList(CT_ResultGroup *outResult);
+  void compute();
+
 private:
-    double _voxelSize = 0.04;
-    double _euclideanDistance = 0.1;
-    int    _minPts = 1;
-    void addResult(std::vector<std::vector<size_t> > &indexVec,
-                   CT_ResultGroup* outResult,
-                   const QString &uniqueName);
-    void createCTIndices(std::vector<CT_PointCloudIndexVector *> &CTindexVec,
-                         std::vector<std::vector<size_t> > &indexVec);
-    void mergeCTClustersIntoPCL(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL,
-                                std::vector<size_t> &indices,
-                                const QString &cloudStr,
-                                const QString &grpStr,
-                                CT_ResultGroup *outResult);
+  double _voxelSize = 0.04;
+  double _euclideanDistance = 0.1;
+  int _minPts = 1;
+  void addResult(std::vector<std::vector<size_t>> &indexVec,
+                 CT_ResultGroup *outResult, const QString &uniqueName);
+  void createCTIndices(std::vector<CT_PointCloudIndexVector *> &CTindexVec,
+                       std::vector<std::vector<size_t>> &indexVec);
+  void mergeCTClustersIntoPCL(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL,
+                              std::vector<size_t> &indices,
+                              const QString &cloudStr, const QString &grpStr,
+                              CT_ResultGroup *outResult);
 };
 
 #endif // SF_EUCLIDEAN_CLUSTERING_STEP_H

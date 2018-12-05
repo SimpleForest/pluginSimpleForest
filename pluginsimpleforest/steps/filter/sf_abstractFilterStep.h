@@ -29,21 +29,19 @@
 #define SF_ABSTRACT_FILTER_STEP_H
 #include <steps/sf_abstractStep.h>
 
-class SF_AbstractFilterStep: public SF_AbstractStep {
+class SF_AbstractFilterStep : public SF_AbstractStep {
 public:
-    SF_AbstractFilterStep(CT_StepInitializeData & data_init);
+  SF_AbstractFilterStep(CT_StepInitializeData &data_init);
 
 protected:
-    void addSceneInSubgrpToGrp(CT_StandardItemGroup *filterGrp,
-                               CT_ResultGroup *outResult,
-                               CT_PointCloudIndexVector *ctPointCloudIndex,
-                               const QString &outCloudCompleteName,
-                               const QString &subGrpCompleteName);
-    void addSceneToFilterGrp(CT_StandardItemGroup *grp,
+  void addSceneInSubgrpToGrp(CT_StandardItemGroup *filterGrp,
                              CT_ResultGroup *outResult,
                              CT_PointCloudIndexVector *ctPointCloudIndex,
-                             const QString &outCloudCompleteName);
-
+                             const QString &outCloudCompleteName,
+                             const QString &subGrpCompleteName);
+  void addSceneToFilterGrp(CT_StandardItemGroup *grp, CT_ResultGroup *outResult,
+                           CT_PointCloudIndexVector *ctPointCloudIndex,
+                           const QString &outCloudCompleteName);
 };
 
 #endif // SF_ABSTRACT_FILTER_STEP_H
