@@ -31,35 +31,40 @@
 
 #include "steps/segmentation/sf_AbstractStepSegmentation.h"
 
-class SF_StepSegmentationDijkstra:
-        public SF_AbstractStepSegmentation {
-    Q_OBJECT
+class SF_StepSegmentationDijkstra : public SF_AbstractStepSegmentation {
+  Q_OBJECT
 
 public:
-    SF_StepSegmentationDijkstra(CT_StepInitializeData &dataInit);
-    ~SF_StepSegmentationDijkstra();
-    QString getStepDescription() const;
-    QString getStepDetailledDescription() const;
-    QString getStepURL() const;
-    CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
-    QStringList getStepRISCitations() const;
+  SF_StepSegmentationDijkstra(CT_StepInitializeData &dataInit);
+  ~SF_StepSegmentationDijkstra();
+  QString getStepDescription() const;
+  QString getStepDetailledDescription() const;
+  QString getStepURL() const;
+  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &dataInit);
+  QStringList getStepRISCitations() const;
 
 protected:
-    void createInResultModelListProtected();
-    void createPostConfigurationDialog();
-    void createOutResultModelListProtected();
-    void createPreConfigurationDialog(){}
-    void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog)    {configDialog->addEmpty();}
-    void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog)  {configDialog->addEmpty();}
-    void adaptParametersToExpertLevel(){}
-    void createParamList(CT_ResultGroup * outResult);
-    void compute();
+  void createInResultModelListProtected();
+  void createPostConfigurationDialog();
+  void createOutResultModelListProtected();
+  void createPreConfigurationDialog() {}
+  void createPostConfigurationDialogBeginner(
+      CT_StepConfigurableDialog *configDialog) {
+    configDialog->addEmpty();
+  }
+  void
+  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {
+    configDialog->addEmpty();
+  }
+  void adaptParametersToExpertLevel() {}
+  void createParamList(CT_ResultGroup *outResult);
+  void compute();
 
 private:
-    double _voxelSize = 0.1;
-    double _euclideanDistance = 0.2;
-    double _zFactor = 0.3;
-    CT_AutoRenameModels m_outCloudItem;
+  double _voxelSize = 0.1;
+  double _euclideanDistance = 0.2;
+  double _zFactor = 0.3;
+  CT_AutoRenameModels m_outCloudItem;
 };
 
 #endif // SF_EUCLIDEAN_CLUSTERING_STEP_H

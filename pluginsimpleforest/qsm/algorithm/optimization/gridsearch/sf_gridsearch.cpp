@@ -30,7 +30,7 @@
 
 #include "sf_gridsearch.h"
 
-const int SF_GridSearch::gridSize(const int nDim, const int res) {
+int SF_GridSearch::gridSize(const int nDim, const int res) {
   int size = static_cast<int>(std::pow(res, nDim));
   return size;
 }

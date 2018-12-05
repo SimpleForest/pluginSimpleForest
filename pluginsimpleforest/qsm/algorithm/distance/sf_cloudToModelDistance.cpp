@@ -48,7 +48,7 @@ void Sf_CloudToModelDistance::initializeKdTree() {
   _kdtreeQSM->setInputCloud(centerCloud);
 }
 
-const float Sf_CloudToModelDistance::adaptDistanceToMethod(float distance) {
+float Sf_CloudToModelDistance::adaptDistanceToMethod(float distance) {
   switch (_METHOD) {
   case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
     if (distance < _INLIERDISTANCE) {
@@ -82,7 +82,7 @@ float Sf_CloudToModelDistance::getAverageDistance() const {
   return _averageDistance;
 }
 
-const float Sf_CloudToModelDistance::getDistance(
+float Sf_CloudToModelDistance::getDistance(
     const pcl::PointXYZ &point,
     std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
   float distance =
@@ -91,7 +91,7 @@ const float Sf_CloudToModelDistance::getDistance(
   return distance;
 }
 
-const float Sf_CloudToModelDistance::getDistance(
+float Sf_CloudToModelDistance::getDistance(
     const pcl::PointXYZINormal &point,
     std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
   float distance =
@@ -165,8 +165,7 @@ const std::vector<float> Sf_CloudToModelDistance::getCloudToModelDistances() {
   return distances;
 }
 
-const float
-Sf_CloudToModelDistance::getNumberInliers(const std::vector<float> &distances) {
+float Sf_CloudToModelDistance::getNumberInliers(const std::vector<float> &distances) {
   float sum = 0;
   for (size_t i = 0; i < distances.size(); i++) {
     sum += distances[i];

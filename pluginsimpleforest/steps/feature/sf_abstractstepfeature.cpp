@@ -22,8 +22,5 @@
 
 #include "sf_abstractstepfeature.h"
 
-SF_AbstractStepFeature::SF_AbstractStepFeature(CT_StepInitializeData &dataInit):
-    SF_AbstractStep(dataInit)
-{
-
-}
+SF_AbstractStepFeature::SF_AbstractStepFeature(CT_StepInitializeData &dataInit)
+    : SF_AbstractStep(dataInit) {}

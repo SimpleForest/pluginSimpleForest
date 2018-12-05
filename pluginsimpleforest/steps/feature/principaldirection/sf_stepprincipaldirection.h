@@ -25,49 +25,51 @@
 
 #include <parameter/sf_parameterSetPrincipalDirection.h>
 
-#include "steps/feature/sf_abstractstepfeature.h"
-#include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_view/ct_stepconfigurabledialog.h"
+#include "steps/feature/sf_abstractstepfeature.h"
 
-class SF_StepPrincipalDirection:
-        public SF_AbstractStepFeature
-{
-    Q_OBJECT
+class SF_StepPrincipalDirection : public SF_AbstractStepFeature {
+  Q_OBJECT
 
 public:
-    SF_StepPrincipalDirection(CT_StepInitializeData &dataInit);
-    ~SF_StepPrincipalDirection();
-    QString getStepDescription() const;
-    QString getStepDetailledDescription() const;
-    QString getStepURL() const;
-    CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &data_init) ;
-    QStringList getStepRISCitations() const;
+  SF_StepPrincipalDirection(CT_StepInitializeData &dataInit);
+  ~SF_StepPrincipalDirection();
+  QString getStepDescription() const;
+  QString getStepDetailledDescription() const;
+  QString getStepURL() const;
+  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &data_init);
+  QStringList getStepRISCitations() const;
 
 protected:
-    QList<SF_ParameterSetPrincipalDirection<pcl::PointXYZINormal>> _paramList;
-    void createInResultModelListProtected();
-    void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog *configDialog);
-    void createOutResultModelListProtected();
-    void adaptParametersToExpertLevel() {}
-    void compute();
-    virtual void writeLogger() {}
-    virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog *configDialog);
-    virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
+  QList<SF_ParameterSetPrincipalDirection<pcl::PointXYZINormal>> _paramList;
+  void createInResultModelListProtected();
+  void createPostConfigurationDialogCitationSecond(
+      CT_StepConfigurableDialog *configDialog);
+  void createOutResultModelListProtected();
+  void adaptParametersToExpertLevel() {}
+  void compute();
+  virtual void writeLogger() {}
+  virtual void createPostConfigurationDialogBeginner(
+      CT_StepConfigurableDialog *configDialog);
+  virtual void
+  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
 
-    std::vector<std::pair<pcl::PointCloud<SF_PointNormal>::Ptr, std::vector<size_t> > >
-    voxelizeInput (SF_ConverterCTCloudToPCLCloud<SF_PointNormal> &converter);
+  std::vector<
+      std::pair<pcl::PointCloud<SF_PointNormal>::Ptr, std::vector<size_t>>>
+  voxelizeInput(SF_ConverterCTCloudToPCLCloud<SF_PointNormal> &converter);
 
 private:
-    SF_ParameterSetVoxelization<SF_PointNormal> m_parameterVoxelization;
-    double m_voxelSizeCluster = 3.00;
-    double m_voxelSizeDownscaling = 0.02;
-    double m_normalRadius = 0.075;
-    double m_pdRadius     = 0.15;
-    SF_ParameterSetPrincipalDirection<pcl::PointXYZINormal> m_param;
-    CT_AutoRenameModels m_outCloudItem;
-    void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);
-    void writeOutput(CT_ResultGroup* outResult);
-    void processInput(CT_ResultGroup *out_result);
+  SF_ParameterSetVoxelization<SF_PointNormal> m_parameterVoxelization;
+  double m_voxelSizeCluster = 3.00;
+  double m_voxelSizeDownscaling = 0.02;
+  double m_normalRadius = 0.075;
+  double m_pdRadius = 0.15;
+  SF_ParameterSetPrincipalDirection<pcl::PointXYZINormal> m_param;
+  CT_AutoRenameModels m_outCloudItem;
+  void writeOutputPerScence(CT_ResultGroup *outResult, size_t i);
+  void writeOutput(CT_ResultGroup *outResult);
+  void processInput(CT_ResultGroup *out_result);
 };
 
 #endif // SF_STEPPRINCIPALDIRECTION_H
