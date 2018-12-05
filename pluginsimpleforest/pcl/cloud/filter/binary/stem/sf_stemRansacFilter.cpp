@@ -74,7 +74,7 @@ void SF_StemRANSACFilter::addInliers(
     pcl::ModelCoefficients::Ptr coeffCylinder,
     pcl::ModelCoefficients::Ptr lastCoeffCylinder,
     pcl::PointIndices::Ptr inliersCylinder) {
-  if (inliersCylinder->indices.size() >
+  if (static_cast<int>(inliersCylinder->indices.size()) >
       std::max<int>((int)(std::ceil(1 / _params._voxelSize) / 2), 10)) {
     Eigen::Vector3f zAxis(_params._x, _params._y, _params._z);
     if (lastCoeffCylinder->values.size() == 7) {

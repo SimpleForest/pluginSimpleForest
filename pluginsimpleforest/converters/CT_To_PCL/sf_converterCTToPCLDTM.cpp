@@ -23,7 +23,7 @@ void SF_ConverterCTToPCLDTM::computeTranslationToOrigin() {
   _dtmCT->getMaxCoordinates(max);
   m_translation[0] = (min[0] + max[0]) / 2;
   m_translation[1] = (min[1] + max[1]) / 2;
-  size_t index;
+  size_t index {};
   _dtmCT->index(_dtmCT->xArraySize() / 2, _dtmCT->yArraySize() / 2, index);
   m_translation[2] = _dtmCT->valueAtIndex(index);
 }

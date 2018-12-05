@@ -175,7 +175,8 @@ void SF_RadiusOutlierFilterStep::writeLogger() {
         numberFilteredPoints += static_cast<size_t>(i);
       }
     }
-    auto str2 = _paramList[0].toFilterString(numberInputPoints, numberFilteredPoints);
+    auto str2 =
+        _paramList[0].toFilterString(numberInputPoints, numberFilteredPoints);
     PS_LOG->addMessage(LogInterface::info, LogInterface::step, str2);
   }
 }

@@ -178,8 +178,8 @@ Sf_CloudToModelDistance::Sf_CloudToModelDistance(
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
     SF_CLoudToModelDistanceMethod &method, float inlierDistance, int k,
     int percentage)
-    : _tree(tree), _cloud(cloud), _METHOD(method),
-      _INLIERDISTANCE(inlierDistance), _percentage(percentage), _k(k) {
+    : _METHOD(method), _percentage(percentage), _k(k),
+     _INLIERDISTANCE(inlierDistance), _tree(tree), _cloud(cloud) {
   _averageDistance = std::numeric_limits<float>::max();
   initializeKdTree();
   compute();
@@ -189,9 +189,8 @@ Sf_CloudToModelDistance::Sf_CloudToModelDistance(
     std::shared_ptr<SF_ModelQSM> tree,
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
     const SF_CloudToModelDistanceParameters &params)
-    : _tree(tree), _cloud(cloud), _METHOD(params._method),
-      _INLIERDISTANCE(params._inlierDistance),
-      _percentage(params._robustPercentage), _k(params._k) {
+    : _METHOD(params._method), _percentage(params._robustPercentage), _k(params._k),
+      _INLIERDISTANCE(params._inlierDistance), _tree(tree), _cloud(cloud) {
   _averageDistance = std::numeric_limits<float>::max();
   initializeKdTree();
   compute();

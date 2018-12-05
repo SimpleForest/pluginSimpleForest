@@ -62,7 +62,6 @@ struct SF_ParamCT {
       percentage =
           (static_cast<float>(noise) / static_cast<float>(total)) * 100.0f;
     }
-
     QString str = "The filter removed  ";
     str.append(QString::number(noise));
     str.append(" (");
@@ -81,9 +80,7 @@ private:
 };
 
 template <typename PointType> struct SF_ParamCloud : public SF_ParamCT {
-
   typename pcl::PointCloud<PointType>::Ptr _cloudIn;
-
   virtual void logFilter(double percentage) {
     QString str = toStringFilter(percentage);
     _log->addMessage(LogInterface::info, LogInterface::step, str);
