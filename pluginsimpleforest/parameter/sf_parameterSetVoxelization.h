@@ -30,33 +30,35 @@
  *  Parameter set to convert a cloud into subclouds by voxelization.
  */
 template <typename T>
-struct SF_ParameterSetVoxelization:
-        public SF_AbstractParameterSet<T> {
-    /**
-     * @brief m_voxelSize For \ref  m_cloud a 3d Raster of voxelsize m_voxelSize is
-     * created. For each cell all contained points build a sub cloud in the \ref  m_clusters output.
-     */
-    float m_voxelSize;
-    /**
-     * @brief m_clustersOut Contains subclouds and their according CT indices.
-     */
-    std::vector<std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> > > m_clustersOut;
+struct SF_ParameterSetVoxelization : public SF_AbstractParameterSet<T> {
+  /**
+   * @brief m_voxelSize For \ref  m_cloud a 3d Raster of voxelsize m_voxelSize
+   * is created. For each cell all contained points build a sub cloud in the
+   * \ref  m_clusters output.
+   */
+  float m_voxelSize;
+  /**
+   * @brief m_clustersOut Contains subclouds and their according CT indices.
+   */
+  std::vector<std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t>>>
+      m_clustersOut;
 
-    SF_ParameterSetVoxelization() {}
-    QStringList paramsToString() override {
-        QStringList list;
-        QString str = "To enable multithreaded processing the input point cloud was clustered with voxelization with (";
-        list.push_back(str);
-        str = ("voxelSize                = ");
-        str.append(QString::number(m_voxelSize));
-        str.append("(m)");
-        list.push_back(str);
-        str = (" ). into ");
-        str.append(QString::number(m_clustersOut.size()));
-        str.append(" number of clusters.");
-        list.push_back(str);
-        return list;
-    }
+  SF_ParameterSetVoxelization() {}
+  QStringList paramsToString() override {
+    QStringList list;
+    QString str = "To enable multithreaded processing the input point cloud "
+                  "was clustered with voxelization with (";
+    list.push_back(str);
+    str = ("voxelSize                = ");
+    str.append(QString::number(m_voxelSize));
+    str.append("(m)");
+    list.push_back(str);
+    str = (" ). into ");
+    str.append(QString::number(m_clustersOut.size()));
+    str.append(" number of clusters.");
+    list.push_back(str);
+    return list;
+  }
 };
 
 #endif // SF_PARAMETERSETVOXELIZATION_H

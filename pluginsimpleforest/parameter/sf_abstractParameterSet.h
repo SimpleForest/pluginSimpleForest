@@ -26,23 +26,22 @@
 #include "pcl/sf_point.h"
 #include <QStringList>
 
-template <typename T>
-struct SF_AbstractParameterSet {
-    /**
-     * @brief m_cloud The first member of m_cloud is the point cloud itself,
-     * the second a vector of the Computree indices
-     */
-    std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> > m_cloud;
-    /**
-     * @brief SF_AbstractParameterSet Default contructor
-     */
-    SF_AbstractParameterSet () {}
-    /**
-     * @brief paramsToString A QStringList is created with a QString
-     * per line. The list will contain a description of all parameters.
-     * @return The parameter list
-     */
-    virtual QStringList paramsToString() = 0;
+template <typename T> struct SF_AbstractParameterSet {
+  /**
+   * @brief m_cloud The first member of m_cloud is the point cloud itself,
+   * the second a vector of the Computree indices
+   */
+  std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t>> m_cloud;
+  /**
+   * @brief SF_AbstractParameterSet Default contructor
+   */
+  SF_AbstractParameterSet() {}
+  /**
+   * @brief paramsToString A QStringList is created with a QString
+   * per line. The list will contain a description of all parameters.
+   * @return The parameter list
+   */
+  virtual QStringList paramsToString() = 0;
 };
 
 #endif // SF_ABSTRACTPARAMETERSET_H

@@ -30,31 +30,32 @@
  *  Parameter set to convert a cloud into subclouds by voxelization.
  */
 template <typename T>
-struct SF_ParameterSetDownscale:
-        public SF_AbstractParameterSet<T> {
-    /**
-     * @brief m_voxelSize For \ref  m_cloud a 3d Raster of voxelsize m_voxelSize is
-     * created. For each cell all contained points build a sub cloud in the \ref  m_clusters output.
-     */
-    float m_voxelSize;
-    /**
-     * @brief m_cloudOut Contains the downscaled input cloud, the according CT indices are not filled.
-     */
-    std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t> >  m_cloudOut;
+struct SF_ParameterSetDownscale : public SF_AbstractParameterSet<T> {
+  /**
+   * @brief m_voxelSize For \ref  m_cloud a 3d Raster of voxelsize m_voxelSize
+   * is created. For each cell all contained points build a sub cloud in the
+   * \ref  m_clusters output.
+   */
+  float m_voxelSize;
+  /**
+   * @brief m_cloudOut Contains the downscaled input cloud, the according CT
+   * indices are not filled.
+   */
+  std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t>> m_cloudOut;
 
-    SF_ParameterSetVoxelization() {}
-    QStringList paramsToString() override {
-        QStringList list;
-        QString str = "To speed up processing, each cloud is downscaled with (";
-        list.push_back(str);
-        str = ("voxelSize                = ");
-        str.append(QString::number(m_voxelSize));
-        str.append("(m)");
-        list.push_back(str);
-        str = (" ). into a new cloud.");
-        list.push_back(str);
-        return list;
-    }
+  SF_ParameterSetVoxelization() {}
+  QStringList paramsToString() override {
+    QStringList list;
+    QString str = "To speed up processing, each cloud is downscaled with (";
+    list.push_back(str);
+    str = ("voxelSize                = ");
+    str.append(QString::number(m_voxelSize));
+    str.append("(m)");
+    list.push_back(str);
+    str = (" ). into a new cloud.");
+    list.push_back(str);
+    return list;
+  }
 };
 
 #endif // SF_PARAMETERSETVOXELIZATION_H
