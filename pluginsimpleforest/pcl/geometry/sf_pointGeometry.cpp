@@ -27,7 +27,4 @@
 *****************************************************************************/
 #include "sf_geometryPoint.h"
 
-SF_GeometryPoint::SF_GeometryPoint()
-{
-
-}
+SF_GeometryPoint::SF_GeometryPoint() {}

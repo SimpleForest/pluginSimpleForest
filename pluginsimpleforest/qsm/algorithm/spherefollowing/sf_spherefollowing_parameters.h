@@ -34,31 +34,28 @@
 #include <pcl/segmentation/sac_segmentation.h>
 
 struct SF_SphereFollowingOptimizationParameters {
-    float _euclideanClusteringDistance = 0.03f;
-    float _sphereRadiusMultiplier      = 2.0f;
-    float _epsilonSphere               = 0.035f;
-    float _minRadius                   = 0.07f;
-    SF_SphereFollowingOptimizationParameters(){}
-    SF_SphereFollowingOptimizationParameters(float euclideanClusteringDistance,
-                                             float sphereRadiusMultiplier,
-                                             float epsilonSphere,
-                                             float minRadius):
-        _euclideanClusteringDistance(euclideanClusteringDistance),
+  float _euclideanClusteringDistance = 0.03f;
+  float _sphereRadiusMultiplier = 2.0f;
+  float _epsilonSphere = 0.035f;
+  float _minRadius = 0.07f;
+  SF_SphereFollowingOptimizationParameters() {}
+  SF_SphereFollowingOptimizationParameters(float euclideanClusteringDistance,
+                                           float sphereRadiusMultiplier,
+                                           float epsilonSphere, float minRadius)
+      : _euclideanClusteringDistance(euclideanClusteringDistance),
         _sphereRadiusMultiplier(sphereRadiusMultiplier),
-        _epsilonSphere(epsilonSphere),
-        _minRadius(minRadius){
-    }
+        _epsilonSphere(epsilonSphere), _minRadius(minRadius) {}
 };
 
 struct SF_SphereFollowingParameters {
-    std::vector<SF_SphereFollowingOptimizationParameters> _optimizationParams;
-    int   _fittingMethod              = pcl::SAC_RANSAC;
-    float _inlierDistance             = 0.03f;
-    int   _minPtsGeometry             = 3;
-    int   _RANSACIterations           = 100;
-    float _minGlobalRadius            = 0.04f;
-    float _heightInitializationSlice          = 0.1f;
-    SF_SphereFollowingParameters() {}
+  std::vector<SF_SphereFollowingOptimizationParameters> _optimizationParams;
+  int _fittingMethod = pcl::SAC_RANSAC;
+  float _inlierDistance = 0.03f;
+  int _minPtsGeometry = 3;
+  int _RANSACIterations = 100;
+  float _minGlobalRadius = 0.04f;
+  float _heightInitializationSlice = 0.1f;
+  SF_SphereFollowingParameters() {}
 };
 
 #endif // SF_SPHEREFOLLOWING_PARAMETERS_H

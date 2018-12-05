@@ -34,28 +34,31 @@
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
 
-class SF_StemRANSACFilter: public Sf_AbstractBinaryFilter<pcl::PointXYZINormal> {
-    SF_ParamStemRansacFilter _params;
-    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> _clouds;
-    void initializeClouds(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud);
+class SF_StemRANSACFilter
+    : public Sf_AbstractBinaryFilter<pcl::PointXYZINormal> {
+  SF_ParamStemRansacFilter _params;
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> _clouds;
+  void initializeClouds(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud);
 
 public:
-    void setParams(const SF_ParamStemRansacFilter& params);
-    SF_StemRANSACFilter();
-    void compute();
+  void setParams(const SF_ParamStemRansacFilter &params);
+  SF_StemRANSACFilter();
+  void compute();
 
 private:
-    void computeNormals(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud);
-    void segment(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
-                 pcl::ModelCoefficients::Ptr coeffCylinder,
-                 pcl::PointIndices::Ptr inliersCylinder);
-    void addInliers(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudFiltered,
-                    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
-                    pcl::ModelCoefficients::Ptr coeffCylinder,
-                    pcl::ModelCoefficients::Ptr lastCoeffCylinder,
-                    pcl::PointIndices::Ptr inliersCylinder);
-    void filterIteratively(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered);
-    void backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered);
+  void computeNormals(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud);
+  void segment(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
+               pcl::ModelCoefficients::Ptr coeffCylinder,
+               pcl::PointIndices::Ptr inliersCylinder);
+  void addInliers(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudFiltered,
+                  pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
+                  pcl::ModelCoefficients::Ptr coeffCylinder,
+                  pcl::ModelCoefficients::Ptr lastCoeffCylinder,
+                  pcl::PointIndices::Ptr inliersCylinder);
+  void filterIteratively(
+      pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered);
+  void
+  backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered);
 };
 
 #endif // SF_STEM_RANSAC_FILTER_H

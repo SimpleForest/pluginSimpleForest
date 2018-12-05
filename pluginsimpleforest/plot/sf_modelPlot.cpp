@@ -28,6 +28,4 @@
 
 #include "sf_modelPlot.h"
 
-SF_ModelPlot::SF_ModelPlot() {
-
-}
+SF_ModelPlot::SF_ModelPlot() {}

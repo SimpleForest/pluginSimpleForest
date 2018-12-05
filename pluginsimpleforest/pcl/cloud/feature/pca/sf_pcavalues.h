@@ -29,59 +29,58 @@
 #ifndef SF_PCAVALUES_H
 #define SF_PCAVALUES_H
 
-struct SF_PCAValues{
-    Eigen::Vector3f lambdas;
-    inline void check_valid() {
-        if(lambdas[0]>lambdas[1] || lambdas[0]>lambdas[2]||lambdas[1]>lambdas[2]) {
-            throw std::runtime_error("Lambdas have not been computed during PCA.");
-        }
+struct SF_PCAValues {
+  Eigen::Vector3f lambdas;
+  inline void check_valid() {
+    if (lambdas[0] > lambdas[1] || lambdas[0] > lambdas[2] ||
+        lambdas[1] > lambdas[2]) {
+      throw std::runtime_error("Lambdas have not been computed during PCA.");
     }
+  }
 
-    inline float getLambda(const int i) {
-        if(lambdas[i]!=0) {
-            return (lambdas[i]/(lambdas[0]+lambdas[1]+lambdas[2]));
-        }
-        return 0;
+  inline float getLambda(const int i) {
+    if (lambdas[i] != 0) {
+      return (lambdas[i] / (lambdas[0] + lambdas[1] + lambdas[2]));
     }
+    return 0;
+  }
 
-    inline float getLambda1() {
-        check_valid();
-        return getLambda(0);
-    }
+  inline float getLambda1() {
+    check_valid();
+    return getLambda(0);
+  }
 
-    inline float getLambda2() {
-        check_valid();
-        return getLambda(1);
-    }
+  inline float getLambda2() {
+    check_valid();
+    return getLambda(1);
+  }
 
-    inline float getLambda3() {
-        check_valid();
-        return getLambda(2);
-    }
+  inline float getLambda3() {
+    check_valid();
+    return getLambda(2);
+  }
 
-    Eigen::Matrix3f vectors;
+  Eigen::Matrix3f vectors;
 
-    inline Eigen::Vector3f getVector1() {
-        check_valid();
-        Eigen::Vector3f vec = vectors.col(0);
-        vec.normalize();
-        return vec;
-    }
+  inline Eigen::Vector3f getVector1() {
+    check_valid();
+    Eigen::Vector3f vec = vectors.col(0);
+    vec.normalize();
+    return vec;
+  }
 
-    inline Eigen::Vector3f getVector2() {
-        check_valid();
-        Eigen::Vector3f vec = vectors.col(1);
-        vec.normalize();
-        return vec;
-    }
+  inline Eigen::Vector3f getVector2() {
+    check_valid();
+    Eigen::Vector3f vec = vectors.col(1);
+    vec.normalize();
+    return vec;
+  }
 
-
-
-    inline Eigen::Vector3f getVector3() {
-        check_valid();
-        Eigen::Vector3f vec = vectors.col(2);
-        vec.normalize();
-        return vec;
-    }
+  inline Eigen::Vector3f getVector3() {
+    check_valid();
+    Eigen::Vector3f vec = vectors.col(2);
+    vec.normalize();
+    return vec;
+  }
 };
 #endif // SF_PCAVALUES_H

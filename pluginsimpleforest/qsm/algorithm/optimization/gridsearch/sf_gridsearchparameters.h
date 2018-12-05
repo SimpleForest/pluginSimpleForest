@@ -30,23 +30,20 @@
 #define SF_GRIDSEARCHPARAMETERS_H
 
 struct SF_GridSearchParameters {
-    int _nDimensions;
-    int _resolution;
-    int _maxNumberSearches;
+  int _nDimensions;
+  int _resolution;
+  int _maxNumberSearches;
 
-    SF_GridSearchParameters(int nDimensions,
-                            int resolution,
-                            int maxNumberSearches):
-    _nDimensions(nDimensions),
-    _resolution(resolution),
-    _maxNumberSearches(maxNumberSearches){
-    }
+  SF_GridSearchParameters(int nDimensions, int resolution,
+                          int maxNumberSearches)
+      : _nDimensions(nDimensions), _resolution(resolution),
+        _maxNumberSearches(maxNumberSearches) {}
 
-    SF_GridSearchParameters() {
-        _nDimensions       = -1;
-        _resolution        = -1;
-        _maxNumberSearches = 1;
-    }
+  SF_GridSearchParameters() {
+    _nDimensions = -1;
+    _resolution = -1;
+    _maxNumberSearches = 1;
+  }
 };
 
 #endif // SF_GRIDSEARCHPARAMETERS_H

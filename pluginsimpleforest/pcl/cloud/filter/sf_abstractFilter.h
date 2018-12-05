@@ -31,20 +31,19 @@
 #include <pcl/cloud/sf_abstractCloud.h>
 
 template <typename PointType>
-class SF_AbstractFilterDeprecated:
-        public  SF_AbstractCloud<PointType> {
+class SF_AbstractFilterDeprecated : public SF_AbstractCloud<PointType> {
 
 public:
-    SF_AbstractFilterDeprecated() ;
-    typename pcl::PointCloud<PointType>::Ptr getCloudOutFiltered() const;
+  SF_AbstractFilterDeprecated();
+  typename pcl::PointCloud<PointType>::Ptr getCloudOutFiltered() const;
 
 protected:
-    void reset();
-    virtual void writeEmpty();
-    virtual void iterate();
-    virtual void createIndices();
-    int _percentageRemaining;
-    typename pcl::PointCloud<PointType>::Ptr _cloudOutFiltered;
+  void reset();
+  virtual void writeEmpty();
+  virtual void iterate();
+  virtual void createIndices();
+  int _percentageRemaining;
+  typename pcl::PointCloud<PointType>::Ptr _cloudOutFiltered;
 };
 
 #include "pcl/cloud/filter/sf_abstractFilter.hpp"

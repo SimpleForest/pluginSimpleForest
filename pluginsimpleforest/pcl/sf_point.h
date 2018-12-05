@@ -29,18 +29,16 @@
 #define SF_POINT_H
 
 #define PCL_NO_PRECOMPILE
-#include <pcl/point_types.h>
-#include <pcl/point_cloud.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/kdtree/impl/kdtree_flann.hpp>
-
+#include <pcl/kdtree/kdtree_flann.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 
 typedef pcl::PointXYZ SF_Point;
 typedef pcl::PointCloud<SF_Point> SF_Cloud;
 
 typedef pcl::PointXYZINormal SF_PointNormal;
 typedef pcl::PointCloud<SF_PointNormal> SF_CloudNormal;
-
 
 #endif // SF_POINT_H

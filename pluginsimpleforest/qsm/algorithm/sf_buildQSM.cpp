@@ -30,79 +30,95 @@
 #include "qsm/sf_modelCylinderBuildingbrick.h"
 
 void SF_BuildQSM::initializeOctree() {
-    _octree.reset(new pcl::octree::OctreePointCloudSearch<SF_Point>(_RESOLUTION));
-    SF_Cloud::Ptr cloud(new SF_Cloud);
-    for(size_t i = 1; i < _buildingBricks.size(); i++) {
-        std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = _buildingBricks[i];
-        SF_Point point(buildingBrick->getStart()[0], buildingBrick->getStart()[1], buildingBrick->getStart()[2]);
-        cloud->push_back(point);
-    }
-    _octree->setInputCloud(cloud);
-    _octree->addPointsFromInputCloud();
+  _octree.reset(new pcl::octree::OctreePointCloudSearch<SF_Point>(_RESOLUTION));
+  SF_Cloud::Ptr cloud(new SF_Cloud);
+  for (size_t i = 1; i < _buildingBricks.size(); i++) {
+    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick =
+        _buildingBricks[i];
+    SF_Point point(buildingBrick->getStart()[0], buildingBrick->getStart()[1],
+                   buildingBrick->getStart()[2]);
+    cloud->push_back(point);
+  }
+  _octree->setInputCloud(cloud);
+  _octree->addPointsFromInputCloud();
 }
 
-void SF_BuildQSM::initializeCylinderBuildingBricks(const std::vector<SF_QSMDetectionCylinder> &cylinders) {
-    _buildingBricks.clear();
-    for(size_t i = 0; i < cylinders.size(); i++) {
-        SF_QSMDetectionCylinder cyl = cylinders[i];
-        std::shared_ptr<Sf_ModelCylinderBuildingbrick> cylinder(new Sf_ModelCylinderBuildingbrick(cyl._circleA,cyl._circleB));
-        _buildingBricks.push_back(cylinder);
-    }
+void SF_BuildQSM::initializeCylinderBuildingBricks(
+    const std::vector<SF_QSMDetectionCylinder> &cylinders) {
+  _buildingBricks.clear();
+  for (size_t i = 0; i < cylinders.size(); i++) {
+    SF_QSMDetectionCylinder cyl = cylinders[i];
+    std::shared_ptr<Sf_ModelCylinderBuildingbrick> cylinder(
+        new Sf_ModelCylinderBuildingbrick(cyl._circleA, cyl._circleB));
+    _buildingBricks.push_back(cylinder);
+  }
 }
 
 void SF_BuildQSM::initializeTree(int index) {
-    _tree.reset(new SF_ModelQSM(index));
-    std::shared_ptr<SF_ModelAbstractSegment> rootSegment(new SF_ModelAbstractSegment(_tree));
-    rootSegment->addBuildingBrick(_buildingBricks[0]);
-    _tree->setRootSegment(rootSegment);
+  _tree.reset(new SF_ModelQSM(index));
+  std::shared_ptr<SF_ModelAbstractSegment> rootSegment(
+      new SF_ModelAbstractSegment(_tree));
+  rootSegment->addBuildingBrick(_buildingBricks[0]);
+  _tree->setRootSegment(rootSegment);
 }
 
-std::shared_ptr<SF_ModelQSM> SF_BuildQSM::getTree() const {
-    return _tree;
+std::shared_ptr<SF_ModelQSM> SF_BuildQSM::getTree() const { return _tree; }
+
+SF_BuildQSM::SF_BuildQSM(const std::vector<SF_QSMDetectionCylinder> &cylinders,
+                         int index) {
+  initializeCylinderBuildingBricks(cylinders);
+  initializeTree(index);
+  initializeOctree();
+  buildTree(_tree->getRootSegment());
 }
 
-SF_BuildQSM::SF_BuildQSM(const std::vector<SF_QSMDetectionCylinder> &cylinders, int index) {
-    initializeCylinderBuildingBricks(cylinders);
-    initializeTree(index);
-    initializeOctree();
-    buildTree(_tree->getRootSegment());
+void SF_BuildQSM::addBuildingBrickToSegment(
+    const std::vector<int> &pointIdxNKNSearch,
+    std::shared_ptr<SF_ModelAbstractSegment> segment) {
+  std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick =
+      _buildingBricks[pointIdxNKNSearch[0] + 1];
+  if (buildingBrick->getLength() > _MINEQUALDISTANCE) {
+    segment->addBuildingBrick(buildingBrick);
+    buildTree(segment);
+  }
 }
 
-void SF_BuildQSM::addBuildingBrickToSegment(const std::vector<int> &pointIdxNKNSearch, std::shared_ptr<SF_ModelAbstractSegment> segment) {
-    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = _buildingBricks[pointIdxNKNSearch[0] + 1 ];
-    if(buildingBrick->getLength() > _MINEQUALDISTANCE) {
-        segment->addBuildingBrick(buildingBrick);
-        buildTree(segment);
+void SF_BuildQSM::addChildBuildingbricks(
+    std::shared_ptr<SF_ModelAbstractSegment> segment,
+    std::vector<int> pointIdxNKNSearch) {
+  if (pointIdxNKNSearch.size() == 1) {
+    addBuildingBrickToSegment(pointIdxNKNSearch, segment);
+  } else if (pointIdxNKNSearch.size() > 1) {
+    addBuildingBricksToChildSegments(pointIdxNKNSearch, segment);
+  }
+}
+
+void SF_BuildQSM::addBuildingBricksToChildSegments(
+    const std::vector<int> &pointIdxNKNSearch,
+    std::shared_ptr<SF_ModelAbstractSegment> segment) {
+  for (size_t i = 0; i < pointIdxNKNSearch.size(); i++) {
+    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick =
+        _buildingBricks[pointIdxNKNSearch[i] + 1];
+    if (buildingBrick->getLength() > _MINEQUALDISTANCE) {
+      std::shared_ptr<SF_ModelAbstractSegment> segmentChild(
+          new SF_ModelAbstractSegment(_tree));
+      segmentChild->addBuildingBrick(buildingBrick);
+      segment->addChild(segmentChild);
+      buildTree(segmentChild);
     }
-}
-
-void SF_BuildQSM::addChildBuildingbricks(std::shared_ptr<SF_ModelAbstractSegment> segment, std::vector<int> pointIdxNKNSearch) {
-    if(pointIdxNKNSearch.size()==1) {
-        addBuildingBrickToSegment(pointIdxNKNSearch, segment);
-    } else if(pointIdxNKNSearch.size()>1) {
-        addBuildingBricksToChildSegments(pointIdxNKNSearch, segment);
-    }
-}
-
-void SF_BuildQSM::addBuildingBricksToChildSegments(const std::vector<int> &pointIdxNKNSearch, std::shared_ptr<SF_ModelAbstractSegment> segment) {
-    for(size_t i = 0; i < pointIdxNKNSearch.size(); i++) {
-        std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = _buildingBricks[pointIdxNKNSearch[i] + 1 ];
-        if(buildingBrick->getLength() > _MINEQUALDISTANCE) {
-            std::shared_ptr<SF_ModelAbstractSegment> segmentChild(new SF_ModelAbstractSegment(_tree));
-            segmentChild->addBuildingBrick(buildingBrick);
-            segment->addChild(segmentChild);
-            buildTree(segmentChild);
-        }
-    }
+  }
 }
 
 void SF_BuildQSM::buildTree(std::shared_ptr<SF_ModelAbstractSegment> segment) {
-    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = segment->getBuildingBricks().back();
-    SF_Point end (buildingBrick->getEnd()[0], buildingBrick->getEnd()[1], buildingBrick->getEnd()[2]);
-    std::vector<int> pointIdxNKNSearch;
-    std::vector<float> pointNKNSquaredDistance;
-    if (_octree->radiusSearch( end, _MINEQUALDISTANCE, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
-        _octree->removeLeaf(end.x,end.y,end.z);
-        addChildBuildingbricks(segment, pointIdxNKNSearch);
-    }
+  std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick =
+      segment->getBuildingBricks().back();
+  SF_Point end(buildingBrick->getEnd()[0], buildingBrick->getEnd()[1],
+               buildingBrick->getEnd()[2]);
+  std::vector<int> pointIdxNKNSearch;
+  std::vector<float> pointNKNSquaredDistance;
+  if (_octree->radiusSearch(end, _MINEQUALDISTANCE, pointIdxNKNSearch,
+                            pointNKNSquaredDistance) > 0) {
+    _octree->removeLeaf(end.x, end.y, end.z);
+    addChildBuildingbricks(segment, pointIdxNKNSearch);
+  }
 }

@@ -28,134 +28,142 @@
 
 #include <Eigen/Dense>
 
-#include "sf_modelCylinderBuildingbrick.h"
+#include "pcl/sf_math.h"
 #include "sf_modelAbstractBuildingbrick.h"
 #include "sf_modelAbstractSegment.h"
-#include "pcl/sf_math.h"
+#include "sf_modelCylinderBuildingbrick.h"
 
-float Sf_ModelCylinderBuildingbrick::getRadius() {
-    return _radius;
-}
+float Sf_ModelCylinderBuildingbrick::getRadius() { return _radius; }
 
 float Sf_ModelCylinderBuildingbrick::getVolume() {
-    float volume = SF_Math<float>::_PI*_radius*_radius*getLength();
-    return volume;
+  float volume = SF_Math<float>::_PI * _radius * _radius * getLength();
+  return volume;
 }
 
 float Sf_ModelCylinderBuildingbrick::getLength() {
-    float length = std::sqrt((_start[0] - _end[0])*(_start[0] - _end[0]) +
-                             (_start[1] - _end[1])*(_start[1] - _end[1]) +
-                             (_start[2] - _end[2])*(_start[2] - _end[2]));
-    return length;
+  float length = std::sqrt((_start[0] - _end[0]) * (_start[0] - _end[0]) +
+                           (_start[1] - _end[1]) * (_start[1] - _end[1]) +
+                           (_start[2] - _end[2]) * (_start[2] - _end[2]));
+  return length;
 }
 
 float Sf_ModelCylinderBuildingbrick::getDistance(const Eigen::Vector3f &point) {
-    float distToAxis = getDistanceToAxis(point);
-    float distToSegment = getProjectedDistanceToSegment(point);
-    float fac = - 1;
-    if(distToAxis < _radius ) fac = 1;
-    float distToHull = distToAxis - _radius;
-    float distance = fac * (std::sqrt((distToHull*distToHull)+(distToSegment*distToSegment)));
-    return distance;
+  float distToAxis = getDistanceToAxis(point);
+  float distToSegment = getProjectedDistanceToSegment(point);
+  float fac = -1;
+  if (distToAxis < _radius)
+    fac = 1;
+  float distToHull = distToAxis - _radius;
+  float distance =
+      fac *
+      (std::sqrt((distToHull * distToHull) + (distToSegment * distToSegment)));
+  return distance;
 }
 
-float Sf_ModelCylinderBuildingbrick::getDistanceToAxis(const Eigen::Vector3f &point) {
-    Eigen::Vector3f a = point-_start;
-    Eigen::Vector3f b = point-_end;
-    Eigen::Vector3f c = _end-_start;
-    Eigen::Vector3f d = a.cross(b);
-    return d.norm()/c.norm();
+float Sf_ModelCylinderBuildingbrick::getDistanceToAxis(
+    const Eigen::Vector3f &point) {
+  Eigen::Vector3f a = point - _start;
+  Eigen::Vector3f b = point - _end;
+  Eigen::Vector3f c = _end - _start;
+  Eigen::Vector3f d = a.cross(b);
+  return d.norm() / c.norm();
 }
 
-float Sf_ModelCylinderBuildingbrick::getProjectedDistanceToSegment(const Eigen::Vector3f &point) {
-    Eigen::Vector3f projection = getProjectionOnAxis(point);
-    float distToStart = SF_Math<float>::distance(_start,projection);
-    float distToEnd   = SF_Math<float>::distance(_end,projection);
-    float length      = getLength();
-    if(distToStart<=length && distToEnd <= length) {
-        return 0;
-    }
-    return std::min(distToStart, distToEnd);
+float Sf_ModelCylinderBuildingbrick::getProjectedDistanceToSegment(
+    const Eigen::Vector3f &point) {
+  Eigen::Vector3f projection = getProjectionOnAxis(point);
+  float distToStart = SF_Math<float>::distance(_start, projection);
+  float distToEnd = SF_Math<float>::distance(_end, projection);
+  float length = getLength();
+  if (distToStart <= length && distToEnd <= length) {
+    return 0;
+  }
+  return std::min(distToStart, distToEnd);
 }
 
-float Sf_ModelCylinderBuildingbrick::getDistanceToInfinitHull(const Eigen::Vector3f &point) {
-    return getDistanceToAxis(point)-_radius;
+float Sf_ModelCylinderBuildingbrick::getDistanceToInfinitHull(
+    const Eigen::Vector3f &point) {
+  return getDistanceToAxis(point) - _radius;
 }
 
-Eigen::Vector3f Sf_ModelCylinderBuildingbrick::getProjectionOnAxis(const Eigen::Vector3f &point) {
-    Eigen::Vector3f x0 = point;
-    Eigen::Vector3f x1 = getStart();
-    Eigen::Vector3f x2 = getEnd();
-    Eigen::Vector3f a = x0-x1;
-    Eigen::Vector3f b = x2-x1;
-    return (x1 + (a.norm()/b.norm())*b);
+Eigen::Vector3f Sf_ModelCylinderBuildingbrick::getProjectionOnAxis(
+    const Eigen::Vector3f &point) {
+  Eigen::Vector3f x0 = point;
+  Eigen::Vector3f x1 = getStart();
+  Eigen::Vector3f x2 = getEnd();
+  Eigen::Vector3f a = x0 - x1;
+  Eigen::Vector3f b = x2 - x1;
+  return (x1 + (a.norm() / b.norm()) * b);
 }
 
 Eigen::Vector3f Sf_ModelCylinderBuildingbrick::getCenter() {
-    Eigen::Vector3f center((_start[0] + _end[0])/2, (_start[1] + _end[1])/2, (_start[2] + _end[2])/2);
-    return center;
+  Eigen::Vector3f center((_start[0] + _end[0]) / 2, (_start[1] + _end[1]) / 2,
+                         (_start[2] + _end[2]) / 2);
+  return center;
 }
 
 Eigen::Vector3f Sf_ModelCylinderBuildingbrick::getAxis() {
-    Eigen::Vector3f principleDirection((_end[0] - _start[0]), (_end[1] - _start[1]), (_end[2] - _start[2]));
-    return principleDirection;
+  Eigen::Vector3f principleDirection(
+      (_end[0] - _start[0]), (_end[1] - _start[1]), (_end[2] - _start[2]));
+  return principleDirection;
 }
 
-Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB) {
-    assert(circleA->values.size()==4 && circleB->values.size()==4);
-    _start[0] = circleA->values[0];
-    _start[1] = circleA->values[1];
-    _start[2] = circleA->values[2];
-    _end[0] = circleB->values[0];
-    _end[1] = circleB->values[1];
-    _end[2] = circleB->values[2];
-    _radius = (circleA->values[3]+circleB->values[3])/2;
-    _fittingType = FittingType::SPHEREFOLLOWING;
+Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(
+    pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB) {
+  assert(circleA->values.size() == 4 && circleB->values.size() == 4);
+  _start[0] = circleA->values[0];
+  _start[1] = circleA->values[1];
+  _start[2] = circleA->values[2];
+  _end[0] = circleB->values[0];
+  _end[1] = circleB->values[1];
+  _end[2] = circleB->values[2];
+  _radius = (circleA->values[3] + circleB->values[3]) / 2;
+  _fittingType = FittingType::SPHEREFOLLOWING;
 }
 
 std::string Sf_ModelCylinderBuildingbrick::toString() {
-    std::string str("cylinder");
-    str.append(", ");
-    str.append(std::to_string(_ID));
-    str.append(", ");
-    std::shared_ptr<Sf_ModelAbstractBuildingbrick> parent = getParent();
-    if(parent == nullptr) {
-        str.append("-1");
-    } else {
-        str.append(std::to_string(parent->getID()));
-    }
-    str.append(", ");
-    str.append(std::to_string(_start[0]));
-    str.append(", ");
-    str.append(std::to_string(_start[1]));
-    str.append(", ");
-    str.append(std::to_string(_start[2]));
-    str.append(", ");
-    str.append(std::to_string(_end[0]));
-    str.append(", ");
-    str.append(std::to_string(_end[1]));
-    str.append(", ");
-    str.append(std::to_string(_end[2]));
-    str.append(", ");
-    str.append(std::to_string(_radius));
-    str.append(", ");
-    str.append(std::to_string(getVolume()));
-    str.append(", ");
-    str.append(std::to_string(getGrowthVolume()));
-    str.append(", ");
-    str.append(std::to_string(getLength()));
-    str.append(", ");
-    str.append(std::to_string(getGrowthLength()));
-    str.append(", ");
-    std::shared_ptr<SF_ModelAbstractSegment> segment = getSegment();
-    str.append(segment->toString());
-    return str;
-
+  std::string str("cylinder");
+  str.append(", ");
+  str.append(std::to_string(_ID));
+  str.append(", ");
+  std::shared_ptr<Sf_ModelAbstractBuildingbrick> parent = getParent();
+  if (parent == nullptr) {
+    str.append("-1");
+  } else {
+    str.append(std::to_string(parent->getID()));
+  }
+  str.append(", ");
+  str.append(std::to_string(_start[0]));
+  str.append(", ");
+  str.append(std::to_string(_start[1]));
+  str.append(", ");
+  str.append(std::to_string(_start[2]));
+  str.append(", ");
+  str.append(std::to_string(_end[0]));
+  str.append(", ");
+  str.append(std::to_string(_end[1]));
+  str.append(", ");
+  str.append(std::to_string(_end[2]));
+  str.append(", ");
+  str.append(std::to_string(_radius));
+  str.append(", ");
+  str.append(std::to_string(getVolume()));
+  str.append(", ");
+  str.append(std::to_string(getGrowthVolume()));
+  str.append(", ");
+  str.append(std::to_string(getLength()));
+  str.append(", ");
+  str.append(std::to_string(getGrowthLength()));
+  str.append(", ");
+  std::shared_ptr<SF_ModelAbstractSegment> segment = getSegment();
+  str.append(segment->toString());
+  return str;
 }
 
 std::string Sf_ModelCylinderBuildingbrick::toHeaderString() {
-    std::string str ("type, ID, parentID, startX, startY, startZ, endX, endY, endZ, radius, volume, growthVolume, length, growthLength,");
-    std::shared_ptr<SF_ModelAbstractSegment> segment = getSegment();
-    str.append(segment->toHeaderString());
-    return str;
+  std::string str("type, ID, parentID, startX, startY, startZ, endX, endY, "
+                  "endZ, radius, volume, growthVolume, length, growthLength,");
+  std::shared_ptr<SF_ModelAbstractSegment> segment = getSegment();
+  str.append(segment->toHeaderString());
+  return str;
 }

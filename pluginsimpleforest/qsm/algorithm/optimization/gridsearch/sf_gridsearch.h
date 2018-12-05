@@ -31,15 +31,15 @@
 
 #include "sf_gridsearchparameters.h"
 
-class SF_GridSearch
-{
+class SF_GridSearch {
 protected:
-    SF_GridSearchParameters _params;
-    const int gridSize(const int nDim, const int res);
-    void restrictSearchSpace();
+  SF_GridSearchParameters _params;
+  const int gridSize(const int nDim, const int res);
+  void restrictSearchSpace();
+
 public:
-    SF_GridSearch();
-    void compute();
+  SF_GridSearch();
+  void compute();
 };
 
 #endif // SF_GRIDSEARCH_H

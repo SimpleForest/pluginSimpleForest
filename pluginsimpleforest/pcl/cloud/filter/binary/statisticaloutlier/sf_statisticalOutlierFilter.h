@@ -31,18 +31,21 @@
 #include "pcl/cloud/filter/binary/sf_abstractBinaryFilter.h"
 
 template <typename PointType>
-class SF_StatisticalOutlierFilter: public Sf_AbstractBinaryFilter<PointType> {
-    void statisticalOutlierFilterIteratively(SF_ParamStatisticalOutlierFilter<PointType> stdParams);
-    void iterate(SF_ParamStatisticalOutlierFilter<PointType> params, typename pcl::PointCloud<PointType>::Ptr cloud);
-    void statisticalOutlierFilter(SF_ParamStatisticalOutlierFilter<PointType> stdParams,
-                                  typename pcl::PointCloud<PointType>::Ptr cloud);
+class SF_StatisticalOutlierFilter : public Sf_AbstractBinaryFilter<PointType> {
+  void statisticalOutlierFilterIteratively(
+      SF_ParamStatisticalOutlierFilter<PointType> stdParams);
+  void iterate(SF_ParamStatisticalOutlierFilter<PointType> params,
+               typename pcl::PointCloud<PointType>::Ptr cloud);
+  void statisticalOutlierFilter(
+      SF_ParamStatisticalOutlierFilter<PointType> stdParams,
+      typename pcl::PointCloud<PointType>::Ptr cloud);
 
 public:
-    SF_StatisticalOutlierFilter();
-    virtual void compute(const SF_ParamStatisticalOutlierFilter<PointType> &params);
+  SF_StatisticalOutlierFilter();
+  virtual void
+  compute(const SF_ParamStatisticalOutlierFilter<PointType> &params);
 };
 
 #include "pcl/cloud/filter/binary/statisticaloutlier/sf_statisticalOutlierFilter.hpp"
 
 #endif // SF_STATISTICAL_OUTLIER_FILTER_H
-

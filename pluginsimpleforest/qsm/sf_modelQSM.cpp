@@ -29,61 +29,67 @@
 #include "sf_modelQSM.h"
 
 std::shared_ptr<SF_ModelAbstractSegment> SF_ModelQSM::getRootSegment() const {
-    return _rootSegment;
+  return _rootSegment;
 }
 
-void SF_ModelQSM::setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment> &rootSegment) {
-    _rootSegment = rootSegment;
+void SF_ModelQSM::setRootSegment(
+    const std::shared_ptr<SF_ModelAbstractSegment> &rootSegment) {
+  _rootSegment = rootSegment;
 }
 
-SF_ModelQSM::SF_ModelQSM(const int ID):
-    _ID(ID), _species("unknownSpecies") {
-
-}
+SF_ModelQSM::SF_ModelQSM(const int ID) : _ID(ID), _species("unknownSpecies") {}
 
 std::string SF_ModelQSM::toString() {
-    std::string str(std::to_string(_ID));
-    str.append(", ");
-    str.append(_species);
-    str.append("\n");
-    return str;
+  std::string str(std::to_string(_ID));
+  str.append(", ");
+  str.append(_species);
+  str.append("\n");
+  return str;
 }
 
 std::string SF_ModelQSM::toHeaderString() {
-    std::string str("treeID, treeSpecies");
-    str.append("\n");
-    return str;
+  std::string str("treeID, treeSpecies");
+  str.append("\n");
+  return str;
 }
 
-std::vector<std::shared_ptr<SF_ModelAbstractSegment> > SF_ModelQSM::getSegments() {
-    std::vector<std::shared_ptr<SF_ModelAbstractSegment> > segments;
-    if(_rootSegment!=nullptr) {
-         segments = getSegments(_rootSegment);
-    }
-    return segments;
+std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
+SF_ModelQSM::getSegments() {
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments;
+  if (_rootSegment != nullptr) {
+    segments = getSegments(_rootSegment);
+  }
+  return segments;
 }
 
-std::vector<std::shared_ptr<SF_ModelAbstractSegment> > SF_ModelQSM::getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment) {
-    std::vector<std::shared_ptr<SF_ModelAbstractSegment> > segments;
-    segments.push_back(segment);
-    for(size_t i = 0; i < segment->getChildSegments().size(); i++) {
-        std::shared_ptr<SF_ModelAbstractSegment> child = segment->getChildSegments()[i];
-        std::vector<std::shared_ptr<SF_ModelAbstractSegment> > childSegments = getSegments(child);
-        segments.insert( segments.end(), childSegments.begin(), childSegments.end() );
-    }
-    return segments;
+std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
+SF_ModelQSM::getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment) {
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments;
+  segments.push_back(segment);
+  for (size_t i = 0; i < segment->getChildSegments().size(); i++) {
+    std::shared_ptr<SF_ModelAbstractSegment> child =
+        segment->getChildSegments()[i];
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments =
+        getSegments(child);
+    segments.insert(segments.end(), childSegments.begin(), childSegments.end());
+  }
+  return segments;
 }
 
-std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick> > SF_ModelQSM::getBuildingBricks() {
-    std::vector<std::shared_ptr<SF_ModelAbstractSegment> > segments = getSegments();
-    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick> > buildingBricks;
-    for(size_t i = 0; i < segments.size(); i++) {
-        std::shared_ptr<SF_ModelAbstractSegment> segment = segments[i];
-        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick> > segmentBuildingBricks = segment->getBuildingBricks();
-        for(size_t j = 0; j < segmentBuildingBricks.size(); j++) {
-            std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = segmentBuildingBricks[j];
-            buildingBricks.push_back(buildingBrick);
-        }
+std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
+SF_ModelQSM::getBuildingBricks() {
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments =
+      getSegments();
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks;
+  for (size_t i = 0; i < segments.size(); i++) {
+    std::shared_ptr<SF_ModelAbstractSegment> segment = segments[i];
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
+        segmentBuildingBricks = segment->getBuildingBricks();
+    for (size_t j = 0; j < segmentBuildingBricks.size(); j++) {
+      std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick =
+          segmentBuildingBricks[j];
+      buildingBricks.push_back(buildingBrick);
     }
-    return buildingBricks;
+  }
+  return buildingBricks;
 }

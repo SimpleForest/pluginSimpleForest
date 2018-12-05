@@ -34,27 +34,24 @@
 #include "pcl/sf_point.h"
 
 class SF_ModelRaster {
-    pcl::PointCloud<pcl::PointXYZ>::Ptr _cloud3D;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr _cloud2D;
-    pcl::KdTreeFLANN<pcl::PointXYZ>::Ptr _kdtree2D;
-    void create2DFrom3D();
-    void createKDTree();
-    void getNearestNeighborsHeightsAndDistances(const pcl::PointXYZ &point,
-                                                const int nn,
-                                                std::vector<float>& heightsOut,
-                                                std::vector<float>& distancesOut);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr _cloud3D;
+  pcl::PointCloud<pcl::PointXYZ>::Ptr _cloud2D;
+  pcl::KdTreeFLANN<pcl::PointXYZ>::Ptr _kdtree2D;
+  void create2DFrom3D();
+  void createKDTree();
+  void getNearestNeighborsHeightsAndDistances(const pcl::PointXYZ &point,
+                                              const int nn,
+                                              std::vector<float> &heightsOut,
+                                              std::vector<float> &distancesOut);
 
 public:
-    SF_ModelRaster(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D);
-    void interpolateIDW(const int knn,
-                        std::shared_ptr<SF_ModelRaster> dst);
-    void interpolateMedian(const int knn,
-                           std::shared_ptr<SF_ModelRaster> dst);
-    float heightAt(float x,
-                   float y);
+  SF_ModelRaster(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D);
+  void interpolateIDW(const int knn, std::shared_ptr<SF_ModelRaster> dst);
+  void interpolateMedian(const int knn, std::shared_ptr<SF_ModelRaster> dst);
+  float heightAt(float x, float y);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr getCloud3D() const;
-    void setCloud3D(const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr getCloud3D() const;
+  void setCloud3D(const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D);
 };
 
 #endif // SF_RASTER_MODEL_H

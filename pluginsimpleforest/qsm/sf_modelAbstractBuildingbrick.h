@@ -29,54 +29,53 @@
 #ifndef SF_MODEL_ABSTRACT_BUILDINGBRICK_H
 #define SF_MODEL_ABSTRACT_BUILDINGBRICK_H
 
-#include<Eigen/Core>
-#include<memory.h>
-#include<pcl/ModelCoefficients.h>
-#include<pcl/point_types.h>
+#include <Eigen/Core>
+#include <memory.h>
+#include <pcl/ModelCoefficients.h>
+#include <pcl/point_types.h>
 
-enum FittingType {UNKNOWN, SPHEREFOLLOWING};
+enum FittingType { UNKNOWN, SPHEREFOLLOWING };
 
 class SF_ModelAbstractSegment;
 
-class Sf_ModelAbstractBuildingbrick
-{
+class Sf_ModelAbstractBuildingbrick {
 protected:
-    size_t _ID;
-    size_t _indexVector;
-    std::weak_ptr<SF_ModelAbstractSegment> _segment;
-    Eigen::Vector3f _start;
-    Eigen::Vector3f _end;
-    FittingType _fittingType;
-    virtual float getDistanceToAxis(const Eigen::Vector3f& point) = 0;
-    virtual Eigen::Vector3f getProjectionOnAxis(const Eigen::Vector3f& point) = 0;
-    virtual float getBoundingSphereRadius();
+  size_t _ID;
+  size_t _indexVector;
+  std::weak_ptr<SF_ModelAbstractSegment> _segment;
+  Eigen::Vector3f _start;
+  Eigen::Vector3f _end;
+  FittingType _fittingType;
+  virtual float getDistanceToAxis(const Eigen::Vector3f &point) = 0;
+  virtual Eigen::Vector3f getProjectionOnAxis(const Eigen::Vector3f &point) = 0;
+  virtual float getBoundingSphereRadius();
 
 public:
-    Sf_ModelAbstractBuildingbrick();
-    std::shared_ptr<Sf_ModelAbstractBuildingbrick> getParent();
-    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick> > getChildren();
+  Sf_ModelAbstractBuildingbrick();
+  std::shared_ptr<Sf_ModelAbstractBuildingbrick> getParent();
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> getChildren();
 
-    float getGrowthLength();
-    float getGrowthVolume();
-    virtual float getLength() = 0;
-    virtual float getVolume() = 0;
-    virtual float getRadius() = 0;
-    virtual float getDistance(const Eigen::Vector3f& point) = 0;
-    float getDistance(const pcl::PointXYZ &point);
-    float getDistance(const pcl::PointXYZINormal &point);
-    virtual Eigen::Vector3f getCenter() = 0;
-    virtual Eigen::Vector3f getAxis() = 0;
-    virtual std::string toString() = 0;
-    virtual std::string toHeaderString() = 0;
+  float getGrowthLength();
+  float getGrowthVolume();
+  virtual float getLength() = 0;
+  virtual float getVolume() = 0;
+  virtual float getRadius() = 0;
+  virtual float getDistance(const Eigen::Vector3f &point) = 0;
+  float getDistance(const pcl::PointXYZ &point);
+  float getDistance(const pcl::PointXYZINormal &point);
+  virtual Eigen::Vector3f getCenter() = 0;
+  virtual Eigen::Vector3f getAxis() = 0;
+  virtual std::string toString() = 0;
+  virtual std::string toHeaderString() = 0;
 
-    size_t getIndex() const;
-    void setIndex(const size_t &index);
-    size_t getID() const;
-    void setID(const size_t &ID);
-    Eigen::Vector3f getStart() const;
-    Eigen::Vector3f getEnd() const;
-    std::shared_ptr<SF_ModelAbstractSegment> getSegment();
-    void setSegment(std::shared_ptr<SF_ModelAbstractSegment> segment);
+  size_t getIndex() const;
+  void setIndex(const size_t &index);
+  size_t getID() const;
+  void setID(const size_t &ID);
+  Eigen::Vector3f getStart() const;
+  Eigen::Vector3f getEnd() const;
+  std::shared_ptr<SF_ModelAbstractSegment> getSegment();
+  void setSegment(std::shared_ptr<SF_ModelAbstractSegment> segment);
 };
 
 #endif // SF_MODEL_ABSTRACT_BUILDINGBRICK_H

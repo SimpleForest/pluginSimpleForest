@@ -30,62 +30,58 @@
 
 #include "sf_math.h"
 
-template <typename T>
-const T SF_Math<T>::_PI = 3.1415926;
+template <typename T> const T SF_Math<T>::_PI = 3.1415926;
+
+template <typename T> const T SF_Math<T>::_RAD_TO_DEG = 180.0 / SF_Math::_PI;
+
+template <typename T> const T SF_Math<T>::_DEG_TO_RAD = SF_Math::_PI / 180.0;
 
 template <typename T>
-const T SF_Math<T>::_RAD_TO_DEG = 180.0/SF_Math::_PI;
-
-template <typename T>
-const T SF_Math<T>::_DEG_TO_RAD = SF_Math::_PI/180.0;
-
-template <typename T>
-T SF_Math<T>::getAngleBetweenDeg(Eigen::Vector3f  axis1, Eigen::Vector3f  axis2) {
-    axis1.normalize();
-    axis2.normalize();
-    return acos(axis1.dot(axis2))*SF_Math::_RAD_TO_DEG;
+T SF_Math<T>::getAngleBetweenDeg(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
+  axis1.normalize();
+  axis2.normalize();
+  return acos(axis1.dot(axis2)) * SF_Math::_RAD_TO_DEG;
 }
 
-template<typename T>
-T SF_Math<T>::distance(const Eigen::Vector3f& pointA, const Eigen::Vector3f& pointB) {
-    T distance = (pointA-pointB).norm();
-    return distance;
+template <typename T>
+T SF_Math<T>::distance(const Eigen::Vector3f &pointA,
+                       const Eigen::Vector3f &pointB) {
+  T distance = (pointA - pointB).norm();
+  return distance;
 }
 
 template <typename T>
 T SF_Math<T>::getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
-    axis1.normalize();
-    axis2.normalize();
-    return acos(axis1.dot(axis2));
+  axis1.normalize();
+  axis2.normalize();
+  return acos(axis1.dot(axis2));
 }
 
-template<typename T>
-T SF_Math<T>::getMedian(std::vector<T> &vec) {
-    size_t size = vec.size();
-    if (size == 0) {
-        return 0;
+template <typename T> T SF_Math<T>::getMedian(std::vector<T> &vec) {
+  size_t size = vec.size();
+  if (size == 0) {
+    return 0;
+  } else {
+    std::sort(vec.begin(), vec.end());
+    if (size % 2 == 0) {
+      return (vec[size / 2 - 1] + vec[size / 2]) / 2;
     } else {
-        std::sort(vec.begin(), vec.end());
-        if (size % 2 == 0) {
-            return (vec[size / 2 - 1] + vec[size / 2]) / 2;
-        } else {
-            return vec[size / 2];
-        }
+      return vec[size / 2];
     }
+  }
 }
 
-template<typename T>
-T SF_Math<T>::getMean(std::vector<T> &vec) {
-    size_t size = vec.size();
-    if (size == 0) {
-        return 0;
-    } else {
-        T sum = 0;
-        for(size_t i = 0; i < vec.size(); i++) {
-            sum += vec[i];
-        }
-        return (sum/vec.size());
+template <typename T> T SF_Math<T>::getMean(std::vector<T> &vec) {
+  size_t size = vec.size();
+  if (size == 0) {
+    return 0;
+  } else {
+    T sum = 0;
+    for (size_t i = 0; i < vec.size(); i++) {
+      sum += vec[i];
     }
+    return (sum / vec.size());
+  }
 }
 
 #endif // SF_MATH_HPP

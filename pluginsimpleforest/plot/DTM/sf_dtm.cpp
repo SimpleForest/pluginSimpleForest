@@ -28,11 +28,10 @@
 
 #include "sf_modelDTM.h"
 
-SF_ModelDTM::SF_ModelDTM(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D) : SF_ModelRaster(cloud3D) {
-
-}
+SF_ModelDTM::SF_ModelDTM(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D)
+    : SF_ModelRaster(cloud3D) {}
 
 float SF_ModelDTM::heightAbove(pcl::PointXYZ point) {
-    float heightDTM = heightAt(point.x, point.y);
-    return point.z - heightDTM;
+  float heightDTM = heightAt(point.x, point.y);
+  return point.z - heightDTM;
 }

@@ -33,22 +33,19 @@
 #include <pcl/cloud/sf_abstractCloud.h>
 
 template <typename PointType>
-class Sf_AbstractBinaryFilter: public  SF_AbstractFilterDeprecated<PointType> {
+class Sf_AbstractBinaryFilter : public SF_AbstractFilterDeprecated<PointType> {
 
 protected:
-    typename pcl::PointCloud<PointType>::Ptr _cloudOutFilteredNoise;
-    virtual void reset();
-    virtual void createIndex(PointType point,
-                      float sqrd_distance);
+  typename pcl::PointCloud<PointType>::Ptr _cloudOutFilteredNoise;
+  virtual void reset();
+  virtual void createIndex(PointType point, float sqrd_distance);
 
 public:
-    Sf_AbstractBinaryFilter();
-    typename pcl::PointCloud<PointType>::Ptr getCloudOutFilteredNoise() const;
-    double getPercentage();
+  Sf_AbstractBinaryFilter();
+  typename pcl::PointCloud<PointType>::Ptr getCloudOutFilteredNoise() const;
+  double getPercentage();
 };
 
 #include "sf_abstractBinaryFilter.hpp"
 
 #endif // SF_BINARY_FILTER_H
-
-

@@ -29,70 +29,69 @@
 #define SF_DIJKSTRA_H
 
 #include <boost/heap/fibonacci_heap.hpp>
-#include <pcl/sf_point.h>
-#include <pcl/octree/octree.h>
 #include <pcl/kdtree/kdtree.h>
+#include <pcl/octree/octree.h>
+#include <pcl/sf_point.h>
 #include <steps/param/sf_paramAllSteps.h>
 
 struct heapData;
 
 struct Point {
 public:
-    pcl::PointXYZI _point;
-    float _distance;
-    bool _visited;
-    Point(){}
-    Point(const Point & p2) {
-        _distance = p2._distance;
-        _visited  = p2._visited;
-        _point    = p2._point;
-    }
-    Point(pcl::PointXYZI point, float distance): _point(point), _distance(distance) {}
+  pcl::PointXYZI _point;
+  float _distance;
+  bool _visited;
+  Point() {}
+  Point(const Point &p2) {
+    _distance = p2._distance;
+    _visited = p2._visited;
+    _point = p2._point;
+  }
+  Point(pcl::PointXYZI point, float distance)
+      : _point(point), _distance(distance) {}
 };
 
 using Heap = boost::heap::fibonacci_heap<heapData>;
 
 struct heapData {
-    Point _point;
-    Heap::handle_type handle;
-    heapData(Point point): _point(point),handle() {}
-    bool operator<(heapData const & second) const {
-        return _point._distance > second._point._distance;
-    }
+  Point _point;
+  Heap::handle_type handle;
+  heapData(Point point) : _point(point), handle() {}
+  bool operator<(heapData const &second) const {
+    return _point._distance > second._point._distance;
+  }
 };
 
 class SF_Dijkstra {
 private:
-    float _maxDistance;
+  float _maxDistance;
 
-    Heap _priorityQueue;
-    std::vector<Heap::handle_type> _handle;
-    std::vector<Point> _points;
-    typename pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudIn;
-    const typename pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudInSeeds;
-    typename pcl::KdTreeFLANN<pcl::PointXYZI>::Ptr _kdtree;
-    float _range;
-    std::vector<float> _distances;
+  Heap _priorityQueue;
+  std::vector<Heap::handle_type> _handle;
+  std::vector<Point> _points;
+  typename pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudIn;
+  const typename pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudInSeeds;
+  typename pcl::KdTreeFLANN<pcl::PointXYZI>::Ptr _kdtree;
+  float _range;
+  std::vector<float> _distances;
 
-    void initialize();
-    void initializeHeap();
-    void initializeKDTree();
-    void transferIntensity();
-    int getIndex(const pcl::PointXYZI& point);
-    float getDistance(const pcl::PointXYZI& p1,
-                      const pcl::PointXYZI& p2);
-    std::vector<int> getNeighbors(const pcl::PointXYZI& point);
-    void compute();
+  void initialize();
+  void initializeHeap();
+  void initializeKDTree();
+  void transferIntensity();
+  int getIndex(const pcl::PointXYZI &point);
+  float getDistance(const pcl::PointXYZI &p1, const pcl::PointXYZI &p2);
+  std::vector<int> getNeighbors(const pcl::PointXYZI &point);
+  void compute();
 
 public:
-    SF_Dijkstra(typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
-                const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
-                float range);
-    std::vector<float> getDistances() const;
-    float getMaxDistance() const;
+  SF_Dijkstra(typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
+              const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
+              float range);
+  std::vector<float> getDistances() const;
+  float getMaxDistance() const;
 };
 
 #include "sf_dijkstra.hpp"
 
 #endif // SF_DIJKSTRA_H
-

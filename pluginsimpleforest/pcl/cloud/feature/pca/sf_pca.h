@@ -34,37 +34,34 @@
 #include "sf_pcavalues.h"
 
 template <typename PointType>
-class SF_PCA: public  SF_AbstractCloud <PointType> {
+class SF_PCA : public SF_AbstractCloud<PointType> {
 private:
-    float _range;
-    bool _useRange;
-    int _k;
-    bool _centerZero;
-    std::vector<SF_PCAValues> pcaValues;
-    void extractNeighbors(typename pcl::KdTree<PointType>::Ptr kdTree,
-                           PointType p,
-                           typename pcl::PointCloud<PointType>::Ptr neighborhood);
+  float _range;
+  bool _useRange;
+  int _k;
+  bool _centerZero;
+  std::vector<SF_PCAValues> pcaValues;
+  void extractNeighbors(typename pcl::KdTree<PointType>::Ptr kdTree,
+                        PointType p,
+                        typename pcl::PointCloud<PointType>::Ptr neighborhood);
+
 public:
-    SF_PCA(typename pcl::PointCloud<PointType>::Ptr cloud_in);
-    virtual void computeFeatures();
-    virtual void createIndices(){}
-    virtual void createIndex(PointType point,
-                             float sqrd_distance){}
-    virtual void reset(){pcaValues.clear();}
-    static SF_PCAValues computeFeaturesFromNeighbors(typename pcl::PointCloud<PointType>::Ptr neighborhood,
-                                                   const Eigen::Vector4f& xyz_centroid);
-    void computeFeaturesForPoint(const PointType& p,
-                                 typename pcl::KdTree<PointType>::Ptr kdTree,
-                                 int index);
-    void setParameters(float range,
-                       bool centerZero,
-                       bool useRange);
-    void setParameters(int k,
-                       bool centerZero);
-    std::vector<SF_PCAValues> getPcaValues() const;
+  SF_PCA(typename pcl::PointCloud<PointType>::Ptr cloud_in);
+  virtual void computeFeatures();
+  virtual void createIndices() {}
+  virtual void createIndex(PointType point, float sqrd_distance) {}
+  virtual void reset() { pcaValues.clear(); }
+  static SF_PCAValues computeFeaturesFromNeighbors(
+      typename pcl::PointCloud<PointType>::Ptr neighborhood,
+      const Eigen::Vector4f &xyz_centroid);
+  void computeFeaturesForPoint(const PointType &p,
+                               typename pcl::KdTree<PointType>::Ptr kdTree,
+                               int index);
+  void setParameters(float range, bool centerZero, bool useRange);
+  void setParameters(int k, bool centerZero);
+  std::vector<SF_PCAValues> getPcaValues() const;
 };
 
 #include "sf_pca.hpp"
 
 #endif // SF_PCA_H
-

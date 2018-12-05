@@ -29,29 +29,30 @@
 #ifndef SF_MODEL_CYLINDER_BUILDINGBRICK_H
 #define SF_MODEL_CYLINDER_BUILDINGBRICK_H
 
+#include "sf_modelAbstractBuildingbrick.h"
 #include <pcl/ModelCoefficients.h>
 #include <pcl/point_types.h>
-#include "sf_modelAbstractBuildingbrick.h"
 
-class Sf_ModelCylinderBuildingbrick: public Sf_ModelAbstractBuildingbrick {
-    float _radius;
+class Sf_ModelCylinderBuildingbrick : public Sf_ModelAbstractBuildingbrick {
+  float _radius;
 
 protected:
-    float getDistanceToAxis(const Eigen::Vector3f& point) override;
-    float getProjectedDistanceToSegment(const Eigen::Vector3f &point);
-    float getDistanceToInfinitHull(const Eigen::Vector3f& point);
-    Eigen::Vector3f getProjectionOnAxis(const Eigen::Vector3f& point) override;
+  float getDistanceToAxis(const Eigen::Vector3f &point) override;
+  float getProjectedDistanceToSegment(const Eigen::Vector3f &point);
+  float getDistanceToInfinitHull(const Eigen::Vector3f &point);
+  Eigen::Vector3f getProjectionOnAxis(const Eigen::Vector3f &point) override;
 
 public:
-    Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB);
-    std::string toString() override;
-    std::string toHeaderString() override;
-    float getRadius() override;
-    float getVolume() override;
-    float getLength() override;
-    float getDistance(const Eigen::Vector3f& point) override;
-    virtual Eigen::Vector3f getCenter() override;
-    virtual Eigen::Vector3f getAxis() override;
+  Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA,
+                                pcl::ModelCoefficients::Ptr circleB);
+  std::string toString() override;
+  std::string toHeaderString() override;
+  float getRadius() override;
+  float getVolume() override;
+  float getLength() override;
+  float getDistance(const Eigen::Vector3f &point) override;
+  virtual Eigen::Vector3f getCenter() override;
+  virtual Eigen::Vector3f getAxis() override;
 };
 
 #endif // SF_MODEL_CYLINDER_BUILDINGBRICK_H

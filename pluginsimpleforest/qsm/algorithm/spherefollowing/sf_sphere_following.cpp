@@ -28,30 +28,28 @@
 
 #include "sf_sphere_following.h"
 
-
 void SF_SphereFollowing::initializeCloud() {
-    _cloud.reset(new pcl::PointCloud<pcl::PointXYZINormal>());
-    for(size_t i = 0 ; i < _clusters.size(); i++) {
-        pcl::PointCloud<pcl::PointXYZINormal>::Ptr cluster = _clusters[i];
-        for(size_t j = 0; j < cluster->points.size(); j++) {
-            pcl::PointXYZINormal point = cluster->points[j];
-            point.intensity = i;
-            _cloud->push_back(point);
-        }
+  _cloud.reset(new pcl::PointCloud<pcl::PointXYZINormal>());
+  for (size_t i = 0; i < _clusters.size(); i++) {
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cluster = _clusters[i];
+    for (size_t j = 0; j < cluster->points.size(); j++) {
+      pcl::PointXYZINormal point = cluster->points[j];
+      point.intensity = i;
+      _cloud->push_back(point);
     }
+  }
 }
 
-SF_SphereFollowing::SF_SphereFollowing(SF_SphereFollowingParameters params,
-                                       std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters):
-_params(params),
-_clusters(clusters){
-    _optimParams = _params._optimizationParams;
-    if(_optimParams.size() != clusters.size()) {
-        throw std::runtime_error("SF_SphereFollowing critical error with unformatted input parameters.");
-    }
-    initializeCloud();
+SF_SphereFollowing::SF_SphereFollowing(
+    SF_SphereFollowingParameters params,
+    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters)
+    : _params(params), _clusters(clusters) {
+  _optimParams = _params._optimizationParams;
+  if (_optimParams.size() != clusters.size()) {
+    throw std::runtime_error(
+        "SF_SphereFollowing critical error with unformatted input parameters.");
+  }
+  initializeCloud();
 }
 
-const std::shared_ptr<SF_ModelQSM> SF_SphereFollowing::getQSM() {
-    return _qsm;
-}
+const std::shared_ptr<SF_ModelQSM> SF_SphereFollowing::getQSM() { return _qsm; }

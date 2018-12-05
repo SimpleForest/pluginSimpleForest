@@ -29,29 +29,29 @@
 #ifndef SF_CELL_H
 #define SF_CELL_H
 
-#include <pcl/ModelCoefficients.h>
 #include <ct_itemdrawable/ct_image2d.h>
 #include <memory>
+#include <pcl/ModelCoefficients.h>
 
 #include "pcl/sf_point.h"
 
-template <typename PointType>
-struct SF_DTMCell {
-    int _index;
-    std::shared_ptr<CT_Image2D<float> > _dtm;
-    SF_DTMCell(std::shared_ptr<CT_Image2D<float> > dtm, int index);
-    Eigen::Vector2f getMinMaxHeight(const pcl::ModelCoefficients& coeff);
-    float getHeight(const Eigen::Vector2d &coords, const pcl::ModelCoefficients& coeff);
+template <typename PointType> struct SF_DTMCell {
+  int _index;
+  std::shared_ptr<CT_Image2D<float>> _dtm;
+  SF_DTMCell(std::shared_ptr<CT_Image2D<float>> dtm, int index);
+  Eigen::Vector2f getMinMaxHeight(const pcl::ModelCoefficients &coeff);
+  float getHeight(const Eigen::Vector2d &coords,
+                  const pcl::ModelCoefficients &coeff);
 
 private:
-    void updateMinMax(const float updateHeight, float &minHeight, float& maxHeight);
-    Eigen::Vector2d getCorner1();
-    Eigen::Vector2d getCorner2();
-    Eigen::Vector2d getCorner3();
-    Eigen::Vector2d getCorner4();
+  void updateMinMax(const float updateHeight, float &minHeight,
+                    float &maxHeight);
+  Eigen::Vector2d getCorner1();
+  Eigen::Vector2d getCorner2();
+  Eigen::Vector2d getCorner3();
+  Eigen::Vector2d getCorner4();
 };
 
 #include "sf_dtmCell.hpp"
 
 #endif // SF_CELL_H
-

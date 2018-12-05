@@ -29,24 +29,26 @@
 #ifndef SF_SPHERE_FOLLOWING_H
 #define SF_SPHERE_FOLLOWING_H
 
-#include "sf_spherefollowing_parameters.h"
 #include "qsm/algorithm/detection/sf_idetection.h"
+#include "sf_spherefollowing_parameters.h"
 
-class SF_SphereFollowing: public SF_IDetection {
-    std::shared_ptr<SF_ModelQSM> _qsm;
-    SF_SphereFollowingParameters _params;
-    std::vector<SF_SphereFollowingOptimizationParameters> _optimParams;
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr _cloud;
-    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> _clusters;
+class SF_SphereFollowing : public SF_IDetection {
+  std::shared_ptr<SF_ModelQSM> _qsm;
+  SF_SphereFollowingParameters _params;
+  std::vector<SF_SphereFollowingOptimizationParameters> _optimParams;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr _cloud;
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> _clusters;
 
 public:
-    SF_SphereFollowing(SF_SphereFollowingParameters params,
-                       std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters);
-    const virtual std::shared_ptr<SF_ModelQSM> getQSM() override;
-    virtual void compute() override {}
-    virtual void error() override {}
+  SF_SphereFollowing(
+      SF_SphereFollowingParameters params,
+      std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters);
+  const virtual std::shared_ptr<SF_ModelQSM> getQSM() override;
+  virtual void compute() override {}
+  virtual void error() override {}
+
 private:
-    void initializeCloud();
+  void initializeCloud();
 };
 
 #endif // SF_SPHERE_FOLLOWING_H
