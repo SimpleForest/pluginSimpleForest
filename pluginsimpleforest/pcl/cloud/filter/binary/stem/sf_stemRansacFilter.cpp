@@ -156,7 +156,10 @@ void SF_StemRANSACFilter::compute() {
     std::cout<<"foo5"<<std::endl;
     filterIteratively(downScaledCloudFiltered);
     std::cout<<"foo6 downScaledCloudFiltered" << downScaledCloudFiltered->points.size() <<std::endl;
-    backScale(downScaledCloudFiltered);
+    if(downScaledCloudFiltered->points.size() > 0)
+    {
+        backScale(downScaledCloudFiltered);
+    }
     std::cout<<"foo7"<<std::endl;
     createIndices();
 }
