@@ -31,12 +31,12 @@
 
 #include "pcl/sf_math.h"
 
-class SF_Interpolation
-{
+class SF_Interpolation {
 public:
-    static float interpolateMedian(const std::vector<float> & values);
-    static float interpolateIDW(const std::vector<float> & values, const std::vector<float> & distances);
-    SF_Interpolation();
+  static float interpolateMedian(const std::vector<float> &values);
+  static float interpolateIDW(const std::vector<float> &values,
+                              const std::vector<float> &distances);
+  SF_Interpolation();
 };
 
 #endif // SF_INTERPOLATION_H

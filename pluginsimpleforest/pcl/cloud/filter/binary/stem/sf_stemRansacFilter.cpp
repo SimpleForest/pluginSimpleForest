@@ -123,7 +123,6 @@ void SF_StemRANSACFilter::backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr d
     _cloudOutFiltered.reset(new typename pcl::PointCloud<pcl::PointXYZINormal>);
     pcl::KdTreeFLANN<pcl::PointXYZINormal> kdtree;
     kdtree.setInputCloud (downScaledCloudFiltered);
-    //TODO it today
     for(size_t i = 0; i < _cloudIn->points.size(); i++) {
         pcl::PointXYZINormal point = _cloudIn->points[i];
         std::vector<int> pointIdxNKNSearch(1);
