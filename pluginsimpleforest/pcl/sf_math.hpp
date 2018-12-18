@@ -30,6 +30,8 @@
 
 #include "sf_math.h"
 
+#include <numeric>
+
 template <typename T> const T SF_Math<T>::_PI = 3.1415926;
 
 template <typename T> const T SF_Math<T>::_RAD_TO_DEG = 180.0 / SF_Math::_PI;
@@ -58,30 +60,13 @@ T SF_Math<T>::getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
 }
 
 template <typename T> T SF_Math<T>::getMedian(std::vector<T> &vec) {
-  size_t size = vec.size();
-  if (size == 0) {
-    return 0;
-  } else {
-    std::sort(vec.begin(), vec.end());
-    if (size % 2 == 0) {
-      return (vec[size / 2 - 1] + vec[size / 2]) / 2;
-    } else {
-      return vec[size / 2];
-    }
-  }
+    size_t n = vec.size() / 2;
+    std::nth_element(vec.begin(), vec.begin()+n, vec.end());
+    return vec[n];
 }
 
 template <typename T> T SF_Math<T>::getMean(std::vector<T> &vec) {
-  size_t size = vec.size();
-  if (size == 0) {
-    return 0;
-  } else {
-    T sum = 0;
-    for (size_t i = 0; i < vec.size(); i++) {
-      sum += vec[i];
-    }
-    return (sum / vec.size());
-  }
+    return (std::accumulate(vec.begin(), vec.end(), 0) / vec.size());
 }
 
 #endif // SF_MATH_HPP

@@ -55,8 +55,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     math/interpolation/sf_interpolation.h \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.h \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.hpp \
-    qsm/algorithm/spherefollowing/sf_spherefollowing_parameters.h \
-    qsm/algorithm/spherefollowing/sf_sphere_following.h \
     qsm/algorithm/detection/sf_idetection.h \
     qsm/algorithm/optimization/gridsearch/sf_gridsearch.h \
     qsm/algorithm/optimization/gridsearch/sf_gridsearchparameters.h \
@@ -149,13 +147,17 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     parameter/sf_parametersetvoxelgriddownscale.h \
     parameter/sf_parameterSetVoxelgridDownscaling.h \
     parameter/sf_parameterSetPrincipalDirection.h \
-    steps/feature/principaldirection/sf_adapterprincipaldirection.h
+    steps/feature/principaldirection/sf_adapterprincipaldirection.h \
+    qsm/sf_modelLevelOne.h \
+    qsm/algorithm/spherefollowing/sf_spherefollowingParameters.h \
+    qsm/algorithm/spherefollowing/sf_spherefollowing.h \
+    qsm/algorithm/geometry/circle/sf_circle.h \
+    qsm/algorithm/geometry/circle/sf_circle.hpp
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
     plot/DTM/sf_dtm.cpp \
     math/interpolation/sf_interpolation.cpp \
-    qsm/algorithm/spherefollowing/sf_sphere_following.cpp \
     qsm/algorithm/optimization/gridsearch/sf_gridsearch.cpp \
     qsm/sf_modelCylinderBuildingbrick.cpp \
     qsm/sf_modelAbstractSegment.cpp \
@@ -189,7 +191,9 @@ SOURCES += \
     steps/dtm/sf_stepDTM.cpp \
     steps/feature/principaldirection/sf_stepprincipaldirection.cpp \
     steps/feature/sf_abstractstepfeature.cpp \
-    cloud/filter/multiple/clusterscaling/sf_testclustertransfer.cpp
+    cloud/filter/multiple/clusterscaling/sf_testclustertransfer.cpp \
+    qsm/sf_modelLevelOne.cpp \
+    qsm/algorithm/spherefollowing/sf_spherefollowing.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

@@ -35,7 +35,7 @@
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "pcl/sf_point.h"
 #include "qsm/algorithm/distance/sf_cloudToModelDistanceParameters.h"
-#include "qsm/algorithm/spherefollowing/sf_spherefollowing_parameters.h"
+#include "qsm/algorithm/spherefollowing/sf_spherefollowingParameters.h"
 #include "qsm/sf_modelQSM.h"
 #include <pcl/sample_consensus/method_types.h>
 
@@ -399,6 +399,8 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType> {
       str.append("; _minRadius = ");
       str.append(QString::number(
           _sphereFollowingParams._optimizationParams.at(i)._minRadius));
+      str.append("; _medianRadiusMultiplier = ");
+      str.append(QString::number(_sphereFollowingParams._medianRadiusMultiplier));
       str.append("; _epsilonSphere = ");
       str.append(QString::number(
           _sphereFollowingParams._optimizationParams.at(i)._epsilonSphere));
@@ -415,6 +417,7 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType> {
     str.append(QString::number(_sphereFollowingParams._RANSACIterations));
     str.append("; _minGlobalRadius = ");
     str.append(QString::number(_sphereFollowingParams._minGlobalRadius));
+
     str.append("; _fittingMethod = ");
     str.append(methodToString(_sphereFollowingParams._fittingMethod));
     str.append(") \n has been optimized. During the Parameter search ");

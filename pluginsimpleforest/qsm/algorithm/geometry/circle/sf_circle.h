@@ -26,29 +26,32 @@
 
 *****************************************************************************/
 
-#ifndef SF_SPHERE_FOLLOWING_H
-#define SF_SPHERE_FOLLOWING_H
+#ifndef SF_CIRCLE_H
+#define SF_CIRCLE_H
 
-#include "qsm/algorithm/detection/sf_idetection.h"
-#include "sf_spherefollowing_parameters.h"
+#include "pcl/sf_point.h"
+#include "pcl/common/geometry.h"
+#include "steps/param/sf_paramAllSteps.h"
+#include "pcl/sf_math.h"
 
-class SF_SphereFollowing : public SF_IDetection {
-  std::shared_ptr<SF_ModelQSM> _qsm;
-  SF_SphereFollowingParameters _params;
-  std::vector<SF_SphereFollowingOptimizationParameters> _optimParams;
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr _cloud;
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> _clusters;
+#include <utility>
 
+template <typename PointType>
+class SF_Circle
+{
+    pcl::PointCloud<PointType>::Ptr m_cloudIn;
+    const std::vector<int> &m_indices;
+    const SF_ParamSpherefollowingBasic &m_params;
+    pcl::ModelCoefficients m_coeff;
+    pcl::ModelCoefficients cirlceMedian();
+    pcl::ModelCoefficients cirlceSACModel();
+    void chooseModel(const pcl::ModelCoefficients &circleMedian, const pcl::ModelCoefficients &circleSACModel);
 public:
-  SF_SphereFollowing(
-      SF_SphereFollowingParameters params,
-      std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters);
-  const virtual std::shared_ptr<SF_ModelQSM> getQSM() override;
-  virtual void compute() override {}
-  virtual void error() override {}
-
-private:
-  void initializeCloud();
+    SF_Circle(pcl::PointCloud<PointType>::Ptr cloudIn, const std::vector<int> &indices, const SF_ParamSpherefollowingBasic &params);
+    pcl::ModelCoefficients coeff() const;
 };
 
-#endif // SF_SPHERE_FOLLOWING_H
+#include "sf_circle.hpp"
+
+#endif // SF_CIRCLE_H
+
