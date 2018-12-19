@@ -49,8 +49,9 @@ struct SF_SphereFollowingOptimizationParameters {
 };
 
 struct SF_SphereFollowingParameters {
-  std::vector<SF_SphereFollowingOptimizationParameters> _optimizationParams;
-  int _fittingMethod = pcl::SAC_MLESAC;
+  std::vector<SF_SphereFollowingOptimizationParameters> m_optimizationParams;
+  int _fittingMethod = pcl::SAC_MLESAC;  
+  float _heapDelta = 0.2f;
   float _inlierDistance = 0.03f;
   int _minPtsGeometry = 3;
   int _RANSACIterations = 100;

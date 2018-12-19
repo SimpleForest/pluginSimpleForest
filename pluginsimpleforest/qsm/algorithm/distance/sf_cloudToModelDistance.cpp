@@ -105,7 +105,7 @@ void Sf_CloudToModelDistance::compute() {
   std::vector<float> distances = cropDistances(_distances);
   switch (_METHOD) {
   case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
-    _averageDistance = getNumberInliers(distances);
+    _averageDistance = getNumberInliersNegative(distances);
     break;
   case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
     _averageDistance = SF_Math<float>::getMean(distances);
@@ -165,10 +165,10 @@ const std::vector<float> Sf_CloudToModelDistance::getCloudToModelDistances() {
   return distances;
 }
 
-float Sf_CloudToModelDistance::getNumberInliers(const std::vector<float> &distances) {
+float Sf_CloudToModelDistance::getNumberInliersNegative(const std::vector<float> &distances) {
   float sum = 0;
   for (size_t i = 0; i < distances.size(); i++) {
-    sum += distances[i];
+      if(distances[i] < _INLIERDISTANCE) sum-- ;
   }
   return sum;
 }
@@ -195,3 +195,4 @@ Sf_CloudToModelDistance::Sf_CloudToModelDistance(
   initializeKdTree();
   compute();
 }
+

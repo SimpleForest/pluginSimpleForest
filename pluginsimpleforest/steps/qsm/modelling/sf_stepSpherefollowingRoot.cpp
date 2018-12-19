@@ -30,6 +30,8 @@
 #include "sf_stepSpherefollowingBasicAdapter.h"
 #include <QtConcurrent/QtConcurrent>
 
+#include <ct_itemdrawable/ct_cylinder.h>
+
 SF_StepSpherefollowingRoot::SF_StepSpherefollowingRoot(
     CT_StepInitializeData &dataInit)
     : SF_AbstractStepSegmentation(dataInit) {
@@ -116,13 +118,13 @@ QStringList SF_StepSpherefollowingRoot::getStepRISCitations() const {
 }
 
 void SF_StepSpherefollowingRoot::createInResultModelListProtected() {
-  CT_InResultModelGroupToCopy *res_model =
+  CT_InResultModelGroupToCopy *resModel =
       createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
-  res_model->setZeroOrMoreRootGroup();
-  res_model->addGroupModel(
+  resModel->setZeroOrMoreRootGroup();
+  resModel->addGroupModel(
       "", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(),
       tr("Tree Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-  res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED,
+  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED,
                           CT_Scene::staticGetType(), tr("Tree Cloud"));
 }
 
@@ -269,11 +271,11 @@ void SF_StepSpherefollowingRoot::createPostConfigurationDialogBeginner(
 }
 
 void SF_StepSpherefollowingRoot::createOutResultModelListProtected() {
-  CT_OutResultModelGroupToCopyPossibilities *res_modelw =
+  CT_OutResultModelGroupToCopyPossibilities *resModelw =
       createNewOutResultModelToCopy(DEF_IN_RESULT);
-  if (res_modelw != NULL) {
-    res_modelw->addItemModel(DEF_IN_SCENE, _outCloudCluster, new CT_Scene(),
-                             tr("Dijsktra Segmented"));
+  if (resModelw != NULL) {
+      resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outCylinderGroup, new CT_StandardItemGroup(), tr("QSM Group"));
+      resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(), tr("QSM"));
   }
 }
 
@@ -324,6 +326,35 @@ void SF_StepSpherefollowingRoot::compute() {
   QFuture<void> future =
       QtConcurrent::map(_paramList, SF_SpherefollowingRootAdapter());
   setProgressByFuture(future, 10, 85);
+
+  CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
+  while (!isStopped() && outResIt.hasNext()) {
+    CT_StandardItemGroup *group = (CT_StandardItemGroup *)outResIt.next();
+    std::for_each(_paramList.begin(), _paramList.end(), [this, group, outResult](SF_ParamSpherefollowingBasic<SF_PointNormal> &params){
+        std::shared_ptr<SF_ModelQSM> qsm = params._tree;
+        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = qsm->getBuildingBricks();
+        std::for_each(buildingBricks.begin(), buildingBricks.end(), [&params, this, group, outResult](std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick){
+              Eigen::Vector3f start = buildingBrick->getStart();
+              Eigen::Vector3f end = buildingBrick->getEnd();
+              double radius = buildingBrick->getRadius();
+              double length = buildingBrick->getLength();
+              CT_CylinderData *data = new CT_CylinderData(Eigen::Vector3d(static_cast<double>(start[0]+params._translation[0]),
+                                                                          static_cast<double>(start[1]+params._translation[1]),
+                                                                          static_cast<double>(start[2]+params._translation[2])),
+                                                          Eigen::Vector3d(static_cast<double>(end[0] -start[0]),
+                                                                          static_cast<double>(end[1] -start[1]),
+                                                                          static_cast<double>(end[2] -start[2])),
+                                                          radius, length);
+              CT_StandardItemGroup *cylinderGroup = new CT_StandardItemGroup(_outCylinderGroup.completeName(), outResult);
+              CT_Cylinder *cylinder = new CT_Cylinder(_outCylinders.completeName(), outResult,data);
+              cylinderGroup->addItemDrawable(cylinder);
+              group->addGroup(cylinderGroup);
+        });
+    });
+  }
+
+
+
 }
 
 int SF_StepSpherefollowingRoot::toStringSFMethod() {
@@ -373,7 +404,7 @@ void SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup *outResult) {
   std::vector<SF_SphereFollowingOptimizationParameters>
       optimizationParametersVector;
   optimizationParametersVector.push_back(sfOptimizationParameters);
-  sphereFollowingParams._optimizationParams = optimizationParametersVector;
+  sphereFollowingParams.m_optimizationParams = optimizationParametersVector;
   sphereFollowingParams._minPtsGeometry = _SF_minPtsGeometry;
   sphereFollowingParams._inlierDistance = _SF_inlierDistance;
   sphereFollowingParams._RANSACIterations = _SF_RANSACIiterations;

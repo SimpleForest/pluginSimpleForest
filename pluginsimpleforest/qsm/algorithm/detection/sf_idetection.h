@@ -9,7 +9,7 @@ class SF_IDetection {
 public:
   const virtual std::shared_ptr<SF_ModelQSM> getQSM() = 0;
   virtual void compute() = 0;
-  virtual void error() = 0;
+  virtual float error() = 0;
 };
 
 #endif // SF_IDETECTION_H

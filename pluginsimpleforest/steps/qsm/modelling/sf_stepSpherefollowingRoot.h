@@ -33,6 +33,8 @@ protected:
   QList<SF_ParamSpherefollowingBasic<SF_PointNormal>> _paramList;
 
 private:
+  CT_AutoRenameModels _outCylinderGroup;
+  CT_AutoRenameModels _outCylinders;
   int toStringSFMethod();
   int toStringCMDMethod();
   double _PP_voxelSize = 0.01;

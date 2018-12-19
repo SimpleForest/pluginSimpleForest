@@ -30,7 +30,9 @@
 #define SF_SPHERE_FOLLOWING_H
 
 #include "qsm/algorithm/detection/sf_idetection.h"
+#include "qsm/algorithm/sf_QSMCylinder.h"
 #include "sf_spherefollowingParameters.h"
+#include "steps/param/sf_paramAllSteps.h"
 
 #include <boost/heap/fibonacci_heap.hpp>
 #include <pcl/kdtree/kdtree.h>
@@ -38,85 +40,71 @@
 
 #include <memory>
 
-struct heapData;
+struct heapDataCircle;
 
 struct Circle {
 public:
-  pcl::ModelCoefficients _circleCoeff;
-  float _distance;
+  pcl::ModelCoefficients m_circleCoeff;
+  float m_distance;
+  int m_clusterIndex;
   Circle() {}
   Circle(const Circle &other) {
-    _distance = other._distance;
-    _circleCoeff = other._circleCoeff;
+    m_distance = other.m_distance;
+    m_circleCoeff = other.m_circleCoeff;
+    m_clusterIndex = other.m_clusterIndex;
   }
-  Circle(pcl::ModelCoefficients circleCoeff, float distance)
-      : _circleCoeff(circleCoeff), _distance(distance) {}
+  Circle(pcl::ModelCoefficients circleCoeff, float distance, int clusterIndex)
+      : m_circleCoeff(circleCoeff), m_distance(distance),
+        m_clusterIndex(clusterIndex) {}
 };
 
-using Heap = boost::heap::fibonacci_heap<heapData>;
+using HeapCircle = boost::heap::fibonacci_heap<heapDataCircle>;
 
-struct heapData {
-//  Circle _circle;
-//  Heap::handle_type handle;
-//  heapData(Circle point) : Circle(point), handle() {}
-//  bool operator<(heapData const &second) const {
-//    return _circle._distance > second._circle._distance;
-//  }
+struct heapDataCircle {
+  Circle _circle;
+  HeapCircle::handle_type handle;
+  heapDataCircle(Circle point) : _circle(point), handle() {}
+  bool operator<(heapDataCircle const &second) const {
+    return _circle.m_distance < second._circle.m_distance;
+  }
 };
-
-class SF_Dijkstra {
-private:
-//  float _maxDistance;
-
-//  Heap _priorityQueue;
-//  std::vector<Heap::handle_type> _handle;
-//  std::vector<Point> _points;
-//  typename pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudIn;
-//  const typename pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudInSeeds;
-//  typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZI>::Ptr _kdtree;
-//  float _range;
-//  std::vector<float> _distances;
-
-//  void initialize();
-//  void initializeHeap();
-//  void initializeKDTree();
-//  void transferIntensity();
-//  int getIndex(const pcl::PointXYZI &point);
-//  float getDistance(const pcl::PointXYZI &p1, const pcl::PointXYZI &p2);
-//  std::vector<int> getNeighbors(const pcl::PointXYZI &point);
-//  void compute();
-
-//public:
-//  SF_Dijkstra(typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
-//              const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
-//              float range);
-//  std::vector<float> getDistances() const;
-//  float getMaxDistance() const;
-};
-
-
 
 class SF_SphereFollowing : public SF_IDetection {
-  std::shared_ptr<SF_ModelQSM> _qsm;
-  SF_SphereFollowingParameters _params;
-  std::vector<SF_SphereFollowingOptimizationParameters> _optimParams;
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr _cloud;
-
-
 public:
   SF_SphereFollowing(
-      SF_SphereFollowingParameters params,
-      std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters);
-  const virtual std::shared_ptr<SF_ModelQSM> getQSM() override;
-  virtual void compute() override {}
-  virtual void error() override {}
+      SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> params,
+      std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters);
+  const std::shared_ptr<SF_ModelQSM> getQSM() override;
+  void compute() override;
+  float error() override;
 
 private:
+  typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>::Ptr
+      m_octree;
+  std::vector<SF_QSMDetectionCylinder> m_cylinders;
+  SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> m_params;
+  std::shared_ptr<SF_ModelQSM> m_qsm;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
+  std::vector<HeapCircle::handle_type> m_handle;
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &m_clusters;
+  HeapCircle m_priorityHeap;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr lowestSlice(float &minZ);
+  pcl::PointIndices::Ptr surfaceIndices(Circle &lastCircle);
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr
+  extractCloud(pcl::PointIndices::Ptr indices);
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>
+  clusterByID(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, size_t minID);
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusterEuclidean(
+      std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters);
+  void processClusters(
+      std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters,
+      const Circle &lastCircle);
   void initialize();
   void initializeCloud();
-  typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>::Ptr _octree;
-  Eigen::Vector3f _min;
-  Eigen::Vector3f _max;
+  void initializeOctree();
+  void initializeHeap();
+  void pushbackQueue(pcl::ModelCoefficients circleCoeff, float distance,
+                     int clusterID);
 };
 
 #endif // SF_SPHERE_FOLLOWING_H

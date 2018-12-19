@@ -386,24 +386,24 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType> {
     str.append("; _ransacCircleInlierDistance = ");
     str.append(QString::number(_sphereFollowingParams._inlierDistance));
     str.append("; Optimizable Parameters Output Following: \n {");
-    for (size_t i = 0; i < _sphereFollowingParams._optimizationParams.size();
+    for (size_t i = 0; i < _sphereFollowingParams.m_optimizationParams.size();
          i++) {
       str.append(" { _euclideanClusteringDistance = ");
       str.append(
-          QString::number(_sphereFollowingParams._optimizationParams.at(i)
+          QString::number(_sphereFollowingParams.m_optimizationParams.at(i)
                               ._euclideanClusteringDistance));
       str.append("; _sphereRadiusMultiplier = ");
       str.append(
-          QString::number(_sphereFollowingParams._optimizationParams.at(i)
+          QString::number(_sphereFollowingParams.m_optimizationParams.at(i)
                               ._sphereRadiusMultiplier));
       str.append("; _minRadius = ");
       str.append(QString::number(
-          _sphereFollowingParams._optimizationParams.at(i)._minRadius));
+          _sphereFollowingParams.m_optimizationParams.at(i)._minRadius));
       str.append("; _medianRadiusMultiplier = ");
-      str.append(QString::number(_sphereFollowingParams._medianRadiusMultiplier));
+      str.append(QString::number(_sphereFollowingParams.m_optimizationParams.at(i)._medianRadiusMultiplier));
       str.append("; _epsilonSphere = ");
       str.append(QString::number(
-          _sphereFollowingParams._optimizationParams.at(i)._epsilonSphere));
+          _sphereFollowingParams.m_optimizationParams.at(i)._epsilonSphere));
       str.append("}");
     }
     str.append("}\n Hyper parameters following: _minPtsCircle = ");
@@ -422,7 +422,7 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType> {
     str.append(methodToString(_sphereFollowingParams._fittingMethod));
     str.append(") \n has been optimized. During the Parameter search ");
     str.append(
-        QString::number(_sphereFollowingParams._optimizationParams.size() * 6));
+        QString::number(_sphereFollowingParams.m_optimizationParams.size() * 6));
     str.append(" parameters have been optimized.");
     str.append(" The error has been reduced from \n  max:");
     str.append(QString::number(_maxError));
