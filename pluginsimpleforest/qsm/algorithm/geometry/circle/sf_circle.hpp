@@ -142,8 +142,6 @@ void SF_Circle<PointType>::setParam(pcl::SACSegmentationFromNormals<PointType, P
 template <typename PointType>
 void SF_Circle<PointType>::chooseModel(const pcl::ModelCoefficients &circleMedian,
                             const pcl::ModelCoefficients &circleSACModel) {
-    std::cout << circleMedian.values.size() <<   " circleMedian" << std::endl;
-    std::cout << circleSACModel.values.size() <<  " circleSACModel" << std::endl;
   if (circleSACModel.values.size() == 7) {
     if ((circleSACModel.values[3] <
         circleMedian.values[3] *
@@ -155,13 +153,10 @@ void SF_Circle<PointType>::chooseModel(const pcl::ModelCoefficients &circleMedia
       m_coeff.values.push_back(circleSACModel.values[2]);
       m_coeff.values.push_back(circleSACModel.values[3]);
       m_coeff = circleMedian;
-      std::cout << "SACMODEL" << std::endl;
     } else {
       m_coeff = circleMedian;
-      std::cout << "circleMedian 1" << std::endl;
     }
   } else {
-      std::cout << "circleMedian 2" << std::endl;
     m_coeff = circleMedian;
   }
 }

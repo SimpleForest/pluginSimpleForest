@@ -25,28 +25,28 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_MATH_H
-#define SF_MATH_H
+#ifndef SF_DESCRIPTOR_H
+#define SF_DESCRIPTOR_H
 
-#include "pcl/point_types.h"
+#include "pcl/cloud/feature/sf_abstractFeature.h"
 
-template <typename T> class SF_Math {
+template <typename PointType>
+class SF_Descriptor  {
+private:
+    float m_k = 2;
+    float m_sd;
+    float m_mean;
+    SF_CloudNormal::Ptr _cloudIn;
+
 public:
-  static const T _PI;
-  static const T _RAD_TO_DEG;
-  static const T _DEG_TO_RAD;
-  static T getAngleBetweenDeg(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
-  static T distance(const Eigen::Vector3f &pointA,
-                    const Eigen::Vector3f &pointB);
-  static T getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
-  static T getMedian(std::vector<T> &vec);
-  static T getMean(std::vector<T> &vec);
-  static T getStandardDeviation(std::vector<T> &vec);
-  static T getStandardDeviation(std::vector<T> &vec, T mean);
-  SF_Math();
+  SF_Descriptor(typename pcl::PointCloud<PointType>::Ptr cloudIn);
+  virtual void computeFeatures();
+  void setParameters(int k);
+  float sd() const;
+  float mean() const;
 };
 
-#include "sf_math.hpp"
+#include "sf_descriptor.hpp"
 
-#endif // SF_MATH_H
+#endif // DESCRIPTOR_H
 

@@ -25,28 +25,29 @@
  PluginSimpleForest is an extended version of the SimpleTree platform.
 
 *****************************************************************************/
-#ifndef SF_MATH_H
-#define SF_MATH_H
 
-#include "pcl/point_types.h"
+#ifndef SF_SPHEREFOLLOWINGRASTERSEARCH_H
+#define SF_SPHEREFOLLOWINGRASTERSEARCH_H
 
-template <typename T> class SF_Math {
+#include "sf_spherefollowing.h"
+#include "pcl/cloud/feature/descriptor/sf_descriptor.h"
+
+
+class SF_SphereFollowingRasterSearch
+{
 public:
-  static const T _PI;
-  static const T _RAD_TO_DEG;
-  static const T _DEG_TO_RAD;
-  static T getAngleBetweenDeg(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
-  static T distance(const Eigen::Vector3f &pointA,
-                    const Eigen::Vector3f &pointB);
-  static T getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
-  static T getMedian(std::vector<T> &vec);
-  static T getMean(std::vector<T> &vec);
-  static T getStandardDeviation(std::vector<T> &vec);
-  static T getStandardDeviation(std::vector<T> &vec, T mean);
-  SF_Math();
+    SF_SphereFollowingRasterSearch();
+    void compute();
+    std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal> > paramVector();
+    void setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal> &params);
+    void setCloud(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr &cloud);
+
+    std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal> > getParamVec() const;
+
+private:
+    SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
+    std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal> > m_paramVec;
 };
 
-#include "sf_math.hpp"
-
-#endif // SF_MATH_H
-
+#endif // SF_SPHEREFOLLOWINGRASTERSEARCH_H

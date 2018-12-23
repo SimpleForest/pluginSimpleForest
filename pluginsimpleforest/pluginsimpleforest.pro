@@ -152,7 +152,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/algorithm/spherefollowing/sf_spherefollowingParameters.h \
     qsm/algorithm/spherefollowing/sf_spherefollowing.h \
     qsm/algorithm/geometry/circle/sf_circle.h \
-    qsm/algorithm/geometry/circle/sf_circle.hpp
+    qsm/algorithm/geometry/circle/sf_circle.hpp \
+    pcl/cloud/feature/descriptor/sf_descriptor.hpp \
+    pcl/cloud/feature/descriptor/sf_descriptor.h \
+    qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -193,7 +196,8 @@ SOURCES += \
     steps/feature/sf_abstractstepfeature.cpp \
     cloud/filter/multiple/clusterscaling/sf_testclustertransfer.cpp \
     qsm/sf_modelLevelOne.cpp \
-    qsm/algorithm/spherefollowing/sf_spherefollowing.cpp
+    qsm/algorithm/spherefollowing/sf_spherefollowing.cpp \
+    qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

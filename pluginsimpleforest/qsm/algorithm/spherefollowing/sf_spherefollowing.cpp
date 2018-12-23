@@ -37,15 +37,12 @@
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/segmentation/sac_segmentation.h>
 
-SF_SphereFollowing::SF_SphereFollowing(
-    SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> params,
-    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters)
-    : m_params(params), m_clusters(clusters) {
-  initialize();
-  compute();
+SF_SphereFollowing::SF_SphereFollowing() {
 }
 
 void SF_SphereFollowing::compute() {
+
+    initialize();
   while (!m_priorityHeap.empty()) {
     Circle circleStruct = m_priorityHeap.top()._circle;
     m_priorityHeap.pop();
@@ -58,8 +55,40 @@ void SF_SphereFollowing::compute() {
         clusterEuclidean(surfaceClustersID);
     processClusters(surfaceClusters, circleStruct);
   }
-  SF_BuildQSM qsmBuilder(m_cylinders, 0);
-  m_qsm = qsmBuilder.getTree();
+  if(m_cylinders.size() > 2)
+  {
+      SF_BuildQSM qsmBuilder(m_cylinders, 0);
+      m_qsm = qsmBuilder.getTree();
+  }
+  else
+  {
+      pcl::ModelCoefficients circleA;
+      circleA.values.push_back(0);
+      circleA.values.push_back(0);
+      circleA.values.push_back(0);
+      circleA.values.push_back(1);
+
+      pcl::ModelCoefficients circleB;
+      circleB.values.push_back(0);
+      circleB.values.push_back(0);
+      circleB.values.push_back(1);
+      circleB.values.push_back(1);
+
+      pcl::ModelCoefficients circleC;
+      circleC.values.push_back(0);
+      circleC.values.push_back(0);
+      circleC.values.push_back(2);
+      circleC.values.push_back(1);
+
+      SF_QSMDetectionCylinder cylinder (0, circleA);
+      cylinder.addSecondCircle(circleB);
+      SF_QSMDetectionCylinder cylinder2(1, circleB);
+      cylinder2.addSecondCircle(circleC);
+        m_cylinders.push_back(cylinder);
+        m_cylinders.push_back(cylinder2);
+        SF_BuildQSM qsmBuilder(m_cylinders, 0);
+        m_qsm = qsmBuilder.getTree();
+  }
 }
 
 float SF_SphereFollowing::error() {
@@ -68,7 +97,7 @@ float SF_SphereFollowing::error() {
 }
 
 pcl::PointIndices::Ptr SF_SphereFollowing::surfaceIndices(Circle &lastCircle) {
-  const pcl::ModelCoefficients &lastCircleCoeff = lastCircle.m_circleCoeff;
+    const pcl::ModelCoefficients &lastCircleCoeff = lastCircle.m_circleCoeff;
   int index = lastCircle.m_clusterIndex;
   pcl::PointIndices::Ptr surface(new pcl::PointIndices);
   pcl::PointXYZINormal center;
@@ -79,18 +108,17 @@ pcl::PointIndices::Ptr SF_SphereFollowing::surfaceIndices(Circle &lastCircle) {
   std::vector<float> pointRadiusSquaredDistance;
   float radius = m_params._sphereFollowingParams.m_optimizationParams[index]
                          ._sphereRadiusMultiplier *
-                     lastCircleCoeff.values[3] +
+                     lastCircleCoeff.values[3];
+  +
           m_params._sphereFollowingParams.m_optimizationParams[index]._epsilonSphere;
-  if (m_octree->radiusSearch(center, radius, pointIdxRadiusSearch,
+  if (m_octree->radiusSearch(center, radius + m_params._sphereFollowingParams.m_optimizationParams[index]._epsilonSphere, pointIdxRadiusSearch,
                              pointRadiusSquaredDistance) > 0) {
     for (size_t i = 0; i < pointIdxRadiusSearch.size(); ++i) {
       const pcl::PointXYZINormal &point =
           m_cloud->points[pointIdxRadiusSearch[i]];
       if ((std::sqrt(pointRadiusSquaredDistance[i]) +
            m_params._sphereFollowingParams.m_optimizationParams[index]._epsilonSphere) >
-          m_params._sphereFollowingParams.m_optimizationParams[index]
-                  ._sphereRadiusMultiplier *
-              lastCircleCoeff.values[3]) {
+          radius) {
         surface->indices.push_back(pointIdxRadiusSearch[i]);
       }
       m_octree->deleteVoxelAtPoint(point);
@@ -292,6 +320,16 @@ SF_SphereFollowing::lowestSlice(float &minZ) {
 /******************************Getters and
  * Setters*********************************/
 
-const std::shared_ptr<SF_ModelQSM> SF_SphereFollowing::getQSM() {
+std::shared_ptr<SF_ModelQSM> SF_SphereFollowing::getQSM() {
   return m_qsm;
+}
+
+void SF_SphereFollowing::setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> &params)
+{
+    m_params = params;
+}
+
+void SF_SphereFollowing::setClusters(const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters)
+{
+    m_clusters = clusters;
 }

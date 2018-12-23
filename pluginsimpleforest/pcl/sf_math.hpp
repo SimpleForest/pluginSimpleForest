@@ -66,7 +66,23 @@ template <typename T> T SF_Math<T>::getMedian(std::vector<T> &vec) {
 }
 
 template <typename T> T SF_Math<T>::getMean(std::vector<T> &vec) {
-    return (std::accumulate(vec.begin(), vec.end(), 0) / vec.size());
+    auto lambda = [&vec](double a, double b){return a + b ; };
+    return (std::accumulate(vec.begin(), vec.end(), static_cast<T>(0), lambda) / vec.size());
 }
+
+template<typename T>
+T SF_Math<T>::getStandardDeviation(std::vector<T> &vec)
+{
+    return  getStandardDeviation(vec, getMean(vec));
+}
+
+template<typename T>
+T SF_Math<T>::getStandardDeviation(std::vector<T> &vec, T mean)
+{
+    std::vector<float> diff(vec.size());
+    std::transform(vec.begin(),vec.end(),diff.begin(), std::bind2nd(std::minus<float>(), mean));
+    return (std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0f)/vec.size());
+}
+
 
 #endif // SF_MATH_HPP

@@ -51,25 +51,20 @@ void Sf_CloudToModelDistance::initializeKdTree() {
 float Sf_CloudToModelDistance::adaptDistanceToMethod(float distance) {
   switch (_METHOD) {
   case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
-    if (distance < _INLIERDISTANCE) {
-      distance = 1;
-    } else {
-      distance = 0;
-    }
     break;
   case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
     distance = std::abs(distance);
     break;
   case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
     distance = std::abs(distance);
-    distance = std::max(_INLIERDISTANCE, distance);
+    distance = std::min(_INLIERDISTANCE, distance);
     break;
   case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
     distance = distance * distance;
     break;
   case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
     distance = std::abs(distance);
-    distance = std::max(_INLIERDISTANCE, distance);
+    distance = std::min(_INLIERDISTANCE, distance);
     distance = distance * distance;
     break;
   default:

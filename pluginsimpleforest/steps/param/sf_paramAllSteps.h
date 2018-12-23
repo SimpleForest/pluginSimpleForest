@@ -344,10 +344,8 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType> {
   Eigen::Vector3d _translation;
   float _voxelSize = 0.01;
   float _clusteringDistance = 0.2;
-  float _maxError;
-  float _minError;
+  float _modelCloudError;
   int _fittedGeometries;
-  std::vector<float> _errors;
   std::shared_ptr<SF_ModelQSM> _tree;
 
   QString methodToString(int method) {
@@ -425,9 +423,9 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType> {
         QString::number(_sphereFollowingParams.m_optimizationParams.size() * 6));
     str.append(" parameters have been optimized.");
     str.append(" The error has been reduced from \n  max:");
-    str.append(QString::number(_maxError));
+    str.append(QString::number(1337));
     str.append("\n to min:");
-    str.append(QString::number(_minError));
+    str.append(QString::number(_modelCloudError));
     str.append(". \n During the procedure ");
     str.append(QString::number(_fittedGeometries));
     str.append(" geometries have been fitted.");

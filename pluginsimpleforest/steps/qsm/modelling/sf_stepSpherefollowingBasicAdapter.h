@@ -12,7 +12,7 @@
 #include "qsm/algorithm/sf_buildQSM.h"
 #include <pcl/ModelCoefficients.h>
 
-#include "qsm/algorithm/spherefollowing/sf_spherefollowing.h"
+#include "qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.h"
 
 class SF_SpherefollowingRootAdapter {
 public:
@@ -63,31 +63,23 @@ public:
     }
     ne.compute(*cloudDownscaled);
 
-
+    SF_SphereFollowingRasterSearch sphereFollowing;
     {
       QMutexLocker m1(&*mMutex);
-      std::vector<SF_CloudNormal::Ptr> clusters;
-      clusters.push_back(cloudDownscaled);
-      SF_SphereFollowing sphereFollowing(params,clusters);
-      std::cout << "FOOOOOFASDASDASDQWE 3" << std::endl;
-      std::cout << " Foo Bar Error " << sphereFollowing.error() << std::endl;
-      std::cout << " Foo Bar Error " << sphereFollowing.error() << std::endl;
-      params._tree = sphereFollowing.getQSM();
-      std::cout << " Foo Bar Errorasd " << params._tree->getBuildingBricks().size() << std::endl;
+      std::cout << "foo1" << std::endl;
+      sphereFollowing.setParams(params);
+      sphereFollowing.setCloud(cloudDownscaled);
+      std::cout << "foo2" << std::endl;
     }
 
-    //        params.log_import();
-    //        SF_Statistical_Outlier_Filter<SF_Point> filter;
-    //        {
-    //            QMutexLocker m1(&*mMutex);
-    //            filter.set_cloud_in(params._cloud_in);
-    //        }
-    //        filter.compute(params);
-    //        {
-    //            QMutexLocker m1(&*mMutex);
-    //            params._output_indices = filter.get_indices();
-    //        }
-    //        params.log_filter(filter.get_percentage());
+    sphereFollowing.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params = sphereFollowing.getParamVec()[0];
+      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; " << sphereFollowing.getParamVec()[0]._modelCloudError<< std::endl;
+      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; " << sphereFollowing.getParamVec()[39]._modelCloudError<< std::endl;
+      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; " << sphereFollowing.getParamVec()[79]._modelCloudError<< std::endl;
+    }
   }
 };
 

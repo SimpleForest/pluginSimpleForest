@@ -71,22 +71,22 @@ struct heapDataCircle {
 
 class SF_SphereFollowing : public SF_IDetection {
 public:
-  SF_SphereFollowing(
-      SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> params,
-      std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters);
-  const std::shared_ptr<SF_ModelQSM> getQSM() override;
+  SF_SphereFollowing();
+  std::shared_ptr<SF_ModelQSM> getQSM() override;
   void compute() override;
   float error() override;
+  void setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> &params);
+  void setClusters(const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters);
 
 private:
   typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>::Ptr
-      m_octree;
+  m_octree;
   std::vector<SF_QSMDetectionCylinder> m_cylinders;
   SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> m_params;
   std::shared_ptr<SF_ModelQSM> m_qsm;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
   std::vector<HeapCircle::handle_type> m_handle;
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &m_clusters;
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> m_clusters;
   HeapCircle m_priorityHeap;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr lowestSlice(float &minZ);
   pcl::PointIndices::Ptr surfaceIndices(Circle &lastCircle);

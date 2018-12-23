@@ -431,8 +431,7 @@ void SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup *outResult) {
     param._sphereFollowingParams = sphereFollowingParams;
     param._voxelSize = _PP_voxelSize;
     param._clusteringDistance = _PP_euclideanClusteringDistance;
-    param._maxError = -1337;
-    param._minError = 1337;
+    param._modelCloudError = 1337;
     param._fittedGeometries = 0;
     param._log = PS_LOG;
     param._itemCpyCloudIn = ctCloud;
