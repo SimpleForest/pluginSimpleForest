@@ -47,15 +47,17 @@ public:
   pcl::ModelCoefficients m_circleCoeff;
   float m_distance;
   int m_clusterIndex;
+  Eigen::Vector3f m_firstSplit;
   Circle() {}
   Circle(const Circle &other) {
     m_distance = other.m_distance;
     m_circleCoeff = other.m_circleCoeff;
     m_clusterIndex = other.m_clusterIndex;
+    m_firstSplit = other.m_firstSplit;
   }
-  Circle(pcl::ModelCoefficients circleCoeff, float distance, int clusterIndex)
+  Circle(pcl::ModelCoefficients circleCoeff, float distance, int clusterIndex, Eigen::Vector3f &firstSplit)
       : m_circleCoeff(circleCoeff), m_distance(distance),
-        m_clusterIndex(clusterIndex) {}
+        m_clusterIndex(clusterIndex), m_firstSplit(firstSplit) {}
 };
 
 using HeapCircle = boost::heap::fibonacci_heap<heapDataCircle>;
@@ -104,7 +106,9 @@ private:
   void initializeOctree();
   void initializeHeap();
   void pushbackQueue(pcl::ModelCoefficients circleCoeff, float distance,
-                     int clusterID);
+                     int clusterID, Eigen::Vector3f firstSplit);
+  void artificialTree();
+  void buildTree();
 };
 
 #endif // SF_SPHERE_FOLLOWING_H

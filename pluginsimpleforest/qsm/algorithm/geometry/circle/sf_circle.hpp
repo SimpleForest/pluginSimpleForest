@@ -127,7 +127,7 @@ template<typename PointType>
 void SF_Circle<PointType>::setParam(pcl::SACSegmentationFromNormals<PointType, PointType> &seg) {
     seg.setOptimizeCoefficients(true);
     seg.setModelType(pcl::SACMODEL_CIRCLE3D);
-    seg.setNormalDistanceWeight(0.3);
+    seg.setNormalDistanceWeight(0.8);
     seg.setMethodType(m_params._sphereFollowingParams._fittingMethod);
     int sparse = static_cast<int>(std::round(std::pow(m_cloudIn->points.size(), 1.5) ) );
     int sparseIterations = static_cast<int>(std::max(5,  sparse));
@@ -152,7 +152,6 @@ void SF_Circle<PointType>::chooseModel(const pcl::ModelCoefficients &circleMedia
       m_coeff.values.push_back(circleSACModel.values[1]);
       m_coeff.values.push_back(circleSACModel.values[2]);
       m_coeff.values.push_back(circleSACModel.values[3]);
-      m_coeff = circleMedian;
     } else {
       m_coeff = circleMedian;
     }

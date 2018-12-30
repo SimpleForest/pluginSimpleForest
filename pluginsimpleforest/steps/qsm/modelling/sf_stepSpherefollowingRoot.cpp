@@ -61,60 +61,11 @@ SF_StepSpherefollowingRoot::createNewInstance(CT_StepInitializeData &dataInit) {
 }
 
 QStringList SF_StepSpherefollowingRoot::getStepRISCitations() const {
-  QStringList _RIS_citation_list;
-  _RIS_citation_list.append(
-      QString("TY  - JOUR\n"
-              "T1  - SimpleTree - an efficient open source tool to build tree "
-              "models from TLS clouds\n"
-              "A1  - Hackenberg, Jan\n"
-              "A1  - Spiecker, Heinrich\n"
-              "A1  - Calders, Kim\n"
-              "A1  - Disney, Mathias\n"
-              "A1  - Raumonen, Pasi\n"
-              "JO  - Forests\n"
-              "VL  - 6\n"
-              "IS  - 11\n"
-              "SP  - 4245\n"
-              "EP  - 4294\n"
-              "Y1  - 2015\n"
-              "PB  - Multidisciplinary Digital Publishing Institute\n"
-              "UL  - http://www.simpletree.uni-freiburg.de/\n"
-              "ER  - \n"));
-
-  _RIS_citation_list.append(
-      QString("TY  - JOUR\n"
-              "T1  - Highly Accurate Tree Models Derived from Terrestrial "
-              "Laser Scan Data: A Method Description\n"
-              "A1  - Hackenberg, Jan\n"
-              "A1  - Sheppard, Jonathan\n"
-              "A1  - Spiecker, Heinrich\n"
-              "A1  - Disney, Mathias\n"
-              "JO  - Forests\n"
-              "VL  - 5\n"
-              "IS  - 5\n"
-              "SP  - 1069\n"
-              "EP  - 1105\n"
-              "Y1  - 2014\n"
-              "PB  - Multidisciplinary Digital Publishing Institute\n"
-              "UL  - http://www.mdpi.com/1999-4907/5/5/1069\n"
-              "ER  - \n"));
-
-  _RIS_citation_list.append(QString(
-      "TY  - CONF\n"
-      "T1  - 3d is here: Point cloud library (pcl)\n"
-      "A1  - Rusu, Radu Bogdan\n"
-      "A1  - Cousins, Steve\n"
-      "JO  - Robotics and Automation (ICRA), 2011 IEEE International "
-      "Conference on\n"
-      "SP  - 1\n"
-      "EP  - 4\n"
-      "SN  - 1612843859\n"
-      "Y1  - 2011\n"
-      "PB  - IEEE\n"
-      "UL  - "
-      "http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
-      "ER  - \n"));
-  return _RIS_citation_list;
+  QStringList _risCitationList;
+  _risCitationList.append(getRISCitationSimpleTree());
+  _risCitationList.append(getRISCitationSphereFollowing());
+  _risCitationList.append(getRISCitationPCL());
+  return _risCitationList;
 }
 
 void SF_StepSpherefollowingRoot::createInResultModelListProtected() {
@@ -212,25 +163,25 @@ void SF_StepSpherefollowingRoot::configDialogGuruAddSphereFollowingGridSearch(
                         "deactivate this option",
                         " select if you want do a grid search.", "",
                         _GS_doGridSearch);
-  configDialog->addText("In the grid search the parameters are ordered by "
-                        "optimization [<em><b>priorityt</b></em>]");
-  configDialog->addText("<em>sphere multiplier</em> [1], "
-                        "<em>sphere epsilon</em> [2], "
-                        "<em>euclidean clustering distance</em> [3], "
-                        "<em>minimum radius</em> [4]");
-  configDialog->addInt("Parameters having a <em>priorityt</em> smaller or "
-                       "equal than [<em><b>grid dimensions</b></em>]",
-                       " are optimized.", 1, 4, _GS_nDimensions);
-  configDialog->addInt("For each  <em>grid dimension</em> we apply a "
-                       "[<em><b>grid resolution</b></em>] of ",
-                       " .", 3, 9, _GS_resolution);
-  configDialog->addText("The [<em><b>grid number of computations</b></em>] is "
-                        "equal to the power of <em>grid dimensions</em> "
-                        "to base <em>grid resolution</em> ");
-  configDialog->addInt(
-      "By potentially lowering <em>grid resolution</em> make sure the "
-      "[<em><b>grid number of computations</b></em>] is smaller or equal to",
-      ".", 10, 1000, _GS_maximizeSearchSpace);
+//  configDialog->addText("In the grid search the parameters are ordered by "
+//                        "optimization [<em><b>priorityt</b></em>]");
+//  configDialog->addText("<em>sphere multiplier</em> [1], "
+//                        "<em>sphere epsilon</em> [2], "
+//                        "<em>euclidean clustering distance</em> [3], "
+//                        "<em>minimum radius</em> [4]");
+//  configDialog->addInt("Parameters having a <em>priorityt</em> smaller or "
+//                       "equal than [<em><b>grid dimensions</b></em>]",
+//                       " are optimized.", 1, 4, _GS_nDimensions);
+//  configDialog->addInt("For each  <em>grid dimension</em> we apply a "
+//                       "[<em><b>grid resolution</b></em>] of ",
+//                       " .", 3, 9, _GS_resolution);
+//  configDialog->addText("The [<em><b>grid number of computations</b></em>] is "
+//                        "equal to the power of <em>grid dimensions</em> "
+//                        "to base <em>grid resolution</em> ");
+//  configDialog->addInt(
+//      "By potentially lowering <em>grid resolution</em> make sure the "
+//      "[<em><b>grid number of computations</b></em>] is smaller or equal to",
+//      ".", 10, 1000, _GS_maximizeSearchSpace);
   configDialog->addEmpty();
 }
 
@@ -259,7 +210,7 @@ void SF_StepSpherefollowingRoot::
 void SF_StepSpherefollowingRoot::createPostConfigurationDialogExpert(
     CT_StepConfigurableDialog *configDialog) {
   configDialogGuruAddPreProcessing(configDialog);
-  configDialogGuruAddSphereFollowing(configDialog);
+//  configDialogGuruAddSphereFollowing(configDialog);
   configDialogGuruAddSphereFollowingGridSearch(configDialog);
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
 }
@@ -338,9 +289,9 @@ void SF_StepSpherefollowingRoot::compute() {
               Eigen::Vector3f end = buildingBrick->getEnd();
               double radius = buildingBrick->getRadius();
               double length = buildingBrick->getLength();
-              CT_CylinderData *data = new CT_CylinderData(Eigen::Vector3d(static_cast<double>(start[0]+params._translation[0]),
-                                                                          static_cast<double>(start[1]+params._translation[1]),
-                                                                          static_cast<double>(start[2]+params._translation[2])),
+              CT_CylinderData *data = new CT_CylinderData(Eigen::Vector3d(static_cast<double>((start[0]+end[0])/2+params._translation[0]),
+                                                                          static_cast<double>((start[1]+end[1])/2+params._translation[1]),
+                                                                          static_cast<double>((start[2]+end[2])/2+params._translation[2])),
                                                           Eigen::Vector3d(static_cast<double>(end[0] -start[0]),
                                                                           static_cast<double>(end[1] -start[1]),
                                                                           static_cast<double>(end[2] -start[2])),

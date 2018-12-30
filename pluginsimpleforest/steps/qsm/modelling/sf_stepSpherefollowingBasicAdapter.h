@@ -5,6 +5,8 @@
 #include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/segmentation/extract_clusters.h>
+#include <pcl/kdtree/kdtree.h>
 #include <QThreadPool>
 
 #include "qsm/algorithm/sf_QSMAlgorithm.h"
@@ -62,14 +64,33 @@ public:
       ne.setRadiusSearch(params._voxelSize * 3);
     }
     ne.compute(*cloudDownscaled);
+    SF_CloudNormal::Ptr largestCluster(new SF_CloudNormal());
+    pcl::EuclideanClusterExtraction<SF_PointNormal> ec;
+        {
+          QMutexLocker m1(&*mMutex);
+          pcl::search::KdTree<SF_PointNormal>::Ptr tree (new pcl::search::KdTree<SF_PointNormal>);
+          tree->setInputCloud (cloudDownscaled);
+          ec.setClusterTolerance (params._clusteringDistance);
+          ec.setMinClusterSize (10);
+          ec.setMaxClusterSize (std::numeric_limits<int>::max());
+          ec.setSearchMethod (tree);
+          ec.setInputCloud (cloudDownscaled);
+        }
+
+    std::vector<pcl::PointIndices> clusterIndices;
+    ec.extract (clusterIndices);
+    if(clusterIndices.size()>0)
+    {
+        for (std::vector<int>::const_iterator pit = clusterIndices[0].indices.begin (); pit != clusterIndices[0].indices.end (); ++pit)
+            largestCluster->points.push_back (cloudDownscaled->points[*pit]);
+
+    }
 
     SF_SphereFollowingRasterSearch sphereFollowing;
     {
       QMutexLocker m1(&*mMutex);
-      std::cout << "foo1" << std::endl;
       sphereFollowing.setParams(params);
-      sphereFollowing.setCloud(cloudDownscaled);
-      std::cout << "foo2" << std::endl;
+      sphereFollowing.setCloud(largestCluster);
     }
 
     sphereFollowing.compute();

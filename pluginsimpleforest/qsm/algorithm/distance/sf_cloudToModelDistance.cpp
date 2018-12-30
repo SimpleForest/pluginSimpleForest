@@ -63,9 +63,8 @@ float Sf_CloudToModelDistance::adaptDistanceToMethod(float distance) {
     distance = distance * distance;
     break;
   case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
-    distance = std::abs(distance);
-    distance = std::min(_INLIERDISTANCE, distance);
     distance = distance * distance;
+    distance = std::min(_INLIERDISTANCE*_INLIERDISTANCE, distance);
     break;
   default:
     break;

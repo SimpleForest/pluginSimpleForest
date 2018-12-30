@@ -288,6 +288,25 @@ const QString SF_AbstractStep::getRISCitationRaumonen() const {
                  "ER  - \n");
 }
 
+const QString SF_AbstractStep::getRISCitationSphereFollowing() const {
+    return QString("TY  - JOUR\n"
+            "T1  - Highly Accurate Tree Models Derived from Terrestrial "
+            "Laser Scan Data: A Method Description\n"
+            "A1  - Hackenberg, Jan\n"
+            "A1  - Sheppard, Jonathan\n"
+            "A1  - Spiecker, Heinrich\n"
+            "A1  - Disney, Mathias\n"
+            "JO  - Forests\n"
+            "VL  - 5\n"
+            "IS  - 5\n"
+            "SP  - 1069\n"
+            "EP  - 1105\n"
+            "Y1  - 2014\n"
+            "PB  - Multidisciplinary Digital Publishing Institute\n"
+            "UL  - http://www.mdpi.com/1999-4907/5/5/1069\n"
+            "ER  - \n");
+}
+
 void SF_AbstractStep::createOutputIndex(
     std::vector<CT_PointCloudIndexVector *> &indexVectors,
     const std::vector<int> &indices, size_t counter,

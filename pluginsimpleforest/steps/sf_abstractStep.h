@@ -147,6 +147,8 @@ protected:
   const QString getRISCitationSimpleTree() const;
   const QString getRISCitationPCL() const;
   const QString getRISCitationRaumonen() const;
+  const QString getRISCitationSphereFollowing() const;
+
   void addCitationRaumonen(CT_StepConfigurableDialog *configDialog);
 
 public:

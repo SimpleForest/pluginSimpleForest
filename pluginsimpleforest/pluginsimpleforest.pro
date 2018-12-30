@@ -10,10 +10,15 @@ CHECK_CAN_USE_GDAL = 1
 CHECK_CAN_USE_OPENCV = 1
 
 
+
 include($${CT_PREFIX}/shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
 COMPUTREE += ctliblas ctlibfilters ctlibmetrics
+#COMPUTREE += ctliblas ctlibgsl ctlibfilters ctlibmetrics
+
+MUST_USE_USE_PCL = 1
+MUST_USE_USE_GSL = 1
 
 contains(DEFINES, COMPUTREE_V5) {
     COMPUTREE += ctlibstdactions
@@ -33,6 +38,8 @@ CONFIG   += console
 COMPUTREE += ctlibpcl
 
 include($${CT_PREFIX}/shared.pri)
+include($${PLUGIN_SHARED_DIR}/include.pri)
+
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
 TARGET = plug_simpleforest
@@ -201,3 +208,5 @@ SOURCES += \
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts
+
+#unix:!macx: LIBS += -L/usr/lib/ -lgslcblas
