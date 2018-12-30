@@ -76,7 +76,7 @@ void SF_StepSpherefollowingRoot::createInResultModelListProtected() {
       "", DEF_IN_GRP_CLUSTER, CT_AbstractItemGroup::staticGetType(),
       tr("Tree Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED,
-                          CT_Scene::staticGetType(), tr("Tree Cloud"));
+                         CT_Scene::staticGetType(), tr("Tree Cloud"));
 }
 
 void SF_StepSpherefollowingRoot::configDialogAddSphereFollowingHyperParameters(
@@ -163,25 +163,27 @@ void SF_StepSpherefollowingRoot::configDialogGuruAddSphereFollowingGridSearch(
                         "deactivate this option",
                         " select if you want do a grid search.", "",
                         _GS_doGridSearch);
-//  configDialog->addText("In the grid search the parameters are ordered by "
-//                        "optimization [<em><b>priorityt</b></em>]");
-//  configDialog->addText("<em>sphere multiplier</em> [1], "
-//                        "<em>sphere epsilon</em> [2], "
-//                        "<em>euclidean clustering distance</em> [3], "
-//                        "<em>minimum radius</em> [4]");
-//  configDialog->addInt("Parameters having a <em>priorityt</em> smaller or "
-//                       "equal than [<em><b>grid dimensions</b></em>]",
-//                       " are optimized.", 1, 4, _GS_nDimensions);
-//  configDialog->addInt("For each  <em>grid dimension</em> we apply a "
-//                       "[<em><b>grid resolution</b></em>] of ",
-//                       " .", 3, 9, _GS_resolution);
-//  configDialog->addText("The [<em><b>grid number of computations</b></em>] is "
-//                        "equal to the power of <em>grid dimensions</em> "
-//                        "to base <em>grid resolution</em> ");
-//  configDialog->addInt(
-//      "By potentially lowering <em>grid resolution</em> make sure the "
-//      "[<em><b>grid number of computations</b></em>] is smaller or equal to",
-//      ".", 10, 1000, _GS_maximizeSearchSpace);
+  //  configDialog->addText("In the grid search the parameters are ordered by "
+  //                        "optimization [<em><b>priorityt</b></em>]");
+  //  configDialog->addText("<em>sphere multiplier</em> [1], "
+  //                        "<em>sphere epsilon</em> [2], "
+  //                        "<em>euclidean clustering distance</em> [3], "
+  //                        "<em>minimum radius</em> [4]");
+  //  configDialog->addInt("Parameters having a <em>priorityt</em> smaller or "
+  //                       "equal than [<em><b>grid dimensions</b></em>]",
+  //                       " are optimized.", 1, 4, _GS_nDimensions);
+  //  configDialog->addInt("For each  <em>grid dimension</em> we apply a "
+  //                       "[<em><b>grid resolution</b></em>] of ",
+  //                       " .", 3, 9, _GS_resolution);
+  //  configDialog->addText("The [<em><b>grid number of computations</b></em>]
+  //  is "
+  //                        "equal to the power of <em>grid dimensions</em> "
+  //                        "to base <em>grid resolution</em> ");
+  //  configDialog->addInt(
+  //      "By potentially lowering <em>grid resolution</em> make sure the "
+  //      "[<em><b>grid number of computations</b></em>] is smaller or equal
+  //      to",
+  //      ".", 10, 1000, _GS_maximizeSearchSpace);
   configDialog->addEmpty();
 }
 
@@ -210,7 +212,7 @@ void SF_StepSpherefollowingRoot::
 void SF_StepSpherefollowingRoot::createPostConfigurationDialogExpert(
     CT_StepConfigurableDialog *configDialog) {
   configDialogGuruAddPreProcessing(configDialog);
-//  configDialogGuruAddSphereFollowing(configDialog);
+  //  configDialogGuruAddSphereFollowing(configDialog);
   configDialogGuruAddSphereFollowingGridSearch(configDialog);
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
 }
@@ -225,8 +227,10 @@ void SF_StepSpherefollowingRoot::createOutResultModelListProtected() {
   CT_OutResultModelGroupToCopyPossibilities *resModelw =
       createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-      resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outCylinderGroup, new CT_StandardItemGroup(), tr("QSM Group"));
-      resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(), tr("QSM"));
+    resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outCylinderGroup,
+                             new CT_StandardItemGroup(), tr("QSM Group"));
+    resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(),
+                            tr("QSM"));
   }
 }
 
@@ -281,31 +285,43 @@ void SF_StepSpherefollowingRoot::compute() {
   CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
   while (!isStopped() && outResIt.hasNext()) {
     CT_StandardItemGroup *group = (CT_StandardItemGroup *)outResIt.next();
-    std::for_each(_paramList.begin(), _paramList.end(), [this, group, outResult](SF_ParamSpherefollowingBasic<SF_PointNormal> &params){
-        std::shared_ptr<SF_ModelQSM> qsm = params._tree;
-        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = qsm->getBuildingBricks();
-        std::for_each(buildingBricks.begin(), buildingBricks.end(), [&params, this, group, outResult](std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick){
-              Eigen::Vector3f start = buildingBrick->getStart();
-              Eigen::Vector3f end = buildingBrick->getEnd();
-              double radius = buildingBrick->getRadius();
-              double length = buildingBrick->getLength();
-              CT_CylinderData *data = new CT_CylinderData(Eigen::Vector3d(static_cast<double>((start[0]+end[0])/2+params._translation[0]),
-                                                                          static_cast<double>((start[1]+end[1])/2+params._translation[1]),
-                                                                          static_cast<double>((start[2]+end[2])/2+params._translation[2])),
-                                                          Eigen::Vector3d(static_cast<double>(end[0] -start[0]),
-                                                                          static_cast<double>(end[1] -start[1]),
-                                                                          static_cast<double>(end[2] -start[2])),
-                                                          radius, length);
-              CT_StandardItemGroup *cylinderGroup = new CT_StandardItemGroup(_outCylinderGroup.completeName(), outResult);
-              CT_Cylinder *cylinder = new CT_Cylinder(_outCylinders.completeName(), outResult,data);
-              cylinderGroup->addItemDrawable(cylinder);
-              group->addGroup(cylinderGroup);
+    std::for_each(
+        _paramList.begin(), _paramList.end(),
+        [this, group,
+         outResult](SF_ParamSpherefollowingBasic<SF_PointNormal> &params) {
+          std::shared_ptr<SF_ModelQSM> qsm = params._tree;
+          std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
+              buildingBricks = qsm->getBuildingBricks();
+          std::for_each(
+              buildingBricks.begin(), buildingBricks.end(),
+              [&params, this, group,
+               outResult](std::shared_ptr<Sf_ModelAbstractBuildingbrick>
+                              buildingBrick) {
+                Eigen::Vector3f start = buildingBrick->getStart();
+                Eigen::Vector3f end = buildingBrick->getEnd();
+                double radius = buildingBrick->getRadius();
+                double length = buildingBrick->getLength();
+                CT_CylinderData *data = new CT_CylinderData(
+                    Eigen::Vector3d(
+                        static_cast<double>((start[0] + end[0]) / 2 +
+                                            params._translation[0]),
+                        static_cast<double>((start[1] + end[1]) / 2 +
+                                            params._translation[1]),
+                        static_cast<double>((start[2] + end[2]) / 2 +
+                                            params._translation[2])),
+                    Eigen::Vector3d(static_cast<double>(end[0] - start[0]),
+                                    static_cast<double>(end[1] - start[1]),
+                                    static_cast<double>(end[2] - start[2])),
+                    radius, length);
+                CT_StandardItemGroup *cylinderGroup = new CT_StandardItemGroup(
+                    _outCylinderGroup.completeName(), outResult);
+                CT_Cylinder *cylinder = new CT_Cylinder(
+                    _outCylinders.completeName(), outResult, data);
+                cylinderGroup->addItemDrawable(cylinder);
+                group->addGroup(cylinderGroup);
+              });
         });
-    });
   }
-
-
-
 }
 
 int SF_StepSpherefollowingRoot::toStringSFMethod() {

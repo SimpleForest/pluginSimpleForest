@@ -49,4 +49,3 @@ public:
 #include "sf_math.hpp"
 
 #endif // SF_MATH_H
-

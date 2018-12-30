@@ -31,16 +31,16 @@
 
 #include "sf_circle.h"
 
-#include <pcl/common/common.h>
 #include <pcl/common/centroid.h>
+#include <pcl/common/common.h>
 
 #include <cmath>
 
 template <typename PointType>
-SF_Circle<PointType>::SF_Circle(typename pcl::PointCloud<PointType>::Ptr cloudIn,
-                     const std::vector<int> &indices,
-                     const SF_ParamSpherefollowingBasic<PointType> params,
-                     size_t paramIndex)
+SF_Circle<PointType>::SF_Circle(
+    typename pcl::PointCloud<PointType>::Ptr cloudIn,
+    const std::vector<int> &indices,
+    const SF_ParamSpherefollowingBasic<PointType> params, size_t paramIndex)
     : m_cloudIn(cloudIn), m_indices(indices), m_params(params),
       m_paramIndex(paramIndex) {
   pcl::ModelCoefficients circleMedian = cirlceMedianWithIndices();
@@ -49,10 +49,10 @@ SF_Circle<PointType>::SF_Circle(typename pcl::PointCloud<PointType>::Ptr cloudIn
 }
 
 template <typename PointType>
-SF_Circle<PointType>::SF_Circle(typename pcl::PointCloud<PointType>::Ptr cloudIn,
-                     const SF_ParamSpherefollowingBasic<PointType> params,
-                     size_t paramIndex)
-    : m_cloudIn(cloudIn), m_indices {}, m_params(params),
+SF_Circle<PointType>::SF_Circle(
+    typename pcl::PointCloud<PointType>::Ptr cloudIn,
+    const SF_ParamSpherefollowingBasic<PointType> params, size_t paramIndex)
+    : m_cloudIn(cloudIn), m_indices{}, m_params(params),
       m_paramIndex(paramIndex) {
   pcl::ModelCoefficients circleMedian = circleMedianWithSubCloud();
   pcl::ModelCoefficients circleSACModel = cirlceSACModelWithSubCloud();
@@ -67,7 +67,7 @@ pcl::ModelCoefficients SF_Circle<PointType>::cirlceMedianWithIndices() {
   size_t index = 0;
   typename pcl::PointCloud<PointType>::Ptr tmp = m_cloudIn;
   std::for_each(m_indices.begin(), m_indices.end(),
-                [&distances, &index, &centroid,  tmp](int pointIndex) {
+                [&distances, &index, &centroid, tmp](int pointIndex) {
                   Eigen::Vector3f diff =
                       tmp->points[pointIndex].getVector3fMap() -
                       Eigen::Vector3f(centroid[0], centroid[1], centroid[2]);
@@ -123,30 +123,33 @@ pcl::ModelCoefficients SF_Circle<PointType>::cirlceSACModelWithIndices() {
   return coeff;
 }
 
-template<typename PointType>
-void SF_Circle<PointType>::setParam(pcl::SACSegmentationFromNormals<PointType, PointType> &seg) {
-    seg.setOptimizeCoefficients(true);
-    seg.setModelType(pcl::SACMODEL_CIRCLE3D);
-    seg.setNormalDistanceWeight(0.8);
-    seg.setMethodType(m_params._sphereFollowingParams._fittingMethod);
-    int sparse = static_cast<int>(std::round(std::pow(m_cloudIn->points.size(), 1.5) ) );
-    int sparseIterations = static_cast<int>(std::max(5,  sparse));
-    seg.setMaxIterations(
-        std::min(m_params._sphereFollowingParams._RANSACIterations,
-                 sparseIterations));
-    seg.setDistanceThreshold(m_params._sphereFollowingParams._inlierDistance);
-    seg.setInputCloud(m_cloudIn);
-    seg.setInputNormals(m_cloudIn);
+template <typename PointType>
+void SF_Circle<PointType>::setParam(
+    pcl::SACSegmentationFromNormals<PointType, PointType> &seg) {
+  seg.setOptimizeCoefficients(true);
+  seg.setModelType(pcl::SACMODEL_CIRCLE3D);
+  seg.setNormalDistanceWeight(0.8);
+  seg.setMethodType(m_params._sphereFollowingParams._fittingMethod);
+  int sparse =
+      static_cast<int>(std::round(std::pow(m_cloudIn->points.size(), 1.5)));
+  int sparseIterations = static_cast<int>(std::max(5, sparse));
+  seg.setMaxIterations(std::min(
+      m_params._sphereFollowingParams._RANSACIterations, sparseIterations));
+  seg.setDistanceThreshold(m_params._sphereFollowingParams._inlierDistance);
+  seg.setInputCloud(m_cloudIn);
+  seg.setInputNormals(m_cloudIn);
 }
 
 template <typename PointType>
-void SF_Circle<PointType>::chooseModel(const pcl::ModelCoefficients &circleMedian,
-                            const pcl::ModelCoefficients &circleSACModel) {
+void SF_Circle<PointType>::chooseModel(
+    const pcl::ModelCoefficients &circleMedian,
+    const pcl::ModelCoefficients &circleSACModel) {
   if (circleSACModel.values.size() == 7) {
     if ((circleSACModel.values[3] <
-        circleMedian.values[3] *
-            m_params._sphereFollowingParams.m_optimizationParams[m_paramIndex]._medianRadiusMultiplier) &&
-            (circleSACModel.values[3] > circleMedian.values[3] * 0.5) ){
+         circleMedian.values[3] *
+             m_params._sphereFollowingParams.m_optimizationParams[m_paramIndex]
+                 ._medianRadiusMultiplier) &&
+        (circleSACModel.values[3] > circleMedian.values[3] * 0.5)) {
       m_coeff.values.clear();
       m_coeff.values.push_back(circleSACModel.values[0]);
       m_coeff.values.push_back(circleSACModel.values[1]);
@@ -161,6 +164,8 @@ void SF_Circle<PointType>::chooseModel(const pcl::ModelCoefficients &circleMedia
 }
 
 template <typename PointType>
-pcl::ModelCoefficients SF_Circle<PointType>::coeff() const { return m_coeff; }
+pcl::ModelCoefficients SF_Circle<PointType>::coeff() const {
+  return m_coeff;
+}
 
 #endif // SF_CIRCLE_HPP

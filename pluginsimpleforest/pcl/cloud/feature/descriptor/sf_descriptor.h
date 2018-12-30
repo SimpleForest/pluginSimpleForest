@@ -30,13 +30,12 @@
 
 #include "pcl/cloud/feature/sf_abstractFeature.h"
 
-template <typename PointType>
-class SF_Descriptor  {
+template <typename PointType> class SF_Descriptor {
 private:
-    float m_k = 2;
-    float m_sd;
-    float m_mean;
-    SF_CloudNormal::Ptr _cloudIn;
+  float m_k = 2;
+  float m_sd;
+  float m_mean;
+  SF_CloudNormal::Ptr _cloudIn;
 
 public:
   SF_Descriptor(typename pcl::PointCloud<PointType>::Ptr cloudIn);
@@ -49,4 +48,3 @@ public:
 #include "sf_descriptor.hpp"
 
 #endif // DESCRIPTOR_H
-

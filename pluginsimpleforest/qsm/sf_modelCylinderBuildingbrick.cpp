@@ -117,7 +117,7 @@ Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(
   _end[0] = circleB->values[0];
   _end[1] = circleB->values[1];
   _end[2] = circleB->values[2];
-  _radius =  circleB->values[3];
+  _radius = circleB->values[3];
   _fittingType = FittingType::SPHEREFOLLOWING;
 }
 

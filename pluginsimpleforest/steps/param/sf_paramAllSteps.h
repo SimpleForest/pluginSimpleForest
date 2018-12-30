@@ -398,7 +398,9 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType> {
       str.append(QString::number(
           _sphereFollowingParams.m_optimizationParams.at(i)._minRadius));
       str.append("; _medianRadiusMultiplier = ");
-      str.append(QString::number(_sphereFollowingParams.m_optimizationParams.at(i)._medianRadiusMultiplier));
+      str.append(
+          QString::number(_sphereFollowingParams.m_optimizationParams.at(i)
+                              ._medianRadiusMultiplier));
       str.append("; _epsilonSphere = ");
       str.append(QString::number(
           _sphereFollowingParams.m_optimizationParams.at(i)._epsilonSphere));
@@ -419,8 +421,8 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType> {
     str.append("; _fittingMethod = ");
     str.append(methodToString(_sphereFollowingParams._fittingMethod));
     str.append(") \n has been optimized. During the Parameter search ");
-    str.append(
-        QString::number(_sphereFollowingParams.m_optimizationParams.size() * 6));
+    str.append(QString::number(
+        _sphereFollowingParams.m_optimizationParams.size() * 6));
     str.append(" parameters have been optimized.");
     str.append(" The error has been reduced from \n  max:");
     str.append(QString::number(1337));

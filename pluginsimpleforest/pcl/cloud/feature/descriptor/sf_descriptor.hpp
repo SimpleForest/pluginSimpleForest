@@ -35,18 +35,15 @@
 
 template <typename PointType>
 SF_Descriptor<PointType>::SF_Descriptor(
-    typename pcl::PointCloud<PointType>::Ptr cloudIn):
-    _cloudIn(cloudIn) {
+    typename pcl::PointCloud<PointType>::Ptr cloudIn)
+    : _cloudIn(cloudIn) {}
+
+template <typename PointType> float SF_Descriptor<PointType>::mean() const {
+  return m_mean;
 }
 
-template <typename PointType>
-float SF_Descriptor<PointType>::mean() const {
-    return m_mean;
-}
-
-template <typename PointType>
-float SF_Descriptor<PointType>::sd() const {
-    return m_sd;
+template <typename PointType> float SF_Descriptor<PointType>::sd() const {
+  return m_sd;
 }
 
 template <typename PointType>
@@ -54,30 +51,32 @@ void SF_Descriptor<PointType>::setParameters(int k) {
   m_k = k;
 }
 
-template <typename PointType>
-void SF_Descriptor<PointType>::computeFeatures() {
-    pcl::KdTreeFLANN<PointType> kdtree;
-    kdtree.setInputCloud(_cloudIn);
-    std::vector<float> distances;
-    std::for_each(_cloudIn->points.begin(), _cloudIn->points.end(), [this, &kdtree, &distances](const PointType &point){
+template <typename PointType> void SF_Descriptor<PointType>::computeFeatures() {
+  pcl::KdTreeFLANN<PointType> kdtree;
+  kdtree.setInputCloud(_cloudIn);
+  std::vector<float> distances;
+  std::for_each(
+      _cloudIn->points.begin(), _cloudIn->points.end(),
+      [this, &kdtree, &distances](const PointType &point) {
         std::vector<int> indices;
         std::vector<float> squaredDistances;
         std::vector<float> closestDistances;
-        if(kdtree.nearestKSearch(point, m_k, indices, squaredDistances) > 0 ) {
-            size_t squaredDistancesIndex = 0;
-            std::for_each(indices.begin(), indices.end(), [this, &squaredDistances, &closestDistances, &squaredDistancesIndex](int index){
-                if(squaredDistances[squaredDistancesIndex]!=0)
-                {
-                    closestDistances.push_back(std::sqrt(squaredDistances[squaredDistancesIndex]));
-                }
-                squaredDistancesIndex++;
-
-            });
-            distances.push_back(SF_Math<float>::getMean(closestDistances));
+        if (kdtree.nearestKSearch(point, m_k, indices, squaredDistances) > 0) {
+          size_t squaredDistancesIndex = 0;
+          std::for_each(indices.begin(), indices.end(),
+                        [this, &squaredDistances, &closestDistances,
+                         &squaredDistancesIndex](int index) {
+                          if (squaredDistances[squaredDistancesIndex] != 0) {
+                            closestDistances.push_back(std::sqrt(
+                                squaredDistances[squaredDistancesIndex]));
+                          }
+                          squaredDistancesIndex++;
+                        });
+          distances.push_back(SF_Math<float>::getMean(closestDistances));
         };
-    });
-    m_mean = SF_Math<float>::getMean(distances);
-    m_sd = SF_Math<float>::getStandardDeviation(distances, m_mean);
+      });
+  m_mean = SF_Math<float>::getMean(distances);
+  m_sd = SF_Math<float>::getStandardDeviation(distances, m_mean);
 }
 
 #endif // SF_DESCRIPTOR_HPP

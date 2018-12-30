@@ -100,7 +100,7 @@ Sf_ConverterCTToPCL<PointType>::mergeSubCloudsToVector(
   int number_initialized_clouds = 0;
   while (it.hasNext()) {
     const CT_Point &ct_point = it.next().currentPoint();
-    size_t index {};
+    size_t index{};
     indices->indexAtXYZ(ct_point(0), ct_point(1), ct_point(2), index);
     int value_at = indices->valueAtIndex(index);
     if (value_at <= -1) {

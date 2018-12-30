@@ -29,25 +29,23 @@
 #ifndef SF_SPHEREFOLLOWINGRASTERSEARCH_H
 #define SF_SPHEREFOLLOWINGRASTERSEARCH_H
 
-#include "sf_spherefollowing.h"
 #include "pcl/cloud/feature/descriptor/sf_descriptor.h"
+#include "sf_spherefollowing.h"
 
-
-class SF_SphereFollowingRasterSearch
-{
+class SF_SphereFollowingRasterSearch {
 public:
-    SF_SphereFollowingRasterSearch();
-    void compute();
-    std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal> > paramVector();
-    void setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal> &params);
-    void setCloud(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr &cloud);
+  SF_SphereFollowingRasterSearch();
+  void compute();
+  std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramVector();
+  void setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal> &params);
+  void setCloud(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr &cloud);
 
-    std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal> > getParamVec() const;
+  std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> getParamVec() const;
 
 private:
-    SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
-    std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal> > m_paramVec;
+  SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
+  std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> m_paramVec;
 };
 
 #endif // SF_SPHEREFOLLOWINGRASTERSEARCH_H

@@ -50,7 +50,8 @@ class Sf_CloudToModelDistance {
   float
   getDistance(const pcl::PointXYZ &point,
               std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
-  float getDistance(const pcl::PointXYZINormal &point,
+  float
+  getDistance(const pcl::PointXYZINormal &point,
               std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   const std::vector<float> getCloudToModelDistances();
   float getNumberInliersNegative(const std::vector<float> &distances);

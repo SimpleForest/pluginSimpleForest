@@ -53,9 +53,11 @@ template <typename PointType> class SF_Circle {
 public:
   SF_Circle(typename pcl::PointCloud<PointType>::Ptr cloudIn,
             const std::vector<int> &indices,
-            const SF_ParamSpherefollowingBasic<PointType> params, size_t paramIndex);
+            const SF_ParamSpherefollowingBasic<PointType> params,
+            size_t paramIndex);
   SF_Circle(typename pcl::PointCloud<PointType>::Ptr cloudIn,
-            const SF_ParamSpherefollowingBasic<PointType> params, size_t paramIndex);
+            const SF_ParamSpherefollowingBasic<PointType> params,
+            size_t paramIndex);
   pcl::ModelCoefficients coeff() const;
 };
 

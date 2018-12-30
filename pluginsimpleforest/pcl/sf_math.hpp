@@ -60,29 +60,28 @@ T SF_Math<T>::getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
 }
 
 template <typename T> T SF_Math<T>::getMedian(std::vector<T> &vec) {
-    size_t n = vec.size() / 2;
-    std::nth_element(vec.begin(), vec.begin()+n, vec.end());
-    return vec[n];
+  size_t n = vec.size() / 2;
+  std::nth_element(vec.begin(), vec.begin() + n, vec.end());
+  return vec[n];
 }
 
 template <typename T> T SF_Math<T>::getMean(std::vector<T> &vec) {
-    auto lambda = [&vec](double a, double b){return a + b ; };
-    return (std::accumulate(vec.begin(), vec.end(), static_cast<T>(0), lambda) / vec.size());
+  auto lambda = [&vec](double a, double b) { return a + b; };
+  return (std::accumulate(vec.begin(), vec.end(), static_cast<T>(0), lambda) /
+          vec.size());
 }
 
-template<typename T>
-T SF_Math<T>::getStandardDeviation(std::vector<T> &vec)
-{
-    return  getStandardDeviation(vec, getMean(vec));
+template <typename T> T SF_Math<T>::getStandardDeviation(std::vector<T> &vec) {
+  return getStandardDeviation(vec, getMean(vec));
 }
 
-template<typename T>
-T SF_Math<T>::getStandardDeviation(std::vector<T> &vec, T mean)
-{
-    std::vector<float> diff(vec.size());
-    std::transform(vec.begin(),vec.end(),diff.begin(), std::bind2nd(std::minus<float>(), mean));
-    return (std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0f)/vec.size());
+template <typename T>
+T SF_Math<T>::getStandardDeviation(std::vector<T> &vec, T mean) {
+  std::vector<float> diff(vec.size());
+  std::transform(vec.begin(), vec.end(), diff.begin(),
+                 std::bind2nd(std::minus<float>(), mean));
+  return (std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0f) /
+          vec.size());
 }
-
 
 #endif // SF_MATH_HPP

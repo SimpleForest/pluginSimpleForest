@@ -37,55 +37,49 @@
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/segmentation/sac_segmentation.h>
 
-SF_SphereFollowing::SF_SphereFollowing() {
+SF_SphereFollowing::SF_SphereFollowing() {}
+
+void SF_SphereFollowing::artificialTree() {
+  pcl::ModelCoefficients circleA;
+  circleA.values.push_back(0);
+  circleA.values.push_back(0);
+  circleA.values.push_back(0);
+  circleA.values.push_back(1);
+
+  pcl::ModelCoefficients circleB;
+  circleB.values.push_back(0);
+  circleB.values.push_back(0);
+  circleB.values.push_back(1);
+  circleB.values.push_back(1);
+
+  pcl::ModelCoefficients circleC;
+  circleC.values.push_back(0);
+  circleC.values.push_back(0);
+  circleC.values.push_back(2);
+  circleC.values.push_back(1);
+
+  SF_QSMDetectionCylinder cylinder(0, circleA);
+  cylinder.addSecondCircle(circleB);
+  SF_QSMDetectionCylinder cylinder2(1, circleB);
+  cylinder2.addSecondCircle(circleC);
+  m_cylinders.push_back(cylinder);
+  m_cylinders.push_back(cylinder2);
+  SF_BuildQSM qsmBuilder(m_cylinders, 0);
+  m_qsm = qsmBuilder.getTree();
 }
 
-void SF_SphereFollowing::artificialTree()
-{
-    pcl::ModelCoefficients circleA;
-    circleA.values.push_back(0);
-    circleA.values.push_back(0);
-    circleA.values.push_back(0);
-    circleA.values.push_back(1);
-
-    pcl::ModelCoefficients circleB;
-    circleB.values.push_back(0);
-    circleB.values.push_back(0);
-    circleB.values.push_back(1);
-    circleB.values.push_back(1);
-
-    pcl::ModelCoefficients circleC;
-    circleC.values.push_back(0);
-    circleC.values.push_back(0);
-    circleC.values.push_back(2);
-    circleC.values.push_back(1);
-
-    SF_QSMDetectionCylinder cylinder (0, circleA);
-    cylinder.addSecondCircle(circleB);
-    SF_QSMDetectionCylinder cylinder2(1, circleB);
-    cylinder2.addSecondCircle(circleC);
-      m_cylinders.push_back(cylinder);
-      m_cylinders.push_back(cylinder2);
-      SF_BuildQSM qsmBuilder(m_cylinders, 0);
-      m_qsm = qsmBuilder.getTree();
-}
-
-void SF_SphereFollowing::buildTree()
-{
-    if(m_cylinders.size() > 2)
-    {
-        SF_BuildQSM qsmBuilder(m_cylinders, 0);
-        m_qsm = qsmBuilder.getTree();
-    }
-    else
-    {
-        artificialTree();
-    }
+void SF_SphereFollowing::buildTree() {
+  if (m_cylinders.size() > 2) {
+    SF_BuildQSM qsmBuilder(m_cylinders, 0);
+    m_qsm = qsmBuilder.getTree();
+  } else {
+    artificialTree();
+  }
 }
 
 void SF_SphereFollowing::compute() {
 
-    initialize();
+  initialize();
   while (!m_priorityHeap.empty()) {
     Circle circleStruct = m_priorityHeap.top()._circle;
     m_priorityHeap.pop();
@@ -107,7 +101,7 @@ float SF_SphereFollowing::error() {
 }
 
 pcl::PointIndices::Ptr SF_SphereFollowing::surfaceIndices(Circle &lastCircle) {
-    const pcl::ModelCoefficients &lastCircleCoeff = lastCircle.m_circleCoeff;
+  const pcl::ModelCoefficients &lastCircleCoeff = lastCircle.m_circleCoeff;
   int index = lastCircle.m_clusterIndex;
   pcl::PointIndices::Ptr surface(new pcl::PointIndices);
   pcl::PointXYZINormal center;
@@ -119,19 +113,22 @@ pcl::PointIndices::Ptr SF_SphereFollowing::surfaceIndices(Circle &lastCircle) {
   float radius = m_params._sphereFollowingParams.m_optimizationParams[index]
                          ._sphereRadiusMultiplier *
                      lastCircleCoeff.values[3] +
-          m_params._sphereFollowingParams.m_optimizationParams[index]._epsilonSphere;
+                 m_params._sphereFollowingParams.m_optimizationParams[index]
+                     ._epsilonSphere;
   if (m_octree->radiusSearch(center, radius, pointIdxRadiusSearch,
                              pointRadiusSquaredDistance) > 0) {
     for (size_t i = 0; i < pointIdxRadiusSearch.size(); ++i) {
       const pcl::PointXYZINormal &point =
           m_cloud->points[pointIdxRadiusSearch[i]];
       if ((std::sqrt(pointRadiusSquaredDistance[i]) +
-           2*m_params._sphereFollowingParams.m_optimizationParams[index]._epsilonSphere) >
-          radius) {
+           2 * m_params._sphereFollowingParams.m_optimizationParams[index]
+                   ._epsilonSphere) > radius) {
         surface->indices.push_back(pointIdxRadiusSearch[i]);
       }
-      if(radius - m_params._sphereFollowingParams.m_optimizationParams[index]._epsilonSphere >  std::sqrt(pointRadiusSquaredDistance[i])) {
-          m_octree->deleteVoxelAtPoint(point);
+      if (radius - m_params._sphereFollowingParams.m_optimizationParams[index]
+                       ._epsilonSphere >
+          std::sqrt(pointRadiusSquaredDistance[i])) {
+        m_octree->deleteVoxelAtPoint(point);
       }
     }
   }
@@ -215,31 +212,42 @@ void SF_SphereFollowing::processClusters(
     std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters,
     const Circle &lastCircle) {
   SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> params(m_params);
-  Eigen::Vector3f oldSphereCenter(lastCircle.m_circleCoeff.values[0], lastCircle.m_circleCoeff.values[1], lastCircle.m_circleCoeff.values[2]);
-  if(lastCircle.m_firstSplit != oldSphereCenter && clusters.size() > 1) {
-      std::sort(clusters.begin(), clusters.end(), [&lastCircle, &oldSphereCenter](pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud1, pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud2){
-          pcl::CentroidPoint<pcl::PointXYZINormal> centroid1;
-          for (const pcl::PointXYZINormal &point : cloud1->points) {
-            centroid1.add(point);
-          }
-          pcl::PointXYZINormal centroidPoint1;
-          centroid1.get(centroidPoint1);
+  Eigen::Vector3f oldSphereCenter(lastCircle.m_circleCoeff.values[0],
+                                  lastCircle.m_circleCoeff.values[1],
+                                  lastCircle.m_circleCoeff.values[2]);
+  if (lastCircle.m_firstSplit != oldSphereCenter && clusters.size() > 1) {
+    std::sort(clusters.begin(), clusters.end(),
+              [&lastCircle, &oldSphereCenter](
+                  pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud1,
+                  pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud2) {
+                pcl::CentroidPoint<pcl::PointXYZINormal> centroid1;
+                for (const pcl::PointXYZINormal &point : cloud1->points) {
+                  centroid1.add(point);
+                }
+                pcl::PointXYZINormal centroidPoint1;
+                centroid1.get(centroidPoint1);
 
-          pcl::CentroidPoint<pcl::PointXYZINormal> centroid2;
-          for (const pcl::PointXYZINormal &point : cloud2->points) {
-            centroid2.add(point);
-          }
-          pcl::PointXYZINormal centroidPoint2;
-          centroid2.get(centroidPoint2);
-          Eigen::Vector3f centerVec1(centroidPoint1.x, centroidPoint1.y, centroidPoint1.z);
-          Eigen::Vector3f centerVec2(centroidPoint2.x, centroidPoint2.y, centroidPoint2.z);
+                pcl::CentroidPoint<pcl::PointXYZINormal> centroid2;
+                for (const pcl::PointXYZINormal &point : cloud2->points) {
+                  centroid2.add(point);
+                }
+                pcl::PointXYZINormal centroidPoint2;
+                centroid2.get(centroidPoint2);
+                Eigen::Vector3f centerVec1(centroidPoint1.x, centroidPoint1.y,
+                                           centroidPoint1.z);
+                Eigen::Vector3f centerVec2(centroidPoint2.x, centroidPoint2.y,
+                                           centroidPoint2.z);
 
-          float angle1 = SF_Math<float>::getAngleBetweenDeg(centerVec1 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
-          angle1 = std::min(angle1, 180.0f - angle1);
-          float angle2 = SF_Math<float>::getAngleBetweenDeg(centerVec2 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
-          angle2 = std::min(angle2, 180.0f - angle2);
-          return angle1 < angle2;
-      });
+                float angle1 = SF_Math<float>::getAngleBetweenDeg(
+                    centerVec1 - oldSphereCenter,
+                    oldSphereCenter - lastCircle.m_firstSplit);
+                angle1 = std::min(angle1, 180.0f - angle1);
+                float angle2 = SF_Math<float>::getAngleBetweenDeg(
+                    centerVec2 - oldSphereCenter,
+                    oldSphereCenter - lastCircle.m_firstSplit);
+                angle2 = std::min(angle2, 180.0f - angle2);
+                return angle1 < angle2;
+              });
   }
   std::for_each(
       clusters.begin(), clusters.end(),
@@ -261,24 +269,22 @@ void SF_SphereFollowing::processClusters(
             if (cluster != *clusters.begin()) {
               dist += params._sphereFollowingParams._heapDelta;
             }
-            if(clusters.size() > 1)
-            {
-                if(cluster!= *clusters.begin())
-                {
-                    pushbackQueue(circleFit.coeff(), dist,
-                                  cluster->points[0].intensity, Eigen::Vector3f(coeff.values[0], coeff.values[1], coeff.values[2]));
-
-                }
-                else
-                {
-                    pushbackQueue(circleFit.coeff(), dist,
-                                  cluster->points[0].intensity, lastCircle.m_firstSplit);
-                }
-            }
-            else
-            {
+            if (clusters.size() > 1) {
+              if (cluster != *clusters.begin()) {
                 pushbackQueue(circleFit.coeff(), dist,
-                                    cluster->points[0].intensity, lastCircle.m_firstSplit);
+                              cluster->points[0].intensity,
+                              Eigen::Vector3f(coeff.values[0], coeff.values[1],
+                                              coeff.values[2]));
+
+              } else {
+                pushbackQueue(circleFit.coeff(), dist,
+                              cluster->points[0].intensity,
+                              lastCircle.m_firstSplit);
+              }
+            } else {
+              pushbackQueue(circleFit.coeff(), dist,
+                            cluster->points[0].intensity,
+                            lastCircle.m_firstSplit);
             }
             SF_QSMDetectionCylinder cyl(dist, lastCircle.m_circleCoeff);
             cyl.addSecondCircle(coeff);
@@ -326,12 +332,15 @@ void SF_SphereFollowing::initializeHeap() {
                 lowestSliceCloud->points.end(),
                 [minZ](pcl::PointXYZINormal &point) { point.z = minZ; });
   SF_Circle<pcl::PointXYZINormal> circleFit(lowestSliceCloud, m_params, 0);
-  pushbackQueue(circleFit.coeff(), 0.0f, 0
-                , Eigen::Vector3f(circleFit.coeff().values[0], circleFit.coeff().values[1], circleFit.coeff().values[2]));
+  pushbackQueue(circleFit.coeff(), 0.0f, 0,
+                Eigen::Vector3f(circleFit.coeff().values[0],
+                                circleFit.coeff().values[1],
+                                circleFit.coeff().values[2]));
 }
 
 void SF_SphereFollowing::pushbackQueue(pcl::ModelCoefficients circleCoeff,
-                                       float distance, int clusterID, Eigen::Vector3f firstSplit) {
+                                       float distance, int clusterID,
+                                       Eigen::Vector3f firstSplit) {
   Circle circle(circleCoeff, distance, clusterID, firstSplit);
   HeapCircle::handle_type h = m_priorityHeap.push(circle);
   m_handle.push_back(h);
@@ -374,16 +383,14 @@ SF_SphereFollowing::lowestSlice(float &minZ) {
 /******************************Getters and
  * Setters*********************************/
 
-std::shared_ptr<SF_ModelQSM> SF_SphereFollowing::getQSM() {
-  return m_qsm;
+std::shared_ptr<SF_ModelQSM> SF_SphereFollowing::getQSM() { return m_qsm; }
+
+void SF_SphereFollowing::setParams(
+    const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> &params) {
+  m_params = params;
 }
 
-void SF_SphereFollowing::setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> &params)
-{
-    m_params = params;
-}
-
-void SF_SphereFollowing::setClusters(const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters)
-{
-    m_clusters = clusters;
+void SF_SphereFollowing::setClusters(
+    const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters) {
+  m_clusters = clusters;
 }

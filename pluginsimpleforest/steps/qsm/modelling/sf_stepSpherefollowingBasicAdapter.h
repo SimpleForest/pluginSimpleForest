@@ -2,12 +2,12 @@
 #define SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
 
 #include "steps/param/sf_paramAllSteps.h"
+#include <QThreadPool>
 #include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/filters/voxel_grid.h>
-#include <pcl/segmentation/extract_clusters.h>
 #include <pcl/kdtree/kdtree.h>
-#include <QThreadPool>
+#include <pcl/segmentation/extract_clusters.h>
 
 #include "qsm/algorithm/sf_QSMAlgorithm.h"
 #include "qsm/algorithm/sf_QSMCylinder.h"
@@ -21,13 +21,13 @@ public:
   std::shared_ptr<QMutex> mMutex;
 
   SF_SpherefollowingRootAdapter(const SF_SpherefollowingRootAdapter &obj) {
-      QThreadPool::globalInstance()->setMaxThreadCount(1);
+    QThreadPool::globalInstance()->setMaxThreadCount(1);
     mMutex = obj.mMutex;
   }
 
   SF_SpherefollowingRootAdapter() {
-      QThreadPool::globalInstance()->setMaxThreadCount(1);
-      mMutex.reset(new QMutex);
+    QThreadPool::globalInstance()->setMaxThreadCount(1);
+    mMutex.reset(new QMutex);
   }
 
   ~SF_SpherefollowingRootAdapter() {}
@@ -66,24 +66,25 @@ public:
     ne.compute(*cloudDownscaled);
     SF_CloudNormal::Ptr largestCluster(new SF_CloudNormal());
     pcl::EuclideanClusterExtraction<SF_PointNormal> ec;
-        {
-          QMutexLocker m1(&*mMutex);
-          pcl::search::KdTree<SF_PointNormal>::Ptr tree (new pcl::search::KdTree<SF_PointNormal>);
-          tree->setInputCloud (cloudDownscaled);
-          ec.setClusterTolerance (params._clusteringDistance);
-          ec.setMinClusterSize (10);
-          ec.setMaxClusterSize (std::numeric_limits<int>::max());
-          ec.setSearchMethod (tree);
-          ec.setInputCloud (cloudDownscaled);
-        }
+    {
+      QMutexLocker m1(&*mMutex);
+      pcl::search::KdTree<SF_PointNormal>::Ptr tree(
+          new pcl::search::KdTree<SF_PointNormal>);
+      tree->setInputCloud(cloudDownscaled);
+      ec.setClusterTolerance(params._clusteringDistance);
+      ec.setMinClusterSize(10);
+      ec.setMaxClusterSize(std::numeric_limits<int>::max());
+      ec.setSearchMethod(tree);
+      ec.setInputCloud(cloudDownscaled);
+    }
 
     std::vector<pcl::PointIndices> clusterIndices;
-    ec.extract (clusterIndices);
-    if(clusterIndices.size()>0)
-    {
-        for (std::vector<int>::const_iterator pit = clusterIndices[0].indices.begin (); pit != clusterIndices[0].indices.end (); ++pit)
-            largestCluster->points.push_back (cloudDownscaled->points[*pit]);
-
+    ec.extract(clusterIndices);
+    if (clusterIndices.size() > 0) {
+      for (std::vector<int>::const_iterator pit =
+               clusterIndices[0].indices.begin();
+           pit != clusterIndices[0].indices.end(); ++pit)
+        largestCluster->points.push_back(cloudDownscaled->points[*pit]);
     }
 
     SF_SphereFollowingRasterSearch sphereFollowing;
@@ -97,9 +98,15 @@ public:
     {
       QMutexLocker m1(&*mMutex);
       params = sphereFollowing.getParamVec()[0];
-      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; " << sphereFollowing.getParamVec()[0]._modelCloudError<< std::endl;
-      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; " << sphereFollowing.getParamVec()[39]._modelCloudError<< std::endl;
-      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; " << sphereFollowing.getParamVec()[79]._modelCloudError<< std::endl;
+      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; "
+                << sphereFollowing.getParamVec()[0]._modelCloudError
+                << std::endl;
+      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; "
+                << sphereFollowing.getParamVec()[39]._modelCloudError
+                << std::endl;
+      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; "
+                << sphereFollowing.getParamVec()[79]._modelCloudError
+                << std::endl;
     }
   }
 };

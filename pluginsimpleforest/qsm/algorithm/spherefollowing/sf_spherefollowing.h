@@ -55,7 +55,8 @@ public:
     m_clusterIndex = other.m_clusterIndex;
     m_firstSplit = other.m_firstSplit;
   }
-  Circle(pcl::ModelCoefficients circleCoeff, float distance, int clusterIndex, Eigen::Vector3f &firstSplit)
+  Circle(pcl::ModelCoefficients circleCoeff, float distance, int clusterIndex,
+         Eigen::Vector3f &firstSplit)
       : m_circleCoeff(circleCoeff), m_distance(distance),
         m_clusterIndex(clusterIndex), m_firstSplit(firstSplit) {}
 };
@@ -77,12 +78,14 @@ public:
   std::shared_ptr<SF_ModelQSM> getQSM() override;
   void compute() override;
   float error() override;
-  void setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> &params);
-  void setClusters(const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters);
+  void
+  setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> &params);
+  void setClusters(
+      const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters);
 
 private:
   typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>::Ptr
-  m_octree;
+      m_octree;
   std::vector<SF_QSMDetectionCylinder> m_cylinders;
   SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> m_params;
   std::shared_ptr<SF_ModelQSM> m_qsm;
