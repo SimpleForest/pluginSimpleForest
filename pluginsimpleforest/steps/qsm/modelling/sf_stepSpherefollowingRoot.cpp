@@ -139,7 +139,7 @@ void SF_StepSpherefollowingRoot::
 void SF_StepSpherefollowingRoot::configDialogGuruAddSphereFollowing(
     CT_StepConfigurableDialog *configDialog) {
   configDialogAddSphereFollowingHyperParameters(configDialog);
-  configDialogAddSphereFollowingOptimizableParameters(configDialog);
+  //configDialogAddSphereFollowingOptimizableParameters(configDialog);
 }
 
 void SF_StepSpherefollowingRoot::configDialogGuruAddPreProcessing(
@@ -212,7 +212,7 @@ void SF_StepSpherefollowingRoot::
 void SF_StepSpherefollowingRoot::createPostConfigurationDialogExpert(
     CT_StepConfigurableDialog *configDialog) {
   configDialogGuruAddPreProcessing(configDialog);
-  //  configDialogGuruAddSphereFollowing(configDialog);
+  configDialogGuruAddSphereFollowing(configDialog);
   configDialogGuruAddSphereFollowingGridSearch(configDialog);
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
 }

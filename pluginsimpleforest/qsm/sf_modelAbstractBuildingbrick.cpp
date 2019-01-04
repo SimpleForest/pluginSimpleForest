@@ -64,6 +64,18 @@ float Sf_ModelAbstractBuildingbrick::getDistance(
   return getDistance(p);
 }
 
+bool Sf_ModelAbstractBuildingbrick::operator <(const Sf_ModelAbstractBuildingbrick &other)
+{
+    bool less = true;
+    if(_start[0] > other._start[0]) less = false;
+    else if(_start[1] > other._start[1]) less = false;
+    else if(_start[2] > other._start[2]) less = false;
+    else if(_end[0] > other._end[0]) less = false;
+    else if(_end[1] > other._end[1]) less = false;
+    else if(_end[2] > other._end[2]) less = false;
+    return less;
+}
+
 void Sf_ModelAbstractBuildingbrick::setIndex(const size_t &index) {
   _indexVector = index;
 }

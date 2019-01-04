@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 
  Copyright (C) 2017-2018 Jan Hackenberg, free software developer
  All rights reserved.
@@ -26,32 +26,24 @@
 
 *****************************************************************************/
 
-#ifndef SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
-#define SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
+#ifndef SF_CLUSTERCLOUDBYQSM_H
+#define SF_CLUSTERCLOUDBYQSM_H
 
-enum SF_CLoudToModelDistanceMethod {
-  ZEROMOMENTUMORDER,
-  FIRSTMOMENTUMORDERMSAC,
-  FIRSTMOMENTUMORDER,
-  SECONDMOMENTUMORDERMSAC,
-  SECONDMOMENTUMORDER,
-  GROWTHDISTANCE
+
+#include "../distance/sf_cloudToModelDistanceParameters.h"
+#include "../distance/sf_cloudToModelDistance.h"
+
+class SF_ClusterCloudByQSM
+{
+    SF_CloudToModelDistanceParameters m_params;
+    std::shared_ptr<SF_ModelQSM> m_qsm;
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
+    size_t m_numClstrs;
+    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr > m_clusters;
+public:
+    SF_ClusterCloudByQSM(SF_CloudToModelDistanceParameters params, std::shared_ptr<SF_ModelQSM> qsm, pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, int numCltrs);
+    void compute();
+    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters() const;
 };
 
-struct SF_CloudToModelDistanceParameters {
-  int _method = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC;
-  float _inlierDistance = 0.05f;
-  int _robustPercentage = 100;
-  int _k = 5;
-  SF_CloudToModelDistanceParameters() {}
-  SF_CloudToModelDistanceParameters(SF_CLoudToModelDistanceMethod &method,
-                                    float inlierDistance, int k,
-                                    int percentage) {
-    _method = method;
-    _inlierDistance = inlierDistance;
-    _k = k;
-    _robustPercentage = percentage;
-  }
-};
-
-#endif // SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
+#endif // SF_CLUSTERCLOUDBYQSM_H

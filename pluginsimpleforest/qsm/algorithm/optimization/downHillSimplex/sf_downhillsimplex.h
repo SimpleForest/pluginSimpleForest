@@ -26,32 +26,37 @@
 
 *****************************************************************************/
 
-#ifndef SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
-#define SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
+#ifndef SF_DOWNHILLSIMPLEX_H
+#define SF_DOWNHILLSIMPLEX_H
 
-enum SF_CLoudToModelDistanceMethod {
-  ZEROMOMENTUMORDER,
-  FIRSTMOMENTUMORDERMSAC,
-  FIRSTMOMENTUMORDER,
-  SECONDMOMENTUMORDERMSAC,
-  SECONDMOMENTUMORDER,
-  GROWTHDISTANCE
+#include "../../spherefollowing/sf_spherefollowing.h"
+
+
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_min.h>
+#include <gsl/gsl_multifit_nlinear.h>
+#include <gsl/gsl_multifit_nlin.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_multimin.h>
+#include <gsl/gsl_ieee_utils.h>
+
+
+double downhillSimplex (const gsl_vector *v, void *params);
+
+class SF_DownHillSimplex
+{
+    SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
+public:
+    SF_DownHillSimplex(SF_ParamSpherefollowingBasic<SF_PointNormal> &params);
+
+    void compute();
+    SF_ParamSpherefollowingBasic<SF_PointNormal> params() const;
+
+private:
+    void serializeParams(std::uintptr_t *par);
+    void serializeVec(gsl_vector *x, double fac);
 };
 
-struct SF_CloudToModelDistanceParameters {
-  int _method = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC;
-  float _inlierDistance = 0.05f;
-  int _robustPercentage = 100;
-  int _k = 5;
-  SF_CloudToModelDistanceParameters() {}
-  SF_CloudToModelDistanceParameters(SF_CLoudToModelDistanceMethod &method,
-                                    float inlierDistance, int k,
-                                    int percentage) {
-    _method = method;
-    _inlierDistance = inlierDistance;
-    _k = k;
-    _robustPercentage = percentage;
-  }
-};
-
-#endif // SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
+#endif // SF_DOWNHILLSIMPLEX_H

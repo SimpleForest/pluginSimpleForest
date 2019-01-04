@@ -40,8 +40,6 @@
 
 #include <memory>
 
-struct heapDataCircle;
-
 struct Circle {
 public:
   pcl::ModelCoefficients m_circleCoeff;
@@ -61,17 +59,6 @@ public:
         m_clusterIndex(clusterIndex), m_firstSplit(firstSplit) {}
 };
 
-using HeapCircle = boost::heap::fibonacci_heap<heapDataCircle>;
-
-struct heapDataCircle {
-  Circle _circle;
-  HeapCircle::handle_type handle;
-  heapDataCircle(Circle point) : _circle(point), handle() {}
-  bool operator<(heapDataCircle const &second) const {
-    return _circle.m_distance < second._circle.m_distance;
-  }
-};
-
 class SF_SphereFollowing : public SF_IDetection {
 public:
   SF_SphereFollowing();
@@ -82,6 +69,7 @@ public:
   setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> &params);
   void setClusters(
       const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters);
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud() const;
 
 private:
   typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>::Ptr
@@ -90,9 +78,8 @@ private:
   SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> m_params;
   std::shared_ptr<SF_ModelQSM> m_qsm;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
-  std::vector<HeapCircle::handle_type> m_handle;
+  std::map<float, Circle> m_map;
   std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> m_clusters;
-  HeapCircle m_priorityHeap;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr lowestSlice(float &minZ);
   pcl::PointIndices::Ptr surfaceIndices(Circle &lastCircle);
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr

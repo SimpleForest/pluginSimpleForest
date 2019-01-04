@@ -67,6 +67,7 @@ public:
   virtual Eigen::Vector3f getAxis() = 0;
   virtual std::string toString() = 0;
   virtual std::string toHeaderString() = 0;
+  bool operator < (const Sf_ModelAbstractBuildingbrick &other);
 
   size_t getIndex() const;
   void setIndex(const size_t &index);

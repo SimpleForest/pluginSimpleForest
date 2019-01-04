@@ -1,47 +1,30 @@
-CT_PREFIX = ../../computreev3
-
-exists(../../computreev5) {
     CT_PREFIX = ../../computreev5
     DEFINES += COMPUTREE_V5
-}
 
 CHECK_CAN_USE_PCL = 1
-CHECK_CAN_USE_GDAL = 1
 CHECK_CAN_USE_OPENCV = 1
-
-
-
-include($${CT_PREFIX}/shared.pri)
-include($${PLUGIN_SHARED_DIR}/include.pri)
-
-COMPUTREE += ctliblas ctlibfilters ctlibmetrics
-#COMPUTREE += ctliblas ctlibgsl ctlibfilters ctlibmetrics
-
 MUST_USE_USE_PCL = 1
 MUST_USE_USE_GSL = 1
+MUST_USE_OPENCV = 1
 
-contains(DEFINES, COMPUTREE_V5) {
-    COMPUTREE += ctlibstdactions
-}
+COMPUTREE += ctlibpcl ctliblas ctlibfilters ctlibmetrics ctlibstdactions
+#COMPUTREE += ctlibpcl ctliblas ctlibgsl ctlibfilters ctlibmetrics ctlibstdactions
 
+include($${CT_PREFIX}/shared.pri)
 include($${CT_PREFIX}/include_ct_library.pri)
+include($${PLUGIN_SHARED_DIR}/include.pri)
+
+#contains(DEFINES, COMPUTREE_V5) {
+#    COMPUTREE += ctlibstdactions
+#}
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
 
-MUST_USE_PCL = 1
-MUST_USE_OPENCV = 1
 QT += concurrent
 QT +=  testlib
 CONFIG += testcase
 CONFIG   += console
-
-COMPUTREE += ctlibpcl
-
-include($${CT_PREFIX}/shared.pri)
-include($${PLUGIN_SHARED_DIR}/include.pri)
-
-include($${PLUGIN_SHARED_DIR}/include.pri)
-
 TARGET = plug_simpleforest
 
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
@@ -162,7 +145,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/algorithm/geometry/circle/sf_circle.hpp \
     pcl/cloud/feature/descriptor/sf_descriptor.hpp \
     pcl/cloud/feature/descriptor/sf_descriptor.h \
-    qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.h
+    qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.h \
+    qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.h \
+    qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -204,9 +189,12 @@ SOURCES += \
     cloud/filter/multiple/clusterscaling/sf_testclustertransfer.cpp \
     qsm/sf_modelLevelOne.cpp \
     qsm/algorithm/spherefollowing/sf_spherefollowing.cpp \
-    qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.cpp
+    qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.cpp \
+    qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.cpp \
+    qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts
 
-#unix:!macx: LIBS += -L/usr/lib/ -lgslcblas
+unix:!macx: LIBS += -L/usr/lib/ -lgsl -lgslcblas -lm
+

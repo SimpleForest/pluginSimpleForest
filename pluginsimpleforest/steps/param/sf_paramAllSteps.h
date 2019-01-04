@@ -346,6 +346,7 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType> {
   float _clusteringDistance = 0.2;
   float _modelCloudError;
   int _fittedGeometries;
+  size_t m_numClstrs = 1;
   std::shared_ptr<SF_ModelQSM> _tree;
 
   QString methodToString(int method) {

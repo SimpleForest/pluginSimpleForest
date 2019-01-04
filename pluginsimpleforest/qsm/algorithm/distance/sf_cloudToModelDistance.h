@@ -53,9 +53,8 @@ class Sf_CloudToModelDistance {
   float
   getDistance(const pcl::PointXYZINormal &point,
               std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
-  const std::vector<float> getCloudToModelDistances();
   float getNumberInliersNegative(const std::vector<float> &distances);
-  float adaptDistanceToMethod(float distance);
+  float adaptDistanceToMethod(float distance, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
 
 public:
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
@@ -64,8 +63,9 @@ public:
                           float inlierDistance, int k, int percentage);
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                           pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
-                          const SF_CloudToModelDistanceParameters &params);
+                          SF_CloudToModelDistanceParameters params);
   float getAverageDistance() const;
+  std::vector<float> getCloudToModelDistances();
 };
 
 #endif // SF_CLOUD_TO_MODEL_DISTANCE_H

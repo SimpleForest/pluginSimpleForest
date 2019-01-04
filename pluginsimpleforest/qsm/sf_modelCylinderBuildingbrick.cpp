@@ -50,12 +50,8 @@ float Sf_ModelCylinderBuildingbrick::getLength() {
 float Sf_ModelCylinderBuildingbrick::getDistance(const Eigen::Vector3f &point) {
   float distToAxis = getDistanceToAxis(point);
   float distToSegment = getProjectedDistanceToSegment(point);
-  float fac = -1;
-  if (distToAxis < _radius)
-    fac = 1;
   float distToHull = distToAxis - _radius;
   float distance =
-      fac *
       (std::sqrt((distToHull * distToHull) + (distToSegment * distToSegment)));
   return distance;
 }

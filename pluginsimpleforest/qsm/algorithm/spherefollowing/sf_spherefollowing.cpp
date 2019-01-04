@@ -78,11 +78,10 @@ void SF_SphereFollowing::buildTree() {
 }
 
 void SF_SphereFollowing::compute() {
-
   initialize();
-  while (!m_priorityHeap.empty()) {
-    Circle circleStruct = m_priorityHeap.top()._circle;
-    m_priorityHeap.pop();
+  while (!m_map.empty()) {
+    Circle circleStruct = (*m_map.begin()).second;
+    m_map.erase(m_map.begin());
     pcl::PointIndices::Ptr surfaceIndicesVector = surfaceIndices(circleStruct);
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr surface =
         extractCloud(surfaceIndicesVector);
@@ -110,11 +109,15 @@ pcl::PointIndices::Ptr SF_SphereFollowing::surfaceIndices(Circle &lastCircle) {
   center.z = lastCircleCoeff.values[2];
   std::vector<int> pointIdxRadiusSearch;
   std::vector<float> pointRadiusSquaredDistance;
-  float radius = m_params._sphereFollowingParams.m_optimizationParams[index]
+
+  float radius = std::max(
+              static_cast<double>(m_params._sphereFollowingParams._minGlobalRadius),
+              m_params._sphereFollowingParams.m_optimizationParams[index]
                          ._sphereRadiusMultiplier *
-                     lastCircleCoeff.values[3] +
-                 m_params._sphereFollowingParams.m_optimizationParams[index]
-                     ._epsilonSphere;
+                     lastCircleCoeff.values[3]);
+  radius += +
+          m_params._sphereFollowingParams.m_optimizationParams[index]
+              ._epsilonSphere;
   if (m_octree->radiusSearch(center, radius, pointIdxRadiusSearch,
                              pointRadiusSquaredDistance) > 0) {
     for (size_t i = 0; i < pointIdxRadiusSearch.size(); ++i) {
@@ -125,10 +128,11 @@ pcl::PointIndices::Ptr SF_SphereFollowing::surfaceIndices(Circle &lastCircle) {
                    ._epsilonSphere) > radius) {
         surface->indices.push_back(pointIdxRadiusSearch[i]);
       }
+
+      m_octree->deleteVoxelAtPoint(point);
       if (radius - m_params._sphereFollowingParams.m_optimizationParams[index]
                        ._epsilonSphere >
           std::sqrt(pointRadiusSquaredDistance[i])) {
-        m_octree->deleteVoxelAtPoint(point);
       }
     }
   }
@@ -153,6 +157,13 @@ SF_SphereFollowing::clusterByID(
   std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters;
   clusters.push_back(pcl::PointCloud<pcl::PointXYZINormal>::Ptr(
       new pcl::PointCloud<pcl::PointXYZINormal>()));
+  std::for_each(cloud->points.begin(), cloud->points.end(),
+                [&minID](const pcl::PointXYZINormal &point) {
+                  size_t currentID = point.intensity;
+                  if(minID > currentID) {
+                      minID = currentID;
+                  }
+                });
   size_t maxID = minID;
   std::for_each(cloud->points.begin(), cloud->points.end(),
                 [&maxID, &minID, &clusters](const pcl::PointXYZINormal &point) {
@@ -264,7 +275,7 @@ void SF_SphereFollowing::processClusters(
               Eigen::Vector3f(coeff.values[0], coeff.values[1],
                               coeff.values[2]);
           float distance = diff.norm();
-          if (distance > 0) {
+          if (distance > params._sphereFollowingParams._minGlobalRadius) {
             float dist = lastCircle.m_distance + distance;
             if (cluster != *clusters.begin()) {
               dist += params._sphereFollowingParams._heapDelta;
@@ -341,10 +352,7 @@ void SF_SphereFollowing::initializeHeap() {
 void SF_SphereFollowing::pushbackQueue(pcl::ModelCoefficients circleCoeff,
                                        float distance, int clusterID,
                                        Eigen::Vector3f firstSplit) {
-  Circle circle(circleCoeff, distance, clusterID, firstSplit);
-  HeapCircle::handle_type h = m_priorityHeap.push(circle);
-  m_handle.push_back(h);
-  (*h).handle = h;
+  m_map[distance] = Circle(circleCoeff, distance, clusterID, firstSplit);
 }
 
 pcl::PointCloud<pcl::PointXYZINormal>::Ptr
@@ -393,4 +401,9 @@ void SF_SphereFollowing::setParams(
 void SF_SphereFollowing::setClusters(
     const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters) {
   m_clusters = clusters;
+}
+
+pcl::PointCloud<pcl::PointXYZINormal>::Ptr SF_SphereFollowing::cloud() const
+{
+    return m_cloud;
 }

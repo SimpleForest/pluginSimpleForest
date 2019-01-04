@@ -1,20 +1,21 @@
 #ifndef SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
 #define SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
 
-#include "steps/param/sf_paramAllSteps.h"
+
 #include <QThreadPool>
 #include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/kdtree/kdtree.h>
 #include <pcl/segmentation/extract_clusters.h>
+#include <pcl/ModelCoefficients.h>
 
+#include "steps/param/sf_paramAllSteps.h"
 #include "qsm/algorithm/sf_QSMAlgorithm.h"
 #include "qsm/algorithm/sf_QSMCylinder.h"
 #include "qsm/algorithm/sf_buildQSM.h"
-#include <pcl/ModelCoefficients.h>
-
 #include "qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.h"
+#include "qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h"
 
 class SF_SpherefollowingRootAdapter {
 public:
@@ -98,6 +99,7 @@ public:
     {
       QMutexLocker m1(&*mMutex);
       params = sphereFollowing.getParamVec()[0];
+      params._cloudIn = largestCluster;
       std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; "
                 << sphereFollowing.getParamVec()[0]._modelCloudError
                 << std::endl;
@@ -106,6 +108,12 @@ public:
                 << std::endl;
       std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; "
                 << sphereFollowing.getParamVec()[79]._modelCloudError
+                << std::endl;
+      SF_DownHillSimplex downhillSimplex (params);
+      downhillSimplex.compute();
+      params = downhillSimplex.params();
+      std::cout << "foo3 "  << " ; "
+                << params._modelCloudError
                 << std::endl;
     }
   }
