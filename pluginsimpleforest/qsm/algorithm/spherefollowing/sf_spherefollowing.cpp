@@ -31,6 +31,7 @@
 #include "qsm/algorithm/distance/sf_cloudToModelDistance.h"
 #include "qsm/algorithm/geometry/circle/sf_circle.h"
 #include "qsm/algorithm/sf_buildQSM.h"
+#include "qsm/algorithm/postprocessing/sf_removefalseconnections.h"
 
 #include <pcl/filters/conditional_removal.h>
 #include <pcl/filters/extract_indices.h>
@@ -92,6 +93,8 @@ void SF_SphereFollowing::compute() {
     processClusters(surfaceClusters, circleStruct);
   }
   buildTree();
+  SF_RemoveFalseConnections rfc;
+  rfc.compute(m_qsm);
 }
 
 float SF_SphereFollowing::error() {

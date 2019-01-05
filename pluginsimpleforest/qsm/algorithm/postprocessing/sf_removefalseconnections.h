@@ -26,31 +26,18 @@
 
 *****************************************************************************/
 
-#ifndef SF_MODEL_TREE_H
-#define SF_MODEL_TREE_H
+#ifndef SF_REMOVEFALSECONNECTIONS_H
+#define SF_REMOVEFALSECONNECTIONS_H
 
-#include "sf_modelAbstractSegment.h"
+#include "qsm/algorithm/sf_QSMCylinder.h"
+#include "qsm/sf_modelQSM.h"
 
-class SF_ModelQSM {
-  int _ID;
-  std::string _species;
-  std::shared_ptr<SF_ModelAbstractSegment> _rootSegment;
-
+class SF_RemoveFalseConnections
+{
+    std::shared_ptr<SF_ModelQSM> m_qsm;
 public:
-  SF_ModelQSM(const int ID);
-  virtual std::string toString();
-  virtual std::string toHeaderString();
-
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments();
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
-  getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment);
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
-  getBuildingBricks();
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
-  getLeaveSegments();
-  std::shared_ptr<SF_ModelAbstractSegment> getRootSegment() const;
-  void
-  setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment> &rootSegment);
+    SF_RemoveFalseConnections();
+    void compute(std::shared_ptr<SF_ModelQSM> qsm);
 };
 
-#endif // SF_MODEL_TREE_H
+#endif // SF_REMOVEFALSECONNECTIONS_H

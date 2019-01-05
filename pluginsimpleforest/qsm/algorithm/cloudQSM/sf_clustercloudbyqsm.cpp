@@ -57,7 +57,7 @@ void SF_ClusterCloudByQSM::compute()
         }
     });
     std::sort(points.begin(),points.end(),[](const pcl::PointXYZINormal &first, const pcl::PointXYZINormal &second){
-        return first.intensity > second.intensity;
+        return first.intensity < second.intensity;
     });
     for(size_t i = 0; i < m_numClstrs; i++) {
         m_clusters.push_back(pcl::PointCloud<pcl::PointXYZINormal>::Ptr (new pcl::PointCloud<pcl::PointXYZINormal> ));

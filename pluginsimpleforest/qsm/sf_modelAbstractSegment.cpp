@@ -100,6 +100,20 @@ Eigen::Vector3f SF_ModelAbstractSegment::getEnd() const {
   return end;
 }
 
+void SF_ModelAbstractSegment::remove() {
+    if(!isRoot()) {
+        std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
+        std::vector<std::shared_ptr<SF_ModelAbstractSegment> > parentsChildrenNew;
+        std::vector<std::shared_ptr<SF_ModelAbstractSegment> > parentsChildren = parent->getChildSegments();
+        std::for_each(parentsChildren.begin(), parentsChildren.end(), [&parentsChildrenNew, this](std::shared_ptr<SF_ModelAbstractSegment> parentsChild){
+            if(parentsChild!= shared_from_this()) {
+                parentsChildrenNew.push_back(parentsChild);
+            }
+        });
+        parent->setChildSegments(parentsChildrenNew);
+    }
+}
+
 float SF_ModelAbstractSegment::getRadius() const {
   std::vector<float> radii;
   for (size_t i = 0; i < _buildingBricks.size(); i++) {
@@ -124,6 +138,13 @@ float SF_ModelAbstractSegment::getLength() const {
   return length;
 }
 
+bool SF_ModelAbstractSegment::isRoot() const {
+    if(getTree()->getRootSegment() != shared_from_this() ) {
+        return false;
+    }
+    return true;
+}
+
 int SF_ModelAbstractSegment::getID() const { return _ID; }
 
 void SF_ModelAbstractSegment::setID(int ID) { _ID = ID; }
@@ -137,11 +158,16 @@ std::shared_ptr<SF_ModelQSM> SF_ModelAbstractSegment::getTree() const {
   return _tree.lock();
 }
 
+void SF_ModelAbstractSegment::setChildSegments(const std::vector<std::shared_ptr<SF_ModelAbstractSegment> > childSegments)
+{
+    _childSegments = childSegments;
+}
+
 int SF_ModelAbstractSegment::getParentID() {
-  std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
-  if (parent == nullptr) {
-    return -1;
-  } else {
+    std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
+    if (parent == nullptr) {
+        return -1;
+    } else {
     return parent->getID();
   }
 }

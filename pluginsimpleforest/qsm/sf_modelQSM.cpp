@@ -93,3 +93,14 @@ SF_ModelQSM::getBuildingBricks() {
   }
   return buildingBricks;
 }
+
+std::vector<std::shared_ptr<SF_ModelAbstractSegment> > SF_ModelQSM::getLeaveSegments() {
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment> > leafes;
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment> > segments = getSegments();
+    std::for_each(segments.begin(), segments.end(), [&leafes](std::shared_ptr<SF_ModelAbstractSegment> segment){
+        if(segment->getChildSegments().size() == 0) {
+            leafes.push_back(segment);
+        }
+    });
+    return leafes;
+}

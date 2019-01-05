@@ -225,12 +225,6 @@ double downhillSimplex(const gsl_vector *v, void *params)
         paramVec.push_back(paramsOptim);
     }
 
-    //    paramVec.clear();
-    //    paramVec.push_back(paramsOptim);
-    //    m_clusters.clear();
-    //    m_clusters.push_back(paramsBasic._cloudIn);
-
-
     paramsBasic._sphereFollowingParams.m_optimizationParams = paramVec;
     SF_SphereFollowing sphereFollowing;
     sphereFollowing.setParams(paramsBasic);
