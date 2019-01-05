@@ -206,6 +206,10 @@ void SF_StepSpherefollowingRoot::
   configDialog->addDouble("For MSAC and inlier methods the distance is cropped "
                           "at [<em><b>crop distance</b></em>] ",
                           "", 0.01, 0.3, 2, _CMD_inlierDistance);
+  configDialog->addInt("Sorting by growth length the cloud is subdivided in  "
+                       "[<em><b>numClstrs</b></em>] ",
+                       " clusters.", 1, 10,
+                       _CMD_numClstrs);
   configDialog->addEmpty();
 }
 
@@ -229,6 +233,9 @@ void SF_StepSpherefollowingRoot::createOutResultModelListProtected() {
   if (resModelw != NULL) {
     resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outCylinderGroup,
                              new CT_StandardItemGroup(), tr("QSM Group"));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem,
+                            new CT_PointsAttributesColor(),
+                            tr("Growth direction"));
     resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(),
                             tr("QSM"));
   }
@@ -322,6 +329,19 @@ void SF_StepSpherefollowingRoot::compute() {
               });
         });
   }
+  size_t index = 0;
+  CT_ResultGroupIterator outResIt2(outResult, this, DEF_IN_GRP_CLUSTER);
+  while (!isStopped() && outResIt2.hasNext()) {
+    CT_StandardItemGroup *group = (CT_StandardItemGroup *)outResIt2.next();
+    const CT_AbstractItemDrawableWithPointCloud *ct_cloud =
+        (const CT_AbstractItemDrawableWithPointCloud *)
+            group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+    SF_ParamSpherefollowingBasic<SF_PointNormal> param = _paramList[index++];
+    CT_PointsAttributesColor *colorAttribute = new CT_PointsAttributesColor(
+        m_outCloudItem.completeName(), outResult,
+        ct_cloud->getPointCloudIndexRegistered(), param._colors);
+    group->addItemDrawable(colorAttribute);
+  }
 }
 
 int SF_StepSpherefollowingRoot::toStringSFMethod() {
@@ -398,6 +418,7 @@ void SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup *outResult) {
     param._sphereFollowingParams = sphereFollowingParams;
     param._voxelSize = _PP_voxelSize;
     param._clusteringDistance = _PP_euclideanClusteringDistance;
+    param.m_numClstrs = _CMD_numClstrs;
     param._modelCloudError = 1337;
     param._fittedGeometries = 0;
     param._log = PS_LOG;

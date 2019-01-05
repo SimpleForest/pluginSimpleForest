@@ -33,6 +33,7 @@ protected:
   QList<SF_ParamSpherefollowingBasic<SF_PointNormal>> _paramList;
 
 private:
+  CT_AutoRenameModels m_outCloudItem;
   CT_AutoRenameModels _outCylinderGroup;
   CT_AutoRenameModels _outCylinders;
   int toStringSFMethod();
@@ -52,6 +53,7 @@ private:
   int _CMD_robustPercentage = 100;
   int _CMD_fittingMethod = toStringCMDMethod();
   int _CMD_k = 5;
+  int _CMD_numClstrs = 1;
   double _CMD_inlierDistance = 0.05;
   bool _GS_doGridSearch = true;
   int _GS_nDimensions = 4;

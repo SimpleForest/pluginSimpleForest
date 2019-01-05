@@ -69,7 +69,7 @@ float Sf_CloudToModelDistance::adaptDistanceToMethod(float distance, std::shared
   case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
       float growthLength = buildingBrick->getGrowthLength();
       if(distance<_INLIERDISTANCE*2) {
-          distance = growthLength-distance;
+          distance = growthLength;
       } else {
           distance = std::numeric_limits<float>::max();
       }
@@ -141,13 +141,17 @@ Sf_CloudToModelDistance::cropDistances(std::vector<float> distances) {
 
 std::vector<float> Sf_CloudToModelDistance::getCloudToModelDistances() {
   std::vector<float> distances;
+  int k = _k;
+  if(_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
+      k = 1;
+  }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks =
       _tree->getBuildingBricks();
   for (size_t i = 0; i < _cloud->points.size(); i++) {
     pcl::PointXYZINormal point = _cloud->points[i];
     std::vector<int> pointIdxRadiusSearch;
     std::vector<float> pointRadiusSquaredDistance;
-    if (_kdtreeQSM->nearestKSearch(point, _k, pointIdxRadiusSearch,
+    if (_kdtreeQSM->nearestKSearch(point, k, pointIdxRadiusSearch,
                                    pointRadiusSquaredDistance) > 0) {
       float minDistance = std::numeric_limits<float>::max();
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {

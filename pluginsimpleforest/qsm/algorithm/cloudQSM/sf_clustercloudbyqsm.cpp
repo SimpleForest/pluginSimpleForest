@@ -44,7 +44,7 @@ SF_ClusterCloudByQSM::SF_ClusterCloudByQSM(SF_CloudToModelDistanceParameters par
 void SF_ClusterCloudByQSM::compute()
 {
     SF_CloudToModelDistanceParameters params = m_params;
-    params._method = SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC;
+    params._method = SF_CLoudToModelDistanceMethod::GROWTHDISTANCE;
     Sf_CloudToModelDistance cmd(m_qsm, m_cloud, params);
     std::vector<float> distances = cmd.getCloudToModelDistances();
     size_t index = 0;

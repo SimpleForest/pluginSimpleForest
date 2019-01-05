@@ -137,9 +137,9 @@ SF_DownHillSimplex::compute() {
             break;
         size = gsl_multimin_fminimizer_size (s);
         status = gsl_multimin_test_size (size, 5*1e-4);
-//        if (status == GSL_SUCCESS)  {
-//            printf ("converged to minimum at\n");
-//        }
+        if (status == GSL_SUCCESS)  {
+            printf ("converged to minimum at\n");
+        }
         double error = s->fval;
         if(m_params._modelCloudError > error) {
            m_params._modelCloudError = error;
@@ -158,11 +158,11 @@ SF_DownHillSimplex::compute() {
            m_params._sphereFollowingParams.m_optimizationParams = paramVec;
 
         }
-//        printf ("%5d %10.6e %10.6e f() = %7.6f size = %.6f\n",
-//                iter,
-//                gsl_vector_get (s->x, 0),
-//                gsl_vector_get (s->x, 1),
-//                error, size);
+        printf ("%5d %10.6e %10.6e f() = %7.6f size = %.6f\n",
+                iter,
+                gsl_vector_get (s->x, 0),
+                gsl_vector_get (s->x, 1),
+                error, size);
 
     }
     while (status == GSL_CONTINUE && iter < 1000);
