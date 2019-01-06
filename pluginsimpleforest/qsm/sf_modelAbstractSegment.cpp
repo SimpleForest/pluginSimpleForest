@@ -100,6 +100,10 @@ Eigen::Vector3f SF_ModelAbstractSegment::getEnd() const {
   return end;
 }
 
+Eigen::Vector3f SF_ModelAbstractSegment::getAxis() const {
+  return (getEnd()-getStart());
+}
+
 void SF_ModelAbstractSegment::remove() {
     if(!isRoot()) {
         std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();

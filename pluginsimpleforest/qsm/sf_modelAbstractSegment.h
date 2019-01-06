@@ -60,6 +60,7 @@ public:
 
   Eigen::Vector3f getStart() const;
   Eigen::Vector3f getEnd() const;
+  Eigen::Vector3f getAxis() const;
   void remove();
   float getRadius() const;
   float getVolume() const;

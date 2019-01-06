@@ -34,6 +34,7 @@
 
 class SF_RemoveFalseConnections
 {
+    const float _M_MAXANGLE = 10;
     std::shared_ptr<SF_ModelQSM> m_qsm;
 public:
     SF_RemoveFalseConnections();

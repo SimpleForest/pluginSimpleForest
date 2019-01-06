@@ -28,6 +28,8 @@
 
 #include "sf_removefalseconnections.h"
 
+#include "pcl/sf_math.h"
+
 SF_RemoveFalseConnections::SF_RemoveFalseConnections() {
 }
 
@@ -37,6 +39,19 @@ void SF_RemoveFalseConnections::compute(std::shared_ptr<SF_ModelQSM> qsm) {
     std::for_each(leafes.begin(), leafes.end(), [](std::shared_ptr<SF_ModelAbstractSegment> leaf){
         if(leaf->getBuildingBricks().size() == 1) {
             leaf->remove();
+        } else {
+            if(!leaf->isRoot()) {
+                std::shared_ptr<SF_ModelAbstractSegment> parent = leaf->getParent();
+                std::vector<std::shared_ptr<SF_ModelAbstractSegment> > children = parent->getChildBuildingBricks();
+                std::for_each(children.begin(), children.end(), [&leaf](std::shared_ptr<SF_ModelAbstractSegment> child){
+                    if(child != leaf) {
+                        float angle = SF_Math<float>::getAngleBetweenDeg(leaf->getAxis(), child->getAxis());
+                        if(angle < _M_MAXANGLE || angle > (180 - _M_MAXANGLE)) {
+                            leaf->remove();
+                        }
+                    }
+                });
+            }
         }
     });
 }
