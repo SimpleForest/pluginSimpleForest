@@ -111,6 +111,41 @@ SF_DownHillSimplex::compute() {
     std::uintptr_t p13 = reinterpret_cast<std::uintptr_t>(&(*m_params._tree));
     std::uintptr_t p14 = reinterpret_cast<std::uintptr_t>(new size_t {m_params.m_numClstrs});
     std::uintptr_t par[14] = {p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14};
+    {
+        std::ofstream myfile;
+        std::string str = "/home/drsnuggles/Documents/param/param";
+        str.append(std::to_string(m_params.m_numClstrs));
+        str.append(".csv");
+        myfile.open(str);
+        myfile << m_params._distanceParams._inlierDistance << std::endl;
+        myfile << m_params._distanceParams._k << std::endl;
+        myfile << m_params._distanceParams._method << std::endl;
+        myfile << m_params._distanceParams._robustPercentage << std::endl;
+        myfile << m_params._sphereFollowingParams._fittingMethod << std::endl;
+        myfile << m_params._sphereFollowingParams._heapDelta << std::endl;
+        myfile << m_params._sphereFollowingParams._heightInitializationSlice << std::endl;
+        myfile << m_params._sphereFollowingParams._inlierDistance << std::endl;
+        myfile << m_params._sphereFollowingParams._minGlobalRadius << std::endl;
+        myfile << m_params._sphereFollowingParams._minPtsGeometry << std::endl;
+        myfile << m_params._sphereFollowingParams._RANSACIterations << std::endl;
+        myfile << m_params.m_numClstrs << std::endl;
+        myfile.close();
+    }
+
+    {
+        std::ofstream myfile;
+        std::string str = "/home/drsnuggles/Documents/param/all";
+        str.append(std::to_string(m_params.m_numClstrs));
+        str.append(".csv");
+        myfile.open(str);
+        myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere << std::endl;
+        myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance << std::endl;
+        myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._medianRadiusMultiplier << std::endl;
+        myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._minRadius << std::endl;
+        myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplier << std::endl;
+        myfile << m_params.m_numClstrs << std::endl;
+        myfile.close();
+    }
 
     const gsl_multimin_fminimizer_type *T =
             gsl_multimin_fminimizer_nmsimplex2;
@@ -184,6 +219,23 @@ SF_DownHillSimplex::compute() {
     sphereFollowing.compute();
     m_params._tree = sphereFollowing.getQSM();
     m_params._cloudIn = sphereFollowing.cloud();
+
+    {
+        std::ofstream myfile;
+        std::string str = "/home/drsnuggles/Documents/param/allSub";
+        str.append(std::to_string(m_params.m_numClstrs));
+        str.append(".csv");
+        myfile.open(str);
+        for(size_t i  = 0; i < m_params.m_numClstrs; i++)
+        {
+            myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._epsilonSphere << std::endl;
+            myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._euclideanClusteringDistance << std::endl;
+            myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._medianRadiusMultiplier << std::endl;
+            myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._minRadius << std::endl;
+            myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._sphereRadiusMultiplier << std::endl;
+        }
+        myfile.close();
+    }
 }
 
 double downhillSimplex(const gsl_vector *v, void *params)
