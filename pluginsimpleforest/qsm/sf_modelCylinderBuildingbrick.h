@@ -48,6 +48,7 @@ public:
   std::string toString() override;
   std::string toHeaderString() override;
   float getRadius() override;
+  void setRadius(float radius) override;
   float getVolume() override;
   float getLength() override;
   float getDistance(const Eigen::Vector3f &point) override;

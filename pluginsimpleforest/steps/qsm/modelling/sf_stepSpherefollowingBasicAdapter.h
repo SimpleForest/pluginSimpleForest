@@ -1,7 +1,6 @@
 #ifndef SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
 #define SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
 
-
 #include <QThreadPool>
 #include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/features/normal_3d.h>
@@ -16,6 +15,7 @@
 #include "qsm/algorithm/sf_buildQSM.h"
 #include "qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.h"
 #include "qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h"
+#include "qsm/algorithm/postprocessing/sf_qsmmedianfilter.h"
 
 class SF_SpherefollowingRootAdapter {
 public:
@@ -112,6 +112,9 @@ public:
             SF_DownHillSimplex downhillSimplex (params);
             downhillSimplex.compute();
             params = downhillSimplex.params();
+
+//            SF_QSMMedianFilter med;
+//            med.compute(params._tree);
 
             CT_ColorCloudStdVector *_colors;
             _colors = new CT_ColorCloudStdVector(

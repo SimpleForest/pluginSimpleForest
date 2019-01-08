@@ -60,6 +60,7 @@ public:
   virtual float getLength() = 0;
   virtual float getVolume() = 0;
   virtual float getRadius() = 0;
+  virtual void setRadius(float radius) = 0;
   virtual float getDistance(const Eigen::Vector3f &point) = 0;
   float getDistance(const pcl::PointXYZ &point);
   float getDistance(const pcl::PointXYZINormal &point);

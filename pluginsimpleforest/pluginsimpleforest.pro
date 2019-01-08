@@ -148,7 +148,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.h \
     qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.h \
     qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h \
-    qsm/algorithm/postprocessing/sf_removefalseconnections.h
+    qsm/algorithm/postprocessing/sf_removefalseconnections.h \
+    qsm/algorithm/postprocessing/sf_qsmmedianfilter.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -193,7 +194,8 @@ SOURCES += \
     qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.cpp \
     qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.cpp \
     qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.cpp \
-    qsm/algorithm/postprocessing/sf_removefalseconnections.cpp
+    qsm/algorithm/postprocessing/sf_removefalseconnections.cpp \
+    qsm/algorithm/postprocessing/sf_qsmmedianfilter.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts

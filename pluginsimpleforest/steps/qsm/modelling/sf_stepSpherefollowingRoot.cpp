@@ -99,7 +99,7 @@ void SF_StepSpherefollowingRoot::configDialogAddSphereFollowingHyperParameters(
   configDialog->addDouble("The radius of the search sphere during "
                           "sphereFollowing is never smaller than"
                           " [<em><b>min global radius</b></em>] ",
-                          " (m). ", 0.01, 0.2, 2, _SF_minRadiusGlobal);
+                          " (m). ", 0.01, 0.2, 3, _SF_minRadiusGlobal);
   configDialog->addDouble(
       "The algorithm is initialized on a close to ground slice with height "
       "[<em><b>initialization height</b></em>]",
@@ -385,7 +385,7 @@ void SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup *outResult) {
   sfOptimizationParameters._epsilonSphere = _SF_OPT_sphereEpsilon;
   sfOptimizationParameters._euclideanClusteringDistance =
       _SF_OPT_euclideanClusteringDistance;
-  sfOptimizationParameters._minRadius = _SF_OPT_minRadius;
+  sfOptimizationParameters._minRadius = _SF_minRadiusGlobal;
   sfOptimizationParameters._sphereRadiusMultiplier =
       _SF_OPT_sphereRadiusMultiplier;
   std::vector<SF_SphereFollowingOptimizationParameters>

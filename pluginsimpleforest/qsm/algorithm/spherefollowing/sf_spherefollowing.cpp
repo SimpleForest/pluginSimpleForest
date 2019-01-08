@@ -118,9 +118,13 @@ pcl::PointIndices::Ptr SF_SphereFollowing::surfaceIndices(Circle &lastCircle) {
               m_params._sphereFollowingParams.m_optimizationParams[index]
                          ._sphereRadiusMultiplier *
                      lastCircleCoeff.values[3]);
-  radius += +
+  if(radius < m_params._sphereFollowingParams.m_optimizationParams[index]._minRadius) {
+      radius = m_params._sphereFollowingParams.m_optimizationParams[index]._minRadius;
+  }
+  radius +=
           m_params._sphereFollowingParams.m_optimizationParams[index]
               ._epsilonSphere;
+
   if (m_octree->radiusSearch(center, radius, pointIdxRadiusSearch,
                              pointRadiusSquaredDistance) > 0) {
     for (size_t i = 0; i < pointIdxRadiusSearch.size(); ++i) {

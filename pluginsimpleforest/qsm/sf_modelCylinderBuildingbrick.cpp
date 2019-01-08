@@ -35,6 +35,10 @@
 
 float Sf_ModelCylinderBuildingbrick::getRadius() { return _radius; }
 
+void Sf_ModelCylinderBuildingbrick::setRadius(float radius) {
+    _radius = radius;
+}
+
 float Sf_ModelCylinderBuildingbrick::getVolume() {
   float volume = SF_Math<float>::_PI * _radius * _radius * getLength();
   return volume;
