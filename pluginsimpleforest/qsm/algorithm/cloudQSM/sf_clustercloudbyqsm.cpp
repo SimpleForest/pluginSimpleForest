@@ -49,7 +49,7 @@ void SF_ClusterCloudByQSM::compute()
     std::vector<float> distances = cmd.getCloudToModelDistances();
     size_t index = 0;
     std::vector<pcl::PointXYZINormal> points;
-    std::for_each(distances.begin(),distances.end(), [this, &index, &points](float distance){
+    std::for_each(distances.begin(), distances.end(), [this, &index, &points](float distance) {
         pcl::PointXYZINormal point = m_cloud->points[index++];
         point.intensity = distance;
         if(point.intensity!= std::numeric_limits<float>::max()){

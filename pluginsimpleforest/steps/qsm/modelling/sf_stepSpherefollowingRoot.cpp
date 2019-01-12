@@ -235,7 +235,7 @@ void SF_StepSpherefollowingRoot::createOutResultModelListProtected() {
                              new CT_StandardItemGroup(), tr("QSM Group"));
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem,
                             new CT_PointsAttributesColor(),
-                            tr("Growth direction"));
+                            tr("Cluster Group"));
     resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(),
                             tr("QSM"));
   }
@@ -385,7 +385,7 @@ void SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup *outResult) {
   sfOptimizationParameters._epsilonSphere = _SF_OPT_sphereEpsilon;
   sfOptimizationParameters._euclideanClusteringDistance =
       _SF_OPT_euclideanClusteringDistance;
-  sfOptimizationParameters._minRadius = _SF_minRadiusGlobal;
+  sfOptimizationParameters._minRadius = _SF_OPT_minRadius;
   sfOptimizationParameters._sphereRadiusMultiplier =
       _SF_OPT_sphereRadiusMultiplier;
   std::vector<SF_SphereFollowingOptimizationParameters>

@@ -22,12 +22,12 @@ public:
     std::shared_ptr<QMutex> mMutex;
 
     SF_SpherefollowingRootAdapter(const SF_SpherefollowingRootAdapter &obj) {
-        QThreadPool::globalInstance()->setMaxThreadCount(1);
+//        QThreadPool::globalInstance()->setMaxThreadCount(1);
         mMutex = obj.mMutex;
     }
 
     SF_SpherefollowingRootAdapter() {
-        QThreadPool::globalInstance()->setMaxThreadCount(1);
+//        QThreadPool::globalInstance()->setMaxThreadCount(1);
         mMutex.reset(new QMutex);
     }
 
@@ -96,6 +96,7 @@ public:
         }
 
         sphereFollowing.compute();
+        SF_DownHillSimplex downhillSimplex;
         {
             QMutexLocker m1(&*mMutex);
             params = sphereFollowing.getParamVec()[0];
@@ -109,8 +110,11 @@ public:
             std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; "
                       << sphereFollowing.getParamVec()[79]._modelCloudError
                       << std::endl;
-            SF_DownHillSimplex downhillSimplex (params);
-            downhillSimplex.compute();
+            downhillSimplex.setParams(params);
+        }
+        downhillSimplex.compute();
+        {
+            QMutexLocker m1(&*mMutex);
             params = downhillSimplex.params();
 
 //            SF_QSMMedianFilter med;

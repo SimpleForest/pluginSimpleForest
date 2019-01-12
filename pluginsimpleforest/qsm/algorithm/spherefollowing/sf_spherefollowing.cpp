@@ -337,7 +337,7 @@ void SF_SphereFollowing::initializeCloud() {
 
 void SF_SphereFollowing::initializeOctree() {
   m_octree.reset(
-      new pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>(0.015));
+      new pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>(M_OCTREERESOLUTION));
   m_octree->setInputCloud(m_cloud);
   m_octree->addPointsFromInputCloud();
 }

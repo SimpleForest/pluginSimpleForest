@@ -54,8 +54,12 @@ SF_ParamSpherefollowingBasic<SF_PointNormal> SF_DownHillSimplex::params() const
     return m_params;
 }
 
-SF_DownHillSimplex::SF_DownHillSimplex(SF_ParamSpherefollowingBasic<SF_PointNormal> &params):
-    m_params(params)
+void SF_DownHillSimplex::setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal> &params)
+{
+    m_params = params;
+}
+
+SF_DownHillSimplex::SF_DownHillSimplex()
 {
 
 }
@@ -226,8 +230,7 @@ SF_DownHillSimplex::compute() {
         str.append(std::to_string(m_params.m_numClstrs));
         str.append(".csv");
         myfile.open(str);
-        for(size_t i  = 0; i < m_params.m_numClstrs; i++)
-        {
+        for(size_t i  = 0; i < m_params.m_numClstrs; i++) {
             myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._epsilonSphere << std::endl;
             myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._euclideanClusteringDistance << std::endl;
             myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._medianRadiusMultiplier << std::endl;
