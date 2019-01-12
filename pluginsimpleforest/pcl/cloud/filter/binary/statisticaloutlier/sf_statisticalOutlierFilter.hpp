@@ -32,25 +32,25 @@
 
 #include "pcl/cloud/filter/binary/statisticaloutlier/sf_statisticalOutlierFilter.h"
 
-template <typename PointType>
-SF_StatisticalOutlierFilter<PointType>::SF_StatisticalOutlierFilter() {}
+template<typename PointType>
+SF_StatisticalOutlierFilter<PointType>::SF_StatisticalOutlierFilter()
+{}
 
-template <typename PointType>
-void SF_StatisticalOutlierFilter<PointType>::compute(
-    const SF_ParamStatisticalOutlierFilter<PointType> &params) {
-  SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered.reset(
-      new pcl::PointCloud<PointType>());
-  SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilterIteratively(
-      params);
+template<typename PointType>
+void
+SF_StatisticalOutlierFilter<PointType>::compute(const SF_ParamStatisticalOutlierFilter<PointType>& params)
+{
+  SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered.reset(new pcl::PointCloud<PointType>());
+  SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilterIteratively(params);
   SF_StatisticalOutlierFilter<PointType>::createIndices();
 }
 
-template <typename PointType>
-void SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilter(
-    SF_ParamStatisticalOutlierFilter<PointType> stdParams,
-    typename pcl::PointCloud<PointType>::Ptr cloud) {
-  SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered.reset(
-      new pcl::PointCloud<PointType>());
+template<typename PointType>
+void
+SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilter(SF_ParamStatisticalOutlierFilter<PointType> stdParams,
+                                                                 typename pcl::PointCloud<PointType>::Ptr cloud)
+{
+  SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered.reset(new pcl::PointCloud<PointType>());
   pcl::StatisticalOutlierRemoval<PointType> sor;
   sor.setInputCloud(cloud);
   sor.setMeanK(stdParams._k);
@@ -58,27 +58,24 @@ void SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilter(
   sor.filter(*SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered);
 }
 
-template <typename PointType>
-void SF_StatisticalOutlierFilter<PointType>::
-    statisticalOutlierFilterIteratively(
-        SF_ParamStatisticalOutlierFilter<PointType> stdParams) {
-  typename pcl::PointCloud<PointType>::Ptr cloud(
-      new pcl::PointCloud<PointType>());
+template<typename PointType>
+void
+SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilterIteratively(SF_ParamStatisticalOutlierFilter<PointType> stdParams)
+{
+  typename pcl::PointCloud<PointType>::Ptr cloud(new pcl::PointCloud<PointType>());
   cloud = SF_StatisticalOutlierFilter<PointType>::_cloudIn;
   SF_StatisticalOutlierFilter<PointType>::iterate(stdParams, cloud);
 }
 
-template <typename PointType>
-void SF_StatisticalOutlierFilter<PointType>::iterate(
-    SF_ParamStatisticalOutlierFilter<PointType> params,
-    typename pcl::PointCloud<PointType>::Ptr cloud) {
+template<typename PointType>
+void
+SF_StatisticalOutlierFilter<PointType>::iterate(SF_ParamStatisticalOutlierFilter<PointType> params,
+                                                typename pcl::PointCloud<PointType>::Ptr cloud)
+{
   int iterations = params._iterations;
   while (iterations > 0) {
-    SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilter(params,
-                                                                     cloud);
-    if (cloud->points.size() ==
-        SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered->points
-            .size()) {
+    SF_StatisticalOutlierFilter<PointType>::statisticalOutlierFilter(params, cloud);
+    if (cloud->points.size() == SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered->points.size()) {
       break;
     }
     cloud = SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered;

@@ -3,15 +3,13 @@
 
 #include "ct_abstractstepplugin.h"
 #include "ct_log/ct_fileloglistener.h"
-class SF_PluginManager : public CT_AbstractStepPlugin {
+class SF_PluginManager : public CT_AbstractStepPlugin
+{
 public:
   SF_PluginManager();
   ~SF_PluginManager();
 
-  QString getPluginURL() const {
-    return QString(
-        "http://rdinnovation.onf.fr/projects/PLUGINS-PROJECT-NAME-HERE/wiki");
-  }
+  QString getPluginURL() const { return QString("http://rdinnovation.onf.fr/projects/PLUGINS-PROJECT-NAME-HERE/wiki"); }
 
   virtual QString getPluginOfficialName() const;
   virtual QString getPluginRISCitation() const;

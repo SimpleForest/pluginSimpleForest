@@ -33,33 +33,32 @@
 #include "pcl/cloud/feature/growth_direction/sf_growthDirection.h"
 #include "pcl/cloud/filter/binary/ground/sf_groundFilter.h"
 
-template <typename PointType>
-CT_ColorCloudStdVector *SF_GroundFilter<PointType>::colors() const {
+template<typename PointType>
+CT_ColorCloudStdVector*
+SF_GroundFilter<PointType>::colors() const
+{
   return _colors;
 }
 
-template <typename PointType>
-void SF_GroundFilter<PointType>::transferNormalAndFilter(
-    const SF_ParamGroundFilter<PointType> &params,
-    typename pcl::PointCloud<PointType>::Ptr cloudIn,
-    typename pcl::PointCloud<PointType>::Ptr cloudWithGrowthDirection) {
+template<typename PointType>
+void
+SF_GroundFilter<PointType>::transferNormalAndFilter(const SF_ParamGroundFilter<PointType>& params,
+                                                    typename pcl::PointCloud<PointType>::Ptr cloudIn,
+                                                    typename pcl::PointCloud<PointType>::Ptr cloudWithGrowthDirection)
+{
   _colors = new CT_ColorCloudStdVector(cloudIn->points.size());
   pcl::KdTreeFLANN<PointType> kdtree;
   kdtree.setInputCloud(cloudWithGrowthDirection);
   for (size_t i = 0; i < cloudIn->points.size(); i++) {
     PointType p = cloudIn->points.at(i);
-    CT_Color &col = _colors->colorAt(i);
+    CT_Color& col = _colors->colorAt(i);
     std::vector<int> pointIdxRadiusSearch;
     std::vector<float> pointRadiusSquaredDistance;
-    if (kdtree.nearestKSearch(p, 1, pointIdxRadiusSearch,
-                              pointRadiusSquaredDistance) > 0) {
-      PointType gd_point =
-          cloudWithGrowthDirection->points[pointIdxRadiusSearch[0]];
-      Eigen::Vector3f vec(gd_point.normal_x, gd_point.normal_y,
-                          gd_point.normal_z);
+    if (kdtree.nearestKSearch(p, 1, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
+      PointType gd_point = cloudWithGrowthDirection->points[pointIdxRadiusSearch[0]];
+      Eigen::Vector3f vec(gd_point.normal_x, gd_point.normal_y, gd_point.normal_z);
       if (gd_point.normal_z < 0) {
-        vec = Eigen::Vector3f(-gd_point.normal_x, -gd_point.normal_y,
-                              -gd_point.normal_z);
+        vec = Eigen::Vector3f(-gd_point.normal_x, -gd_point.normal_y, -gd_point.normal_z);
       }
       Eigen::Vector3f vecNorm = vec.normalized();
       col.r() = (std::abs((vecNorm[0] * 126) + 127));
@@ -83,34 +82,35 @@ void SF_GroundFilter<PointType>::transferNormalAndFilter(
   }
 }
 
-template <typename PointType>
-void SF_GroundFilter<PointType>::setParams(
-    SF_ParamGroundFilter<PointType> &params) {
+template<typename PointType>
+void
+SF_GroundFilter<PointType>::setParams(SF_ParamGroundFilter<PointType>& params)
+{
   _params = params;
 }
 
-template <typename PointType> void SF_GroundFilter<PointType>::compute() {
-  SF_GroundFilter<PointType>::_cloudOutFilteredNoise.reset(
-      new typename pcl::PointCloud<PointType>);
-  SF_GroundFilter<PointType>::_cloudOutFiltered.reset(
-      new typename pcl::PointCloud<PointType>);
-  typename pcl::PointCloud<PointType>::Ptr downScaledCloud =
-      SF_AbstractCloud<PointType>::downScale(_params._voxelSize);
+template<typename PointType>
+void
+SF_GroundFilter<PointType>::compute()
+{
+  SF_GroundFilter<PointType>::_cloudOutFilteredNoise.reset(new typename pcl::PointCloud<PointType>);
+  SF_GroundFilter<PointType>::_cloudOutFiltered.reset(new typename pcl::PointCloud<PointType>);
+  typename pcl::PointCloud<PointType>::Ptr downScaledCloud = SF_AbstractCloud<PointType>::downScale(_params._voxelSize);
 
   pcl::NormalEstimation<PointType, PointType> ne;
   ne.setInputCloud(downScaledCloud);
-  typename pcl::search::KdTree<PointType>::Ptr tree(
-      new pcl::search::KdTree<PointType>());
+  typename pcl::search::KdTree<PointType>::Ptr tree(new pcl::search::KdTree<PointType>());
   ne.setSearchMethod(tree);
   ne.setRadiusSearch(_params._radiusNormal);
   ne.compute(*downScaledCloud);
 
-  transferNormalAndFilter(_params, SF_AbstractCloud<PointType>::_cloudIn,
-                          downScaledCloud);
+  transferNormalAndFilter(_params, SF_AbstractCloud<PointType>::_cloudIn, downScaledCloud);
   SF_GroundFilter<PointType>::createIndices();
 }
 
-template <typename PointType> SF_GroundFilter<PointType>::SF_GroundFilter() {
+template<typename PointType>
+SF_GroundFilter<PointType>::SF_GroundFilter()
+{
   Sf_AbstractBinaryFilter<PointType>::reset();
 }
 

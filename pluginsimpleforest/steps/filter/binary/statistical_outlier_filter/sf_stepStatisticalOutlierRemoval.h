@@ -34,26 +34,25 @@
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include <steps/param/sf_paramAllSteps.h>
 
-class SF_StepStatisticalOutlierRemoval : public SF_AbstractFilterBinaryStep {
+class SF_StepStatisticalOutlierRemoval : public SF_AbstractFilterBinaryStep
+{
   Q_OBJECT
 
 public:
-  SF_StepStatisticalOutlierRemoval(CT_StepInitializeData &dataInit);
+  SF_StepStatisticalOutlierRemoval(CT_StepInitializeData& dataInit);
   ~SF_StepStatisticalOutlierRemoval();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;
-  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &dataInit);
+  CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData& dataInit);
   QStringList getStepRISCitations() const;
 
 protected:
   void createInResultModelListProtected();
   void createOutResultModelListProtected();
   void adaptParametersToExpertLevel();
-  void createPostConfigurationDialogBeginner(
-      CT_StepConfigurableDialog *configDialog);
-  void
-  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
+  void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog);
+  void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog);
   void compute();
   QList<SF_ParamStatisticalOutlierFilter<SF_Point>> _paramList;
   virtual void writeLogger();
@@ -62,9 +61,9 @@ private:
   double _std_mult = 3.0;
   int _iterations = 5;
   int _k = 2;
-  void writeOutputPerScence(CT_ResultGroup *outResult, size_t i);
-  void writeOutput(CT_ResultGroup *outResult);
-  void createParamList(CT_ResultGroup *outResult);
+  void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);
+  void writeOutput(CT_ResultGroup* outResult);
+  void createParamList(CT_ResultGroup* outResult);
 };
 
 #endif // SF_STEP_STATISTICAL_OUTLIER_REMOVAL_H

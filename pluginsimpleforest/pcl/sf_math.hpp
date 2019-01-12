@@ -32,56 +32,72 @@
 
 #include <numeric>
 
-template <typename T> const T SF_Math<T>::_PI = 3.1415926;
+template<typename T>
+const T SF_Math<T>::_PI = 3.1415926;
 
-template <typename T> const T SF_Math<T>::_RAD_TO_DEG = 180.0 / SF_Math::_PI;
+template<typename T>
+const T SF_Math<T>::_RAD_TO_DEG = 180.0 / SF_Math::_PI;
 
-template <typename T> const T SF_Math<T>::_DEG_TO_RAD = SF_Math::_PI / 180.0;
+template<typename T>
+const T SF_Math<T>::_DEG_TO_RAD = SF_Math::_PI / 180.0;
 
-template <typename T>
-T SF_Math<T>::getAngleBetweenDeg(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
+template<typename T>
+T
+SF_Math<T>::getAngleBetweenDeg(Eigen::Vector3f axis1, Eigen::Vector3f axis2)
+{
   axis1.normalize();
   axis2.normalize();
   return acos(axis1.dot(axis2)) * SF_Math::_RAD_TO_DEG;
 }
 
-template <typename T>
-T SF_Math<T>::distance(const Eigen::Vector3f &pointA,
-                       const Eigen::Vector3f &pointB) {
+template<typename T>
+T
+SF_Math<T>::distance(const Eigen::Vector3f& pointA, const Eigen::Vector3f& pointB)
+{
   T distance = (pointA - pointB).norm();
   return distance;
 }
 
-template <typename T>
-T SF_Math<T>::getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2) {
+template<typename T>
+T
+SF_Math<T>::getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2)
+{
   axis1.normalize();
   axis2.normalize();
   return acos(axis1.dot(axis2));
 }
 
-template <typename T> T SF_Math<T>::getMedian(std::vector<T> &vec) {
+template<typename T>
+T
+SF_Math<T>::getMedian(std::vector<T>& vec)
+{
   size_t n = vec.size() / 2;
   std::nth_element(vec.begin(), vec.begin() + n, vec.end());
   return vec[n];
 }
 
-template <typename T> T SF_Math<T>::getMean(std::vector<T> &vec) {
+template<typename T>
+T
+SF_Math<T>::getMean(std::vector<T>& vec)
+{
   auto lambda = [&vec](double a, double b) { return a + b; };
-  return (std::accumulate(vec.begin(), vec.end(), static_cast<T>(0), lambda) /
-          vec.size());
+  return (std::accumulate(vec.begin(), vec.end(), static_cast<T>(0), lambda) / vec.size());
 }
 
-template <typename T> T SF_Math<T>::getStandardDeviation(std::vector<T> &vec) {
+template<typename T>
+T
+SF_Math<T>::getStandardDeviation(std::vector<T>& vec)
+{
   return getStandardDeviation(vec, getMean(vec));
 }
 
-template <typename T>
-T SF_Math<T>::getStandardDeviation(std::vector<T> &vec, T mean) {
+template<typename T>
+T
+SF_Math<T>::getStandardDeviation(std::vector<T>& vec, T mean)
+{
   std::vector<float> diff(vec.size());
-  std::transform(vec.begin(), vec.end(), diff.begin(),
-                 std::bind2nd(std::minus<float>(), mean));
-  return (std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0f) /
-          vec.size());
+  std::transform(vec.begin(), vec.end(), diff.begin(), std::bind2nd(std::minus<float>(), mean));
+  return (std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0f) / vec.size());
 }
 
 #endif // SF_MATH_HPP

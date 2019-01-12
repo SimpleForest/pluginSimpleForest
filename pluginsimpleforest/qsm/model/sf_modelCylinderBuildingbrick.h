@@ -26,26 +26,34 @@
 
 *****************************************************************************/
 
-#ifndef SF_SPHEREFOLLOWINGRASTERSEARCH_H
-#define SF_SPHEREFOLLOWINGRASTERSEARCH_H
+#ifndef SF_MODEL_CYLINDER_BUILDINGBRICK_H
+#define SF_MODEL_CYLINDER_BUILDINGBRICK_H
 
-#include "pcl/cloud/feature/descriptor/sf_descriptor.h"
-#include "sf_spherefollowing.h"
+#include "sf_modelAbstractBuildingbrick.h"
+#include <pcl/ModelCoefficients.h>
+#include <pcl/point_types.h>
 
-class SF_SphereFollowingRasterSearch {
+class Sf_ModelCylinderBuildingbrick : public Sf_ModelAbstractBuildingbrick
+{
+  float _radius;
+
+protected:
+  float getDistanceToAxis(const Eigen::Vector3f& point) override;
+  float getProjectedDistanceToSegment(const Eigen::Vector3f& point);
+  float getDistanceToInfinitHull(const Eigen::Vector3f& point);
+  Eigen::Vector3f getProjectionOnAxis(const Eigen::Vector3f& point) override;
+
 public:
-  SF_SphereFollowingRasterSearch();
-  void compute();
-  std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramVector();
-  void setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal> &params);
-  void setCloud(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr &cloud);
-
-  std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> getParamVec() const;
-
-private:
-  SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
-  std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> m_paramVec;
+  Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB);
+  std::string toString() override;
+  std::string toHeaderString() override;
+  float getRadius() override;
+  void setRadius(float radius) override;
+  float getVolume() override;
+  float getLength() override;
+  float getDistance(const Eigen::Vector3f& point) override;
+  virtual Eigen::Vector3f getCenter() override;
+  virtual Eigen::Vector3f getAxis() override;
 };
 
-#endif // SF_SPHEREFOLLOWINGRASTERSEARCH_H
+#endif // SF_MODEL_CYLINDER_BUILDINGBRICK_H

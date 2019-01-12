@@ -25,7 +25,8 @@
 
 #include <QtTest/QtTest>
 
-class TestClusterTransfer : public QObject {
+class TestClusterTransfer : public QObject
+{
   Q_OBJECT
 private slots:
   void initTestCase();

@@ -30,8 +30,9 @@
  * @brief The SF_PrincipalDirection class. The for the input cloud
  * the principal curvature is computed.
  */
-template <typename PointType>
-class SF_PrincipalDirection : public SF_AbstractCloudI<PointType> {
+template<typename PointType>
+class SF_PrincipalDirection : public SF_AbstractCloudI<PointType>
+{
 public:
   /**
    * @brief Standard constructor receiving as input \ref m_cloudIn.
@@ -47,7 +48,7 @@ public:
    * @brief setParams Setter for \ref m_params.
    * @param params \ref m_params.
    */
-  void setParams(SF_ParameterSetPrincipalDirection<PointType> &params);
+  void setParams(SF_ParameterSetPrincipalDirection<PointType>& params);
   /**
    * @brief principalCurvatures Getter for \ref m_principalCurvatures.
    * @return \ref m_principalCurvatures.

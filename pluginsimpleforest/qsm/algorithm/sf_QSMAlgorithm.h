@@ -38,14 +38,12 @@ struct heapDataCylinder;
 
 using HeapCylinder = boost::heap::fibonacci_heap<heapDataCylinder>;
 
-struct heapDataCylinder {
+struct heapDataCylinder
+{
   SF_QSMDetectionCylinder _cylinder;
   HeapCylinder::handle_type handle;
-  heapDataCylinder(SF_QSMDetectionCylinder cylinder)
-      : _cylinder(cylinder), handle() {}
-  bool operator<(heapDataCylinder const &second) const {
-    return _cylinder._distance < second._cylinder._distance;
-  }
+  heapDataCylinder(SF_QSMDetectionCylinder cylinder) : _cylinder(cylinder), handle() {}
+  bool operator<(heapDataCylinder const& second) const { return _cylinder._distance < second._cylinder._distance; }
 };
 
 #endif // SF_QSM_ALGORITHM_H

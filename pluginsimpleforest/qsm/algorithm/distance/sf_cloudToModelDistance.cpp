@@ -31,12 +31,12 @@
 #include "pcl/sf_math.h"
 #include "sf_cloudToModelDistance.h"
 
-void Sf_CloudToModelDistance::initializeKdTree() {
+void
+Sf_CloudToModelDistance::initializeKdTree()
+{
   _kdtreeQSM.reset(new pcl::KdTreeFLANN<pcl::PointXYZINormal>());
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr centerCloud(
-      new pcl::PointCloud<pcl::PointXYZINormal>());
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks =
-      _tree->getBuildingBricks();
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr centerCloud(new pcl::PointCloud<pcl::PointXYZINormal>());
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = _tree->getBuildingBricks();
   for (size_t i = 0; i < buildingBricks.size(); i++) {
     Eigen::Vector3f pointEigen = buildingBricks[i]->getCenter();
     pcl::PointXYZINormal point;
@@ -48,90 +48,94 @@ void Sf_CloudToModelDistance::initializeKdTree() {
   _kdtreeQSM->setInputCloud(centerCloud);
 }
 
-float Sf_CloudToModelDistance::adaptDistanceToMethod(float distance, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
+float
+Sf_CloudToModelDistance::adaptDistanceToMethod(float distance, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
+{
   switch (_METHOD) {
-  case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
-    break;
-  case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
-    distance = std::abs(distance);
-    break;
-  case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
-    distance = std::abs(distance);
-    distance = std::min(_INLIERDISTANCE, distance);
-    break;
-  case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
-    distance = distance * distance;
-    break;
-  case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
-    distance = distance * distance;
-    distance = std::min(_INLIERDISTANCE * _INLIERDISTANCE, distance);
-    break;
-  case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
+    case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
+      break;
+    case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
+      distance = std::abs(distance);
+      break;
+    case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
+      distance = std::abs(distance);
+      distance = std::min(_INLIERDISTANCE, distance);
+      break;
+    case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
+      distance = distance * distance;
+      break;
+    case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
+      distance = distance * distance;
+      distance = std::min(_INLIERDISTANCE * _INLIERDISTANCE, distance);
+      break;
+    case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
       float growthLength = buildingBrick->getGrowthLength();
-      if(distance<_INLIERDISTANCE*2) {
-          distance = -growthLength;
+      if (distance < _INLIERDISTANCE * 2) {
+        distance = -growthLength;
       } else {
-          distance = std::numeric_limits<float>::lowest();
+        distance = std::numeric_limits<float>::lowest();
       }
       break;
   }
   return distance;
 }
 
-float Sf_CloudToModelDistance::getAverageDistance() const {
+float
+Sf_CloudToModelDistance::getAverageDistance() const
+{
   return _averageDistance;
 }
 
-float Sf_CloudToModelDistance::getDistance(
-    const pcl::PointXYZ &point,
-    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
-  float distance =
-      buildingBrick->getDistance(Eigen::Vector3f(point.x, point.y, point.z));
+float
+Sf_CloudToModelDistance::getDistance(const pcl::PointXYZ& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
+{
+  float distance = buildingBrick->getDistance(Eigen::Vector3f(point.x, point.y, point.z));
   distance = adaptDistanceToMethod(distance, buildingBrick);
   return distance;
 }
 
-float Sf_CloudToModelDistance::getDistance(
-    const pcl::PointXYZINormal &point,
-    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
-  float distance =
-      buildingBrick->getDistance(Eigen::Vector3f(point.x, point.y, point.z));
+float
+Sf_CloudToModelDistance::getDistance(const pcl::PointXYZINormal& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
+{
+  float distance = buildingBrick->getDistance(Eigen::Vector3f(point.x, point.y, point.z));
   distance = adaptDistanceToMethod(distance, buildingBrick);
   return distance;
 }
 
-void Sf_CloudToModelDistance::compute() {
+void
+Sf_CloudToModelDistance::compute()
+{
   _distances = getCloudToModelDistances();
   std::vector<float> distances = cropDistances(_distances);
   switch (_METHOD) {
-  case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
-    _averageDistance = getNumberInliersNegative(distances);
-    break;
-  case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
-    _averageDistance = SF_Math<float>::getMean(distances);
-    break;
-  case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
-    _averageDistance = SF_Math<float>::getMean(distances);
-    break;
-  case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
-    _averageDistance = std::sqrt(SF_Math<float>::getMean(distances));
-    break;
-  case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
-    _averageDistance = std::sqrt(SF_Math<float>::getMean(distances));
-    break;
-  default:
-    break;
+    case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
+      _averageDistance = getNumberInliersNegative(distances);
+      break;
+    case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
+      _averageDistance = SF_Math<float>::getMean(distances);
+      break;
+    case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
+      _averageDistance = SF_Math<float>::getMean(distances);
+      break;
+    case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
+      _averageDistance = std::sqrt(SF_Math<float>::getMean(distances));
+      break;
+    case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
+      _averageDistance = std::sqrt(SF_Math<float>::getMean(distances));
+      break;
+    default:
+      break;
   }
 }
 
 const std::vector<float>
-Sf_CloudToModelDistance::cropDistances(std::vector<float> distances) {
+Sf_CloudToModelDistance::cropDistances(std::vector<float> distances)
+{
   if (_percentage >= 100) {
     return distances;
   }
   std::sort(distances.begin(), distances.end());
-  size_t size = static_cast<size_t>(static_cast<float>(distances.size()) *
-                                    static_cast<float>(_percentage) / 100.0f);
+  size_t size = static_cast<size_t>(static_cast<float>(distances.size()) * static_cast<float>(_percentage) / 100.0f);
   std::vector<float> croppedDistances;
   for (size_t i = 0; i < size; i++) {
     croppedDistances.push_back(distances[i]);
@@ -139,38 +143,38 @@ Sf_CloudToModelDistance::cropDistances(std::vector<float> distances) {
   return croppedDistances;
 }
 
-std::vector<float> Sf_CloudToModelDistance::getCloudToModelDistances() {
+std::vector<float>
+Sf_CloudToModelDistance::getCloudToModelDistances()
+{
   std::vector<float> distances;
   int k = _k;
-  if(_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
-      k = 3;
+  if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
+    k = 3;
   }
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks =
-      _tree->getBuildingBricks();
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = _tree->getBuildingBricks();
   for (size_t i = 0; i < _cloud->points.size(); i++) {
     pcl::PointXYZINormal point = _cloud->points[i];
     std::vector<int> pointIdxRadiusSearch;
     std::vector<float> pointRadiusSquaredDistance;
-    if (_kdtreeQSM->nearestKSearch(point, k, pointIdxRadiusSearch,
-                                   pointRadiusSquaredDistance) > 0) {
+    if (_kdtreeQSM->nearestKSearch(point, k, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
       float minDistance = std::numeric_limits<float>::max();
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {
-        std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick =
-            buildingBricks[pointIdxRadiusSearch[j]];
+        std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
         float distance = getDistance(point, neighboringBrick);
         if (distance < minDistance)
           minDistance = distance;
       }
       distances.push_back(minDistance);
     } else {
-      distances.push_back(adaptDistanceToMethod(_INLIERDISTANCE*2, buildingBricks[0]));
+      distances.push_back(adaptDistanceToMethod(_INLIERDISTANCE * 2, buildingBricks[0]));
     }
   }
   return distances;
 }
 
-float Sf_CloudToModelDistance::getNumberInliersNegative(
-    const std::vector<float> &distances) {
+float
+Sf_CloudToModelDistance::getNumberInliersNegative(const std::vector<float>& distances)
+{
   float sum = 0;
   for (size_t i = 0; i < distances.size(); i++) {
     if (distances[i] < _INLIERDISTANCE)
@@ -179,24 +183,29 @@ float Sf_CloudToModelDistance::getNumberInliersNegative(
   return sum;
 }
 
-Sf_CloudToModelDistance::Sf_CloudToModelDistance(
-    std::shared_ptr<SF_ModelQSM> tree,
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
-    SF_CLoudToModelDistanceMethod &method, float inlierDistance, int k,
-    int percentage)
-    : _METHOD(method), _percentage(percentage), _k(k),
-      _INLIERDISTANCE(inlierDistance), _tree(tree), _cloud(cloud) {
+Sf_CloudToModelDistance::Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
+                                                 pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
+                                                 SF_CLoudToModelDistanceMethod& method,
+                                                 float inlierDistance,
+                                                 int k,
+                                                 int percentage)
+  : _METHOD(method), _percentage(percentage), _k(k), _INLIERDISTANCE(inlierDistance), _tree(tree), _cloud(cloud)
+{
   _averageDistance = std::numeric_limits<float>::max();
   initializeKdTree();
   compute();
 }
 
 Sf_CloudToModelDistance::Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
-    SF_CloudToModelDistanceParameters params)
-    : _METHOD(params._method), _percentage(params._robustPercentage),
-      _k(params._k), _INLIERDISTANCE(params._inlierDistance), _tree(tree),
-      _cloud(cloud) {
+                                                 pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
+                                                 SF_CloudToModelDistanceParameters params)
+  : _METHOD(params._method)
+  , _percentage(params._robustPercentage)
+  , _k(params._k)
+  , _INLIERDISTANCE(params._inlierDistance)
+  , _tree(tree)
+  , _cloud(cloud)
+{
   _averageDistance = std::numeric_limits<float>::max();
   initializeKdTree();
   compute();

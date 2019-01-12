@@ -30,13 +30,13 @@ the Computree platform.
  *
  *  Parameter set to ccompute the principal direction for a cloud.
  */
-template <typename T>
-struct SF_ParameterSetPrincipalDirection
-    : public SF_AbstractParameterSet<T> { /**
-                                           * @brief m_paramVoxelGridDownscaling
-                                           * The cloud is downscaled before
-                                           * processing.
-                                           */
+template<typename T>
+struct SF_ParameterSetPrincipalDirection : public SF_AbstractParameterSet<T>
+{ /**
+   * @brief m_paramVoxelGridDownscaling
+   * The cloud is downscaled before
+   * processing.
+   */
   SF_ParameterSetVoxelgridDownscaling<T> m_paramVoxelGridDownscaling;
   /**
    * @brief m_normalRadius The radius of the normal computation of \ref m_cloud.
@@ -54,7 +54,8 @@ struct SF_ParameterSetPrincipalDirection
 
   SF_ParameterSetPrincipalDirection() {}
 
-  QStringList paramsToString() override {
+  QStringList paramsToString() override
+  {
     QStringList list;
     QString str = "The principal direction has been computed with (";
     list.push_back(str);

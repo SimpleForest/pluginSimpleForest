@@ -36,33 +36,34 @@
 
 struct heapData;
 
-struct Point {
+struct Point
+{
 public:
   pcl::PointXYZI _point;
   float _distance;
   bool _visited;
   Point() {}
-  Point(const Point &p2) {
+  Point(const Point& p2)
+  {
     _distance = p2._distance;
     _visited = p2._visited;
     _point = p2._point;
   }
-  Point(pcl::PointXYZI point, float distance)
-      : _point(point), _distance(distance) {}
+  Point(pcl::PointXYZI point, float distance) : _point(point), _distance(distance) {}
 };
 
 using Heap = boost::heap::fibonacci_heap<heapData>;
 
-struct heapData {
+struct heapData
+{
   Point _point;
   Heap::handle_type handle;
   heapData(Point point) : _point(point), handle() {}
-  bool operator<(heapData const &second) const {
-    return _point._distance > second._point._distance;
-  }
+  bool operator<(heapData const& second) const { return _point._distance > second._point._distance; }
 };
 
-class SF_Dijkstra {
+class SF_Dijkstra
+{
 private:
   float _maxDistance;
 
@@ -79,9 +80,9 @@ private:
   void initializeHeap();
   void initializeKDTree();
   void transferIntensity();
-  int getIndex(const pcl::PointXYZI &point);
-  float getDistance(const pcl::PointXYZI &p1, const pcl::PointXYZI &p2);
-  std::vector<int> getNeighbors(const pcl::PointXYZI &point);
+  int getIndex(const pcl::PointXYZI& point);
+  float getDistance(const pcl::PointXYZI& p1, const pcl::PointXYZI& p2);
+  std::vector<int> getNeighbors(const pcl::PointXYZI& point);
   void compute();
 
 public:

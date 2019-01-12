@@ -29,11 +29,12 @@
 #ifndef SF_CLOUD_TO_MODEL_DISTANCE_H
 #define SF_CLOUD_TO_MODEL_DISTANCE_H
 
-#include "qsm/sf_modelQSM.h"
+#include "qsm/model/sf_modelQSM.h"
 #include "sf_cloudToModelDistanceParameters.h"
 #include <pcl/kdtree/kdtree_flann.h>
 
-class Sf_CloudToModelDistance {
+class Sf_CloudToModelDistance
+{
   int _METHOD;
   int _percentage;
   int _k;
@@ -47,20 +48,18 @@ class Sf_CloudToModelDistance {
   void initializeKdTree();
   void compute();
   const std::vector<float> cropDistances(std::vector<float> distances);
-  float
-  getDistance(const pcl::PointXYZ &point,
-              std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
-  float
-  getDistance(const pcl::PointXYZINormal &point,
-              std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
-  float getNumberInliersNegative(const std::vector<float> &distances);
+  float getDistance(const pcl::PointXYZ& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+  float getDistance(const pcl::PointXYZINormal& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+  float getNumberInliersNegative(const std::vector<float>& distances);
   float adaptDistanceToMethod(float distance, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
 
 public:
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                           pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
-                          SF_CLoudToModelDistanceMethod &method,
-                          float inlierDistance, int k, int percentage);
+                          SF_CLoudToModelDistanceMethod& method,
+                          float inlierDistance,
+                          int k,
+                          int percentage);
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                           pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
                           SF_CloudToModelDistanceParameters params);

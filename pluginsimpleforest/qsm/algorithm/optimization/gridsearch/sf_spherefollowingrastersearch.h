@@ -26,24 +26,27 @@
 
 *****************************************************************************/
 
-#ifndef SF_GRIDSEARCHPARAMETERS_H
-#define SF_GRIDSEARCHPARAMETERS_H
+#ifndef SF_SPHEREFOLLOWINGRASTERSEARCH_H
+#define SF_SPHEREFOLLOWINGRASTERSEARCH_H
 
-struct SF_GridSearchParameters {
-  int _nDimensions;
-  int _resolution;
-  int _maxNumberSearches;
+#include "pcl/cloud/feature/descriptor/sf_descriptor.h"
+#include "qsm/algorithm/spherefollowing/sf_spherefollowing.h"
 
-  SF_GridSearchParameters(int nDimensions, int resolution,
-                          int maxNumberSearches)
-      : _nDimensions(nDimensions), _resolution(resolution),
-        _maxNumberSearches(maxNumberSearches) {}
+class SF_SphereFollowingRasterSearch
+{
+public:
+  SF_SphereFollowingRasterSearch();
+  void compute();
+  std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramVector();
+  void setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal>& params);
+  void setCloud(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr& cloud);
 
-  SF_GridSearchParameters() {
-    _nDimensions = -1;
-    _resolution = -1;
-    _maxNumberSearches = 1;
-  }
+  std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> getParamVec() const;
+
+private:
+  SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
+  std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> m_paramVec;
 };
 
-#endif // SF_GRIDSEARCHPARAMETERS_H
+#endif // SF_SPHEREFOLLOWINGRASTERSEARCH_H

@@ -1,23 +1,28 @@
 #include "sf_converterCTToPCLDTM.h"
 
-SF_ConverterCTToPCLDTM::SF_ConverterCTToPCLDTM(Eigen::Vector3d centerOfMass,
-                                               CT_Image2D<float> *dtmCT) {
+SF_ConverterCTToPCLDTM::SF_ConverterCTToPCLDTM(Eigen::Vector3d centerOfMass, CT_Image2D<float>* dtmCT)
+{
   _dtmCT = dtmCT;
   m_translation = centerOfMass;
   compute();
 }
 
-SF_ConverterCTToPCLDTM::SF_ConverterCTToPCLDTM(CT_Image2D<float> *dtmCT) {
+SF_ConverterCTToPCLDTM::SF_ConverterCTToPCLDTM(CT_Image2D<float>* dtmCT)
+{
   _dtmCT = dtmCT;
   computeTranslationToOrigin();
   compute();
 }
 
-std::shared_ptr<SF_ModelDTM> SF_ConverterCTToPCLDTM::dtmPCL() const {
+std::shared_ptr<SF_ModelDTM>
+SF_ConverterCTToPCLDTM::dtmPCL() const
+{
   return _dtmPCL;
 }
 
-void SF_ConverterCTToPCLDTM::computeTranslationToOrigin() {
+void
+SF_ConverterCTToPCLDTM::computeTranslationToOrigin()
+{
   Eigen::Vector2d min, max;
   _dtmCT->getMinCoordinates(min);
   _dtmCT->getMaxCoordinates(max);
@@ -28,7 +33,9 @@ void SF_ConverterCTToPCLDTM::computeTranslationToOrigin() {
   m_translation[2] = _dtmCT->valueAtIndex(index);
 }
 
-void SF_ConverterCTToPCLDTM::compute() {
+void
+SF_ConverterCTToPCLDTM::compute()
+{
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
   for (size_t i = 0; i < _dtmCT->nCells(); i++) {
     Eigen::Vector2d bottom, top;

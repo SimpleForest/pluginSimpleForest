@@ -30,26 +30,24 @@
 
 SF_AbstractConverter::SF_AbstractConverter() {}
 
-Eigen::Vector3d SF_AbstractConverter::translation() const {
+Eigen::Vector3d
+SF_AbstractConverter::translation() const
+{
   return m_translation;
 }
 
-void SF_AbstractConverter::setItemCpyCloudInDeprecated(
-    const CT_AbstractItemDrawableWithPointCloud *itemCpy_cloud_in) {
+void
+SF_AbstractConverter::setItemCpyCloudInDeprecated(const CT_AbstractItemDrawableWithPointCloud* itemCpy_cloud_in)
+{
   m_itemCpyCloudIn = itemCpy_cloud_in;
 }
 
-void SF_AbstractConverter::computeTranslationToOrigin() {
-  const CT_AbstractPointCloudIndex *index =
-      m_itemCpyCloudIn->getPointCloudIndex();
+void
+SF_AbstractConverter::computeTranslationToOrigin()
+{
+  const CT_AbstractPointCloudIndex* index = m_itemCpyCloudIn->getPointCloudIndex();
   assert(index->size() > 0);
-  m_translation[0] =
-      m_itemCpyCloudIn->minX() +
-      0.5 * (m_itemCpyCloudIn->maxX() - m_itemCpyCloudIn->minX());
-  m_translation[1] =
-      m_itemCpyCloudIn->minY() +
-      0.5 * (m_itemCpyCloudIn->maxY() - m_itemCpyCloudIn->minY());
-  m_translation[2] =
-      m_itemCpyCloudIn->minZ() +
-      0.5 * (m_itemCpyCloudIn->maxZ() - m_itemCpyCloudIn->minZ());
+  m_translation[0] = m_itemCpyCloudIn->minX() + 0.5 * (m_itemCpyCloudIn->maxX() - m_itemCpyCloudIn->minX());
+  m_translation[1] = m_itemCpyCloudIn->minY() + 0.5 * (m_itemCpyCloudIn->maxY() - m_itemCpyCloudIn->minY());
+  m_translation[2] = m_itemCpyCloudIn->minZ() + 0.5 * (m_itemCpyCloudIn->maxZ() - m_itemCpyCloudIn->minZ());
 }

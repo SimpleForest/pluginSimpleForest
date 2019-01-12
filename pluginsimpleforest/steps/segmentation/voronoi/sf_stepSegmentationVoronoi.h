@@ -31,16 +31,17 @@
 
 #include "steps/segmentation/sf_AbstractStepSegmentation.h"
 
-class SF_StepSegmentationVoronoi : public SF_AbstractStepSegmentation {
+class SF_StepSegmentationVoronoi : public SF_AbstractStepSegmentation
+{
   Q_OBJECT
 
 public:
-  SF_StepSegmentationVoronoi(CT_StepInitializeData &dataInit);
+  SF_StepSegmentationVoronoi(CT_StepInitializeData& dataInit);
   ~SF_StepSegmentationVoronoi();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;
-  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &dataInit);
+  CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData& dataInit);
   QStringList getStepRISCitations() const;
 
 protected:
@@ -48,16 +49,10 @@ protected:
   void createPostConfigurationDialog();
   void createOutResultModelListProtected();
   void createPreConfigurationDialog() {}
-  void createPostConfigurationDialogBeginner(
-      CT_StepConfigurableDialog *configDialog) {
-    configDialog->addEmpty();
-  }
-  void
-  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {
-    configDialog->addEmpty();
-  }
+  void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) { configDialog->addEmpty(); }
+  void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) { configDialog->addEmpty(); }
   void adaptParametersToExpertLevel() {}
-  void createParamList(CT_ResultGroup *outResult);
+  void createParamList(CT_ResultGroup* outResult);
   void compute();
 
 private:

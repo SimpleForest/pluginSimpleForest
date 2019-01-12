@@ -32,16 +32,17 @@
 
 #include "steps/filter/multiple/sf_abstractFilterMultipleStep.h"
 
-class SF_Filter3dGridSubCloud : public SF_AbstractFilterMultipleStep {
+class SF_Filter3dGridSubCloud : public SF_AbstractFilterMultipleStep
+{
   Q_OBJECT
 
 public:
-  SF_Filter3dGridSubCloud(CT_StepInitializeData &dataInit);
+  SF_Filter3dGridSubCloud(CT_StepInitializeData& dataInit);
   ~SF_Filter3dGridSubCloud();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;
-  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &dataInit);
+  CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData& dataInit);
   QStringList getStepRISCitations() const;
 
 protected:
@@ -49,32 +50,24 @@ protected:
   void createPostConfigurationDialog();
   void createOutResultModelListProtected();
   void createPreConfigurationDialog() {}
-  void createPostConfigurationDialogBeginner(
-      CT_StepConfigurableDialog *configDialog) {
-    configDialog->addEmpty();
-  }
-  void
-  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog) {
-    configDialog->addEmpty();
-  }
+  void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) { configDialog->addEmpty(); }
+  void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) { configDialog->addEmpty(); }
   void adaptParametersToExpertLevel() {}
   void compute();
 
 private:
   double _voxelSize;
-  CT_Grid3D_Sparse<int> *createGrid3dFromScene(const CT_Scene *ctCloud,
-                                               double voxelSize);
-  void addPointToGridCluster(CT_Grid3D_Sparse<int> *hitGrid,
-                             std::vector<CT_PointCloudIndexVector *> &clusters,
-                             CT_PointIterator &it);
-  void createGridCluster(int &val,
-                         std::vector<CT_PointCloudIndexVector *> &clusters,
-                         const CT_Point &point, CT_Grid3D_Sparse<int> *hitGrid);
-  void createGridClusterIfNeeded(
-      int &val, std::vector<CT_PointCloudIndexVector *> &clusters,
-      const CT_Point &point, CT_Grid3D_Sparse<int> *hitGrid);
-  void addCloudToGridCluster(const CT_Scene *ctCloud,
-                             std::vector<CT_PointCloudIndexVector *> &clusters);
+  CT_Grid3D_Sparse<int>* createGrid3dFromScene(const CT_Scene* ctCloud, double voxelSize);
+  void addPointToGridCluster(CT_Grid3D_Sparse<int>* hitGrid, std::vector<CT_PointCloudIndexVector*>& clusters, CT_PointIterator& it);
+  void createGridCluster(int& val,
+                         std::vector<CT_PointCloudIndexVector*>& clusters,
+                         const CT_Point& point,
+                         CT_Grid3D_Sparse<int>* hitGrid);
+  void createGridClusterIfNeeded(int& val,
+                                 std::vector<CT_PointCloudIndexVector*>& clusters,
+                                 const CT_Point& point,
+                                 CT_Grid3D_Sparse<int>* hitGrid);
+  void addCloudToGridCluster(const CT_Scene* ctCloud, std::vector<CT_PointCloudIndexVector*>& clusters);
 };
 
 #endif // SF_FILTER_3D_GRID_SUB_CLOUD_H

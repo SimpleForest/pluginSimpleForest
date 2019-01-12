@@ -31,9 +31,10 @@
 
 #include "sf_dtmCell.h"
 
-template <typename PointType>
-void SF_DTMCell<PointType>::updateMinMax(const float updateHeight,
-                                         float &minHeight, float &maxHeight) {
+template<typename PointType>
+void
+SF_DTMCell<PointType>::updateMinMax(const float updateHeight, float& minHeight, float& maxHeight)
+{
   if (updateHeight > maxHeight) {
     maxHeight = updateHeight;
   }
@@ -42,15 +43,17 @@ void SF_DTMCell<PointType>::updateMinMax(const float updateHeight,
   }
 }
 
-template <typename PointType>
-SF_DTMCell<PointType>::SF_DTMCell(std::shared_ptr<CT_Image2D<float>> dtm,
-                                  int index) {
+template<typename PointType>
+SF_DTMCell<PointType>::SF_DTMCell(std::shared_ptr<CT_Image2D<float>> dtm, int index)
+{
   _dtm = dtm;
   _index = index;
 }
 
-template <typename PointType>
-Eigen::Vector2d SF_DTMCell<PointType>::getCorner1() {
+template<typename PointType>
+Eigen::Vector2d
+SF_DTMCell<PointType>::getCorner1()
+{
   Eigen::Vector2d bot, top;
   _dtm->getCellCoordinates(_index, bot, top);
   Eigen::Vector2d corner;
@@ -59,8 +62,10 @@ Eigen::Vector2d SF_DTMCell<PointType>::getCorner1() {
   return corner;
 }
 
-template <typename PointType>
-Eigen::Vector2d SF_DTMCell<PointType>::getCorner2() {
+template<typename PointType>
+Eigen::Vector2d
+SF_DTMCell<PointType>::getCorner2()
+{
   Eigen::Vector2d bot, top;
   _dtm->getCellCoordinates(_index, bot, top);
   Eigen::Vector2d corner;
@@ -69,8 +74,10 @@ Eigen::Vector2d SF_DTMCell<PointType>::getCorner2() {
   return corner;
 }
 
-template <typename PointType>
-Eigen::Vector2d SF_DTMCell<PointType>::getCorner3() {
+template<typename PointType>
+Eigen::Vector2d
+SF_DTMCell<PointType>::getCorner3()
+{
   Eigen::Vector2d bot, top;
   _dtm->getCellCoordinates(_index, bot, top);
   Eigen::Vector2d corner;
@@ -79,8 +86,10 @@ Eigen::Vector2d SF_DTMCell<PointType>::getCorner3() {
   return corner;
 }
 
-template <typename PointType>
-Eigen::Vector2d SF_DTMCell<PointType>::getCorner4() {
+template<typename PointType>
+Eigen::Vector2d
+SF_DTMCell<PointType>::getCorner4()
+{
   Eigen::Vector2d bot, top;
   _dtm->getCellCoordinates(_index, bot, top);
   Eigen::Vector2d corner;
@@ -89,18 +98,18 @@ Eigen::Vector2d SF_DTMCell<PointType>::getCorner4() {
   return corner;
 }
 
-template <typename PointType>
-float SF_DTMCell<PointType>::getHeight(const Eigen::Vector2d &coords,
-                                       const pcl::ModelCoefficients &coeff) {
-  float height = (coords[0] * coeff.values[0] + coords[1] * coeff.values[1] +
-                  coeff.values[3]) /
-                 -coeff.values[2];
+template<typename PointType>
+float
+SF_DTMCell<PointType>::getHeight(const Eigen::Vector2d& coords, const pcl::ModelCoefficients& coeff)
+{
+  float height = (coords[0] * coeff.values[0] + coords[1] * coeff.values[1] + coeff.values[3]) / -coeff.values[2];
   return height;
 }
 
-template <typename PointType>
+template<typename PointType>
 Eigen::Vector2f
-SF_DTMCell<PointType>::getMinMaxHeight(const pcl::ModelCoefficients &coeff) {
+SF_DTMCell<PointType>::getMinMaxHeight(const pcl::ModelCoefficients& coeff)
+{
   Eigen::Vector2d corner1 = getCorner1();
   Eigen::Vector2d corner2 = getCorner2();
   Eigen::Vector2d corner3 = getCorner3();

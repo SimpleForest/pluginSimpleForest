@@ -33,16 +33,17 @@
 
 #include "pcl/sf_point.h"
 
-class SF_ModelRaster {
+class SF_ModelRaster
+{
   pcl::PointCloud<pcl::PointXYZ>::Ptr _cloud3D;
   pcl::PointCloud<pcl::PointXYZ>::Ptr _cloud2D;
   pcl::KdTreeFLANN<pcl::PointXYZ>::Ptr _kdtree2D;
   void create2DFrom3D();
   void createKDTree();
-  void getNearestNeighborsHeightsAndDistances(const pcl::PointXYZ &point,
+  void getNearestNeighborsHeightsAndDistances(const pcl::PointXYZ& point,
                                               const int nn,
-                                              std::vector<float> &heightsOut,
-                                              std::vector<float> &distancesOut);
+                                              std::vector<float>& heightsOut,
+                                              std::vector<float>& distancesOut);
 
 public:
   SF_ModelRaster(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D);

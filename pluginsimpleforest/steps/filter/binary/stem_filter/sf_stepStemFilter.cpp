@@ -32,16 +32,19 @@
 
 #include "ct_itemdrawable/ct_pointsattributescolor.h"
 
-SF_StepStemFilter::SF_StepStemFilter(CT_StepInitializeData &dataInit)
-    : SF_AbstractFilterBinaryStep(dataInit) {}
+SF_StepStemFilter::SF_StepStemFilter(CT_StepInitializeData& dataInit) : SF_AbstractFilterBinaryStep(dataInit) {}
 
 SF_StepStemFilter::~SF_StepStemFilter() {}
 
-QString SF_StepStemFilter::getStepDescription() const {
+QString
+SF_StepStemFilter::getStepDescription() const
+{
   return tr("Stem Filter");
 }
 
-QString SF_StepStemFilter::getStepDetailledDescription() const {
+QString
+SF_StepStemFilter::getStepDetailledDescription() const
+{
   return tr("Stem Filter - This Filter estimates for each point the growth "
             "direction of the underlying branch segment. The angle between "
             "this direction vector and the z axis is computed. "
@@ -49,16 +52,21 @@ QString SF_StepStemFilter::getStepDetailledDescription() const {
             "the point is considered non stem.");
 }
 
-QString SF_StepStemFilter::getStepURL() const {
+QString
+SF_StepStemFilter::getStepURL() const
+{
   return tr("https://www.youtube.com/watch?v=5i6_Rtv-xEw");
 }
 
-CT_VirtualAbstractStep *
-SF_StepStemFilter::createNewInstance(CT_StepInitializeData &dataInit) {
+CT_VirtualAbstractStep*
+SF_StepStemFilter::createNewInstance(CT_StepInitializeData& dataInit)
+{
   return new SF_StepStemFilter(dataInit);
 }
 
-QStringList SF_StepStemFilter::getStepRISCitations() const {
+QStringList
+SF_StepStemFilter::getStepRISCitations() const
+{
   QStringList _risCitationList;
   _risCitationList.append(getRISCitationSimpleTree());
   _risCitationList.append(getRISCitationPCL());
@@ -66,71 +74,79 @@ QStringList SF_StepStemFilter::getStepRISCitations() const {
   return _risCitationList;
 }
 
-void SF_StepStemFilter::createInResultModelListProtected() {
-  CT_InResultModelGroupToCopy *res_model =
-      createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
+void
+SF_StepStemFilter::createInResultModelListProtected()
+{
+  CT_InResultModelGroupToCopy* res_model = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
   assert(res_model != NULL);
   res_model->setZeroOrMoreRootGroup();
-  res_model->addGroupModel("", DEF_IN_GRP_CLUSTER,
+  res_model->addGroupModel("",
+                           DEF_IN_GRP_CLUSTER,
                            CT_AbstractItemGroup::staticGetType(),
-                           tr("Group to be denoised"), "",
+                           tr("Group to be denoised"),
+                           "",
                            CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-  res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED,
-                          CT_Scene::staticGetType(),
-                          tr("Cloud to be denoised"));
+  res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Cloud to be denoised"));
 }
 
-void SF_StepStemFilter::createPostConfigurationDialogExpert(
-    CT_StepConfigurableDialog *configDialog) {
-  configDialog->addDouble("First the cloud is downscaled to a voxel size of  ",
-                          " (m). ", 0.015, 0.1, 3, _voxelSize);
+void
+SF_StepStemFilter::createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog)
+{
+  configDialog->addDouble("First the cloud is downscaled to a voxel size of  ", " (m). ", 0.015, 0.1, 3, _voxelSize);
   configDialog->addDouble("For each of the downscaled points its normal is "
                           "computed with a range search of  ",
-                          "  (m). ", 0.025, 0.2, 3, _radiusNormal);
+                          "  (m). ",
+                          0.025,
+                          0.2,
+                          3,
+                          _radiusNormal);
   configDialog->addDouble("Another neighborhood range search is performed on "
                           "the downscaled points with range  ",
-                          " (m).", 0.05, 0.5, 3, _radiusGrowthDirection);
+                          " (m).",
+                          0.05,
+                          0.5,
+                          3,
+                          _radiusGrowthDirection);
   configDialog->addText("The second range should be larger than the first, "
                         "which should be larger than the downscale size.");
-  configDialog->addText(
-      "For each point the Covariance matrix on all neighboring points within "
-      "the second range is build and a PCA performed.");
-  configDialog->addText(
-      "The eigenvector representing the direction along the smallest variance "
-      "is taken as the growth direction of the point.");
-  configDialog->addDouble(
-      "The angle for each point between this eigenvector and the z axis is "
-      "computed and is not allowed to deviate more than ",
-      " ", 0.5, 180, 1, _angle);
+  configDialog->addText("For each point the Covariance matrix on all neighboring points within "
+                        "the second range is build and a PCA performed.");
+  configDialog->addText("The eigenvector representing the direction along the smallest variance "
+                        "is taken as the growth direction of the point.");
+  configDialog->addDouble("The angle for each point between this eigenvector and the z axis is "
+                          "computed and is not allowed to deviate more than ",
+                          " ",
+                          0.5,
+                          180,
+                          1,
+                          _angle);
   configDialog->addText("degrees.");
-  configDialog->addText(
-      "Please read Raumonen <b>2013</b> (see Citation menu) for more "
-      "information, this step is based on knowledge gained there.");
+  configDialog->addText("Please read Raumonen <b>2013</b> (see Citation menu) for more "
+                        "information, this step is based on knowledge gained there.");
 }
 
-void SF_StepStemFilter::createPostConfigurationDialogBeginner(
-    CT_StepConfigurableDialog *configDialog) {
-  configDialog->addStringChoice("Choose how many points should be removed", "",
-                                _numberPoints, _choiceNumberPoints);
+void
+SF_StepStemFilter::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog)
+{
+  configDialog->addStringChoice("Choose how many points should be removed", "", _numberPoints, _choiceNumberPoints);
   configDialog->addText("For bended trees select a weaker filter level.");
 }
 
-void SF_StepStemFilter::createOutResultModelListProtected() {
-  CT_OutResultModelGroupToCopyPossibilities *resModelw =
-      createNewOutResultModelToCopy(DEF_IN_RESULT);
+void
+SF_StepStemFilter::createOutResultModelListProtected()
+{
+  CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem,
-                            new CT_PointsAttributesColor(),
-                            tr("Growth direction"));
-    resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outGrp,
-                             new CT_StandardItemGroup(),
-                             tr("Stem Point Filter"));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Growth direction"));
+    resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outGrp, new CT_StandardItemGroup(), tr("Stem Point Filter"));
     resModelw->addItemModel(_outGrp, _outCloud, new CT_Scene(), tr("Cloud"));
     resModelw->addItemModel(_outGrp, _outNoise, new CT_Scene(), tr("Noise"));
   }
 }
 
-void SF_StepStemFilter::adaptParametersToExpertLevel() {
+void
+SF_StepStemFilter::adaptParametersToExpertLevel()
+{
   if (!_isExpert) {
     if (_choiceNumberPoints == _few) {
       _x = 0;
@@ -163,64 +179,63 @@ void SF_StepStemFilter::adaptParametersToExpertLevel() {
   }
 }
 
-void SF_StepStemFilter::writeOutputPerScence(CT_ResultGroup *outResult,
-                                             size_t i) {
+void
+SF_StepStemFilter::writeOutputPerScence(CT_ResultGroup* outResult, size_t i)
+{
   SF_ParamStemFilter<SF_PointNormal> param = _paramList.at(i);
-  std::vector<CT_PointCloudIndexVector *> outputIndexList =
-      createOutputVectors(param._sizeOutput);
-  createOutputIndices(outputIndexList, param._outputIndices,
-                      param._itemCpyCloudIn);
-  CT_StandardItemGroup *filterGrp =
-      new CT_StandardItemGroup(_outGrp.completeName(), outResult);
+  std::vector<CT_PointCloudIndexVector*> outputIndexList = createOutputVectors(param._sizeOutput);
+  createOutputIndices(outputIndexList, param._outputIndices, param._itemCpyCloudIn);
+  CT_StandardItemGroup* filterGrp = new CT_StandardItemGroup(_outGrp.completeName(), outResult);
   param._grpCpyGrp->addGroup(filterGrp);
-  addSceneToFilterGrp(filterGrp, outResult, outputIndexList[0],
-                      _outCloud.completeName());
-  addSceneToFilterGrp(filterGrp, outResult, outputIndexList[1],
-                      _outNoise.completeName());
+  addSceneToFilterGrp(filterGrp, outResult, outputIndexList[0], _outCloud.completeName());
+  addSceneToFilterGrp(filterGrp, outResult, outputIndexList[1], _outNoise.completeName());
 }
 
-void SF_StepStemFilter::writeOutput(CT_ResultGroup *outResult) {
+void
+SF_StepStemFilter::writeOutput(CT_ResultGroup* outResult)
+{
   size_t size = _paramList.size();
   for (size_t i = 0; i < size; i++) {
     writeOutputPerScence(outResult, i);
   }
 }
 
-void SF_StepStemFilter::compute() {
-  const QList<CT_ResultGroup *> &outResultList = getOutResultList();
-  CT_ResultGroup *outResult = outResultList.at(0);
+void
+SF_StepStemFilter::compute()
+{
+  const QList<CT_ResultGroup*>& outResultList = getOutResultList();
+  CT_ResultGroup* outResult = outResultList.at(0);
   identifyAndRemoveCorruptedScenes(outResult);
   createParamList(outResult);
-  QFuture<void> future =
-      QtConcurrent::map(_paramList, SF_StepStemFilterAdapter());
+  QFuture<void> future = QtConcurrent::map(_paramList, SF_StepStemFilterAdapter());
   setProgressByFuture(future, 10, 85);
   writeOutput(outResult);
   writeLogger();
   size_t index = 0;
   CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
   while (!isStopped() && outResIt.hasNext()) {
-    CT_StandardItemGroup *group = (CT_StandardItemGroup *)outResIt.next();
-    const CT_AbstractItemDrawableWithPointCloud *ct_cloud =
-        (const CT_AbstractItemDrawableWithPointCloud *)
-            group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
+    const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
+      (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
     SF_ParamStemFilter<SF_PointNormal> param = _paramList[index++];
-    CT_PointsAttributesColor *colorAttribute = new CT_PointsAttributesColor(
-        m_outCloudItem.completeName(), outResult,
-        ct_cloud->getPointCloudIndexRegistered(), param._colors);
+    CT_PointsAttributesColor* colorAttribute = new CT_PointsAttributesColor(
+      m_outCloudItem.completeName(), outResult, ct_cloud->getPointCloudIndexRegistered(), param._colors);
     group->addItemDrawable(colorAttribute);
   }
   _paramList.clear();
 }
 
-void SF_StepStemFilter::writeLogger() {
+void
+SF_StepStemFilter::writeLogger()
+{
   if (!_paramList.empty()) {
     auto strList = _paramList[0].toStringList();
-    for (auto &str : strList) {
+    for (auto& str : strList) {
       PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);
     }
     size_t filtered = 0;
     size_t total = 0;
-    for (auto const &param : _paramList) {
+    for (auto const& param : _paramList) {
       auto vector = param._outputIndices;
       for (auto i : vector) {
         total++;
@@ -232,14 +247,15 @@ void SF_StepStemFilter::writeLogger() {
   }
 }
 
-void SF_StepStemFilter::createParamList(CT_ResultGroup *outResult) {
+void
+SF_StepStemFilter::createParamList(CT_ResultGroup* outResult)
+{
   adaptParametersToExpertLevel();
   CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
   while (!isStopped() && outResIt.hasNext()) {
-    CT_StandardItemGroup *group = (CT_StandardItemGroup *)outResIt.next();
-    const CT_AbstractItemDrawableWithPointCloud *ct_cloud =
-        (const CT_AbstractItemDrawableWithPointCloud *)
-            group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
+    const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
+      (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
     SF_ParamStemFilter<SF_PointNormal> param;
     param._log = PS_LOG;
     param._x = _x;

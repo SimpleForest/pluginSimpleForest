@@ -30,11 +30,15 @@ SF_PluginManager::SF_PluginManager() : CT_AbstractStepPlugin() {}
 
 SF_PluginManager::~SF_PluginManager() {}
 
-QString SF_PluginManager::getPluginOfficialName() const {
+QString
+SF_PluginManager::getPluginOfficialName() const
+{
   return "SimpleForest";
 }
 
-QString SF_PluginManager::getPluginRISCitation() const {
+QString
+SF_PluginManager::getPluginRISCitation() const
+{
   return "TY  - JOUR\n"
          "T1  - SimpleTree - an efficient open source tool to build tree "
          "models from TLS clouds\n"
@@ -54,9 +58,15 @@ QString SF_PluginManager::getPluginRISCitation() const {
          "ER  - \n";
 }
 
-bool SF_PluginManager::init() { return CT_AbstractStepPlugin::init(); }
+bool
+SF_PluginManager::init()
+{
+  return CT_AbstractStepPlugin::init();
+}
 
-bool SF_PluginManager::loadGenericsStep() {
+bool
+SF_PluginManager::loadGenericsStep()
+{
   addNewPointsStep<SF_StepPrincipalDirection>(CT_StepsMenu::LP_Classify);
   addNewPointsStep<SF_StepStatisticalOutlierRemoval>(CT_StepsMenu::LP_Filter);
   addNewPointsStep<SF_RadiusOutlierFilterStep>(CT_StepsMenu::LP_Filter);
@@ -64,8 +74,7 @@ bool SF_PluginManager::loadGenericsStep() {
   addNewPointsStep<SF_StepStemRANSACFilter>(CT_StepsMenu::LP_Filter);
   addNewPointsStep<SF_StepGroundFilter>(CT_StepsMenu::LP_Filter);
   addNewPointsStep<SF_StepCutCloudAboveDTM>(CT_StepsMenu::LP_Filter);
-  addNewPointsStep<SF_EuclideanClusteringSegmentationStep>(
-      CT_StepsMenu::LP_Clusters);
+  addNewPointsStep<SF_EuclideanClusteringSegmentationStep>(CT_StepsMenu::LP_Clusters);
   addNewPointsStep<SF_StepSegmentationDijkstra>(CT_StepsMenu::LP_Clusters);
   addNewPointsStep<SF_StepSegmentationVoronoi>(CT_StepsMenu::LP_Clusters);
   addNewRastersStep<SF_StepDTM>(CT_StepsMenu::LP_DEM);
@@ -75,18 +84,50 @@ bool SF_PluginManager::loadGenericsStep() {
   return true;
 }
 
-bool SF_PluginManager::loadOpenFileStep() { return true; }
+bool
+SF_PluginManager::loadOpenFileStep()
+{
+  return true;
+}
 
-bool SF_PluginManager::loadCanBeAddedFirstStep() { return true; }
+bool
+SF_PluginManager::loadCanBeAddedFirstStep()
+{
+  return true;
+}
 
-bool SF_PluginManager::loadFilters() { return true; }
+bool
+SF_PluginManager::loadFilters()
+{
+  return true;
+}
 
-bool SF_PluginManager::loadMetrics() { return true; }
+bool
+SF_PluginManager::loadMetrics()
+{
+  return true;
+}
 
-bool SF_PluginManager::loadItemDrawables() { return true; }
+bool
+SF_PluginManager::loadItemDrawables()
+{
+  return true;
+}
 
-bool SF_PluginManager::loadActions() { return true; }
+bool
+SF_PluginManager::loadActions()
+{
+  return true;
+}
 
-bool SF_PluginManager::loadExporters() { return true; }
+bool
+SF_PluginManager::loadExporters()
+{
+  return true;
+}
 
-bool SF_PluginManager::loadReaders() { return true; }
+bool
+SF_PluginManager::loadReaders()
+{
+  return true;
+}

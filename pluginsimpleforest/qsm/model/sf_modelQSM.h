@@ -26,20 +26,28 @@
 
 *****************************************************************************/
 
-#ifndef SF_GRIDSEARCH_H
-#define SF_GRIDSEARCH_H
+#ifndef SF_MODEL_TREE_H
+#define SF_MODEL_TREE_H
 
-#include "sf_gridsearchparameters.h"
+#include "sf_modelAbstractSegment.h"
 
-class SF_GridSearch {
-protected:
-  SF_GridSearchParameters _params;
-  int gridSize(const int nDim, const int res);
-  void restrictSearchSpace();
+class SF_ModelQSM
+{
+  int _ID;
+  std::string _species;
+  std::shared_ptr<SF_ModelAbstractSegment> _rootSegment;
 
 public:
-  SF_GridSearch();
-  void compute();
+  SF_ModelQSM(const int ID);
+  virtual std::string toString();
+  virtual std::string toHeaderString();
+
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments();
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment);
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> getBuildingBricks();
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getLeaveSegments();
+  std::shared_ptr<SF_ModelAbstractSegment> getRootSegment() const;
+  void setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& rootSegment);
 };
 
-#endif // SF_GRIDSEARCH_H
+#endif // SF_MODEL_TREE_H

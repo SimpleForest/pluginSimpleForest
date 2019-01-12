@@ -34,14 +34,14 @@
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
 
-class SF_StemRANSACFilter
-    : public Sf_AbstractBinaryFilter<pcl::PointXYZINormal> {
+class SF_StemRANSACFilter : public Sf_AbstractBinaryFilter<pcl::PointXYZINormal>
+{
   SF_ParamStemRansacFilter _params;
   std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> _clouds;
   void initializeClouds(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud);
 
 public:
-  void setParams(const SF_ParamStemRansacFilter &params);
+  void setParams(const SF_ParamStemRansacFilter& params);
   SF_StemRANSACFilter();
   void compute();
 
@@ -55,10 +55,8 @@ private:
                   pcl::ModelCoefficients::Ptr coeffCylinder,
                   pcl::ModelCoefficients::Ptr lastCoeffCylinder,
                   pcl::PointIndices::Ptr inliersCylinder);
-  void filterIteratively(
-      pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered);
-  void
-  backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered);
+  void filterIteratively(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered);
+  void backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloudFiltered);
 };
 
 #endif // SF_STEM_RANSAC_FILTER_H

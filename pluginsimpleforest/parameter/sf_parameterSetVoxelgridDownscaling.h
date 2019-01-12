@@ -29,8 +29,9 @@
  *
  *  Parameter set to convert a cloud into subclouds by voxelization.
  */
-template <typename T>
-struct SF_ParameterSetVoxelgridDownscaling : public SF_AbstractParameterSet<T> {
+template<typename T>
+struct SF_ParameterSetVoxelgridDownscaling : public SF_AbstractParameterSet<T>
+{
   /**
    * @brief m_voxelSize The \ref  m_cloud is downscaled and the expected
    * distance between two neighbor points is \ref m_voxelSize afterwards.
@@ -42,15 +43,15 @@ struct SF_ParameterSetVoxelgridDownscaling : public SF_AbstractParameterSet<T> {
    */
   std::pair<std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t>>,
             std::pair<typename pcl::PointCloud<T>::Ptr, std::vector<size_t>>>
-      m_cloudOut;
+    m_cloudOut;
 
   SF_ParameterSetVoxelgridDownscaling() {}
 
-  QStringList paramsToString(size_t remaining, size_t filtered) {
+  QStringList paramsToString(size_t remaining, size_t filtered)
+  {
     float percentage = 0;
     if ((remaining + filtered) > 0) {
-      percentage = static_cast<float>(remaining) /
-                   (static_cast<float>(remaining + filtered)) * 100.0f;
+      percentage = static_cast<float>(remaining) / (static_cast<float>(remaining + filtered)) * 100.0f;
     }
     QStringList list;
     QString str = "The input cloud was downscaled with a  (";

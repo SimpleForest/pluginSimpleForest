@@ -30,21 +30,27 @@
 #include "pcl/sf_math.h"
 #include "sf_modelQSM.h"
 
-void SF_ModelAbstractSegment::setParent(
-    const std::weak_ptr<SF_ModelAbstractSegment> &parent) {
+void
+SF_ModelAbstractSegment::setParent(const std::weak_ptr<SF_ModelAbstractSegment>& parent)
+{
   _parent = parent;
 }
 
-std::shared_ptr<SF_ModelAbstractSegment> SF_ModelAbstractSegment::getParent() {
+std::shared_ptr<SF_ModelAbstractSegment>
+SF_ModelAbstractSegment::getParent()
+{
   return _parent.lock();
 }
 
 std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
-SF_ModelAbstractSegment::getBuildingBricks() const {
+SF_ModelAbstractSegment::getBuildingBricks() const
+{
   return _buildingBricks;
 }
 
-std::string SF_ModelAbstractSegment::toString() {
+std::string
+SF_ModelAbstractSegment::toString()
+{
   std::string str(std::to_string(_ID));
   str.append(", ");
   std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
@@ -56,13 +62,11 @@ std::string SF_ModelAbstractSegment::toString() {
   str.append(", ");
   str.append(std::to_string(getRadius()));
   str.append(", ");
-  str.append(std::to_string(
-      _buildingBricks[_buildingBricks.size() / 2]->getGrowthVolume()));
+  str.append(std::to_string(_buildingBricks[_buildingBricks.size() / 2]->getGrowthVolume()));
   str.append(", ");
   str.append(std::to_string(getLength()));
   str.append(", ");
-  str.append(std::to_string(
-      _buildingBricks[_buildingBricks.size() / 2]->getGrowthLength()));
+  str.append(std::to_string(_buildingBricks[_buildingBricks.size() / 2]->getGrowthLength()));
   str.append(", ");
   str.append(std::to_string(_branchOrder));
   str.append(", ");
@@ -76,7 +80,9 @@ std::string SF_ModelAbstractSegment::toString() {
   return str;
 }
 
-std::string SF_ModelAbstractSegment::toHeaderString() {
+std::string
+SF_ModelAbstractSegment::toHeaderString()
+{
   std::string str("segmentID, parentSegmentID, segmentMedianRadius, "
                   "segmentGrowthVolume, segmentGrowthLength, branchOrder, "
                   "reverseBranchOrder, reversePipeBranchorder, branchID, ");
@@ -84,7 +90,9 @@ std::string SF_ModelAbstractSegment::toHeaderString() {
   return str;
 }
 
-Eigen::Vector3f SF_ModelAbstractSegment::getStart() const {
+Eigen::Vector3f
+SF_ModelAbstractSegment::getStart() const
+{
   Eigen::Vector3f start;
   if (!_buildingBricks.empty()) {
     start = _buildingBricks[0]->getStart();
@@ -92,7 +100,9 @@ Eigen::Vector3f SF_ModelAbstractSegment::getStart() const {
   return start;
 }
 
-Eigen::Vector3f SF_ModelAbstractSegment::getEnd() const {
+Eigen::Vector3f
+SF_ModelAbstractSegment::getEnd() const
+{
   Eigen::Vector3f end;
   if (!_buildingBricks.empty()) {
     end = _buildingBricks[_buildingBricks.size() - 1]->getEnd();
@@ -100,25 +110,33 @@ Eigen::Vector3f SF_ModelAbstractSegment::getEnd() const {
   return end;
 }
 
-Eigen::Vector3f SF_ModelAbstractSegment::getAxis() const {
-  return (getEnd()-getStart());
+Eigen::Vector3f
+SF_ModelAbstractSegment::getAxis() const
+{
+  return (getEnd() - getStart());
 }
 
-void SF_ModelAbstractSegment::remove() {
-    if(!isRoot()) {
-        std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
-        std::vector<std::shared_ptr<SF_ModelAbstractSegment> > parentsChildrenNew;
-        std::vector<std::shared_ptr<SF_ModelAbstractSegment> > parentsChildren = parent->getChildSegments();
-        std::for_each(parentsChildren.begin(), parentsChildren.end(), [&parentsChildrenNew, this](std::shared_ptr<SF_ModelAbstractSegment> parentsChild){
-            if(parentsChild!= shared_from_this()) {
-                parentsChildrenNew.push_back(parentsChild);
-            }
-        });
-        parent->setChildSegments(parentsChildrenNew);
-    }
+void
+SF_ModelAbstractSegment::remove()
+{
+  if (!isRoot()) {
+    std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> parentsChildrenNew;
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> parentsChildren = parent->getChildSegments();
+    std::for_each(parentsChildren.begin(),
+                  parentsChildren.end(),
+                  [&parentsChildrenNew, this](std::shared_ptr<SF_ModelAbstractSegment> parentsChild) {
+                    if (parentsChild != shared_from_this()) {
+                      parentsChildrenNew.push_back(parentsChild);
+                    }
+                  });
+    parent->setChildSegments(parentsChildrenNew);
+  }
 }
 
-float SF_ModelAbstractSegment::getRadius() const {
+float
+SF_ModelAbstractSegment::getRadius() const
+{
   std::vector<float> radii;
   for (size_t i = 0; i < _buildingBricks.size(); i++) {
     radii.push_back(_buildingBricks[i]->getRadius());
@@ -126,7 +144,9 @@ float SF_ModelAbstractSegment::getRadius() const {
   return SF_Math<float>::getMedian(radii);
 }
 
-float SF_ModelAbstractSegment::getVolume() const {
+float
+SF_ModelAbstractSegment::getVolume() const
+{
   float volume = 0;
   for (size_t i = 0; i < _buildingBricks.size(); i++) {
     volume += _buildingBricks[i]->getVolume();
@@ -134,7 +154,9 @@ float SF_ModelAbstractSegment::getVolume() const {
   return volume;
 }
 
-float SF_ModelAbstractSegment::getLength() const {
+float
+SF_ModelAbstractSegment::getLength() const
+{
   float length = 0;
   for (size_t i = 0; i < _buildingBricks.size(); i++) {
     length += _buildingBricks[i]->getLength();
@@ -142,62 +164,80 @@ float SF_ModelAbstractSegment::getLength() const {
   return length;
 }
 
-bool SF_ModelAbstractSegment::isRoot() const {
-    if(getTree()->getRootSegment() != shared_from_this() ) {
-        return false;
-    }
-    return true;
+bool
+SF_ModelAbstractSegment::isRoot() const
+{
+  if (getTree()->getRootSegment() != shared_from_this()) {
+    return false;
+  }
+  return true;
 }
 
-int SF_ModelAbstractSegment::getID() const { return _ID; }
+int
+SF_ModelAbstractSegment::getID() const
+{
+  return _ID;
+}
 
-void SF_ModelAbstractSegment::setID(int ID) { _ID = ID; }
+void
+SF_ModelAbstractSegment::setID(int ID)
+{
+  _ID = ID;
+}
 
 std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
-SF_ModelAbstractSegment::getChildSegments() const {
+SF_ModelAbstractSegment::getChildSegments() const
+{
   return _childSegments;
 }
 
-std::shared_ptr<SF_ModelQSM> SF_ModelAbstractSegment::getTree() const {
+std::shared_ptr<SF_ModelQSM>
+SF_ModelAbstractSegment::getTree() const
+{
   return _tree.lock();
 }
 
-void SF_ModelAbstractSegment::setChildSegments(const std::vector<std::shared_ptr<SF_ModelAbstractSegment> > childSegments)
+void
+SF_ModelAbstractSegment::setChildSegments(const std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments)
 {
-    _childSegments = childSegments;
+  _childSegments = childSegments;
 }
 
-int SF_ModelAbstractSegment::getParentID() {
-    std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
-    if (parent == nullptr) {
-        return -1;
-    } else {
+int
+SF_ModelAbstractSegment::getParentID()
+{
+  std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
+  if (parent == nullptr) {
+    return -1;
+  } else {
     return parent->getID();
   }
 }
 
-void SF_ModelAbstractSegment::addChild(
-    std::shared_ptr<SF_ModelAbstractSegment> child) {
+void
+SF_ModelAbstractSegment::addChild(std::shared_ptr<SF_ModelAbstractSegment> child)
+{
   child->setParent(shared_from_this());
   _childSegments.push_back(child);
 }
 
-void SF_ModelAbstractSegment::addBuildingBrick(
-    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
+void
+SF_ModelAbstractSegment::addBuildingBrick(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
+{
   buildingBrick->setIndex(_buildingBricks.size());
   buildingBrick->setSegment(shared_from_this());
   _buildingBricks.push_back(buildingBrick);
 }
 
 std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
-SF_ModelAbstractSegment::getChildBuildingBricks(const size_t index) {
+SF_ModelAbstractSegment::getChildBuildingBricks(const size_t index)
+{
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> children;
   if (index < _buildingBricks.size() - 1) {
     children.push_back(_buildingBricks.at(index + 1));
   } else if (index == _buildingBricks.size() - 1) {
     for (size_t i = 0; i < _childSegments.size(); i++) {
-      std::shared_ptr<Sf_ModelAbstractBuildingbrick> child =
-          _childSegments.at(i)->getBuildingBricks()[0];
+      std::shared_ptr<Sf_ModelAbstractBuildingbrick> child = _childSegments.at(i)->getBuildingBricks()[0];
       children.push_back(child);
     }
   }
@@ -205,15 +245,13 @@ SF_ModelAbstractSegment::getChildBuildingBricks(const size_t index) {
 }
 
 std::shared_ptr<Sf_ModelAbstractBuildingbrick>
-SF_ModelAbstractSegment::getParentBuildingBrick(const size_t index) {
+SF_ModelAbstractSegment::getParentBuildingBrick(const size_t index)
+{
   std::shared_ptr<Sf_ModelAbstractBuildingbrick> parent;
   if (index == 0) {
     std::shared_ptr<SF_ModelAbstractSegment> parentSegment = getParent();
     if (parentSegment != nullptr) {
-      parent =
-          parentSegment
-              ->getBuildingBricks()[parentSegment->getBuildingBricks().size() -
-                                    1];
+      parent = parentSegment->getBuildingBricks()[parentSegment->getBuildingBricks().size() - 1];
     }
   } else {
     parent = _buildingBricks[index - 1];
@@ -221,9 +259,8 @@ SF_ModelAbstractSegment::getParentBuildingBrick(const size_t index) {
   return parent;
 }
 
-SF_ModelAbstractSegment::SF_ModelAbstractSegment(
-    std::shared_ptr<SF_ModelQSM> tree)
-    : _tree(tree) {
+SF_ModelAbstractSegment::SF_ModelAbstractSegment(std::shared_ptr<SF_ModelQSM> tree) : _tree(tree)
+{
   _ID = -1;
   _branchOrder = -1;
   _reverseBranchOrder = -1;

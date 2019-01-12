@@ -33,20 +33,19 @@
 #include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/cloud/filter/binary/statisticaloutlier/sf_statisticalOutlierFilter.h>
 
-class SF_StatisticalOutlierRemovalAdapter {
+class SF_StatisticalOutlierRemovalAdapter
+{
 public:
   std::shared_ptr<QMutex> mMutex;
 
-  SF_StatisticalOutlierRemovalAdapter(
-      const SF_StatisticalOutlierRemovalAdapter &obj) {
-    mMutex = obj.mMutex;
-  }
+  SF_StatisticalOutlierRemovalAdapter(const SF_StatisticalOutlierRemovalAdapter& obj) { mMutex = obj.mMutex; }
 
   SF_StatisticalOutlierRemovalAdapter() { mMutex.reset(new QMutex); }
 
   ~SF_StatisticalOutlierRemovalAdapter() {}
 
-  void operator()(SF_ParamStatisticalOutlierFilter<SF_Point> &params) {
+  void operator()(SF_ParamStatisticalOutlierFilter<SF_Point>& params)
+  {
     Sf_ConverterCTToPCL<SF_Point> converter;
     {
       QMutexLocker m1(&*mMutex);

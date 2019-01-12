@@ -33,8 +33,9 @@
 #include "pcl/cloud/feature/sf_abstractFeature.h"
 #include "sf_pcavalues.h"
 
-template <typename PointType>
-class SF_PCA : public SF_AbstractCloud<PointType> {
+template<typename PointType>
+class SF_PCA : public SF_AbstractCloud<PointType>
+{
 private:
   float _range;
   bool _useRange;
@@ -51,12 +52,9 @@ public:
   virtual void createIndices() {}
   virtual void createIndex(PointType point, float sqrd_distance) {}
   virtual void reset() { pcaValues.clear(); }
-  static SF_PCAValues computeFeaturesFromNeighbors(
-      typename pcl::PointCloud<PointType>::Ptr neighborhood,
-      const Eigen::Vector4f &xyz_centroid);
-  void computeFeaturesForPoint(const PointType &p,
-                               typename pcl::KdTree<PointType>::Ptr kdTree,
-                               int index);
+  static SF_PCAValues computeFeaturesFromNeighbors(typename pcl::PointCloud<PointType>::Ptr neighborhood,
+                                                   const Eigen::Vector4f& xyz_centroid);
+  void computeFeaturesForPoint(const PointType& p, typename pcl::KdTree<PointType>::Ptr kdTree, int index);
   void setParameters(float range, bool centerZero, bool useRange);
   void setParameters(int k, bool centerZero);
   std::vector<SF_PCAValues> getPcaValues() const;

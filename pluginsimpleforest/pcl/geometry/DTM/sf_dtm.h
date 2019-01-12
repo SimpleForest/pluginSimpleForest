@@ -30,19 +30,23 @@
 #define SF_DTM_H
 #include "sf_pyramidlayer.h"
 
-template <typename PointType> class SF_DTM {
+template<typename PointType>
+class SF_DTM
+{
   typename pcl::PointCloud<PointType>::Ptr _groundCloud;
   float _maxAngle;
   float _minCellSize;
   CT_AutoRenameModels _outDTM;
-  CT_ResultGroup *_outResult;
+  CT_ResultGroup* _outResult;
   std::shared_ptr<CT_Image2D<float>> _DTM;
   std::vector<std::shared_ptr<PyramidLayer<PointType>>> _pyramidDTM;
-  bool isValid(const pcl::ModelCoefficients &parentCoeff,
-               const pcl::ModelCoefficients &childCoeff,
-               const Eigen::Vector2f &childHeights,
-               const Eigen::Vector2f &parentHeights, const float gridSize);
-  void updateCoeff(const size_t indexChild, const size_t indexParent,
+  bool isValid(const pcl::ModelCoefficients& parentCoeff,
+               const pcl::ModelCoefficients& childCoeff,
+               const Eigen::Vector2f& childHeights,
+               const Eigen::Vector2f& parentHeights,
+               const float gridSize);
+  void updateCoeff(const size_t indexChild,
+                   const size_t indexParent,
                    std::shared_ptr<PyramidLayer<PointType>> currentChild,
                    std::shared_ptr<PyramidLayer<PointType>> currentParent);
   std::shared_ptr<PyramidLayer<PointType>> buildPyramid();
@@ -52,8 +56,10 @@ template <typename PointType> class SF_DTM {
                         std::shared_ptr<PyramidLayer<PointType>> currentParent);
 
 public:
-  SF_DTM(typename pcl::PointCloud<PointType>::Ptr groundCloud, float maxAngle,
-         float _minCellSize, CT_ResultGroup *outResult,
+  SF_DTM(typename pcl::PointCloud<PointType>::Ptr groundCloud,
+         float maxAngle,
+         float _minCellSize,
+         CT_ResultGroup* outResult,
          CT_AutoRenameModels outDTM);
   std::shared_ptr<CT_Image2D<float>> DTM() const;
 };

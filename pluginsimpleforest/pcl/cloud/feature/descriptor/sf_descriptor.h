@@ -30,7 +30,9 @@
 
 #include "pcl/cloud/feature/sf_abstractFeature.h"
 
-template <typename PointType> class SF_Descriptor {
+template<typename PointType>
+class SF_Descriptor
+{
 private:
   float m_k = 2;
   float m_sd;

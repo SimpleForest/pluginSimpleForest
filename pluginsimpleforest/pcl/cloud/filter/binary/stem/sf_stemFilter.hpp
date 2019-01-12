@@ -33,31 +33,25 @@
 #include "pcl/cloud/feature/growth_direction/sf_growthDirection.h"
 #include "pcl/cloud/filter/binary/stem/sf_stemFilter.h"
 
-template <typename PointType>
-void SF_StemFilter<PointType>::transferStem(
-    const SF_ParamStemFilter<PointType> &params,
-    typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud,
-    typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction) {
-
-  _colors = new CT_ColorCloudStdVector(
-      SF_StemFilter<PointType>::_cloudIn->points.size());
+template<typename PointType>
+void
+SF_StemFilter<PointType>::transferStem(const SF_ParamStemFilter<PointType>& params,
+                                       typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud,
+                                       typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction)
+{
+  _colors = new CT_ColorCloudStdVector(SF_StemFilter<PointType>::_cloudIn->points.size());
   pcl::KdTreeFLANN<PointType> kdtree;
   kdtree.setInputCloud(cloud_with_growth_direction);
-  for (size_t i = 0; i < SF_StemFilter<PointType>::_cloudIn->points.size();
-       i++) {
-    CT_Color &col = _colors->colorAt(i);
+  for (size_t i = 0; i < SF_StemFilter<PointType>::_cloudIn->points.size(); i++) {
+    CT_Color& col = _colors->colorAt(i);
     PointType p = SF_StemFilter<PointType>::_cloudIn->points.at(i);
     std::vector<int> pointIdxRadiusSearch;
     std::vector<float> pointRadiusSquaredDistance;
-    if (kdtree.nearestKSearch(p, 1, pointIdxRadiusSearch,
-                              pointRadiusSquaredDistance) > 0) {
-      PointType gd_point =
-          cloud_with_growth_direction->points[pointIdxRadiusSearch[0]];
-      Eigen::Vector3f vec(gd_point.normal_x, gd_point.normal_y,
-                          gd_point.normal_z);
+    if (kdtree.nearestKSearch(p, 1, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
+      PointType gd_point = cloud_with_growth_direction->points[pointIdxRadiusSearch[0]];
+      Eigen::Vector3f vec(gd_point.normal_x, gd_point.normal_y, gd_point.normal_z);
       if (gd_point.normal_z < 0) {
-        vec = Eigen::Vector3f(-gd_point.normal_x, -gd_point.normal_y,
-                              -gd_point.normal_z);
+        vec = Eigen::Vector3f(-gd_point.normal_x, -gd_point.normal_y, -gd_point.normal_z);
       }
       Eigen::Vector3f vecNorm = vec.normalized();
       col.r() = (std::abs((vecNorm[0] * 126) + 127));
@@ -81,36 +75,38 @@ void SF_StemFilter<PointType>::transferStem(
   }
 }
 
-template <typename PointType>
-CT_ColorCloudStdVector *SF_StemFilter<PointType>::colors() const {
+template<typename PointType>
+CT_ColorCloudStdVector*
+SF_StemFilter<PointType>::colors() const
+{
   return _colors;
 }
 
-template <typename PointType>
-void SF_StemFilter<PointType>::setParams(
-    SF_ParamStemFilter<PointType> &params) {
+template<typename PointType>
+void
+SF_StemFilter<PointType>::setParams(SF_ParamStemFilter<PointType>& params)
+{
   _params = params;
 }
 
-template <typename PointType> void SF_StemFilter<PointType>::compute() {
-  SF_StemFilter<PointType>::_cloudOutFilteredNoise.reset(
-      new typename pcl::PointCloud<PointType>);
-  SF_StemFilter<PointType>::_cloudOutFiltered.reset(
-      new typename pcl::PointCloud<PointType>);
-  typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud =
-      SF_AbstractCloud<PointType>::downScale(_params._voxelSize);
-  typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction(
-      new SF_CloudNormal());
-  SF_GrowthDirection<PointType, PointType> gd(down_scaled_cloud,
-                                              cloud_with_growth_direction);
+template<typename PointType>
+void
+SF_StemFilter<PointType>::compute()
+{
+  SF_StemFilter<PointType>::_cloudOutFilteredNoise.reset(new typename pcl::PointCloud<PointType>);
+  SF_StemFilter<PointType>::_cloudOutFiltered.reset(new typename pcl::PointCloud<PointType>);
+  typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud = SF_AbstractCloud<PointType>::downScale(_params._voxelSize);
+  typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction(new SF_CloudNormal());
+  SF_GrowthDirection<PointType, PointType> gd(down_scaled_cloud, cloud_with_growth_direction);
   gd.setParameters(_params._radiusNormal, _params._radiusGrowthDirection);
   gd.computeFeatures();
-  transferStem(_params, SF_AbstractCloud<PointType>::_cloudIn,
-               cloud_with_growth_direction);
+  transferStem(_params, SF_AbstractCloud<PointType>::_cloudIn, cloud_with_growth_direction);
   SF_StemFilter<PointType>::createIndices();
 }
 
-template <typename PointType> SF_StemFilter<PointType>::SF_StemFilter() {
+template<typename PointType>
+SF_StemFilter<PointType>::SF_StemFilter()
+{
   Sf_AbstractBinaryFilter<PointType>::reset();
 }
 

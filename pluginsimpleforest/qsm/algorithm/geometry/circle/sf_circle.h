@@ -36,28 +36,27 @@
 
 #include <utility>
 
-template <typename PointType> class SF_Circle {
+template<typename PointType>
+class SF_Circle
+{
   typename pcl::PointCloud<PointType>::Ptr m_cloudIn;
   const std::vector<int> m_indices;
-  const SF_ParamSpherefollowingBasic<PointType> &m_params;
+  const SF_ParamSpherefollowingBasic<PointType>& m_params;
   const size_t m_paramIndex;
   pcl::ModelCoefficients m_coeff;
   pcl::ModelCoefficients cirlceMedianWithIndices();
   pcl::ModelCoefficients circleMedianWithSubCloud();
   pcl::ModelCoefficients cirlceSACModelWithIndices();
   pcl::ModelCoefficients cirlceSACModelWithSubCloud();
-  void setParam(pcl::SACSegmentationFromNormals<PointType, PointType> &seg);
-  void chooseModel(const pcl::ModelCoefficients &circleMedian,
-                   const pcl::ModelCoefficients &circleSACModel);
+  void setParam(pcl::SACSegmentationFromNormals<PointType, PointType>& seg);
+  void chooseModel(const pcl::ModelCoefficients& circleMedian, const pcl::ModelCoefficients& circleSACModel);
 
 public:
   SF_Circle(typename pcl::PointCloud<PointType>::Ptr cloudIn,
-            const std::vector<int> &indices,
+            const std::vector<int>& indices,
             const SF_ParamSpherefollowingBasic<PointType> params,
             size_t paramIndex);
-  SF_Circle(typename pcl::PointCloud<PointType>::Ptr cloudIn,
-            const SF_ParamSpherefollowingBasic<PointType> params,
-            size_t paramIndex);
+  SF_Circle(typename pcl::PointCloud<PointType>::Ptr cloudIn, const SF_ParamSpherefollowingBasic<PointType> params, size_t paramIndex);
   pcl::ModelCoefficients coeff() const;
 };
 

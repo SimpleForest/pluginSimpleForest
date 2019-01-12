@@ -25,12 +25,24 @@
 
 #include "sf_testclustertransfer.h"
 
-void TestClusterTransfer::initTestCase() {
+void
+TestClusterTransfer::initTestCase()
+{
   qDebug("called before everything else");
 }
-void TestClusterTransfer::myFirstTest() { QVERIFY(1 == 1); }
-void TestClusterTransfer::mySecondTest() { QVERIFY(1 != 2); }
-void TestClusterTransfer::cleanupTestCase() {
+void
+TestClusterTransfer::myFirstTest()
+{
+  QVERIFY(1 == 1);
+}
+void
+TestClusterTransfer::mySecondTest()
+{
+  QVERIFY(1 != 2);
+}
+void
+TestClusterTransfer::cleanupTestCase()
+{
   qDebug("called after myFirstTest and mySecondTest");
 }
 

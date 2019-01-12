@@ -29,8 +29,9 @@
  * @brief The SF_AbstractMultipleFilter class Abstract class for manipulating
  * a templated PCL cloud producing n clusters
  */
-template <typename PointType>
-class SF_AbstractMultipleFilter : public SF_AbstractFilterI<PointType> {
+template<typename PointType>
+class SF_AbstractMultipleFilter : public SF_AbstractFilterI<PointType>
+{
 public:
   /**
    * @brief Standard constructor.
@@ -40,32 +41,24 @@ public:
    * @brief clusterOut Getter for \ref m_clusterOut.
    * @return \ref m_clusterOut
    */
-  std::vector<
-      std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>
-  clusterOut() const;
+  std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>> clusterOut() const;
   /**
    * @brief setClusterIn Setter for \ref clusterIn.
    * @param clusterIn The clusters for which \ref m_cloudIn is transferred to.
    */
-  void setClusterIn(
-      const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr,
-                                  std::vector<size_t>>> &clusterIn);
+  void setClusterIn(const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>& clusterIn);
 
 protected:
   /**
    * @brief m_clusterOut Output vector of clusters. Each cluster is a pair of a
    * PCL cloud and a CT index vector.
    */
-  std::vector<
-      std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>
-      m_clusterOut;
+  std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>> m_clusterOut;
   /**
    * @brief m_clusterIn Input vector of clusters. Each cluster is a pair of a
    * PCL cloud and a CT index vector.
    */
-  std::vector<
-      std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>
-      m_clusterIn;
+  std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>> m_clusterIn;
 
 private:
   /**
@@ -75,37 +68,35 @@ private:
    * PointCloud and a CT index vector
    * @return The merged pair.
    */
-  std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>
-  merge(const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr,
-                                    std::vector<size_t>>>
-            clusters);
+  std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>> merge(
+    const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>> clusters);
 };
 
-template <typename PointType>
-SF_AbstractMultipleFilter<PointType>::SF_AbstractMultipleFilter() {}
+template<typename PointType>
+SF_AbstractMultipleFilter<PointType>::SF_AbstractMultipleFilter()
+{}
 
-template <typename PointType>
-std::vector<
-    std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>
-SF_AbstractMultipleFilter<PointType>::clusterOut() const {
+template<typename PointType>
+std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>
+SF_AbstractMultipleFilter<PointType>::clusterOut() const
+{
   return std::move(m_clusterOut);
 }
 
-template <typename PointType>
-void SF_AbstractMultipleFilter<PointType>::setClusterIn(
-    const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr,
-                                std::vector<size_t>>> &clusterIn) {
+template<typename PointType>
+void
+SF_AbstractMultipleFilter<PointType>::setClusterIn(
+  const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>& clusterIn)
+{
   m_clusterIn = (std::move(clusterIn));
 }
 
-template <typename PointType>
+template<typename PointType>
 std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>
 SF_AbstractMultipleFilter<PointType>::merge(
-    const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr,
-                                std::vector<size_t>>>
-        clusters) {
-  typename pcl::PointCloud<PointType>::Ptr cloud(
-      new pcl::PointCloud<PointType>());
+  const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>> clusters)
+{
+  typename pcl::PointCloud<PointType>::Ptr cloud(new pcl::PointCloud<PointType>());
   std::vector<size_t> indices;
   for (auto cluster : clusters) {
     *cloud += *(cluster.first);

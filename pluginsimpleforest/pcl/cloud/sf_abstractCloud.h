@@ -31,7 +31,9 @@
 #include <pcl/sf_point.h>
 #include <steps/param/sf_paramAllSteps.h>
 
-template <typename PointType> class SF_AbstractCloud {
+template<typename PointType>
+class SF_AbstractCloud
+{
 protected:
   const float _MIN_DISTANCE = 0.0001;
   const float _MIN_SQUARED_DISTANCE = _MIN_DISTANCE * _MIN_DISTANCE;
@@ -43,24 +45,24 @@ protected:
   virtual void createIndex(PointType point, float sqrd_distance) = 0;
 
   bool equalsBySqrtDistance(float sqrt_distance);
-  void searchKdTree(size_t index, typename pcl::KdTreeFLANN<PointType> &kdtree);
-  void iterateOverCloud(pcl::KdTreeFLANN<PointType> &kdtree);
-  void extractNeighborsByRange(
-      typename pcl::KdTree<PointType>::Ptr kdtree, PointType &p,
-      typename pcl::PointCloud<PointType>::Ptr neighborhood, float range);
-  void extractNeighborsByKnn(
-      typename pcl::KdTree<PointType>::Ptr kdtree, PointType &p,
-      typename pcl::PointCloud<PointType>::Ptr neighborhood, int k);
-  void extractNeighborhoodByIndexList(
-      std::vector<int> pointIndex,
-      typename pcl::PointCloud<PointType>::Ptr neighborhood);
+  void searchKdTree(size_t index, typename pcl::KdTreeFLANN<PointType>& kdtree);
+  void iterateOverCloud(pcl::KdTreeFLANN<PointType>& kdtree);
+  void extractNeighborsByRange(typename pcl::KdTree<PointType>::Ptr kdtree,
+                               PointType& p,
+                               typename pcl::PointCloud<PointType>::Ptr neighborhood,
+                               float range);
+  void extractNeighborsByKnn(typename pcl::KdTree<PointType>::Ptr kdtree,
+                             PointType& p,
+                             typename pcl::PointCloud<PointType>::Ptr neighborhood,
+                             int k);
+  void extractNeighborhoodByIndexList(std::vector<int> pointIndex, typename pcl::PointCloud<PointType>::Ptr neighborhood);
   typename pcl::PointCloud<PointType>::Ptr downScale(float voxel_size);
 
 public:
   SF_AbstractCloud();
   SF_AbstractCloud(const typename pcl::PointCloud<PointType>::Ptr cloudIn);
   std::vector<int> getIndices() const;
-  void setCloudIn(const typename pcl::PointCloud<PointType>::Ptr &cloud_in);
+  void setCloudIn(const typename pcl::PointCloud<PointType>::Ptr& cloud_in);
 };
 
 #include "sf_abstractCloud.hpp"

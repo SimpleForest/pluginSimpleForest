@@ -34,8 +34,8 @@
 
 class SF_ModelQSM;
 
-class SF_ModelAbstractSegment
-    : public std::enable_shared_from_this<SF_ModelAbstractSegment> {
+class SF_ModelAbstractSegment : public std::enable_shared_from_this<SF_ModelAbstractSegment>
+{
   std::weak_ptr<SF_ModelAbstractSegment> _parent;
   std::weak_ptr<SF_ModelQSM> _tree;
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> _buildingBricks;
@@ -53,8 +53,7 @@ protected:
 public:
   SF_ModelAbstractSegment(std::shared_ptr<SF_ModelQSM> tree);
   void addChild(std::shared_ptr<SF_ModelAbstractSegment> child);
-  void addBuildingBrick(
-      std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+  void addBuildingBrick(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   virtual std::string toString();
   virtual std::string toHeaderString();
 
@@ -69,17 +68,13 @@ public:
   int getID() const;
   void setID(int ID);
   std::shared_ptr<SF_ModelAbstractSegment> getParent();
-  void setParent(const std::weak_ptr<SF_ModelAbstractSegment> &parent);
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
-  getBuildingBricks() const;
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
-  getChildSegments() const;
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
-  getChildBuildingBricks(const size_t index);
-  std::shared_ptr<Sf_ModelAbstractBuildingbrick>
-  getParentBuildingBrick(const size_t index);
+  void setParent(const std::weak_ptr<SF_ModelAbstractSegment>& parent);
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> getBuildingBricks() const;
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getChildSegments() const;
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> getChildBuildingBricks(const size_t index);
+  std::shared_ptr<Sf_ModelAbstractBuildingbrick> getParentBuildingBrick(const size_t index);
   std::shared_ptr<SF_ModelQSM> getTree() const;
-  void setChildSegments(const std::vector<std::shared_ptr<SF_ModelAbstractSegment> > childSegments);
+  void setChildSegments(const std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments);
 };
 
 #endif // SF_MODEL_ABSTRACT_SEGMENT_H

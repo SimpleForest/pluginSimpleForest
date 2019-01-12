@@ -29,7 +29,8 @@
 #ifndef SF_PLOT_MODEL_H
 #define SF_PLOT_MODEL_H
 
-class SF_ModelPlot {
+class SF_ModelPlot
+{
 public:
   SF_ModelPlot();
 };

@@ -1,9 +1,10 @@
 #ifndef SF_IDETECTION_H
 #define SF_IDETECTION_H
 
-#include "qsm/sf_modelQSM.h"
+#include "qsm/model/sf_modelQSM.h"
 
-class SF_IDetection {
+class SF_IDetection
+{
   std::shared_ptr<SF_ModelQSM> _qsm;
 
 public:

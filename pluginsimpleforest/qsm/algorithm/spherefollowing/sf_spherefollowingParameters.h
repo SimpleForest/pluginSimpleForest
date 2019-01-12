@@ -33,29 +33,34 @@
 #include <algorithm>
 #include <pcl/segmentation/sac_segmentation.h>
 
-struct SF_SphereFollowingOptimizationParameters {
+struct SF_SphereFollowingOptimizationParameters
+{
   double _euclideanClusteringDistance = 0.03f;
   double _sphereRadiusMultiplier = 2.0f;
   double _epsilonSphere = 0.035f;
-  double _minRadius = 0.07f;
-  double _medianRadiusMultiplier = 3.0f;
+  double _minRadius = 0.04f;
+  double _medianRadiusMultiplier = 3.5f;
   SF_SphereFollowingOptimizationParameters() {}
   SF_SphereFollowingOptimizationParameters(float euclideanClusteringDistance,
                                            float sphereRadiusMultiplier,
-                                           float epsilonSphere, float minRadius)
-      : _euclideanClusteringDistance(euclideanClusteringDistance),
-        _sphereRadiusMultiplier(sphereRadiusMultiplier),
-        _epsilonSphere(epsilonSphere), _minRadius(minRadius) {}
+                                           float epsilonSphere,
+                                           float minRadius)
+    : _euclideanClusteringDistance(euclideanClusteringDistance)
+    , _sphereRadiusMultiplier(sphereRadiusMultiplier)
+    , _epsilonSphere(epsilonSphere)
+    , _minRadius(minRadius)
+  {}
 };
 
-struct SF_SphereFollowingParameters {
+struct SF_SphereFollowingParameters
+{
   std::vector<SF_SphereFollowingOptimizationParameters> m_optimizationParams;
   int _fittingMethod = pcl::SAC_MLESAC;
   float _heapDelta = 0.1f;
   float _inlierDistance = 0.03f;
   int _minPtsGeometry = 3;
   int _RANSACIterations = 100;
-  float _minGlobalRadius = 0.04f;
+  float _minGlobalRadius = 0.02f;
   float _heightInitializationSlice = 0.1f;
   SF_SphereFollowingParameters() {}
 };

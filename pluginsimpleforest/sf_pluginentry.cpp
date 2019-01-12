@@ -1,13 +1,25 @@
 #include "sf_pluginentry.h"
 #include "sf_pluginmanager.h"
 
-SF_PluginEntry::SF_PluginEntry() { _pluginManager = new SF_PluginManager(); }
+SF_PluginEntry::SF_PluginEntry()
+{
+  _pluginManager = new SF_PluginManager();
+}
 
-SF_PluginEntry::~SF_PluginEntry() { delete _pluginManager; }
+SF_PluginEntry::~SF_PluginEntry()
+{
+  delete _pluginManager;
+}
 
-QString SF_PluginEntry::getVersion() const { return "01.00.01"; }
+QString
+SF_PluginEntry::getVersion() const
+{
+  return "01.00.01";
+}
 
-CT_AbstractStepPlugin *SF_PluginEntry::getPlugin() const {
+CT_AbstractStepPlugin*
+SF_PluginEntry::getPlugin() const
+{
   return _pluginManager;
 }
 

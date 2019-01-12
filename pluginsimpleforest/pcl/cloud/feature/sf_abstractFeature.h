@@ -30,18 +30,16 @@
 
 #include "pcl/cloud/sf_abstractCloud.h"
 
-template <typename PointType, typename FeatureType>
-class SF_AbstractFeature : public SF_AbstractCloud<PointType> {
+template<typename PointType, typename FeatureType>
+class SF_AbstractFeature : public SF_AbstractCloud<PointType>
+{
 protected:
   typename pcl::PointCloud<FeatureType>::Ptr _featuresOut;
 
 public:
-  SF_AbstractFeature(typename pcl::PointCloud<PointType>::Ptr cloudIn,
-                     typename pcl::PointCloud<FeatureType>::Ptr featuresOut);
+  SF_AbstractFeature(typename pcl::PointCloud<PointType>::Ptr cloudIn, typename pcl::PointCloud<FeatureType>::Ptr featuresOut);
   virtual void computeFeatures() = 0;
-  typename pcl::PointCloud<FeatureType>::Ptr get_features() const {
-    return _featuresOut;
-  }
+  typename pcl::PointCloud<FeatureType>::Ptr get_features() const { return _featuresOut; }
 };
 
 #include "sf_abstractFeature.hpp"

@@ -35,20 +35,19 @@
 #include "cloud/filter/binary/voxelgriddownscale/sf_voxelgriddownscale.h"
 #include "parameter/sf_parameterSetPrincipalDirection.h"
 
-class SF_AdapterPrincipalDirection {
+class SF_AdapterPrincipalDirection
+{
 public:
   std::shared_ptr<QMutex> mMutex;
 
-  SF_AdapterPrincipalDirection(const SF_AdapterPrincipalDirection &obj) {
-    mMutex = obj.mMutex;
-  }
+  SF_AdapterPrincipalDirection(const SF_AdapterPrincipalDirection& obj) { mMutex = obj.mMutex; }
 
   SF_AdapterPrincipalDirection() { mMutex.reset(new QMutex); }
 
   ~SF_AdapterPrincipalDirection() {}
 
-  void operator()(SF_ParameterSetPrincipalDirection<SF_PointNormal> &params) {
-
+  void operator()(SF_ParameterSetPrincipalDirection<SF_PointNormal>& params)
+  {
     SF_VoxelGridDownscale<SF_PointNormal> downscale;
     {
       QMutexLocker m1(&*mMutex);

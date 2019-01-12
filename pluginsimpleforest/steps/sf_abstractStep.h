@@ -55,16 +55,15 @@
 #define DEF_IN_SCENE "igrp2"
 #define DEF_IN_SCENE_CLOUD "icloud2"
 
-class SF_AbstractStep : public CT_AbstractStep {
+class SF_AbstractStep : public CT_AbstractStep
+{
   Q_OBJECT
 
-  QList<CT_AbstractItemGroup *> _groupsToBeRemoved;
-  void checkIsEmpty(CT_StandardItemGroup *group,
-                    const CT_AbstractItemDrawableWithPointCloud *ctCloud);
-  void checkIsNullOrEmpty(const CT_AbstractItemDrawableWithPointCloud *ct_cloud,
-                          CT_StandardItemGroup *group);
-  void checkGrpAndCloud(CT_StandardItemGroup *group);
-  void identifyCorruptedScenes(CT_ResultGroup *outResult, int progress = 4);
+  QList<CT_AbstractItemGroup*> _groupsToBeRemoved;
+  void checkIsEmpty(CT_StandardItemGroup* group, const CT_AbstractItemDrawableWithPointCloud* ctCloud);
+  void checkIsNullOrEmpty(const CT_AbstractItemDrawableWithPointCloud* ct_cloud, CT_StandardItemGroup* group);
+  void checkGrpAndCloud(CT_StandardItemGroup* group);
+  void identifyCorruptedScenes(CT_ResultGroup* outResult, int progress = 4);
   void removeCorruptedScenes(int progress = 7);
 
 protected:
@@ -72,39 +71,29 @@ protected:
   virtual void createOutResultModelListProtected() = 0;
   void createPreConfigurationDialog();
   void createPostConfigurationDialog();
-  virtual void createPostConfigurationDialogBeginner(
-      CT_StepConfigurableDialog *configDialog) = 0;
-  virtual void createPostConfigurationDialogExpert(
-      CT_StepConfigurableDialog *configDialog) = 0;
+  virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) = 0;
+  virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) = 0;
   virtual void writeLogger();
-  virtual void createPostConfigurationDialogCitation(
-      CT_StepConfigurableDialog *configDialog);
-  virtual void createPostConfigurationDialogCitationSecond(
-      CT_StepConfigurableDialog *configDialog) {
-    configDialog;
-  }
+  virtual void createPostConfigurationDialogCitation(CT_StepConfigurableDialog* configDialog);
+  virtual void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog) { configDialog; }
 
   virtual void adaptParametersToExpertLevel() = 0;
   virtual void compute() = 0;
 
-  void recursiveRemoveIfEmpty(CT_AbstractItemGroup *parent,
-                              CT_AbstractItemGroup *group);
-  void setProgressByFuture(QFuture<void> &future, float percentageIntervalStart,
-                           float percentageIntervalSize);
-  void createOutputIndices(
-      std::vector<CT_PointCloudIndexVector *> &indexVectors,
-      const std::vector<int> &indices,
-      const CT_AbstractItemDrawableWithPointCloud *itemCpyCloudIn);
-  void identifyAndRemoveCorruptedScenes(CT_ResultGroup *out_result);
-  void createOutputIndex(std::vector<CT_PointCloudIndexVector *> &indexVectors,
-                         const std::vector<int> &indices, size_t counter,
-                         CT_PointIterator &pointIt);
-  CT_Scene *mergeIndices(CT_ResultGroup *outResult, CT_StandardItemGroup *root,
-                         const QString defInnGrp, const QString defInCloud);
-  Eigen::Vector3f getMin(const CT_Scene *ctCloud);
-  Eigen::Vector3f getMax(const CT_Scene *ctCloud);
-  std::vector<CT_PointCloudIndexVector *>
-  createOutputVectors(size_t numberOutput);
+  void recursiveRemoveIfEmpty(CT_AbstractItemGroup* parent, CT_AbstractItemGroup* group);
+  void setProgressByFuture(QFuture<void>& future, float percentageIntervalStart, float percentageIntervalSize);
+  void createOutputIndices(std::vector<CT_PointCloudIndexVector*>& indexVectors,
+                           const std::vector<int>& indices,
+                           const CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn);
+  void identifyAndRemoveCorruptedScenes(CT_ResultGroup* out_result);
+  void createOutputIndex(std::vector<CT_PointCloudIndexVector*>& indexVectors,
+                         const std::vector<int>& indices,
+                         size_t counter,
+                         CT_PointIterator& pointIt);
+  CT_Scene* mergeIndices(CT_ResultGroup* outResult, CT_StandardItemGroup* root, const QString defInnGrp, const QString defInCloud);
+  Eigen::Vector3f getMin(const CT_Scene* ctCloud);
+  Eigen::Vector3f getMax(const CT_Scene* ctCloud);
+  std::vector<CT_PointCloudIndexVector*> createOutputVectors(size_t numberOutput);
 
   QList<SF_ParamCT> _paramList;
 
@@ -119,16 +108,12 @@ protected:
   QString _SF_methodChoice = _MLESAC;
   QStringList _SF_methodList;
 
-  QString _ZEROMOMENTUMORDER =
-      "ZEROMOMENTUMORDER       - maximize inliers of model";
+  QString _ZEROMOMENTUMORDER = "ZEROMOMENTUMORDER       - maximize inliers of model";
   QString _FIRSTMOMENTUMORDERMSAC = "FIRSTMOMENTUMORDERMSAC  - minimize "
                                     "cropped (MSAC) average absolute distance";
-  QString _FIRSTMOMENTUMORDER =
-      "FIRSTMOMENTUMORDER      - minimize average absolute distance";
-  QString _SECONDMOMENTUMORDERMSAC =
-      "SECONDMOMENTUMORDERMSAC - minimize cropped (MSAC) root squared distance";
-  QString _SECONDMOMENTUMORDER =
-      "SECONDMOMENTUMORDER     - minimize average root squared distance";
+  QString _FIRSTMOMENTUMORDER = "FIRSTMOMENTUMORDER      - minimize average absolute distance";
+  QString _SECONDMOMENTUMORDERMSAC = "SECONDMOMENTUMORDERMSAC - minimize cropped (MSAC) root squared distance";
+  QString _SECONDMOMENTUMORDER = "SECONDMOMENTUMORDER     - minimize average root squared distance";
   QString _CMD_methodChoice = _SECONDMOMENTUMORDERMSAC;
   QStringList _CMD_methodList;
 
@@ -149,12 +134,11 @@ protected:
   const QString getRISCitationRaumonen() const;
   const QString getRISCitationSphereFollowing() const;
 
-  void addCitationRaumonen(CT_StepConfigurableDialog *configDialog);
+  void addCitationRaumonen(CT_StepConfigurableDialog* configDialog);
 
 public:
-  SF_AbstractStep(CT_StepInitializeData &dataInit);
-  virtual CT_VirtualAbstractStep *
-  createNewInstance(CT_StepInitializeData &dataInit) = 0;
+  SF_AbstractStep(CT_StepInitializeData& dataInit);
+  virtual CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData& dataInit) = 0;
 };
 
 #endif // SF_ABSTRACT_STEP_H

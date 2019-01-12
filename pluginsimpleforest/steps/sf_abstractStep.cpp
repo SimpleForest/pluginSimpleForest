@@ -30,8 +30,8 @@
 #include "qsm/algorithm/distance/sf_cloudToModelDistance.h"
 #include <pcl/sample_consensus/method_types.h>
 
-SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData &dataInit)
-    : CT_AbstractStep(dataInit) {
+SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData& dataInit) : CT_AbstractStep(dataInit)
+{
   _SF_methodList.push_back(_RANSAC);
   _SF_methodList.push_back(_LMEDS);
   _SF_methodList.push_back(_MSAC);
@@ -55,54 +55,53 @@ SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData &dataInit)
   _numberPoints.push_back(_many);
 }
 
-void SF_AbstractStep::addCitationRaumonen(
-    CT_StepConfigurableDialog *configDialog) {
+void
+SF_AbstractStep::addCitationRaumonen(CT_StepConfigurableDialog* configDialog)
+{
   configDialog->addText(QObject::tr("For this step please cite in addition:"),
                         "Pasi Raumonen, Mikko Kaasalainen, Markku Åkerblom, "
                         "Sanna Kaasalainen, Harri Kaartinen, Mikko Vastaranta, "
                         "Markus Holopainen, Mathias Disney and Philip Lewis");
-  configDialog->addText("", "<em>Fast Automatic Precision Tree Models from "
-                            "Terrestrial Laser Scanner Data.</em>");
+  configDialog->addText("",
+                        "<em>Fast Automatic Precision Tree Models from "
+                        "Terrestrial Laser Scanner Data.</em>");
   configDialog->addText("", "Remote Sensing<b>2013</b>, 5, 491-520.");
 }
 
-void SF_AbstractStep::recursiveRemoveIfEmpty(CT_AbstractItemGroup *parent,
-                                             CT_AbstractItemGroup *group) {
+void
+SF_AbstractStep::recursiveRemoveIfEmpty(CT_AbstractItemGroup* parent, CT_AbstractItemGroup* group)
+{
   if (parent != NULL) {
     parent->removeGroup(group);
     if (parent->isEmpty()) {
       recursiveRemoveIfEmpty(parent->parentGroup(), parent);
     }
   } else {
-    ((CT_ResultGroup *)group->result())->removeGroupSomethingInStructure(group);
+    ((CT_ResultGroup*)group->result())->removeGroupSomethingInStructure(group);
   }
 }
 
-void SF_AbstractStep::setProgressByFuture(QFuture<void> &future,
-                                          float percentageIntervalStart,
-                                          float percentageIntervalSize) {
+void
+SF_AbstractStep::setProgressByFuture(QFuture<void>& future, float percentageIntervalStart, float percentageIntervalSize)
+{
   float progressMin = future.progressMinimum();
   float progressSize = future.progressMaximum() - progressMin;
   while (!future.isFinished()) {
-    setProgress(percentageIntervalStart +
-                (percentageIntervalSize *
-                 (future.progressValue() - progressMin) / progressSize));
+    setProgress(percentageIntervalStart + (percentageIntervalSize * (future.progressValue() - progressMin) / progressSize));
   }
 }
 
-CT_Scene *SF_AbstractStep::mergeIndices(CT_ResultGroup *outResult,
-                                        CT_StandardItemGroup *root,
-                                        const QString defInnGrp,
-                                        const QString defInCloud) {
+CT_Scene*
+SF_AbstractStep::mergeIndices(CT_ResultGroup* outResult, CT_StandardItemGroup* root, const QString defInnGrp, const QString defInCloud)
+{
   CT_ResultGroupIterator outResIt(outResult, this, defInnGrp);
-  CT_PointCloudIndexVector *mergedClouds = new CT_PointCloudIndexVector();
+  CT_PointCloudIndexVector* mergedClouds = new CT_PointCloudIndexVector();
   mergedClouds->setSortType(CT_AbstractCloudIndex::NotSorted);
   std::vector<size_t> indices;
   while (!isStopped() && outResIt.hasNext()) {
-    CT_StandardItemGroup *group = (CT_StandardItemGroup *)outResIt.next();
-    const CT_AbstractItemDrawableWithPointCloud *ctCloud =
-        (const CT_AbstractItemDrawableWithPointCloud *)
-            group->firstItemByINModelName(this, defInCloud);
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
+    const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
+      this, defInCloud);
     CT_PointIterator iter(ctCloud->getPointCloudIndex());
     while (iter.hasNext() && !isStopped()) {
       iter.next();
@@ -115,46 +114,53 @@ CT_Scene *SF_AbstractStep::mergeIndices(CT_ResultGroup *outResult,
     mergedClouds->addIndex(indices.at(i));
   }
   mergedClouds->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
-  CT_Scene *scene =
-      new CT_Scene(defInCloud, outResult,
-                   PS_REPOSITORY->registerPointCloudIndex(mergedClouds));
+  CT_Scene* scene = new CT_Scene(defInCloud, outResult, PS_REPOSITORY->registerPointCloudIndex(mergedClouds));
   return scene;
 }
 
-void SF_AbstractStep::createPreConfigurationDialog() {
-  CT_StepConfigurableDialog *configDialog = newStandardPreConfigurationDialog();
+void
+SF_AbstractStep::createPreConfigurationDialog()
+{
+  CT_StepConfigurableDialog* configDialog = newStandardPreConfigurationDialog();
   configDialog->addBool("Uncheck to deactivate parameterization possibilities "
                         "of this step. Only recommended for beginners",
-                        "", "expert", _isExpert);
+                        "",
+                        "expert",
+                        _isExpert);
 }
 
-Eigen::Vector3f SF_AbstractStep::getMin(const CT_Scene *ctCloud) {
+Eigen::Vector3f
+SF_AbstractStep::getMin(const CT_Scene* ctCloud)
+{
   Eigen::Vector3f min(ctCloud->minX(), ctCloud->minY(), ctCloud->minZ());
   return min;
 }
 
-Eigen::Vector3f SF_AbstractStep::getMax(const CT_Scene *ctCloud) {
+Eigen::Vector3f
+SF_AbstractStep::getMax(const CT_Scene* ctCloud)
+{
   Eigen::Vector3f max(ctCloud->maxX(), ctCloud->maxY(), ctCloud->maxZ());
   return max;
 }
 
-void SF_AbstractStep::identifyAndRemoveCorruptedScenes(
-    CT_ResultGroup *outResult) {
+void
+SF_AbstractStep::identifyAndRemoveCorruptedScenes(CT_ResultGroup* outResult)
+{
   identifyCorruptedScenes(outResult);
   removeCorruptedScenes();
 }
 
-void SF_AbstractStep::checkIsEmpty(
-    CT_StandardItemGroup *group,
-    const CT_AbstractItemDrawableWithPointCloud *ctCloud) {
+void
+SF_AbstractStep::checkIsEmpty(CT_StandardItemGroup* group, const CT_AbstractItemDrawableWithPointCloud* ctCloud)
+{
   if (ctCloud->getPointCloudIndex()->size() <= 0) {
     _groupsToBeRemoved.push_back(group);
   }
 }
 
-void SF_AbstractStep::checkIsNullOrEmpty(
-    const CT_AbstractItemDrawableWithPointCloud *ctCloud,
-    CT_StandardItemGroup *group) {
+void
+SF_AbstractStep::checkIsNullOrEmpty(const CT_AbstractItemDrawableWithPointCloud* ctCloud, CT_StandardItemGroup* group)
+{
   if (ctCloud != NULL) {
     checkIsEmpty(group, ctCloud);
   } else {
@@ -162,31 +168,34 @@ void SF_AbstractStep::checkIsNullOrEmpty(
   }
 }
 
-void SF_AbstractStep::checkGrpAndCloud(CT_StandardItemGroup *group) {
+void
+SF_AbstractStep::checkGrpAndCloud(CT_StandardItemGroup* group)
+{
   if (group != NULL) {
-    const CT_AbstractItemDrawableWithPointCloud *ctCloud =
-        (const CT_AbstractItemDrawableWithPointCloud *)
-            group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+    const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
+      this, DEF_IN_CLOUD_SEED);
     checkIsNullOrEmpty(ctCloud, group);
   } else {
     _groupsToBeRemoved.push_back(group);
   }
 }
 
-void SF_AbstractStep::identifyCorruptedScenes(CT_ResultGroup *outResult,
-                                              int progress) {
+void
+SF_AbstractStep::identifyCorruptedScenes(CT_ResultGroup* outResult, int progress)
+{
   _groupsToBeRemoved.clear();
   CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
   while (!isStopped() && outResIt.hasNext()) {
-    CT_StandardItemGroup *group = (CT_StandardItemGroup *)outResIt.next();
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
     checkGrpAndCloud(group);
   }
   setProgress(progress);
 }
 
-void SF_AbstractStep::createPostConfigurationDialog() {
-  CT_StepConfigurableDialog *configDialog =
-      newStandardPostConfigurationDialog();
+void
+SF_AbstractStep::createPostConfigurationDialog()
+{
+  CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
   if (!_isExpert) {
     createPostConfigurationDialogBeginner(configDialog);
   } else {
@@ -195,39 +204,45 @@ void SF_AbstractStep::createPostConfigurationDialog() {
   createPostConfigurationDialogCitation(configDialog);
 }
 
-void SF_AbstractStep::createPostConfigurationDialogCitation(
-    CT_StepConfigurableDialog *configDialog) {
+void
+SF_AbstractStep::createPostConfigurationDialogCitation(CT_StepConfigurableDialog* configDialog)
+{
   configDialog->addEmpty();
-  configDialog->addText(
-      QObject::tr("For general usage of the SimpleForest plugin please cite "
-                  "the following:"),
-      "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
-  configDialog->addText("", "<em>SimpleTree - An Efficient Open Source Tool to "
-                            "Build Tree Models from TLS Clouds.</em>");
+  configDialog->addText(QObject::tr("For general usage of the SimpleForest plugin please cite "
+                                    "the following:"),
+                        "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
+  configDialog->addText("",
+                        "<em>SimpleTree - An Efficient Open Source Tool to "
+                        "Build Tree Models from TLS Clouds.</em>");
   configDialog->addText("", "Forests <b>2015</b>, 6, 4245-4294.");
   configDialog->addEmpty();
   createPostConfigurationDialogCitationSecond(configDialog);
 }
 
-void SF_AbstractStep::removeCorruptedScenes(int progress) {
+void
+SF_AbstractStep::removeCorruptedScenes(int progress)
+{
   while (!_groupsToBeRemoved.isEmpty()) {
-    CT_AbstractItemGroup *group = _groupsToBeRemoved.takeLast();
+    CT_AbstractItemGroup* group = _groupsToBeRemoved.takeLast();
     recursiveRemoveIfEmpty(group->parentGroup(), group);
   }
   setProgress(progress);
 }
 
-std::vector<CT_PointCloudIndexVector *>
-SF_AbstractStep::createOutputVectors(size_t numberOutput) {
-  std::vector<CT_PointCloudIndexVector *> result;
+std::vector<CT_PointCloudIndexVector*>
+SF_AbstractStep::createOutputVectors(size_t numberOutput)
+{
+  std::vector<CT_PointCloudIndexVector*> result;
   for (size_t i = 0; i < numberOutput; i++) {
-    CT_PointCloudIndexVector *vec = new CT_PointCloudIndexVector();
+    CT_PointCloudIndexVector* vec = new CT_PointCloudIndexVector();
     result.push_back(vec);
   }
   return result;
 }
 
-const QString SF_AbstractStep::getRISCitationSimpleTree() const {
+const QString
+SF_AbstractStep::getRISCitationSimpleTree() const
+{
   return QString("TY  - JOUR\n"
                  "T1  - SimpleTree - an efficient open source tool to build "
                  "tree models from TLS clouds\n"
@@ -247,25 +262,28 @@ const QString SF_AbstractStep::getRISCitationSimpleTree() const {
                  "ER  - \n");
 }
 
-const QString SF_AbstractStep::getRISCitationPCL() const {
-  return QString(
-      "TY  - CONF\n"
-      "T1  - 3d is here: Point cloud library (pcl)\n"
-      "A1  - Rusu, Radu Bogdan\n"
-      "A1  - Cousins, Steve\n"
-      "JO  - Robotics and Automation (ICRA), 2011 IEEE International "
-      "Conference on\n"
-      "SP  - 1\n"
-      "EP  - 4\n"
-      "SN  - 1612843859\n"
-      "Y1  - 2011\n"
-      "PB  - IEEE\n"
-      "UL  - "
-      "http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
-      "ER  - \n");
+const QString
+SF_AbstractStep::getRISCitationPCL() const
+{
+  return QString("TY  - CONF\n"
+                 "T1  - 3d is here: Point cloud library (pcl)\n"
+                 "A1  - Rusu, Radu Bogdan\n"
+                 "A1  - Cousins, Steve\n"
+                 "JO  - Robotics and Automation (ICRA), 2011 IEEE International "
+                 "Conference on\n"
+                 "SP  - 1\n"
+                 "EP  - 4\n"
+                 "SN  - 1612843859\n"
+                 "Y1  - 2011\n"
+                 "PB  - IEEE\n"
+                 "UL  - "
+                 "http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
+                 "ER  - \n");
 }
 
-const QString SF_AbstractStep::getRISCitationRaumonen() const {
+const QString
+SF_AbstractStep::getRISCitationRaumonen() const
+{
   return QString("TY  - EJOU\n"
                  "T1  - Fast Automatic Precision Tree Models from Terrestrial "
                  "Laser Scanner Data\n"
@@ -288,7 +306,9 @@ const QString SF_AbstractStep::getRISCitationRaumonen() const {
                  "ER  - \n");
 }
 
-const QString SF_AbstractStep::getRISCitationSphereFollowing() const {
+const QString
+SF_AbstractStep::getRISCitationSphereFollowing() const
+{
   return QString("TY  - JOUR\n"
                  "T1  - Highly Accurate Tree Models Derived from Terrestrial "
                  "Laser Scan Data: A Method Description\n"
@@ -307,10 +327,12 @@ const QString SF_AbstractStep::getRISCitationSphereFollowing() const {
                  "ER  - \n");
 }
 
-void SF_AbstractStep::createOutputIndex(
-    std::vector<CT_PointCloudIndexVector *> &indexVectors,
-    const std::vector<int> &indices, size_t counter,
-    CT_PointIterator &pointIt) {
+void
+SF_AbstractStep::createOutputIndex(std::vector<CT_PointCloudIndexVector*>& indexVectors,
+                                   const std::vector<int>& indices,
+                                   size_t counter,
+                                   CT_PointIterator& pointIt)
+{
   pointIt.next();
   size_t indexCt = pointIt.currentGlobalIndex();
   if (counter < indices.size()) {
@@ -333,12 +355,12 @@ void SF_AbstractStep::createOutputIndex(
   }
 }
 
-void SF_AbstractStep::createOutputIndices(
-    std::vector<CT_PointCloudIndexVector *> &indexVectors,
-    const std::vector<int> &indices,
-    const CT_AbstractItemDrawableWithPointCloud *itemCpyCloudIn) {
-  const CT_AbstractPointCloudIndex *pointCloudIndex =
-      itemCpyCloudIn->getPointCloudIndex();
+void
+SF_AbstractStep::createOutputIndices(std::vector<CT_PointCloudIndexVector*>& indexVectors,
+                                     const std::vector<int>& indices,
+                                     const CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn)
+{
+  const CT_AbstractPointCloudIndex* pointCloudIndex = itemCpyCloudIn->getPointCloudIndex();
   CT_PointIterator pointIt(pointCloudIndex);
   size_t counter = 0;
   while (pointIt.hasNext()) {
@@ -346,7 +368,9 @@ void SF_AbstractStep::createOutputIndices(
   }
 }
 
-void SF_AbstractStep::writeLogger() {
+void
+SF_AbstractStep::writeLogger()
+{
   if (!_paramList.empty()) {
     QString str = _paramList[0].toString();
     PS_LOG->addMessage(LogInterface::info, LogInterface::step, str);

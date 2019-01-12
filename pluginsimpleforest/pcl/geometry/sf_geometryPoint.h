@@ -28,7 +28,8 @@
 #ifndef SF_POINT_GEOMETRY_H
 #define SF_POINT_GEOMETRY_H
 
-class SF_GeometryPoint {
+class SF_GeometryPoint
+{
 public:
   SF_GeometryPoint();
 };

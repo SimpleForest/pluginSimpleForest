@@ -31,33 +31,34 @@
 
 #include "../../spherefollowing/sf_spherefollowing.h"
 
-
+#include <gsl/gsl_blas.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_min.h>
-#include <gsl/gsl_multifit_nlinear.h>
 #include <gsl/gsl_multifit_nlin.h>
-#include <gsl/gsl_test.h>
-#include <gsl/gsl_blas.h>
+#include <gsl/gsl_multifit_nlinear.h>
 #include <gsl/gsl_multimin.h>
-#include <gsl/gsl_ieee_utils.h>
+#include <gsl/gsl_test.h>
 
-
-double downhillSimplex (const gsl_vector *v, void *params);
+double
+downhillSimplex(const gsl_vector* v, void* params);
 
 class SF_DownHillSimplex
 {
-    SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
-public:
-    SF_DownHillSimplex();
+  SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
 
-    void compute();
-    SF_ParamSpherefollowingBasic<SF_PointNormal> params() const;
-    void setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal> &params);
+public:
+  SF_DownHillSimplex();
+  bool m_optimizeAll = false;
+
+  void compute();
+  SF_ParamSpherefollowingBasic<SF_PointNormal> params() const;
+  void setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal>& params);
 
 private:
-    void serializeParams(std::uintptr_t *par);
-    void serializeVec(gsl_vector *x, double fac);
+  void serializeParams(std::uintptr_t* par);
+  void serializeVec(gsl_vector* x, double fac);
 };
 
 #endif // SF_DOWNHILLSIMPLEX_H

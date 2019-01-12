@@ -30,15 +30,16 @@
 #define SF_QSMMEDIANFILTER_H
 
 #include "qsm/algorithm/sf_QSMCylinder.h"
-#include "qsm/sf_modelQSM.h"
+#include "qsm/model/sf_modelQSM.h"
 
 class SF_QSMMedianFilter
 {
-    const float M_DEVIATIONPERCENTAGE = 0.2f;
-    std::shared_ptr<SF_ModelQSM> m_qsm;
+  const float M_DEVIATIONPERCENTAGE = 0.2f;
+  std::shared_ptr<SF_ModelQSM> m_qsm;
+
 public:
-    SF_QSMMedianFilter();
-    void compute(std::shared_ptr<SF_ModelQSM> qsm);
+  SF_QSMMedianFilter();
+  void compute(std::shared_ptr<SF_ModelQSM> qsm);
 };
 
 #endif // SF_QSMMEDIANFILTER_H

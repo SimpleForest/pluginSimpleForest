@@ -25,19 +25,16 @@
 
 #include "steps/sf_abstractStep.h"
 
-class SF_AbstractStepFeature : public SF_AbstractStep {
+class SF_AbstractStepFeature : public SF_AbstractStep
+{
 protected:
   CT_AutoRenameModels _outGrpCluster;
   CT_AutoRenameModels _outCloudCluster;
-  void writeOutputPerScence(CT_ResultGroup *outResult,
-                            CT_PointCloudIndexVector *outputCluster,
-                            CT_StandardItemGroup *group);
-  void writeOutput(CT_ResultGroup *outResult,
-                   std::vector<CT_PointCloudIndexVector *> clusterVec,
-                   CT_StandardItemGroup *group);
+  void writeOutputPerScence(CT_ResultGroup* outResult, CT_PointCloudIndexVector* outputCluster, CT_StandardItemGroup* group);
+  void writeOutput(CT_ResultGroup* outResult, std::vector<CT_PointCloudIndexVector*> clusterVec, CT_StandardItemGroup* group);
 
 public:
-  SF_AbstractStepFeature(CT_StepInitializeData &dataInit);
+  SF_AbstractStepFeature(CT_StepInitializeData& dataInit);
 };
 
 #endif // SF_ABSTRACTSTEPFEATURE_H

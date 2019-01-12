@@ -26,7 +26,9 @@
 #include "pcl/sf_point.h"
 #include <QStringList>
 
-template <typename T> struct SF_AbstractParameterSet {
+template<typename T>
+struct SF_AbstractParameterSet
+{
   /**
    * @brief m_cloud The first member of m_cloud is the point cloud itself,
    * the second a vector of the Computree indices

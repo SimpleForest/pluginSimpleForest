@@ -32,20 +32,19 @@
 #include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/cloud/filter/binary/radiusoutlier/sf_radiusOutlierFilter.h>
 
-class SF_RadiusOutlierFilterAdapter {
-
+class SF_RadiusOutlierFilterAdapter
+{
 public:
   std::shared_ptr<QMutex> mMutex;
 
-  SF_RadiusOutlierFilterAdapter(const SF_RadiusOutlierFilterAdapter &obj) {
-    mMutex = obj.mMutex;
-  }
+  SF_RadiusOutlierFilterAdapter(const SF_RadiusOutlierFilterAdapter& obj) { mMutex = obj.mMutex; }
 
   SF_RadiusOutlierFilterAdapter() { mMutex.reset(new QMutex); }
 
   ~SF_RadiusOutlierFilterAdapter() {}
 
-  void operator()(SF_ParamRadiusOutlierFilter<SF_PointNormal> &params) {
+  void operator()(SF_ParamRadiusOutlierFilter<SF_PointNormal>& params)
+  {
     Sf_ConverterCTToPCL<SF_PointNormal> converter;
     {
       QMutexLocker m1(&*mMutex);

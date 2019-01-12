@@ -36,22 +36,23 @@
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
 #include "steps/param/sf_paramAllSteps.h"
 
-class SF_StepStemFilterRANSACAdapter {
+class SF_StepStemFilterRANSACAdapter
+{
 public:
   std::shared_ptr<QMutex> mMutex;
 
-  SF_StepStemFilterRANSACAdapter(const SF_StepStemFilterRANSACAdapter &obj) {
-    mMutex = obj.mMutex;
-  }
+  SF_StepStemFilterRANSACAdapter(const SF_StepStemFilterRANSACAdapter& obj) { mMutex = obj.mMutex; }
 
-  SF_StepStemFilterRANSACAdapter() {
+  SF_StepStemFilterRANSACAdapter()
+  {
     QThreadPool::globalInstance()->setMaxThreadCount(1);
     mMutex.reset(new QMutex);
   }
 
   ~SF_StepStemFilterRANSACAdapter() {}
 
-  void operator()(SF_ParamStemRansacFilter &params) {
+  void operator()(SF_ParamStemRansacFilter& params)
+  {
     Sf_ConverterCTToPCL<pcl::PointXYZINormal> converter;
     {
       QMutexLocker m1(&*mMutex);

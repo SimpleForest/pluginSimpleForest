@@ -31,24 +31,21 @@
 #include "../pca/sf_pca.h"
 #include "pcl/cloud/feature/sf_abstractFeature.h"
 
-template <typename PointType, typename FeatureType>
-class SF_GrowthDirection : public SF_AbstractFeature<PointType, FeatureType> {
+template<typename PointType, typename FeatureType>
+class SF_GrowthDirection : public SF_AbstractFeature<PointType, FeatureType>
+{
   float _rangeNormal = 0.1f;
   float _rangeGd = 0.3f;
   typename pcl::KdTree<PointType>::Ptr _kdTree;
   static constexpr float MAX_LAMBDA3 = 0.9f;
-  void addNormals(std::vector<SF_PCAValues> &values);
-  void addGrowthDirection(std::vector<SF_PCAValues> &values);
+  void addNormals(std::vector<SF_PCAValues>& values);
+  void addGrowthDirection(std::vector<SF_PCAValues>& values);
   virtual void createIndices() { ; }
   virtual void createIndex(PointType point, float sqrdDistance) {}
-  virtual void reset() {
-    SF_AbstractFeature<PointType, FeatureType>::_featuresOut.reset(
-        new pcl::PointCloud<FeatureType>);
-  }
+  virtual void reset() { SF_AbstractFeature<PointType, FeatureType>::_featuresOut.reset(new pcl::PointCloud<FeatureType>); }
 
 public:
-  SF_GrowthDirection(typename pcl::PointCloud<PointType>::Ptr cloudIn,
-                     typename pcl::PointCloud<FeatureType>::Ptr featuresOut);
+  SF_GrowthDirection(typename pcl::PointCloud<PointType>::Ptr cloudIn, typename pcl::PointCloud<FeatureType>::Ptr featuresOut);
   void computeFeatures();
   std::vector<SF_PCAValues> computeNormalPca();
   void setParameters(float rangeNormal, float rangeGd);

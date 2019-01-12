@@ -33,16 +33,17 @@
 #include "steps/filter/binary/sf_abstractFilterBinaryStep.h"
 #include "steps/param/sf_paramAllSteps.h"
 
-class SF_StepGroundFilter : public SF_AbstractFilterBinaryStep {
+class SF_StepGroundFilter : public SF_AbstractFilterBinaryStep
+{
   Q_OBJECT
 
 public:
-  SF_StepGroundFilter(CT_StepInitializeData &dataInit);
+  SF_StepGroundFilter(CT_StepInitializeData& dataInit);
   ~SF_StepGroundFilter();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;
-  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &dataInit);
+  CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData& dataInit);
   QStringList getStepRISCitations() const;
 
 protected:
@@ -50,10 +51,8 @@ protected:
   void createInResultModelListProtected();
   void createOutResultModelListProtected();
   void adaptParametersToExpertLevel();
-  void createPostConfigurationDialogBeginner(
-      CT_StepConfigurableDialog *configDialog);
-  void
-  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
+  void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog);
+  void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog);
   void compute();
   virtual void writeLogger();
 
@@ -66,9 +65,9 @@ private:
   double _voxelSize = 0.04;
   double _sizeOutput = 2;
   CT_AutoRenameModels m_outCloudItem;
-  void writeOutputPerScence(CT_ResultGroup *outResult, size_t i);
-  void writeOutput(CT_ResultGroup *outResult);
-  void createParamList(CT_ResultGroup *outResult);
+  void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);
+  void writeOutput(CT_ResultGroup* outResult);
+  void createParamList(CT_ResultGroup* outResult);
 };
 
 #endif // SF_STEP_GROUND_FILTER_H

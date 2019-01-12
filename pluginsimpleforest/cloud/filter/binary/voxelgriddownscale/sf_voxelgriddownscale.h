@@ -39,8 +39,9 @@
  * of the center of mass is put in the first cloud, all other points
  * are stored in a second cloud.
  */
-template <typename PointType>
-class SF_VoxelGridDownscale : public SF_AbstractBinaryFilter<PointType> {
+template<typename PointType>
+class SF_VoxelGridDownscale : public SF_AbstractBinaryFilter<PointType>
+{
 public:
   /**
    * @brief Standard constructor receiving as input \ref m_cloudIn.
@@ -58,7 +59,7 @@ public:
    */
   void compute() override;
 
-  void setParams(SF_ParameterSetVoxelgridDownscaling<PointType> &params);
+  void setParams(SF_ParameterSetVoxelgridDownscaling<PointType>& params);
 
 private:
   /**
@@ -67,8 +68,7 @@ private:
    * @return A cloud consisting of a centroid per cluster
    */
   typename pcl::PointCloud<PointType>::Ptr computeCentroids(
-      const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr,
-                                  std::vector<size_t>>> &clusters);
+    const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>& clusters);
   /**
    * @brief downScale Downscales each cluster to the closest point to the
    * centroid which is stored in \ref m_clusterOut, the first member. Other
@@ -76,10 +76,8 @@ private:
    * @param clusters The input clusters
    * @param centroids The input centroids
    */
-  void downScale(
-      const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr,
-                                  std::vector<size_t>>> &clusters,
-      typename pcl::PointCloud<PointType>::Ptr centroids);
+  void downScale(const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>& clusters,
+                 typename pcl::PointCloud<PointType>::Ptr centroids);
 };
 
 #include "sf_voxelgriddownscale.hpp"

@@ -34,19 +34,19 @@
 
 #include "converters/CT_To_PCL/sf_converterCTToPCL.h"
 #include "steps/param/sf_paramAllSteps.h"
-class SF_StepStemFilterAdapter {
+class SF_StepStemFilterAdapter
+{
 public:
   std::shared_ptr<QMutex> mMutex;
 
-  SF_StepStemFilterAdapter(const SF_StepStemFilterAdapter &obj) {
-    mMutex = obj.mMutex;
-  }
+  SF_StepStemFilterAdapter(const SF_StepStemFilterAdapter& obj) { mMutex = obj.mMutex; }
 
   SF_StepStemFilterAdapter() { mMutex.reset(new QMutex); }
 
   ~SF_StepStemFilterAdapter() {}
 
-  void operator()(SF_ParamStemFilter<SF_PointNormal> &params) {
+  void operator()(SF_ParamStemFilter<SF_PointNormal>& params)
+  {
     Sf_ConverterCTToPCL<SF_PointNormal> converter;
     {
       QMutexLocker m1(&*mMutex);

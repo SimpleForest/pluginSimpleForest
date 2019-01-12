@@ -5,7 +5,8 @@
 
 class SF_PluginManager;
 
-class SF_PluginEntry : public PluginEntryInterface {
+class SF_PluginEntry : public PluginEntryInterface
+{
   Q_OBJECT
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -19,10 +20,10 @@ public:
   ~SF_PluginEntry();
 
   QString getVersion() const;
-  CT_AbstractStepPlugin *getPlugin() const;
+  CT_AbstractStepPlugin* getPlugin() const;
 
 private:
-  SF_PluginManager *_pluginManager;
+  SF_PluginManager* _pluginManager;
 };
 
 #endif // SF_PLUGINENTRY_H

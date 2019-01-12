@@ -30,15 +30,18 @@
 
 #include "sf_interpolation.h"
 
-float SF_Interpolation::interpolateMedian(const std::vector<float> &values) {
+float
+SF_Interpolation::interpolateMedian(const std::vector<float>& values)
+{
   std::vector<float> v = values;
   size_t n = v.size() / 2;
   std::nth_element(v.begin(), v.begin() + n, v.end());
   return v[n];
 }
 
-float SF_Interpolation::interpolateIDW(const std::vector<float> &values,
-                                       const std::vector<float> &distances) {
+float
+SF_Interpolation::interpolateIDW(const std::vector<float>& values, const std::vector<float>& distances)
+{
   std::vector<float> inverseDistances;
   for (size_t i = 0; i < distances.size(); i++) {
     if (distances[i] == 0)

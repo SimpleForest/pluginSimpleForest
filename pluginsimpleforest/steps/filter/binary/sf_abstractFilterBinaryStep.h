@@ -30,9 +30,10 @@
 
 #include <steps/filter/sf_abstractFilterStep.h>
 
-class SF_AbstractFilterBinaryStep : public SF_AbstractFilterStep {
+class SF_AbstractFilterBinaryStep : public SF_AbstractFilterStep
+{
 public:
-  SF_AbstractFilterBinaryStep(CT_StepInitializeData &data_init);
+  SF_AbstractFilterBinaryStep(CT_StepInitializeData& data_init);
 
 protected:
   CT_AutoRenameModels _outGrp;

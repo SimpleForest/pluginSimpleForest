@@ -33,27 +33,29 @@
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/segmentation/extract_clusters.h>
 
-class SF_AbstractStepSegmentation : public SF_AbstractFilterMultipleStep {
+class SF_AbstractStepSegmentation : public SF_AbstractFilterMultipleStep
+{
   Q_OBJECT
 public:
-  SF_AbstractStepSegmentation(CT_StepInitializeData &dataInit);
+  SF_AbstractStepSegmentation(CT_StepInitializeData& dataInit);
 
 protected:
   Eigen::Vector3d _centerOfMass;
   bool _first = true;
-  void downscale(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL, float voxelSize,
+  void downscale(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL,
+                 float voxelSize,
                  pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled);
-  void initializeIndexVec(CT_ResultGroupIterator &resultGrpIterator2,
-                          std::vector<CT_PointCloudIndexVector *> &indexVec);
-  void initializeIndexVec(size_t size,
-                          std::vector<CT_PointCloudIndexVector *> &indexVec);
-  void createPCLCloud(const QString &clusterGrpStr, const QString &clusterStr,
-                      CT_ResultGroup *outResult,
+  void initializeIndexVec(CT_ResultGroupIterator& resultGrpIterator2, std::vector<CT_PointCloudIndexVector*>& indexVec);
+  void initializeIndexVec(size_t size, std::vector<CT_PointCloudIndexVector*>& indexVec);
+  void createPCLCloud(const QString& clusterGrpStr,
+                      const QString& clusterStr,
+                      CT_ResultGroup* outResult,
                       pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL,
-                      std::vector<size_t> &indices, float factor);
+                      std::vector<size_t>& indices,
+                      float factor);
   void fillIndexVec(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCL,
-                    std::vector<CT_PointCloudIndexVector *> &indexVec,
-                    std::vector<size_t> &indices,
+                    std::vector<CT_PointCloudIndexVector*>& indexVec,
+                    std::vector<size_t>& indices,
                     pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled,
                     float maxRange);
   int getClusterNumber(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudPCLDownscaled);

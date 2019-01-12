@@ -35,17 +35,17 @@
 
 #include "pcl/sf_point.h"
 
-template <typename PointType> struct SF_DTMCell {
+template<typename PointType>
+struct SF_DTMCell
+{
   int _index;
   std::shared_ptr<CT_Image2D<float>> _dtm;
   SF_DTMCell(std::shared_ptr<CT_Image2D<float>> dtm, int index);
-  Eigen::Vector2f getMinMaxHeight(const pcl::ModelCoefficients &coeff);
-  float getHeight(const Eigen::Vector2d &coords,
-                  const pcl::ModelCoefficients &coeff);
+  Eigen::Vector2f getMinMaxHeight(const pcl::ModelCoefficients& coeff);
+  float getHeight(const Eigen::Vector2d& coords, const pcl::ModelCoefficients& coeff);
 
 private:
-  void updateMinMax(const float updateHeight, float &minHeight,
-                    float &maxHeight);
+  void updateMinMax(const float updateHeight, float& minHeight, float& maxHeight);
   Eigen::Vector2d getCorner1();
   Eigen::Vector2d getCorner2();
   Eigen::Vector2d getCorner3();

@@ -31,7 +31,10 @@
 
 #include "sf_pyramidlayer.h"
 
-template <typename PointType> void PyramidLayer<PointType>::getMinMax() {
+template<typename PointType>
+void
+PyramidLayer<PointType>::getMinMax()
+{
   float minX = std::numeric_limits<float>::max();
   float minY = std::numeric_limits<float>::max();
   float maxX = std::numeric_limits<float>::lowest();
@@ -53,7 +56,10 @@ template <typename PointType> void PyramidLayer<PointType>::getMinMax() {
   _max[1] = maxY;
 }
 
-template <typename PointType> float PyramidLayer<PointType>::getGridSize() {
+template<typename PointType>
+float
+PyramidLayer<PointType>::getGridSize()
+{
   float dx = _max[0] - _min[0];
   float dy = _max[1] - _min[1];
   float delta = std::max(dx, dy);
@@ -64,13 +70,15 @@ template <typename PointType> float PyramidLayer<PointType>::getGridSize() {
   return (delta + 0.001);
 }
 
-template <typename PointType> void PyramidLayer<PointType>::initialize() {
+template<typename PointType>
+void
+PyramidLayer<PointType>::initialize()
+{
   _clouds.clear();
   getMinMax();
   float gridSize = getGridSize();
   _DTM.reset(CT_Image2D<float>::createImage2DFromXYCoords(
-      _outDTM.completeName(), _outResult, _min[0], _min[1], _max[0], _max[1],
-      gridSize, 0, -1337, 0));
+    _outDTM.completeName(), _outResult, _min[0], _min[1], _max[0], _max[1], gridSize, 0, -1337, 0));
   for (size_t i = 0; i < _DTM->xArraySize(); i++) {
     for (size_t j = 0; j < _DTM->yArraySize(); j++) {
       SF_DTMCell<PointType> cell = SF_DTMCell<PointType>(_DTM, 0);
@@ -81,8 +89,7 @@ template <typename PointType> void PyramidLayer<PointType>::initialize() {
     for (size_t j = 0; j < _DTM->yArraySize(); j++) {
       size_t index = -1;
       _DTM->index(i, j, index);
-      typename pcl::PointCloud<PointType>::Ptr cloud(
-          new pcl::PointCloud<PointType>);
+      typename pcl::PointCloud<PointType>::Ptr cloud(new pcl::PointCloud<PointType>);
       _clouds.push_back(cloud);
       SF_DTMCell<PointType> cell = SF_DTMCell<PointType>(_DTM, index);
       _cells[index] = (cell);
@@ -100,7 +107,10 @@ template <typename PointType> void PyramidLayer<PointType>::initialize() {
   }
 }
 
-template <typename PointType> void PyramidLayer<PointType>::initializeRoot() {
+template<typename PointType>
+void
+PyramidLayer<PointType>::initializeRoot()
+{
   pcl::ModelCoefficients plane = computePlane(_groundCloud);
   for (size_t i = 0; i < _DTM->xArraySize(); i++) {
     for (size_t j = 0; j < _DTM->yArraySize(); j++) {
@@ -111,15 +121,18 @@ template <typename PointType> void PyramidLayer<PointType>::initializeRoot() {
   }
 }
 
-template <typename PointType>
-pcl::ModelCoefficients PyramidLayer<PointType>::computePlane(int index) {
+template<typename PointType>
+pcl::ModelCoefficients
+PyramidLayer<PointType>::computePlane(int index)
+{
   typename pcl::PointCloud<PointType>::Ptr cloud = _clouds[index];
   return computePlane(cloud);
 }
 
-template <typename PointType>
-pcl::ModelCoefficients PyramidLayer<PointType>::computePlane(
-    typename pcl::PointCloud<PointType>::Ptr cloud) {
+template<typename PointType>
+pcl::ModelCoefficients
+PyramidLayer<PointType>::computePlane(typename pcl::PointCloud<PointType>::Ptr cloud)
+{
   pcl::ModelCoefficients coefficients;
   pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
   pcl::SACSegmentation<PointType> seg;
@@ -134,10 +147,11 @@ pcl::ModelCoefficients PyramidLayer<PointType>::computePlane(
   return coefficients;
 }
 
-template <typename PointType>
-PyramidLayer<PointType>::PyramidLayer(
-    typename pcl::PointCloud<PointType>::Ptr groundCloud,
-    CT_ResultGroup *outResult, CT_AutoRenameModels outDTM) {
+template<typename PointType>
+PyramidLayer<PointType>::PyramidLayer(typename pcl::PointCloud<PointType>::Ptr groundCloud,
+                                      CT_ResultGroup* outResult,
+                                      CT_AutoRenameModels outDTM)
+{
   _outResult = outResult;
   _outDTM = outDTM;
   _depth = 1;
@@ -146,10 +160,12 @@ PyramidLayer<PointType>::PyramidLayer(
   initializeRoot();
 }
 
-template <typename PointType>
-PyramidLayer<PointType>::PyramidLayer(
-    typename pcl::PointCloud<PointType>::Ptr groundCloud, int depth,
-    CT_ResultGroup *outResult, CT_AutoRenameModels outDTM) {
+template<typename PointType>
+PyramidLayer<PointType>::PyramidLayer(typename pcl::PointCloud<PointType>::Ptr groundCloud,
+                                      int depth,
+                                      CT_ResultGroup* outResult,
+                                      CT_AutoRenameModels outDTM)
+{
   _outResult = outResult;
   _outDTM = outDTM;
   _depth = depth;
@@ -157,19 +173,24 @@ PyramidLayer<PointType>::PyramidLayer(
   initialize();
 }
 
-template <typename PointType>
-void PyramidLayer<PointType>::setPlaneCoeff(const pcl::ModelCoefficients &coeff,
-                                            const size_t index) {
+template<typename PointType>
+void
+PyramidLayer<PointType>::setPlaneCoeff(const pcl::ModelCoefficients& coeff, const size_t index)
+{
   _planeCoeff[index] = coeff;
 }
 
-template <typename PointType>
-std::shared_ptr<CT_Image2D<float>> PyramidLayer<PointType>::getDTM() const {
+template<typename PointType>
+std::shared_ptr<CT_Image2D<float>>
+PyramidLayer<PointType>::getDTM() const
+{
   return _DTM;
 }
 
-template <typename PointType>
-bool PyramidLayer<PointType>::canComputePlane(int index) {
+template<typename PointType>
+bool
+PyramidLayer<PointType>::canComputePlane(int index)
+{
   typename pcl::PointCloud<PointType>::Ptr cloud = _clouds[index];
   if (cloud->points.size() > 7) {
     return true;
@@ -177,34 +198,39 @@ bool PyramidLayer<PointType>::canComputePlane(int index) {
   return false;
 }
 
-template <typename PointType>
-void PyramidLayer<PointType>::setDTM(
-    const std::shared_ptr<CT_Image2D<float>> &DTM) {
+template<typename PointType>
+void
+PyramidLayer<PointType>::setDTM(const std::shared_ptr<CT_Image2D<float>>& DTM)
+{
   _DTM = DTM;
 }
 
-template <typename PointType>
+template<typename PointType>
 std::vector<pcl::ModelCoefficients>
-PyramidLayer<PointType>::getPlaneCoeff() const {
+PyramidLayer<PointType>::getPlaneCoeff() const
+{
   return _planeCoeff;
 }
 
-template <typename PointType>
+template<typename PointType>
 pcl::ModelCoefficients
-PyramidLayer<PointType>::getPlaneCoeff(const size_t index) const {
+PyramidLayer<PointType>::getPlaneCoeff(const size_t index) const
+{
   return _planeCoeff[index];
 }
 
-template <typename PointType>
+template<typename PointType>
 Eigen::Vector2f
-PyramidLayer<PointType>::getMinMaxHeight(const pcl::ModelCoefficients &coeff,
-                                         const size_t index) {
+PyramidLayer<PointType>::getMinMaxHeight(const pcl::ModelCoefficients& coeff, const size_t index)
+{
   SF_DTMCell<PointType> cell = _cells[index];
   return cell.getMinMaxHeight(coeff);
 }
 
-template <typename PointType>
-float PyramidLayer<PointType>::getHeight(const size_t index) {
+template<typename PointType>
+float
+PyramidLayer<PointType>::getHeight(const size_t index)
+{
   Eigen::Vector2d coords;
 
   Eigen::Vector2d bot, top;
@@ -216,9 +242,10 @@ float PyramidLayer<PointType>::getHeight(const size_t index) {
   return cell.getHeight(coords, coeff);
 }
 
-template <typename PointType>
-void PyramidLayer<PointType>::setPlaneCoeffs(
-    const std::vector<pcl::ModelCoefficients> &plane_coeff) {
+template<typename PointType>
+void
+PyramidLayer<PointType>::setPlaneCoeffs(const std::vector<pcl::ModelCoefficients>& plane_coeff)
+{
   _planeCoeff = plane_coeff;
 }
 

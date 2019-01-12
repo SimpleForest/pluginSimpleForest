@@ -31,8 +31,9 @@
  * over \ref m_cloudIn. All points contained in one raster cell build
  * a cluster. The VoxelSize is passed by the input parameter set.
  */
-template <typename PointType>
-class SF_VoxelClustering : public SF_AbstractMultipleFilter<PointType> {
+template<typename PointType>
+class SF_VoxelClustering : public SF_AbstractMultipleFilter<PointType>
+{
 public:
   /**
    * @brief Standard constructor.
@@ -46,7 +47,7 @@ public:
    * @brief setParam Setter for \ref m_param.
    * @param param \ref m_param.
    */
-  void setParam(const SF_ParameterSetVoxelization<PointType> &param);
+  void setParam(const SF_ParameterSetVoxelization<PointType>& param);
 
 private:
   /**

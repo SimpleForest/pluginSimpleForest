@@ -37,20 +37,20 @@
 
 #include "ct_itemdrawable/ct_pointsattributescolor.h"
 
-template <typename PointType>
-class SF_StemFilter : public Sf_AbstractBinaryFilter<PointType> {
+template<typename PointType>
+class SF_StemFilter : public Sf_AbstractBinaryFilter<PointType>
+{
   SF_ParamStemFilter<PointType> _params;
-  void transferStem(
-      const SF_ParamStemFilter<PointType> &params,
-      typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud,
-      typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction);
-  CT_ColorCloudStdVector *_colors;
+  void transferStem(const SF_ParamStemFilter<PointType>& params,
+                    typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud,
+                    typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction);
+  CT_ColorCloudStdVector* _colors;
 
 public:
   SF_StemFilter();
   virtual void compute();
-  void setParams(SF_ParamStemFilter<PointType> &params);
-  CT_ColorCloudStdVector *colors() const;
+  void setParams(SF_ParamStemFilter<PointType>& params);
+  CT_ColorCloudStdVector* colors() const;
 };
 
 #include "pcl/cloud/filter/binary/stem/sf_stemFilter.hpp"

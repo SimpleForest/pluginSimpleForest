@@ -26,20 +26,20 @@
 #include "ct_iterator/ct_pointiterator.h"
 #include "pcl/sf_point.h"
 
-template <typename PointType>
+template<typename PointType>
 /**
  * @brief The SF_ConverterCTCloudToPCLCloud class Class to convert a CT input
  * Cloud to a PCL cloud. The PCL point type is a templated parameter. The Cloud
  * is shifted to the origin (0,0,0) during conversion.
  */
-class SF_ConverterCTCloudToPCLCloud : public SF_AbstractConverter {
+class SF_ConverterCTCloudToPCLCloud : public SF_AbstractConverter
+{
 public:
   /**
    * @brief SF_ConverterCTCloudToPCLCloud The constructor receiving a CT cloud
    * @param itemCpyCloudIn The CT cloud to be converted to \ref m_cloudOut
    */
-  SF_ConverterCTCloudToPCLCloud(
-      CT_AbstractItemDrawableWithPointCloud *itemCpyCloudIn);
+  SF_ConverterCTCloudToPCLCloud(CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn);
   /**
    * @brief computes first a \ref m_translation of \ref m_itemCpyCloudIn and
    * then converts the translated cloud to \ref m_cloudOut.
@@ -51,8 +51,7 @@ public:
    * m_CTIndices.
    * @return The described getter pair.
    */
-  std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>
-  cloudOut();
+  std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>> cloudOut();
 
 private:
   /**

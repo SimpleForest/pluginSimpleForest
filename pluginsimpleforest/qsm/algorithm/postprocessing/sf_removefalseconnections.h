@@ -30,15 +30,16 @@
 #define SF_REMOVEFALSECONNECTIONS_H
 
 #include "qsm/algorithm/sf_QSMCylinder.h"
-#include "qsm/sf_modelQSM.h"
+#include "qsm/model/sf_modelQSM.h"
 
 class SF_RemoveFalseConnections
 {
-    const float _M_MAXANGLE = 10;
-    std::shared_ptr<SF_ModelQSM> m_qsm;
+  const float _M_MAXANGLE = 10;
+  std::shared_ptr<SF_ModelQSM> m_qsm;
+
 public:
-    SF_RemoveFalseConnections();
-    void compute(std::shared_ptr<SF_ModelQSM> qsm);
+  SF_RemoveFalseConnections();
+  void compute(std::shared_ptr<SF_ModelQSM> qsm);
 };
 
 #endif // SF_REMOVEFALSECONNECTIONS_H

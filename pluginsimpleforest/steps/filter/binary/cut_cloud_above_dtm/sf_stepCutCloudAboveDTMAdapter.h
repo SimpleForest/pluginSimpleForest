@@ -36,19 +36,19 @@
 #include "converters/CT_To_PCL/sf_converterCTToPCLDTM.h".h "
 #include "steps/param/sf_paramAllSteps.h"
 
-class SF_StepCutCloudAboveDTMAdapter {
+class SF_StepCutCloudAboveDTMAdapter
+{
 public:
   std::shared_ptr<QMutex> mMutex;
 
-  SF_StepCutCloudAboveDTMAdapter(const SF_StepCutCloudAboveDTMAdapter &obj) {
-    mMutex = obj.mMutex;
-  }
+  SF_StepCutCloudAboveDTMAdapter(const SF_StepCutCloudAboveDTMAdapter& obj) { mMutex = obj.mMutex; }
 
   SF_StepCutCloudAboveDTMAdapter() { mMutex.reset(new QMutex); }
 
   ~SF_StepCutCloudAboveDTMAdapter() {}
 
-  void operator()(SF_ParamDTMHeight<pcl::PointXYZ> &params) {
+  void operator()(SF_ParamDTMHeight<pcl::PointXYZ>& params)
+  {
     Sf_ConverterCTToPCL<pcl::PointXYZ> converterCloud;
     {
       QMutexLocker m1(&*mMutex);
@@ -56,19 +56,17 @@ public:
     }
     converterCloud.compute();
     float _cutHeight;
-    CT_Image2D<float> *dtmCT;
+    CT_Image2D<float>* dtmCT;
     {
       QMutexLocker m1(&*mMutex);
       params._cloudIn = converterCloud.cloudTranslated();
       _cutHeight = params._sliceHeight;
       dtmCT = params._dtmCT;
     }
-    SF_ConverterCTToPCLDTM dtmConverter(converterCloud.translation(),
-                                        params._dtmCT);
+    SF_ConverterCTToPCLDTM dtmConverter(converterCloud.translation(), params._dtmCT);
     std::shared_ptr<SF_ModelDTM> dtmModel = dtmConverter.dtmPCL();
     std::vector<int> indices;
-    for (size_t j = 0; j < converterCloud.cloudTranslated()->points.size();
-         j++) {
+    for (size_t j = 0; j < converterCloud.cloudTranslated()->points.size(); j++) {
       pcl::PointXYZ p = converterCloud.cloudTranslated()->points[j];
       if (dtmModel->heightAbove(p) < _cutHeight) {
         indices.push_back(0);

@@ -28,8 +28,9 @@
 #include <pcl/kdtree/kdtree_flann.h>
 #include <utility>
 
-template <typename PointType>
-class SF_ClusterTransfer : public SF_AbstractMultipleFilter {
+template<typename PointType>
+class SF_ClusterTransfer : public SF_AbstractMultipleFilter
+{
 public:
   /**
    * @brief Standard constructor.

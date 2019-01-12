@@ -46,13 +46,11 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.h \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.hpp \
     qsm/algorithm/detection/sf_idetection.h \
-    qsm/algorithm/optimization/gridsearch/sf_gridsearch.h \
-    qsm/algorithm/optimization/gridsearch/sf_gridsearchparameters.h \
-    qsm/sf_modelAbstractBuildingbrick.h \
-    qsm/sf_modelCylinderBuildingbrick.h \
-    qsm/sf_modelQSM.h \
-    qsm/sf_modelAbstractSegment.h \
-    qsm/algorithm/sf_buildQSM.h \
+    qsm/model/sf_modelAbstractBuildingbrick.h \
+    qsm/model/sf_modelCylinderBuildingbrick.h \
+    qsm/model/sf_modelQSM.h \
+    qsm/model/sf_modelAbstractSegment.h \
+    qsm/build/sf_buildQSM.h \
     qsm/algorithm/sf_QSMAlgorithm.h \
     qsm/algorithm/sf_QSMCylinder.h \
     qsm/algorithm/distance/sf_cloudToModelDistance.h \
@@ -138,14 +136,14 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     parameter/sf_parameterSetVoxelgridDownscaling.h \
     parameter/sf_parameterSetPrincipalDirection.h \
     steps/feature/principaldirection/sf_adapterprincipaldirection.h \
-    qsm/sf_modelLevelOne.h \
+    qsm/model/sf_modelLevelOne.h \
     qsm/algorithm/spherefollowing/sf_spherefollowingParameters.h \
     qsm/algorithm/spherefollowing/sf_spherefollowing.h \
     qsm/algorithm/geometry/circle/sf_circle.h \
     qsm/algorithm/geometry/circle/sf_circle.hpp \
     pcl/cloud/feature/descriptor/sf_descriptor.hpp \
     pcl/cloud/feature/descriptor/sf_descriptor.h \
-    qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.h \
+    qsm/algorithm/optimization/gridsearch/sf_spherefollowingrastersearch.h \
     qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.h \
     qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h \
     qsm/algorithm/postprocessing/sf_removefalseconnections.h \
@@ -155,12 +153,11 @@ SOURCES += \
     sf_pluginmanager.cpp \
     plot/DTM/sf_dtm.cpp \
     math/interpolation/sf_interpolation.cpp \
-    qsm/algorithm/optimization/gridsearch/sf_gridsearch.cpp \
-    qsm/sf_modelCylinderBuildingbrick.cpp \
-    qsm/sf_modelAbstractSegment.cpp \
-    qsm/sf_modelQSM.cpp \
-    qsm/sf_modelAbstractBuildingbrick.cpp \
-    qsm/algorithm/sf_buildQSM.cpp \
+    qsm/model/sf_modelCylinderBuildingbrick.cpp \
+    qsm/model/sf_modelAbstractSegment.cpp \
+    qsm/model/sf_modelQSM.cpp \
+    qsm/model/sf_modelAbstractBuildingbrick.cpp \
+    qsm/build/sf_buildQSM.cpp \
     qsm/algorithm/distance/sf_cloudToModelDistance.cpp \
     converters/sf_abstractConverter.cpp \
     converters/CT_To_PCL/sf_converterCTToPCLDTM.cpp \
@@ -189,9 +186,9 @@ SOURCES += \
     steps/feature/principaldirection/sf_stepprincipaldirection.cpp \
     steps/feature/sf_abstractstepfeature.cpp \
     cloud/filter/multiple/clusterscaling/sf_testclustertransfer.cpp \
-    qsm/sf_modelLevelOne.cpp \
+    qsm/model/sf_modelLevelOne.cpp \
     qsm/algorithm/spherefollowing/sf_spherefollowing.cpp \
-    qsm/algorithm/spherefollowing/sf_spherefollowingrastersearch.cpp \
+    qsm/algorithm/optimization/gridsearch/sf_spherefollowingrastersearch.cpp \
     qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.cpp \
     qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.cpp \
     qsm/algorithm/postprocessing/sf_removefalseconnections.cpp \

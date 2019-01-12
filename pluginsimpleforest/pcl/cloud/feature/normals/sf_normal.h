@@ -30,16 +30,16 @@
 
 #include "pcl/cloud/feature/sf_abstractFeature.h"
 
-template <typename PointType, typename FeatureType>
-class SF_Normal : public SF_AbstractFeature<PointType, FeatureType> {
+template<typename PointType, typename FeatureType>
+class SF_Normal : public SF_AbstractFeature<PointType, FeatureType>
+{
 private:
   int _k = 5;
   bool _useRange = false;
   float _range = 0.03f;
 
 public:
-  SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloudIn,
-            typename pcl::PointCloud<FeatureType>::Ptr featuresOut);
+  SF_Normal(typename pcl::PointCloud<PointType>::Ptr cloudIn, typename pcl::PointCloud<FeatureType>::Ptr featuresOut);
   virtual void computeFeatures();
   virtual void computeFeaturesRange();
   virtual void computeFeaturesKnn();

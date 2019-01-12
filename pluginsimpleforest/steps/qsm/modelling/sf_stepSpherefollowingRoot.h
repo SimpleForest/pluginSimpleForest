@@ -3,32 +3,29 @@
 
 #include "steps/segmentation/sf_AbstractStepSegmentation.h"
 
-class SF_StepSpherefollowingRoot : public SF_AbstractStepSegmentation {
+class SF_StepSpherefollowingRoot : public SF_AbstractStepSegmentation
+{
   Q_OBJECT
 
 public:
-  SF_StepSpherefollowingRoot(CT_StepInitializeData &dataInit);
+  SF_StepSpherefollowingRoot(CT_StepInitializeData& dataInit);
   ~SF_StepSpherefollowingRoot();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;
-  CT_VirtualAbstractStep *createNewInstance(CT_StepInitializeData &dataInit);
+  CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData& dataInit);
   QStringList getStepRISCitations() const;
 
-  void configDialogGuruAddSphereFollowingGridSearch(
-      CT_StepConfigurableDialog *configDialog);
+  void configDialogGuruAddSphereFollowingGridSearch(CT_StepConfigurableDialog* configDialog);
 
 protected:
   void createInResultModelListProtected();
   void createOutResultModelListProtected();
-  void createPostConfigurationDialogBeginner(
-      CT_StepConfigurableDialog *configDialog);
-  void
-  createPostConfigurationDialogExpert(CT_StepConfigurableDialog *configDialog);
+  void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog);
+  void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog);
   void adaptParametersToExpertLevel();
-  void createPostConfigurationDialogCitationSecond(
-      CT_StepConfigurableDialog *configDialog);
-  void createParamList(CT_ResultGroup *out_result);
+  void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog);
+  void createParamList(CT_ResultGroup* out_result);
   void compute();
   QList<SF_ParamSpherefollowingBasic<SF_PointNormal>> _paramList;
 
@@ -60,16 +57,11 @@ private:
   int _GS_resolution = 3;
   int _GS_maximizeSearchSpace = 81;
 
-  void
-  configDialogGuruAddSphereFollowing(CT_StepConfigurableDialog *configDialog);
-  void configDialogAddSphereFollowingHyperParameters(
-      CT_StepConfigurableDialog *configDialog);
-  void configDialogAddSphereFollowingOptimizableParameters(
-      CT_StepConfigurableDialog *configDialog);
-  void
-  configDialogGuruAddPreProcessing(CT_StepConfigurableDialog *configDialog);
-  void configDialogGuruAddGridSearchCloudToModelDistance(
-      CT_StepConfigurableDialog *configDialog);
+  void configDialogGuruAddSphereFollowing(CT_StepConfigurableDialog* configDialog);
+  void configDialogAddSphereFollowingHyperParameters(CT_StepConfigurableDialog* configDialog);
+  void configDialogAddSphereFollowingOptimizableParameters(CT_StepConfigurableDialog* configDialog);
+  void configDialogGuruAddPreProcessing(CT_StepConfigurableDialog* configDialog);
+  void configDialogGuruAddGridSearchCloudToModelDistance(CT_StepConfigurableDialog* configDialog);
 };
 
 #endif // SF_STEP_SPHEREFOLLOWING_BASIC_H

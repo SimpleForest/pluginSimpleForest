@@ -32,11 +32,12 @@
 #include <pcl/octree/octree.h>
 
 #include "pcl/sf_point.h"
-#include "qsm/sf_modelQSM.h"
-#include "sf_QSMAlgorithm.h"
-#include "sf_QSMCylinder.h"
+#include "qsm/algorithm/sf_QSMAlgorithm.h"
+#include "qsm/algorithm/sf_QSMCylinder.h"
+#include "qsm/model/sf_modelQSM.h"
 
-class SF_BuildQSM {
+class SF_BuildQSM
+{
   const float _RESOLUTION = 0.02f;
   const float _MINEQUALDISTANCE = 0.0001f;
   const float _MINLENGTH = 0.01f;
@@ -45,23 +46,17 @@ class SF_BuildQSM {
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> _buildingBricksPtr;
 
 public:
-  SF_BuildQSM(const std::vector<SF_QSMDetectionCylinder> &cylinders, int index);
+  SF_BuildQSM(const std::vector<SF_QSMDetectionCylinder>& cylinders, int index);
   std::shared_ptr<SF_ModelQSM> getTree() const;
 
 private:
   void buildTree(std::shared_ptr<SF_ModelAbstractSegment> segment);
   void initializeOctree();
-  void initializeCylinderBuildingBricks(
-      const std::vector<SF_QSMDetectionCylinder> &cylinders);
+  void initializeCylinderBuildingBricks(const std::vector<SF_QSMDetectionCylinder>& cylinders);
   void initializeTree(int index);
-  void
-  addBuildingBrickToSegment(const std::vector<int> &pointIdxNKNSearch,
-                            std::shared_ptr<SF_ModelAbstractSegment> segment);
-  void addBuildingBricksToChildSegments(
-      const std::vector<int> &pointIdxNKNSearch,
-      std::shared_ptr<SF_ModelAbstractSegment> segment);
-  void addChildBuildingbricks(std::shared_ptr<SF_ModelAbstractSegment> segment,
-                              std::vector<int> pointIdxNKNSearch);
+  void addBuildingBrickToSegment(const std::vector<int>& pointIdxNKNSearch, std::shared_ptr<SF_ModelAbstractSegment> segment);
+  void addBuildingBricksToChildSegments(const std::vector<int>& pointIdxNKNSearch, std::shared_ptr<SF_ModelAbstractSegment> segment);
+  void addChildBuildingbricks(std::shared_ptr<SF_ModelAbstractSegment> segment, std::vector<int> pointIdxNKNSearch);
   SF_Cloud::Ptr m_cloud;
 };
 

@@ -34,11 +34,16 @@
 #include <pcl/ModelCoefficients.h>
 #include <pcl/point_types.h>
 
-enum FittingType { UNKNOWN, SPHEREFOLLOWING };
+enum FittingType
+{
+  UNKNOWN,
+  SPHEREFOLLOWING
+};
 
 class SF_ModelAbstractSegment;
 
-class Sf_ModelAbstractBuildingbrick {
+class Sf_ModelAbstractBuildingbrick
+{
 protected:
   size_t _ID;
   size_t _indexVector;
@@ -46,8 +51,8 @@ protected:
   Eigen::Vector3f _start;
   Eigen::Vector3f _end;
   FittingType _fittingType;
-  virtual float getDistanceToAxis(const Eigen::Vector3f &point) = 0;
-  virtual Eigen::Vector3f getProjectionOnAxis(const Eigen::Vector3f &point) = 0;
+  virtual float getDistanceToAxis(const Eigen::Vector3f& point) = 0;
+  virtual Eigen::Vector3f getProjectionOnAxis(const Eigen::Vector3f& point) = 0;
   virtual float getBoundingSphereRadius();
 
 public:
@@ -61,19 +66,19 @@ public:
   virtual float getVolume() = 0;
   virtual float getRadius() = 0;
   virtual void setRadius(float radius) = 0;
-  virtual float getDistance(const Eigen::Vector3f &point) = 0;
-  float getDistance(const pcl::PointXYZ &point);
-  float getDistance(const pcl::PointXYZINormal &point);
+  virtual float getDistance(const Eigen::Vector3f& point) = 0;
+  float getDistance(const pcl::PointXYZ& point);
+  float getDistance(const pcl::PointXYZINormal& point);
   virtual Eigen::Vector3f getCenter() = 0;
   virtual Eigen::Vector3f getAxis() = 0;
   virtual std::string toString() = 0;
   virtual std::string toHeaderString() = 0;
-  bool operator < (const Sf_ModelAbstractBuildingbrick &other);
+  bool operator<(const Sf_ModelAbstractBuildingbrick& other);
 
   size_t getIndex() const;
-  void setIndex(const size_t &index);
+  void setIndex(const size_t& index);
   size_t getID() const;
-  void setID(const size_t &ID);
+  void setID(const size_t& ID);
   Eigen::Vector3f getStart() const;
   Eigen::Vector3f getEnd() const;
   std::shared_ptr<SF_ModelAbstractSegment> getSegment();

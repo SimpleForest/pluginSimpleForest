@@ -30,43 +30,45 @@
 
 #include <cmath>
 
-std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> SF_ClusterCloudByQSM::clusters() const
+std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>
+SF_ClusterCloudByQSM::clusters() const
 {
-    return m_clusters;
+  return m_clusters;
 }
 
-SF_ClusterCloudByQSM::SF_ClusterCloudByQSM(SF_CloudToModelDistanceParameters params, std::shared_ptr<SF_ModelQSM> qsm, pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, int numCltrs):
-    m_params(params), m_qsm(qsm), m_cloud(cloud), m_numClstrs(numCltrs)
-{
+SF_ClusterCloudByQSM::SF_ClusterCloudByQSM(SF_CloudToModelDistanceParameters params,
+                                           std::shared_ptr<SF_ModelQSM> qsm,
+                                           pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
+                                           int numCltrs)
+  : m_params(params), m_qsm(qsm), m_cloud(cloud), m_numClstrs(numCltrs)
+{}
 
-}
-
-void SF_ClusterCloudByQSM::compute()
+void
+SF_ClusterCloudByQSM::compute()
 {
-    SF_CloudToModelDistanceParameters params = m_params;
-    params._method = SF_CLoudToModelDistanceMethod::GROWTHDISTANCE;
-    Sf_CloudToModelDistance cmd(m_qsm, m_cloud, params);
-    std::vector<float> distances = cmd.getCloudToModelDistances();
-    size_t index = 0;
-    std::vector<pcl::PointXYZINormal> points;
-    std::for_each(distances.begin(), distances.end(), [this, &index, &points](float distance) {
-        pcl::PointXYZINormal point = m_cloud->points[index++];
-        point.intensity = distance;
-        if(point.intensity!= std::numeric_limits<float>::max()){
-            points.push_back(point);
-        }
-    });
-    std::sort(points.begin(),points.end(),[](const pcl::PointXYZINormal &first, const pcl::PointXYZINormal &second){
-        return first.intensity < second.intensity;
-    });
-    for(size_t i = 0; i < m_numClstrs; i++) {
-        m_clusters.push_back(pcl::PointCloud<pcl::PointXYZINormal>::Ptr (new pcl::PointCloud<pcl::PointXYZINormal> ));
+  SF_CloudToModelDistanceParameters params = m_params;
+  params._method = SF_CLoudToModelDistanceMethod::GROWTHDISTANCE;
+  Sf_CloudToModelDistance cmd(m_qsm, m_cloud, params);
+  std::vector<float> distances = cmd.getCloudToModelDistances();
+  size_t index = 0;
+  std::vector<pcl::PointXYZINormal> points;
+  std::for_each(distances.begin(), distances.end(), [this, &index, &points](float distance) {
+    pcl::PointXYZINormal point = m_cloud->points[index++];
+    point.intensity = distance;
+    if (point.intensity != std::numeric_limits<float>::max()) {
+      points.push_back(point);
     }
-    for(size_t index = 0; index < points.size(); index++) {
-        size_t clusterIndex = index/std::ceil(points.size()/m_numClstrs);
-        clusterIndex = std::min(clusterIndex, static_cast<size_t>(m_numClstrs-1) );
+  });
+  std::sort(points.begin(), points.end(), [](const pcl::PointXYZINormal& first, const pcl::PointXYZINormal& second) {
+    return first.intensity < second.intensity;
+  });
+  for (size_t i = 0; i < m_numClstrs; i++) {
+    m_clusters.push_back(pcl::PointCloud<pcl::PointXYZINormal>::Ptr(new pcl::PointCloud<pcl::PointXYZINormal>));
+  }
+  for (size_t index = 0; index < points.size(); index++) {
+    size_t clusterIndex = index / std::ceil(points.size() / m_numClstrs);
+    clusterIndex = std::min(clusterIndex, static_cast<size_t>(m_numClstrs - 1));
 
-        m_clusters[clusterIndex]->points.push_back(points[index]);
-    }
+    m_clusters[clusterIndex]->points.push_back(points[index]);
+  }
 }
-

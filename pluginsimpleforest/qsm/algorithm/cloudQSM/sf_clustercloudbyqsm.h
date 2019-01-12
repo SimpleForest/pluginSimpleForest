@@ -29,21 +29,24 @@
 #ifndef SF_CLUSTERCLOUDBYQSM_H
 #define SF_CLUSTERCLOUDBYQSM_H
 
-
-#include "../distance/sf_cloudToModelDistanceParameters.h"
 #include "../distance/sf_cloudToModelDistance.h"
+#include "../distance/sf_cloudToModelDistanceParameters.h"
 
 class SF_ClusterCloudByQSM
 {
-    SF_CloudToModelDistanceParameters m_params;
-    std::shared_ptr<SF_ModelQSM> m_qsm;
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
-    size_t m_numClstrs;
-    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr > m_clusters;
+  SF_CloudToModelDistanceParameters m_params;
+  std::shared_ptr<SF_ModelQSM> m_qsm;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
+  size_t m_numClstrs;
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> m_clusters;
+
 public:
-    SF_ClusterCloudByQSM(SF_CloudToModelDistanceParameters params, std::shared_ptr<SF_ModelQSM> qsm, pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, int numCltrs);
-    void compute();
-    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters() const;
+  SF_ClusterCloudByQSM(SF_CloudToModelDistanceParameters params,
+                       std::shared_ptr<SF_ModelQSM> qsm,
+                       pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
+                       int numCltrs);
+  void compute();
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters() const;
 };
 
 #endif // SF_CLUSTERCLOUDBYQSM_H

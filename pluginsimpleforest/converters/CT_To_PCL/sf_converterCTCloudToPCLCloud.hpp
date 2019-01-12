@@ -25,28 +25,29 @@
 
 #include "sf_converterCTCloudToPCLCloud.h"
 
-template <typename PointType>
-SF_ConverterCTCloudToPCLCloud<PointType>::SF_ConverterCTCloudToPCLCloud(
-    CT_AbstractItemDrawableWithPointCloud *itemCpyCloudIn) {
+template<typename PointType>
+SF_ConverterCTCloudToPCLCloud<PointType>::SF_ConverterCTCloudToPCLCloud(CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn)
+{
   m_itemCpyCloudIn = itemCpyCloudIn;
   initialize();
 }
 
-template <typename PointType>
+template<typename PointType>
 std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>
-SF_ConverterCTCloudToPCLCloud<PointType>::cloudOut() {
-  return std::pair<typename pcl::PointCloud<PointType>::Ptr,
-                   std::vector<size_t>>(m_cloudOut, m_CTIndices);
+SF_ConverterCTCloudToPCLCloud<PointType>::cloudOut()
+{
+  return std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>(m_cloudOut, m_CTIndices);
 }
 
-template <typename PointType>
-void SF_ConverterCTCloudToPCLCloud<PointType>::compute() {
-  const CT_AbstractPointCloudIndex *indices =
-      m_itemCpyCloudIn->getPointCloudIndex();
+template<typename PointType>
+void
+SF_ConverterCTCloudToPCLCloud<PointType>::compute()
+{
+  const CT_AbstractPointCloudIndex* indices = m_itemCpyCloudIn->getPointCloudIndex();
   CT_PointIterator it(indices);
   size_t index = 0;
   while (it.hasNext()) {
-    const CT_Point &internalPoint = it.next().currentPoint();
+    const CT_Point& internalPoint = it.next().currentPoint();
     m_CTIndices[index] = it.currentGlobalIndex();
     PointType translated;
     translated.x = internalPoint[0] - m_translation[0];
@@ -56,8 +57,10 @@ void SF_ConverterCTCloudToPCLCloud<PointType>::compute() {
   }
 }
 
-template <typename PointType>
-void SF_ConverterCTCloudToPCLCloud<PointType>::initialize() {
+template<typename PointType>
+void
+SF_ConverterCTCloudToPCLCloud<PointType>::initialize()
+{
   m_cloudOut.reset(new pcl::PointCloud<PointType>());
   size_t size = m_itemCpyCloudIn->getPointCloudIndexSize();
   m_cloudOut->points.resize(size);

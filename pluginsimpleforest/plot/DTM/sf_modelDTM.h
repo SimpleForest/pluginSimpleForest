@@ -31,7 +31,8 @@
 
 #include "plot/sf_modelRaster.h"
 
-class SF_ModelDTM : public SF_ModelRaster {
+class SF_ModelDTM : public SF_ModelRaster
+{
 public:
   SF_ModelDTM(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3D);
   float heightAbove(pcl::PointXYZ point);

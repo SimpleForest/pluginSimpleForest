@@ -30,34 +30,31 @@
 
 #include "pcl/sf_math.h"
 
-SF_QSMMedianFilter::SF_QSMMedianFilter()
+SF_QSMMedianFilter::SF_QSMMedianFilter() {}
+
+void
+SF_QSMMedianFilter::compute(std::shared_ptr<SF_ModelQSM> qsm)
 {
-
-}
-
-void SF_QSMMedianFilter::compute(std::shared_ptr<SF_ModelQSM> qsm)
-{
-     m_qsm = qsm;
-     std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments = m_qsm->getSegments();
-     std::for_each(segments.begin(), segments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> segment){
-         if(!segment->isRoot()) {
-             std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick> > bricks = segment->getBuildingBricks();
-             std::vector<float> radii;
-             std::for_each(bricks.begin(), bricks.end(), [&radii, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick){
-                 radii.push_back(brick->getRadius());
-             });
-             float median = SF_Math<float>::getMedian(radii);
-             std::for_each(bricks.begin(), bricks.end(), [&radii, median, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick){
-                 float radius = brick->getRadius();
-                 if (radius < median*(1-M_DEVIATIONPERCENTAGE)) {
-                     radius = median;
-                 }
-                 if (radius > median*(1+M_DEVIATIONPERCENTAGE)) {
-                     radius = median;
-                 }
-                 brick->setRadius(radius);
-             });
-         }
-     });
-
+  m_qsm = qsm;
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments = m_qsm->getSegments();
+  std::for_each(segments.begin(), segments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> segment) {
+    if (!segment->isRoot()) {
+      std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks = segment->getBuildingBricks();
+      std::vector<float> radii;
+      std::for_each(bricks.begin(), bricks.end(), [&radii, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+        radii.push_back(brick->getRadius());
+      });
+      float median = SF_Math<float>::getMedian(radii);
+      std::for_each(bricks.begin(), bricks.end(), [&radii, median, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+        float radius = brick->getRadius();
+        if (radius < median * (1 - M_DEVIATIONPERCENTAGE)) {
+          radius = median;
+        }
+        if (radius > median * (1 + M_DEVIATIONPERCENTAGE)) {
+          radius = median;
+        }
+        brick->setRadius(radius);
+      });
+    }
+  });
 }

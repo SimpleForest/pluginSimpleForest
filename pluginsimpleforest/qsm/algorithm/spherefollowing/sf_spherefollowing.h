@@ -40,64 +40,58 @@
 
 #include <memory>
 
-struct Circle {
+struct Circle
+{
 public:
   pcl::ModelCoefficients m_circleCoeff;
   float m_distance;
   int m_clusterIndex;
   Eigen::Vector3f m_firstSplit;
   Circle() {}
-  Circle(const Circle &other) {
+  Circle(const Circle& other)
+  {
     m_distance = other.m_distance;
     m_circleCoeff = other.m_circleCoeff;
     m_clusterIndex = other.m_clusterIndex;
     m_firstSplit = other.m_firstSplit;
   }
-  Circle(pcl::ModelCoefficients circleCoeff, float distance, int clusterIndex,
-         Eigen::Vector3f &firstSplit)
-      : m_circleCoeff(circleCoeff), m_distance(distance),
-        m_clusterIndex(clusterIndex), m_firstSplit(firstSplit) {}
+  Circle(pcl::ModelCoefficients circleCoeff, float distance, int clusterIndex, Eigen::Vector3f& firstSplit)
+    : m_circleCoeff(circleCoeff), m_distance(distance), m_clusterIndex(clusterIndex), m_firstSplit(firstSplit)
+  {}
 };
 
-class SF_SphereFollowing : public SF_IDetection {
+class SF_SphereFollowing : public SF_IDetection
+{
 public:
   static constexpr float M_OCTREERESOLUTION = 0.015;
   SF_SphereFollowing();
   std::shared_ptr<SF_ModelQSM> getQSM() override;
   void compute() override;
   float error() override;
-  void
-  setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> &params);
-  void setClusters(
-      const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters);
+  void setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal>& params);
+  void setClusters(const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters);
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud() const;
 
 private:
-  typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>::Ptr
-      m_octree;
+  typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>::Ptr m_octree;
   std::vector<SF_QSMDetectionCylinder> m_cylinders;
   SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> m_params;
   std::shared_ptr<SF_ModelQSM> m_qsm;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
   std::map<float, Circle> m_map;
   std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> m_clusters;
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr lowestSlice(float &minZ);
-  pcl::PointIndices::Ptr surfaceIndices(Circle &lastCircle);
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr
-  extractCloud(pcl::PointIndices::Ptr indices);
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>
-  clusterByID(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, size_t minID);
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr lowestSlice(float& minZ);
+  pcl::PointIndices::Ptr surfaceIndices(Circle& lastCircle);
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr extractCloud(pcl::PointIndices::Ptr indices);
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusterByID(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, size_t minID);
   std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusterEuclidean(
-      std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters);
-  void processClusters(
-      std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> &clusters,
-      const Circle &lastCircle);
+    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters);
+  void processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters, const Circle& lastCircle);
   void initialize();
   void initializeCloud();
   void initializeOctree();
   void initializeHeap();
-  void pushbackQueue(pcl::ModelCoefficients circleCoeff, float distance,
-                     int clusterID, Eigen::Vector3f firstSplit);
+  void pushbackQueue(pcl::ModelCoefficients circleCoeff, float distance, int clusterID, Eigen::Vector3f firstSplit);
   void artificialTree();
   void buildTree();
 };
