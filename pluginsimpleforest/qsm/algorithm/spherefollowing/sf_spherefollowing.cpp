@@ -198,7 +198,7 @@ SF_SphereFollowing::clusterEuclidean(pcl::PointCloud<pcl::PointXYZINormal>::Ptr 
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudCluster(new pcl::PointCloud<pcl::PointXYZINormal>);
     for (std::vector<int>::const_iterator pit = it->indices.begin(); pit != it->indices.end(); ++pit)
       cloudCluster->points.push_back(cloud->points[*pit]); //*
-    if (cloudCluster->points.size() >= m_params._sphereFollowingParams._minPtsGeometry) {
+    if (cloudCluster->points.size() >= static_cast<size_t>(m_params._sphereFollowingParams._minPtsGeometry)) {
       cloudCluster->width = cloudCluster->points.size();
       cloudCluster->height = 1;
       cloudCluster->is_dense = true;
@@ -208,7 +208,7 @@ SF_SphereFollowing::clusterEuclidean(pcl::PointCloud<pcl::PointXYZINormal>::Ptr 
         clusterIndices[index]++;
       }
       size_t searchIndex = 0;
-      int maxCount = 0;
+      size_t maxCount = 0;
       for (size_t i = 0; i < m_params.m_numClstrs; i++) {
         if (clusterIndices[i] > maxCount) {
           searchIndex = i;
