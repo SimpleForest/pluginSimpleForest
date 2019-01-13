@@ -114,8 +114,8 @@ public:
       QMutexLocker m1(&*mMutex);
       params = downhillSimplex.params();
 
-      //            SF_QSMMedianFilter med;
-      //            med.compute(params._tree);
+                  SF_QSMMedianFilter med;
+                  med.compute(params._tree);
 
       CT_ColorCloudStdVector* _colors;
       _colors = new CT_ColorCloudStdVector(cloud->points.size());
