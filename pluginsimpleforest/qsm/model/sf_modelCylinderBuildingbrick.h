@@ -35,7 +35,7 @@
 
 class Sf_ModelCylinderBuildingbrick : public Sf_ModelAbstractBuildingbrick
 {
-  float _radius;
+  float m_radius;
 
 protected:
   float getDistanceToAxis(const Eigen::Vector3f& point) override;

@@ -45,12 +45,12 @@ SF_QSMMedianFilter::compute(std::shared_ptr<SF_ModelQSM> qsm)
         radii.push_back(brick->getRadius());
       });
       float median = SF_Math<float>::getMedian(radii);
-      std::for_each(bricks.begin(), bricks.end(), [&radii, median, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+      std::for_each(bricks.begin(), bricks.end(), [median, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
         float radius = brick->getRadius();
-        if (radius < median * (1 - M_DEVIATIONPERCENTAGE)) {
+        if (radius < median * (1.0 - M_DEVIATIONPERCENTAGE)) {
           radius = median;
         }
-        if (radius > median * (1 + M_DEVIATIONPERCENTAGE)) {
+        if (radius > median * (1.0 + M_DEVIATIONPERCENTAGE)) {
           radius = median;
         }
         brick->setRadius(radius);
