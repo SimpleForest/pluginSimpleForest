@@ -64,7 +64,7 @@ public:
   float getRadius() const;
   float getVolume() const;
   float getLength() const;
-  bool isRoot() const;
+  bool isRoot();
   int getID() const;
   void setID(int ID);
   std::shared_ptr<SF_ModelAbstractSegment> getParent();

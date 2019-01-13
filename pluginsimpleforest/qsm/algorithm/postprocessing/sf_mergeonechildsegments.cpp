@@ -36,7 +36,7 @@ void SF_MergeOneChildSegments::mergeRecursively(std::shared_ptr<SF_ModelAbstract
     while (segment->getChildSegments().size() == 1) {
         std::cout << "fooooo " << counter++ << std::endl;
         std::shared_ptr<SF_ModelAbstractSegment> segmentChild = segment->getChildSegments()[0];
-        std::vector<std::shared_ptr<SF_ModelAbstractSegment> > segmentsGrandChildren = segment->getChildSegments();
+        std::vector<std::shared_ptr<SF_ModelAbstractSegment> > segmentsGrandChildren = segmentChild->getChildSegments();
         std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = segment->getBuildingBricks();
         std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricksChild = segmentChild->getBuildingBricks();
         buildingBricks.insert(

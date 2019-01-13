@@ -129,6 +129,7 @@ SF_ModelAbstractSegment::remove()
         parentsChildren.erase(position);
         parent->setChildSegments(parentsChildren);
     }
+    _parent.reset();
   }
 }
 
@@ -163,9 +164,9 @@ SF_ModelAbstractSegment::getLength() const
 }
 
 bool
-SF_ModelAbstractSegment::isRoot() const
+SF_ModelAbstractSegment::isRoot()
 {
-  if (getTree()->getRootSegment() != shared_from_this()) {
+  if (getParent()) {
     return false;
   }
   return true;
@@ -198,9 +199,7 @@ SF_ModelAbstractSegment::getTree() const
 void
 SF_ModelAbstractSegment::setChildSegments(const std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments)
 {
-    while(!_childSegments.empty()) {
-        _childSegments[0]->remove();
-    }
+    _childSegments.clear();
     std::for_each(childSegments.begin(), childSegments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> childSegment){
         addChild(childSegment);
     });
@@ -208,9 +207,7 @@ SF_ModelAbstractSegment::setChildSegments(const std::vector<std::shared_ptr<SF_M
 
 void SF_ModelAbstractSegment::setBuildingBricks(const std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick> > &buildingBricks)
 {
-    while(!_buildingBricks.empty()) {
-        _buildingBricks[0]->remove();
-    }
+    _buildingBricks.clear();
     std::for_each(buildingBricks.begin(), buildingBricks.end(), [this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick){
         addBuildingBrick(buildingBrick);
     });

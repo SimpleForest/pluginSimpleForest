@@ -28,6 +28,8 @@
 
 #include "sf_removefalseconnections.h"
 
+#include "sf_mergeonechildsegments.h"
+
 #include "pcl/sf_math.h"
 
 SF_RemoveFalseConnections::SF_RemoveFalseConnections() {}
@@ -38,7 +40,7 @@ SF_RemoveFalseConnections::compute(std::shared_ptr<SF_ModelQSM> qsm)
   m_qsm = qsm;
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leafes = m_qsm->getLeaveSegments();
   std::for_each(leafes.begin(), leafes.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> leaf) {
-    if (leaf->getBuildingBricks().size() == 1) {
+    if (leaf->getBuildingBricks().size() <= 1) {
       leaf->remove();
     } else {
       if (!leaf->isRoot()) {
@@ -48,11 +50,13 @@ SF_RemoveFalseConnections::compute(std::shared_ptr<SF_ModelQSM> qsm)
           if (child != leaf) {
             float angle = SF_Math<float>::getAngleBetweenDeg(leaf->getAxis(), child->getAxis());
             if (angle < _M_MAXANGLE || angle > (180 - _M_MAXANGLE)) {
-              leaf->remove();
+              child->remove();
             }
           }
         });
       }
     }
   });
+  SF_MergeOneChildSegments moc;
+  moc.compute(m_qsm);
 }
