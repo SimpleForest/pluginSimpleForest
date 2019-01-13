@@ -53,6 +53,21 @@ Sf_ModelAbstractBuildingbrick::getGrowthVolume()
   return growthVolume;
 }
 
+void Sf_ModelAbstractBuildingbrick::remove()
+{
+    if(_segment.lock()) {
+        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick> > buildingBricks = _segment.lock()->getBuildingBricks();
+        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>::iterator position = std::find(buildingBricks.begin(),
+                                                        buildingBricks.end(),
+                                                        shared_from_this());
+        if (position != buildingBricks.end()) {
+            buildingBricks.erase(position);
+            _segment.lock()->setBuildingBricks(buildingBricks);
+        }
+        _segment.reset();
+    }
+}
+
 size_t
 Sf_ModelAbstractBuildingbrick::getIndex() const
 {

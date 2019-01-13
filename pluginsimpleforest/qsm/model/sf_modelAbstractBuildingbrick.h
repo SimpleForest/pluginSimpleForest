@@ -42,7 +42,7 @@ enum FittingType
 
 class SF_ModelAbstractSegment;
 
-class Sf_ModelAbstractBuildingbrick
+class Sf_ModelAbstractBuildingbrick: public std::enable_shared_from_this<Sf_ModelAbstractBuildingbrick>
 {
 protected:
   size_t _ID;
@@ -67,6 +67,7 @@ public:
   virtual float getRadius() = 0;
   virtual void setRadius(float radius) = 0;
   virtual float getDistance(const Eigen::Vector3f& point) = 0;
+  void remove();
   float getDistance(const pcl::PointXYZ& point);
   float getDistance(const pcl::PointXYZINormal& point);
   virtual Eigen::Vector3f getCenter() = 0;

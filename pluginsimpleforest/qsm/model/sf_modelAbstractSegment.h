@@ -75,6 +75,7 @@ public:
   std::shared_ptr<Sf_ModelAbstractBuildingbrick> getParentBuildingBrick(const size_t index);
   std::shared_ptr<SF_ModelQSM> getTree() const;
   void setChildSegments(const std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments);
+  void setBuildingBricks(const std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick> > &buildingBricks);
 };
 
 #endif // SF_MODEL_ABSTRACT_SEGMENT_H

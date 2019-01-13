@@ -121,16 +121,14 @@ SF_ModelAbstractSegment::remove()
 {
   if (!isRoot()) {
     std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
-    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> parentsChildrenNew;
-    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> parentsChildren = parent->getChildSegments();
-    std::for_each(parentsChildren.begin(),
-                  parentsChildren.end(),
-                  [&parentsChildrenNew, this](std::shared_ptr<SF_ModelAbstractSegment> parentsChild) {
-                    if (parentsChild != shared_from_this()) {
-                      parentsChildrenNew.push_back(parentsChild);
-                    }
-                  });
-    parent->setChildSegments(parentsChildrenNew);
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment> > parentsChildren = parent->getChildSegments();
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment> >::iterator position = std::find(parentsChildren.begin(),
+                                                    parentsChildren.end(),
+                                                    shared_from_this());
+    if (position != parentsChildren.end()) {
+        parentsChildren.erase(position);
+        parent->setChildSegments(parentsChildren);
+    }
   }
 }
 
@@ -200,17 +198,32 @@ SF_ModelAbstractSegment::getTree() const
 void
 SF_ModelAbstractSegment::setChildSegments(const std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments)
 {
-  _childSegments = childSegments;
+    while(!_childSegments.empty()) {
+        _childSegments[0]->remove();
+    }
+    std::for_each(childSegments.begin(), childSegments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> childSegment){
+        addChild(childSegment);
+    });
+}
+
+void SF_ModelAbstractSegment::setBuildingBricks(const std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick> > &buildingBricks)
+{
+    while(!_buildingBricks.empty()) {
+        _buildingBricks[0]->remove();
+    }
+    std::for_each(buildingBricks.begin(), buildingBricks.end(), [this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick){
+        addBuildingBrick(buildingBrick);
+    });
 }
 
 int
 SF_ModelAbstractSegment::getParentID()
 {
-  std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
-  if (parent == nullptr) {
-    return -1;
-  } else {
-    return parent->getID();
+    std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
+    if (parent == nullptr) {
+        return -1;
+    } else {
+        return parent->getID();
   }
 }
 

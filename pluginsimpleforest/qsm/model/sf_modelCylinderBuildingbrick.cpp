@@ -56,7 +56,7 @@ float
 Sf_ModelCylinderBuildingbrick::getLength()
 {
   Eigen::Vector3f c = _end - _start;
-  return c.nodrm();
+  return c.norm();
 }
 
 float
