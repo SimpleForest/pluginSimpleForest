@@ -30,32 +30,28 @@
 
 #include <iterator>
 
-void SF_MergeOneChildSegments::mergeRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment)
+void
+SF_MergeOneChildSegments::mergeRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment)
 {
-    while (segment->getChildSegments().size() == 1) {
-        std::shared_ptr<SF_ModelAbstractSegment> segmentChild = segment->getChildSegments()[0];
-        std::vector<std::shared_ptr<SF_ModelAbstractSegment> > segmentsGrandChildren = segmentChild->getChildSegments();
-        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = segment->getBuildingBricks();
-        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricksChild = segmentChild->getBuildingBricks();
-        buildingBricks.insert(
-            buildingBricks.end(),
-            std::make_move_iterator(buildingBricksChild.begin()),
-            std::make_move_iterator(buildingBricksChild.end())
-          );
-        segment->setBuildingBricks(buildingBricks);
-        segmentChild->remove();
-        segment->setChildSegments(segmentsGrandChildren);
-    }
+  while (segment->getChildSegments().size() == 1) {
+    std::shared_ptr<SF_ModelAbstractSegment> segmentChild = segment->getChildSegments()[0];
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segmentsGrandChildren = segmentChild->getChildSegments();
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = segment->getBuildingBricks();
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricksChild = segmentChild->getBuildingBricks();
+    buildingBricks.insert(
+      buildingBricks.end(), std::make_move_iterator(buildingBricksChild.begin()), std::make_move_iterator(buildingBricksChild.end()));
+    segment->setBuildingBricks(buildingBricks);
+    segmentChild->remove();
+    segment->setChildSegments(segmentsGrandChildren);
+  }
 }
 
-SF_MergeOneChildSegments::SF_MergeOneChildSegments()
-{
+SF_MergeOneChildSegments::SF_MergeOneChildSegments() {}
 
-}
-
-void SF_MergeOneChildSegments::compute(std::shared_ptr<SF_ModelQSM> qsm)
+void
+SF_MergeOneChildSegments::compute(std::shared_ptr<SF_ModelQSM> qsm)
 {
-    m_qsm = qsm;
-    std::shared_ptr<SF_ModelAbstractSegment> segment = qsm->getRootSegment();
-    mergeRecursively(segment);
+  m_qsm = qsm;
+  std::shared_ptr<SF_ModelAbstractSegment> segment = qsm->getRootSegment();
+  mergeRecursively(segment);
 }

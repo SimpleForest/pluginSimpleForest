@@ -34,11 +34,12 @@
 
 class SF_MergeOneChildSegments
 {
-    std::shared_ptr<SF_ModelQSM> m_qsm;
-    void mergeRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment);
+  std::shared_ptr<SF_ModelQSM> m_qsm;
+  void mergeRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment);
+
 public:
-    SF_MergeOneChildSegments();
-    void compute(std::shared_ptr<SF_ModelQSM> qsm);
+  SF_MergeOneChildSegments();
+  void compute(std::shared_ptr<SF_ModelQSM> qsm);
 };
 
 #endif // SF_MERGEONECHILDSEGMENTS_H

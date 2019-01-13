@@ -28,27 +28,26 @@
 
 #include "sf_sortqsm.h"
 
-void SF_SortQSM::sortRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment)
+void
+SF_SortQSM::sortRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment)
 {
-    std::vector<std::shared_ptr<SF_ModelAbstractSegment> > childSegments = segment->getChildSegments();
-    std::sort(childSegments.begin(), childSegments.end(), [](std::shared_ptr<SF_ModelAbstractSegment> seg1,
-                                                             std::shared_ptr<SF_ModelAbstractSegment> seg2){
-        return (seg1->getBuildingBricks()[0]->getGrowthLength() > seg2->getBuildingBricks()[0]->getGrowthLength());
-    });
-    segment->setChildSegments(childSegments);
-    std::for_each(childSegments.begin(), childSegments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> seg){
-           sortRecursively(seg)    ;
-    });
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments = segment->getChildSegments();
+  std::sort(childSegments.begin(),
+            childSegments.end(),
+            [](std::shared_ptr<SF_ModelAbstractSegment> seg1, std::shared_ptr<SF_ModelAbstractSegment> seg2) {
+              return (seg1->getBuildingBricks()[0]->getGrowthLength() > seg2->getBuildingBricks()[0]->getGrowthLength());
+            });
+  segment->setChildSegments(childSegments);
+  std::for_each(
+    childSegments.begin(), childSegments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> seg) { sortRecursively(seg); });
 }
 
-SF_SortQSM::SF_SortQSM()
-{
+SF_SortQSM::SF_SortQSM() {}
 
-}
-
-void SF_SortQSM::compute(std::shared_ptr<SF_ModelQSM> qsm)
+void
+SF_SortQSM::compute(std::shared_ptr<SF_ModelQSM> qsm)
 {
-    m_qsm = qsm;
-    std::shared_ptr<SF_ModelAbstractSegment> segment = qsm->getRootSegment();
-    sortRecursively(segment);
+  m_qsm = qsm;
+  std::shared_ptr<SF_ModelAbstractSegment> segment = qsm->getRootSegment();
+  sortRecursively(segment);
 }

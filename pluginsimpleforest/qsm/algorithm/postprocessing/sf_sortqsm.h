@@ -34,11 +34,12 @@
 
 class SF_SortQSM
 {
-    std::shared_ptr<SF_ModelQSM> m_qsm;
-    void sortRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment);
+  std::shared_ptr<SF_ModelQSM> m_qsm;
+  void sortRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment);
+
 public:
-    SF_SortQSM();
-    void compute(std::shared_ptr<SF_ModelQSM> qsm);
+  SF_SortQSM();
+  void compute(std::shared_ptr<SF_ModelQSM> qsm);
 };
 
 #endif // SF_SORTQSM_H

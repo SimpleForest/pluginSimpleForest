@@ -42,7 +42,7 @@ enum FittingType
 
 class SF_ModelAbstractSegment;
 
-class Sf_ModelAbstractBuildingbrick: public std::enable_shared_from_this<Sf_ModelAbstractBuildingbrick>
+class Sf_ModelAbstractBuildingbrick : public std::enable_shared_from_this<Sf_ModelAbstractBuildingbrick>
 {
 protected:
   size_t _ID;
