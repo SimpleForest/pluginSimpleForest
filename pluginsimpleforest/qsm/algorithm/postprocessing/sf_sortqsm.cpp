@@ -26,36 +26,29 @@
 
 *****************************************************************************/
 
-#include "sf_mergeonechildsegments.h"
+#include "sf_sortqsm.h"
 
-#include <iterator>
-
-void SF_MergeOneChildSegments::mergeRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment)
+void SF_SortQSM::sortRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment)
 {
-    while (segment->getChildSegments().size() == 1) {
-        std::shared_ptr<SF_ModelAbstractSegment> segmentChild = segment->getChildSegments()[0];
-        std::vector<std::shared_ptr<SF_ModelAbstractSegment> > segmentsGrandChildren = segmentChild->getChildSegments();
-        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = segment->getBuildingBricks();
-        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricksChild = segmentChild->getBuildingBricks();
-        buildingBricks.insert(
-            buildingBricks.end(),
-            std::make_move_iterator(buildingBricksChild.begin()),
-            std::make_move_iterator(buildingBricksChild.end())
-          );
-        segment->setBuildingBricks(buildingBricks);
-        segmentChild->remove();
-        segment->setChildSegments(segmentsGrandChildren);
-    }
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment> > childSegments = segment->getChildSegments();
+    std::sort(childSegments.begin(), childSegments.end(), [](std::shared_ptr<SF_ModelAbstractSegment> seg1,
+                                                             std::shared_ptr<SF_ModelAbstractSegment> seg2){
+        return (seg1->getBuildingBricks()[0]->getGrowthLength() > seg2->getBuildingBricks()[0]->getGrowthLength());
+    });
+    segment->setChildSegments(childSegments);
+    std::for_each(childSegments.begin(), childSegments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> seg){
+           sortRecursively(seg)    ;
+    });
 }
 
-SF_MergeOneChildSegments::SF_MergeOneChildSegments()
+SF_SortQSM::SF_SortQSM()
 {
 
 }
 
-void SF_MergeOneChildSegments::compute(std::shared_ptr<SF_ModelQSM> qsm)
+void SF_SortQSM::compute(std::shared_ptr<SF_ModelQSM> qsm)
 {
     m_qsm = qsm;
     std::shared_ptr<SF_ModelAbstractSegment> segment = qsm->getRootSegment();
-    mergeRecursively(segment);
+    sortRecursively(segment);
 }
