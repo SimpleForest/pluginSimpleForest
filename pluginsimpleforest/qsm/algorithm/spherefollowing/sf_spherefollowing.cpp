@@ -91,8 +91,7 @@ SF_SphereFollowing::compute()
     m_map.erase(m_map.begin());
     pcl::PointIndices::Ptr surfaceIndicesVector = surfaceIndices(circleStruct);
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr surface = extractCloud(surfaceIndicesVector);
-    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> surfaceClustersID = clusterByID(surface, circleStruct.m_clusterIndex);
-    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> surfaceClusters = clusterEuclidean(surfaceClustersID);
+    std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> surfaceClusters = clusterEuclidean(surface, circleStruct.m_clusterIndex);
     processClusters(surfaceClusters, circleStruct);
   }
   buildTree();
@@ -181,33 +180,46 @@ SF_SphereFollowing::clusterByID(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud
 }
 
 std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>
-SF_SphereFollowing::clusterEuclidean(std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters)
+SF_SphereFollowing::clusterEuclidean(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, size_t minIndex)
 {
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> newClusters;
-  SF_ParamSpherefollowingBasic<pcl::PointXYZINormal> params(m_params);
-  std::for_each(clusters.begin(), clusters.end(), [&newClusters, &params](pcl::PointCloud<pcl::PointXYZINormal>::Ptr cluster) {
-    std::vector<pcl::PointIndices> clusterIndices;
-    pcl::search::KdTree<pcl::PointXYZINormal>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZINormal>);
-    tree->setInputCloud(cluster);
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters;
+  std::vector<pcl::PointIndices> clusterIndices;
+  pcl::search::KdTree<pcl::PointXYZINormal>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZINormal>);
+  tree->setInputCloud(cloud);
 
-    pcl::EuclideanClusterExtraction<pcl::PointXYZINormal> ec;
-    ec.setClusterTolerance(params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance);
-    ec.setMinClusterSize(params._sphereFollowingParams._minPtsGeometry);
-    ec.setMaxClusterSize(std::numeric_limits<int>::max());
-    ec.setSearchMethod(tree);
-    ec.setInputCloud(cluster);
-    ec.extract(clusterIndices);
-    for (std::vector<pcl::PointIndices>::const_iterator it = clusterIndices.begin(); it != clusterIndices.end(); ++it) {
-      pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudCluster(new pcl::PointCloud<pcl::PointXYZINormal>);
-      for (std::vector<int>::const_iterator pit = it->indices.begin(); pit != it->indices.end(); ++pit)
-        cloudCluster->points.push_back(cluster->points[*pit]); //*
+  pcl::EuclideanClusterExtraction<pcl::PointXYZINormal> ec;
+  ec.setClusterTolerance(m_params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance);
+  ec.setMinClusterSize(m_params._sphereFollowingParams._minPtsGeometry);
+  ec.setMaxClusterSize(std::numeric_limits<int>::max());
+  ec.setSearchMethod(tree);
+  ec.setInputCloud(cloud);
+  ec.extract(clusterIndices);
+  for (std::vector<pcl::PointIndices>::const_iterator it = clusterIndices.begin(); it != clusterIndices.end(); ++it) {
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudCluster(new pcl::PointCloud<pcl::PointXYZINormal>);
+    for (std::vector<int>::const_iterator pit = it->indices.begin(); pit != it->indices.end(); ++pit)
+      cloudCluster->points.push_back(cloud->points[*pit]); //*
+    if (cloudCluster->points.size() >= m_params._sphereFollowingParams._minPtsGeometry) {
       cloudCluster->width = cloudCluster->points.size();
       cloudCluster->height = 1;
       cloudCluster->is_dense = true;
-      newClusters.push_back(cloudCluster);
+      std::vector<size_t> clusterIndices(m_params.m_numClstrs, 0);
+      for (size_t i = 0; i < cloudCluster->points.size(); i++) {
+        size_t index = static_cast<size_t>(cloudCluster->points[i].intensity);
+        clusterIndices[index]++;
+      }
+      size_t searchIndex = 0;
+      int maxCount = 0;
+      for (size_t i = 0; i < m_params.m_numClstrs; i++) {
+        if (clusterIndices[i] > maxCount) {
+          searchIndex = i;
+          maxCount = clusterIndices[i];
+        }
+      }
+      cloudCluster->points[0].intensity = std::max(searchIndex, minIndex);
+      clusters.push_back(cloudCluster);
     }
-  });
-  return newClusters;
+  }
+  return clusters;
 }
 
 void

@@ -287,10 +287,10 @@ downhillSimplex(const gsl_vector* v, void* params)
     paramsOptim._epsilonSphere = gsl_vector_get(v, index++);
     paramsOptim._euclideanClusteringDistance = gsl_vector_get(v, index++);
     paramsOptim._sphereRadiusMultiplier = gsl_vector_get(v, index++);
-    if (m_optimizeAll) {
-      paramsOptim._medianRadiusMultiplier = gsl_vector_get(v, index++);
-      paramsOptim._minRadius = gsl_vector_get(v, index++);
-    }
+    //    if (m_optimizeAll) {
+    //      paramsOptim._medianRadiusMultiplier = gsl_vector_get(v, index++);
+    //      paramsOptim._minRadius = gsl_vector_get(v, index++);
+    //    }
     paramVec.push_back(paramsOptim);
   }
 
