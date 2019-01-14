@@ -146,8 +146,7 @@ void
 SF_Circle<PointType>::chooseModel(const pcl::ModelCoefficients& circleMedian, const pcl::ModelCoefficients& circleSACModel)
 {
   if (circleSACModel.values.size() == 7) {
-    if ((circleSACModel.values[3] <
-         circleMedian.values[3] * m_params._sphereFollowingParams.m_optimizationParams[m_paramIndex]._medianRadiusMultiplier) &&
+    if ((circleSACModel.values[3] < circleMedian.values[3] * m_params._sphereFollowingParams._medianRadiusMultiplier) &&
         (circleSACModel.values[3] > circleMedian.values[3] * 0.5)) {
       m_coeff.values.clear();
       m_coeff.values.push_back(circleSACModel.values[0]);

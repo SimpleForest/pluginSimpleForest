@@ -158,13 +158,6 @@ SF_StepSpherefollowingRoot::configDialogAddSphereFollowingOptimizableParameters(
                           0.1,
                           2,
                           _SF_OPT_euclideanClusteringDistance);
-  configDialog->addDouble("Each sphere has at minimum a radius of "
-                          "[<em><b>minimum radius</b></em>] ",
-                          " (m). Always larger <em>min global radius</em>.",
-                          0.01,
-                          0.1,
-                          2,
-                          _SF_OPT_minRadius);
   configDialog->addEmpty();
 }
 
@@ -313,7 +306,6 @@ SF_StepSpherefollowingRoot::adaptParametersToExpertLevel()
       _SF_OPT_sphereEpsilon = 0.5;
     } else {
       _SF_OPT_euclideanClusteringDistance = 0.02;
-      _SF_OPT_minRadius = 0.07;
       _SF_OPT_sphereEpsilon = 0.035;
     }
   }
@@ -350,7 +342,7 @@ SF_StepSpherefollowingRoot::compute()
         std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = qsm->getBuildingBricks();
         std::for_each(buildingBricks.begin(),
                       buildingBricks.end(),
-                      [&params, this, group, outResult](std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
+                      [&params, this, outResult, group](std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
                         Eigen::Vector3f start = buildingBrick->getStart();
                         Eigen::Vector3f end = buildingBrick->getEnd();
                         double radius = buildingBrick->getRadius();
@@ -364,10 +356,10 @@ SF_StepSpherefollowingRoot::compute()
                                           static_cast<double>(end[2] - start[2])),
                           radius,
                           length);
-                        CT_StandardItemGroup* cylinderGroup = new CT_StandardItemGroup(_outCylinderGroup.completeName(), outResult);
                         CT_Cylinder* cylinder = new CT_Cylinder(_outCylinders.completeName(), outResult, data);
-                        cylinderGroup->addItemDrawable(cylinder);
+                        CT_StandardItemGroup* cylinderGroup = new CT_StandardItemGroup(_outCylinderGroup.completeName(), outResult);
                         group->addGroup(cylinderGroup);
+                        cylinderGroup->addItemDrawable(cylinder);
                       });
       });
   }

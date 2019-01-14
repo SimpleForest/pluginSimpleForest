@@ -38,17 +38,11 @@ struct SF_SphereFollowingOptimizationParameters
   double _euclideanClusteringDistance = 0.03f;
   double _sphereRadiusMultiplier = 2.0f;
   double _epsilonSphere = 0.035f;
-  double _minRadius = 0.04f;
-  double _medianRadiusMultiplier = 3.5f;
   SF_SphereFollowingOptimizationParameters() {}
-  SF_SphereFollowingOptimizationParameters(float euclideanClusteringDistance,
-                                           float sphereRadiusMultiplier,
-                                           float epsilonSphere,
-                                           float minRadius)
+  SF_SphereFollowingOptimizationParameters(float euclideanClusteringDistance, float sphereRadiusMultiplier, float epsilonSphere)
     : _euclideanClusteringDistance(euclideanClusteringDistance)
     , _sphereRadiusMultiplier(sphereRadiusMultiplier)
     , _epsilonSphere(epsilonSphere)
-    , _minRadius(minRadius)
   {}
 };
 
@@ -58,6 +52,7 @@ struct SF_SphereFollowingParameters
   int _fittingMethod = pcl::SAC_MLESAC;
   float _heapDelta = 0.1f;
   float _inlierDistance = 0.03f;
+  double _medianRadiusMultiplier = 3.5f;
   int _minPtsGeometry = 3;
   int _RANSACIterations = 100;
   float _minGlobalRadius = 0.02f;

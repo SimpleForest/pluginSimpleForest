@@ -39,7 +39,6 @@ private:
   double _PP_euclideanClusteringDistance = 0.2;
   double _SF_OPT_euclideanClusteringDistance = 0.03;
   double _SF_OPT_sphereRadiusMultiplier = 2;
-  double _SF_OPT_minRadius = 0.07;
   double _SF_OPT_sphereEpsilon = 0.035;
   bool _SF_parameterAutoSearch = true;
   int _SF_RANSACIiterations = 100;

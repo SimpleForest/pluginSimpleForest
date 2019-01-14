@@ -94,11 +94,6 @@ SF_DownHillSimplex::serializeVec(gsl_vector* x, double fac)
       x, index++, static_cast<double>(m_params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance * fac));
     gsl_vector_set(
       x, index++, static_cast<double>(m_params._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplier * fac));
-    if (m_optimizeAll) {
-      gsl_vector_set(
-        x, index++, static_cast<double>(m_params._sphereFollowingParams.m_optimizationParams[0]._medianRadiusMultiplier * fac));
-      gsl_vector_set(x, index++, static_cast<double>(m_params._sphereFollowingParams.m_optimizationParams[0]._minRadius * fac));
-    }
   }
 }
 
@@ -150,10 +145,6 @@ SF_DownHillSimplex::compute()
     myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere << std::endl;
     myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance << std::endl;
     myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplier << std::endl;
-    if (m_optimizeAll) {
-      myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._medianRadiusMultiplier << std::endl;
-      myfile << m_params._sphereFollowingParams.m_optimizationParams[0]._minRadius << std::endl;
-    }
     myfile.close();
   }
 
@@ -196,10 +187,6 @@ SF_DownHillSimplex::compute()
         paramsOptim._epsilonSphere = gsl_vector_get(v, index++);
         paramsOptim._euclideanClusteringDistance = gsl_vector_get(v, index++);
         paramsOptim._sphereRadiusMultiplier = gsl_vector_get(v, index++);
-        if (m_optimizeAll) {
-          paramsOptim._medianRadiusMultiplier = gsl_vector_get(v, index++);
-          paramsOptim._minRadius = gsl_vector_get(v, index++);
-        }
         paramVec.push_back(paramsOptim);
       }
       m_params._sphereFollowingParams.m_optimizationParams = paramVec;
@@ -242,10 +229,6 @@ SF_DownHillSimplex::compute()
       myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._epsilonSphere << std::endl;
       myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._euclideanClusteringDistance << std::endl;
       myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._sphereRadiusMultiplier << std::endl;
-      if (m_optimizeAll) {
-        myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._medianRadiusMultiplier << std::endl;
-        myfile << m_params._sphereFollowingParams.m_optimizationParams[i]._minRadius << std::endl;
-      }
     }
     myfile.close();
   }

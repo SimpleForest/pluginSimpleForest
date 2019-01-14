@@ -50,7 +50,6 @@ class SF_DownHillSimplex
 
 public:
   SF_DownHillSimplex();
-  bool m_optimizeAll = false;
 
   void compute();
   SF_ParamSpherefollowingBasic<SF_PointNormal> params() const;

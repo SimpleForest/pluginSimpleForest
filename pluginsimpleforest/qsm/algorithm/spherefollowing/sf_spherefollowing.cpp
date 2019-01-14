@@ -122,9 +122,6 @@ SF_SphereFollowing::surfaceIndices(Circle& lastCircle)
   float radius = std::max(static_cast<double>(m_params._sphereFollowingParams._minGlobalRadius),
                           m_params._sphereFollowingParams.m_optimizationParams[index]._sphereRadiusMultiplier *
                             lastCircleCoeff.values[3]);
-  if (radius < m_params._sphereFollowingParams.m_optimizationParams[index]._minRadius) {
-    radius = m_params._sphereFollowingParams.m_optimizationParams[index]._minRadius;
-  }
   radius += m_params._sphereFollowingParams.m_optimizationParams[index]._epsilonSphere;
 
   if (m_octree->radiusSearch(center, radius, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {

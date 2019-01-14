@@ -418,10 +418,6 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType>
       str.append(QString::number(_sphereFollowingParams.m_optimizationParams.at(i)._euclideanClusteringDistance));
       str.append("; _sphereRadiusMultiplier = ");
       str.append(QString::number(_sphereFollowingParams.m_optimizationParams.at(i)._sphereRadiusMultiplier));
-      str.append("; _minRadius = ");
-      str.append(QString::number(_sphereFollowingParams.m_optimizationParams.at(i)._minRadius));
-      str.append("; _medianRadiusMultiplier = ");
-      str.append(QString::number(_sphereFollowingParams.m_optimizationParams.at(i)._medianRadiusMultiplier));
       str.append("; _epsilonSphere = ");
       str.append(QString::number(_sphereFollowingParams.m_optimizationParams.at(i)._epsilonSphere));
       str.append("}");
@@ -430,6 +426,8 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType>
     str.append(QString::number(_sphereFollowingParams._minPtsGeometry));
     str.append("; _heightStartSphere = ");
     str.append(QString::number(_sphereFollowingParams._heightInitializationSlice));
+    str.append("; _medianRadiusMultiplier = ");
+    str.append(QString::number(_sphereFollowingParams._medianRadiusMultiplier));
     str.append("; _ransacCircleInlierDistance = ");
     str.append(QString::number(_sphereFollowingParams._inlierDistance));
     str.append("; _ransacIterations = ");
