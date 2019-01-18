@@ -16,6 +16,7 @@
 #include "qsm/algorithm/sf_QSMCylinder.h"
 #include "qsm/build/sf_buildQSM.h"
 #include "steps/param/sf_paramAllSteps.h"
+#include "steps/visualization/sf_colorfactory.h"
 
 class SF_SpherefollowingRootAdapter
 {
@@ -129,49 +130,33 @@ public:
         if (kdtree.nearestKSearch(point, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
           pcl::PointXYZINormal closest = params._cloudIn->points[pointIdxNKNSearch[0]];
           if (closest.intensity == std::numeric_limits<float>::max()) {
-            col.r() = 205;
-            col.g() = 20;
-            col.b() = 20;
+            col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::RED));
           } else {
             switch (static_cast<int>(closest.intensity) % 6) {
               case 0:
-                col.r() = 20;
-                col.g() = 205;
-                col.b() = 20;
+                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::GREEN));
                 break;
               case 1:
-                col.r() = 20;
-                col.g() = 20;
-                col.b() = 205;
+                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::BLUE));
                 break;
               case 2:
-                col.r() = 205;
-                col.g() = 205;
-                col.b() = 20;
+                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::YELLOW));
                 break;
               case 3:
-                col.r() = 205;
-                col.g() = 20;
-                col.b() = 205;
+                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::VIOLET));
                 break;
               case 4:
-                col.r() = 25;
-                col.g() = 205;
-                col.b() = 205;
+                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::CYAN));
                 break;
               case 5:
-                col.r() = 205;
-                col.g() = 205;
-                col.b() = 205;
+                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::BRIGHT));
                 break;
               default:
                 break;
             }
           }
         } else {
-          col.r() = 20;
-          col.g() = 20;
-          col.b() = 20;
+          col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::DARK));
         }
       }
       params._colors = _colors;

@@ -149,7 +149,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/algorithm/postprocessing/sf_removefalseconnections.h \
     qsm/algorithm/postprocessing/sf_qsmmedianfilter.h \
     qsm/algorithm/postprocessing/sf_mergeonechildsegments.h \
-    qsm/algorithm/postprocessing/sf_sortqsm.h
+    qsm/algorithm/postprocessing/sf_sortqsm.h \
+    steps/visualization/sf_colorfactory.h
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -196,7 +197,8 @@ SOURCES += \
     qsm/algorithm/postprocessing/sf_removefalseconnections.cpp \
     qsm/algorithm/postprocessing/sf_qsmmedianfilter.cpp \
     qsm/algorithm/postprocessing/sf_mergeonechildsegments.cpp \
-    qsm/algorithm/postprocessing/sf_sortqsm.cpp
+    qsm/algorithm/postprocessing/sf_sortqsm.cpp \
+    steps/visualization/sf_colorfactory.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts
