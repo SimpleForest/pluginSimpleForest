@@ -190,39 +190,6 @@ SF_StepSpherefollowingRoot::configDialogGuruAddPreProcessing(CT_StepConfigurable
 }
 
 void
-SF_StepSpherefollowingRoot::configDialogGuruAddSphereFollowingGridSearch(CT_StepConfigurableDialog* configDialog)
-{
-  configDialog->addText("<b>SphereFollowing Method - Grid Search</b>:");
-  configDialog->addBool("You should perform a grid search, but feel free to "
-                        "deactivate this option",
-                        " select if you want do a grid search.",
-                        "",
-                        _GS_doGridSearch);
-  //  configDialog->addText("In the grid search the parameters are ordered by "
-  //                        "optimization [<em><b>priorityt</b></em>]");
-  //  configDialog->addText("<em>sphere multiplier</em> [1], "
-  //                        "<em>sphere epsilon</em> [2], "
-  //                        "<em>euclidean clustering distance</em> [3], "
-  //                        "<em>minimum radius</em> [4]");
-  //  configDialog->addInt("Parameters having a <em>priorityt</em> smaller or "
-  //                       "equal than [<em><b>grid dimensions</b></em>]",
-  //                       " are optimized.", 1, 4, _GS_nDimensions);
-  //  configDialog->addInt("For each  <em>grid dimension</em> we apply a "
-  //                       "[<em><b>grid resolution</b></em>] of ",
-  //                       " .", 3, 9, _GS_resolution);
-  //  configDialog->addText("The [<em><b>grid number of computations</b></em>]
-  //  is "
-  //                        "equal to the power of <em>grid dimensions</em> "
-  //                        "to base <em>grid resolution</em> ");
-  //  configDialog->addInt(
-  //      "By potentially lowering <em>grid resolution</em> make sure the "
-  //      "[<em><b>grid number of computations</b></em>] is smaller or equal
-  //      to",
-  //      ".", 10, 1000, _GS_maximizeSearchSpace);
-  configDialog->addEmpty();
-}
-
-void
 SF_StepSpherefollowingRoot::configDialogGuruAddGridSearchCloudToModelDistance(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addText("<b>Cloud To Model Distance</b>:");
@@ -266,7 +233,6 @@ SF_StepSpherefollowingRoot::createPostConfigurationDialogExpert(CT_StepConfigura
 {
   configDialogGuruAddPreProcessing(configDialog);
   configDialogGuruAddSphereFollowing(configDialog);
-  configDialogGuruAddSphereFollowingGridSearch(configDialog);
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
 }
 

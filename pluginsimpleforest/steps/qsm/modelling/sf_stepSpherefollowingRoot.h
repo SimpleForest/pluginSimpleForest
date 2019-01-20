@@ -16,8 +16,6 @@ public:
   CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData& dataInit);
   QStringList getStepRISCitations() const;
 
-  void configDialogGuruAddSphereFollowingGridSearch(CT_StepConfigurableDialog* configDialog);
-
 protected:
   void createInResultModelListProtected();
   void createOutResultModelListProtected();
@@ -51,10 +49,6 @@ private:
   int _CMD_k = 5;
   int _CMD_numClstrs = 1;
   double _CMD_inlierDistance = 0.05;
-  bool _GS_doGridSearch = true;
-  int _GS_nDimensions = 4;
-  int _GS_resolution = 3;
-  int _GS_maximizeSearchSpace = 81;
 
   void configDialogGuruAddSphereFollowing(CT_StepConfigurableDialog* configDialog);
   void configDialogAddSphereFollowingHyperParameters(CT_StepConfigurableDialog* configDialog);
