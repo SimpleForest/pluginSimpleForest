@@ -129,6 +129,7 @@ SF_ModelAbstractSegment::remove()
       parent->setChildSegments(parentsChildren);
     }
     _parent.reset();
+    _tree.reset();
   }
 }
 
