@@ -45,22 +45,34 @@ SF_RemoveFalseConnections::compute(std::shared_ptr<SF_ModelQSM> qsm)
   std::for_each(leafes.begin(), leafes.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> leaf) {
     if (leaf->getBuildingBricks().size() <= 1) {
       leaf->remove();
-    } else {
-      if (!leaf->isRoot()) {
-        std::shared_ptr<SF_ModelAbstractSegment> parent = leaf->getParent();
+    }
+  });
+  SF_MergeOneChildSegments moc;
+  moc.compute(m_qsm);
+  sq.compute(m_qsm);
+
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments = m_qsm->getSegments();
+  std::for_each(segments.begin(), segments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> segment) {
+      if (!segment->isRoot()) {
+        std::shared_ptr<SF_ModelAbstractSegment> parent = segment->getParent();
         std::vector<std::shared_ptr<SF_ModelAbstractSegment>> children = parent->getChildSegments();
-        std::for_each(children.begin(), children.end(), [&leaf, this](std::shared_ptr<SF_ModelAbstractSegment> child) {
-          if (child != leaf) {
-            float angle = SF_Math<float>::getAngleBetweenDeg(leaf->getAxis(), child->getAxis());
+        std::for_each(children.begin(), children.end(), [&segment, this](std::shared_ptr<SF_ModelAbstractSegment> child) {
+          if (child != segment) {
+            float angle = SF_Math<float>::getAngleBetweenDeg(segment->getAxis(), child->getAxis());
             if (angle < _M_MAXANGLE || angle > (180 - _M_MAXANGLE)) {
-              child->remove();
+                if(segment->getBuildingBricks()[0]->getGrowthLength() > child->getBuildingBricks()[0]->getGrowthLength())
+                {
+                    child->remove();
+                }
+                else
+                {
+                    segment->remove();
+                }
             }
           }
         });
       }
-    }
   });
-  SF_MergeOneChildSegments moc;
   moc.compute(m_qsm);
   sq.compute(m_qsm);
 }
