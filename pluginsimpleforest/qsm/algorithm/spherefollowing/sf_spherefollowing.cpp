@@ -199,20 +199,16 @@ SF_SphereFollowing::clusterEuclidean(pcl::PointCloud<pcl::PointXYZINormal>::Ptr 
       cloudCluster->width = cloudCluster->points.size();
       cloudCluster->height = 1;
       cloudCluster->is_dense = true;
-      std::vector<size_t> clusterIndices(m_params.m_numClstrs, 0);
+      size_t minClusterIndex = std::numeric_limits<size_t>::max();
       for (size_t i = 0; i < cloudCluster->points.size(); i++) {
-        size_t index = static_cast<size_t>(cloudCluster->points[i].intensity);
-        clusterIndices[index]++;
+          if(cloudCluster->points[i].intensity< minClusterIndex) {
+              minClusterIndex = cloudCluster->points[i].intensity;
+          }
       }
-      size_t searchIndex = 0;
-      size_t maxCount = 0;
-      for (size_t i = 0; i < m_params.m_numClstrs; i++) {
-        if (clusterIndices[i] > maxCount) {
-          searchIndex = i;
-          maxCount = clusterIndices[i];
-        }
+      float intensity = std::max(minClusterIndex, minIndex);
+      for (size_t i = 0; i < cloudCluster->points.size(); i++) {
+          cloudCluster->points[i].intensity = intensity;
       }
-      cloudCluster->points[0].intensity = std::max(searchIndex, minIndex);
       clusters.push_back(cloudCluster);
     }
   }
