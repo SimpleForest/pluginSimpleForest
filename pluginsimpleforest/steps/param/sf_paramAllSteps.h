@@ -115,9 +115,9 @@ struct SF_ParamFilter : public SF_ParamCloud<PointType>
 template<typename PointType>
 struct SF_ParamQSM : public SF_ParamFilter<PointType>
 {
-    std::shared_ptr<SF_ModelQSM> _tree;
-    Eigen::Vector3d _translation;
-    CT_ColorCloudStdVector* _colors;
+  std::shared_ptr<SF_ModelQSM> _tree;
+  Eigen::Vector3d _translation;
+  CT_ColorCloudStdVector* _colors;
 };
 
 template<typename PointType>

@@ -201,13 +201,13 @@ SF_SphereFollowing::clusterEuclidean(pcl::PointCloud<pcl::PointXYZINormal>::Ptr 
       cloudCluster->is_dense = true;
       size_t minClusterIndex = std::numeric_limits<size_t>::max();
       for (size_t i = 0; i < cloudCluster->points.size(); i++) {
-          if(cloudCluster->points[i].intensity< minClusterIndex) {
-              minClusterIndex = cloudCluster->points[i].intensity;
-          }
+        if (cloudCluster->points[i].intensity < minClusterIndex) {
+          minClusterIndex = cloudCluster->points[i].intensity;
+        }
       }
       float intensity = std::max(minClusterIndex, minIndex);
       for (size_t i = 0; i < cloudCluster->points.size(); i++) {
-          cloudCluster->points[i].intensity = intensity;
+        cloudCluster->points[i].intensity = intensity;
       }
       clusters.push_back(cloudCluster);
     }

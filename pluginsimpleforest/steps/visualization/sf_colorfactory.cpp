@@ -1,10 +1,11 @@
 #include "sf_colorfactory.h"
 
-CT_Color SF_ColorFactory::getColor(SF_ColorFactory::Color clr)
+CT_Color
+SF_ColorFactory::getColor(SF_ColorFactory::Color clr)
 {
   switch (clr) {
     case Color::RED:
-      return CT_Color( 205, 20, 20, 127);
+      return CT_Color(205, 20, 20, 127);
       break;
     case Color::GREEN:
       return CT_Color{ 20, 205, 20, 127 };

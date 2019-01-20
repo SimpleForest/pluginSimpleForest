@@ -5,7 +5,6 @@
 
 class SF_ColorFactory
 {
-
 public:
   enum class Color
   {
@@ -19,6 +18,7 @@ public:
     DARK
   };
   static CT_Color getColor(Color clr);
+
 private:
   SF_ColorFactory();
 };

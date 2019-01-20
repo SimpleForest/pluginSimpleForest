@@ -129,7 +129,7 @@ public:
         CT_Color& col = _colors->colorAt(i);
         if (kdtree.nearestKSearch(point, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
           pcl::PointXYZINormal closest = params._cloudIn->points[pointIdxNKNSearch[0]];
-          if (closest.intensity == std::numeric_limits<float>::max()|| closest.intensity == std::numeric_limits<float>::lowest()) {
+          if (closest.intensity == std::numeric_limits<float>::max() || closest.intensity == std::numeric_limits<float>::lowest()) {
             col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::RED));
           } else {
             switch (static_cast<int>(closest.intensity) % 6) {

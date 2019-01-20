@@ -69,7 +69,7 @@ Sf_CloudToModelDistance::adaptDistanceToMethod(float distance, std::shared_ptr<S
       distance = std::min(_INLIERDISTANCE * _INLIERDISTANCE, distance);
       break;
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
-      distance = - buildingBrick->getGrowthLength();
+      distance = -buildingBrick->getGrowthLength();
       break;
   }
   return distance;

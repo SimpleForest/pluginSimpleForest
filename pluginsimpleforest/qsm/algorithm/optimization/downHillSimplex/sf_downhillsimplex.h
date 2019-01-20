@@ -46,9 +46,10 @@ downhillSimplex(const gsl_vector* v, void* params);
 
 class SF_DownHillSimplex
 {
-  SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;  
+  SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
   void serializeParams(std::uintptr_t* par);
   void serializeVec(gsl_vector* x, double fac);
+
 public:
   SF_DownHillSimplex();
   void compute();

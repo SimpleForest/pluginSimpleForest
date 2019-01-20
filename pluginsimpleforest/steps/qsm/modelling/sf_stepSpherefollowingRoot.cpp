@@ -298,22 +298,23 @@ SF_StepSpherefollowingRoot::compute()
   writeLogger();
   QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingRootAdapter());
   setProgressByFuture(future, 10, 85);
-  addQSM(outResult, paramList(), QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outCylinders.completeName(), _outCylinderGroup.completeName());
+  addQSM(
+    outResult, paramList(), QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outCylinders.completeName(), _outCylinderGroup.completeName());
   addColors(outResult, paramList(), DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, m_outCloudItem.completeName());
 }
 
-QList<SF_ParamQSM<SF_PointNormal> > SF_StepSpherefollowingRoot::paramList()
+QList<SF_ParamQSM<SF_PointNormal>>
+SF_StepSpherefollowingRoot::paramList()
 {
-    QList<SF_ParamQSM<SF_PointNormal> > paramList;
-    std::for_each(
-      _paramList.begin(), _paramList.end(), [&paramList](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
-        SF_ParamQSM<SF_PointNormal> param;
-        param._tree = params._tree;
-        param._translation = params._translation;
-        param._colors = params._colors;
-        paramList.push_back(param);
-    });
-    return paramList;
+  QList<SF_ParamQSM<SF_PointNormal>> paramList;
+  std::for_each(_paramList.begin(), _paramList.end(), [&paramList](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
+    SF_ParamQSM<SF_PointNormal> param;
+    param._tree = params._tree;
+    param._translation = params._translation;
+    param._colors = params._colors;
+    paramList.push_back(param);
+  });
+  return paramList;
 }
 
 int
