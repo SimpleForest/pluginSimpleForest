@@ -248,7 +248,7 @@ SF_StepSpherefollowingRoot::createOutResultModelListProtected()
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
     resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outCylinderGroup, new CT_StandardItemGroup(), tr("QSM Group"));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Cluster Group"));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Spherefollowing Group Color"));
     resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(), tr("QSM"));
   }
 }
@@ -298,48 +298,22 @@ SF_StepSpherefollowingRoot::compute()
   writeLogger();
   QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingRootAdapter());
   setProgressByFuture(future, 10, 85);
+  addQSM(outResult, paramList(), QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outCylinders.completeName(), _outCylinderGroup.completeName());
+  addColors(outResult, paramList(), DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, m_outCloudItem.completeName());
+}
 
-  CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
-  while (!isStopped() && outResIt.hasNext()) {
-    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
+QList<SF_ParamQSM<SF_PointNormal> > SF_StepSpherefollowingRoot::paramList()
+{
+    QList<SF_ParamQSM<SF_PointNormal> > paramList;
     std::for_each(
-      _paramList.begin(), _paramList.end(), [this, group, outResult](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
-        std::shared_ptr<SF_ModelQSM> qsm = params._tree;
-        std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = qsm->getBuildingBricks();
-        std::for_each(buildingBricks.begin(),
-                      buildingBricks.end(),
-                      [&params, this, outResult, group](std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
-                        Eigen::Vector3f start = buildingBrick->getStart();
-                        Eigen::Vector3f end = buildingBrick->getEnd();
-                        double radius = buildingBrick->getRadius();
-                        double length = buildingBrick->getLength();
-                        CT_CylinderData* data = new CT_CylinderData(
-                          Eigen::Vector3d(static_cast<double>((start[0] + end[0]) / 2 + params._translation[0]),
-                                          static_cast<double>((start[1] + end[1]) / 2 + params._translation[1]),
-                                          static_cast<double>((start[2] + end[2]) / 2 + params._translation[2])),
-                          Eigen::Vector3d(static_cast<double>(end[0] - start[0]),
-                                          static_cast<double>(end[1] - start[1]),
-                                          static_cast<double>(end[2] - start[2])),
-                          radius,
-                          length);
-                        CT_Cylinder* cylinder = new CT_Cylinder(_outCylinders.completeName(), outResult, data);
-                        CT_StandardItemGroup* cylinderGroup = new CT_StandardItemGroup(_outCylinderGroup.completeName(), outResult);
-                        group->addGroup(cylinderGroup);
-                        cylinderGroup->addItemDrawable(cylinder);
-                      });
-      });
-  }
-  size_t index = 0;
-  CT_ResultGroupIterator outResIt2(outResult, this, DEF_IN_GRP_CLUSTER);
-  while (!isStopped() && outResIt2.hasNext()) {
-    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt2.next();
-    const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
-      (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
-    SF_ParamSpherefollowingBasic<SF_PointNormal> param = _paramList[index++];
-    CT_PointsAttributesColor* colorAttribute = new CT_PointsAttributesColor(
-      m_outCloudItem.completeName(), outResult, ct_cloud->getPointCloudIndexRegistered(), param._colors);
-    group->addItemDrawable(colorAttribute);
-  }
+      _paramList.begin(), _paramList.end(), [&paramList](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
+        SF_ParamQSM<SF_PointNormal> param;
+        param._tree = params._tree;
+        param._translation = params._translation;
+        param._colors = params._colors;
+        paramList.push_back(param);
+    });
+    return paramList;
 }
 
 int

@@ -77,6 +77,10 @@ protected:
   virtual void createPostConfigurationDialogCitation(CT_StepConfigurableDialog* configDialog);
   virtual void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog) { configDialog; }
 
+
+  void addQSM(CT_ResultGroup* outResult, QList<SF_ParamQSM<SF_PointNormal> > paramList, QString outResultGrpName, QString outCylinderName, QString outCylinderGrpName);
+  void addColors(CT_ResultGroup* outResult, QList<SF_ParamQSM<SF_PointNormal> > paramList, QString outResultGrpName, QString outColorGrpName, QString outColorName);
+
   virtual void adaptParametersToExpertLevel() = 0;
   virtual void compute() = 0;
 

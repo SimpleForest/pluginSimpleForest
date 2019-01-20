@@ -30,6 +30,8 @@
 #include "qsm/algorithm/distance/sf_cloudToModelDistance.h"
 #include <pcl/sample_consensus/method_types.h>
 
+#include <ct_itemdrawable/ct_cylinder.h>
+
 SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData& dataInit) : CT_AbstractStep(dataInit)
 {
   _SF_methodList.push_back(_RANSAC);
@@ -53,6 +55,55 @@ SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData& dataInit) : CT_AbstractS
   _numberPoints.push_back(_few);
   _numberPoints.push_back(_intermediate);
   _numberPoints.push_back(_many);
+}
+
+void SF_AbstractStep::addQSM(CT_ResultGroup* outResult, QList<SF_ParamQSM<SF_PointNormal> > paramList, QString outResultGrpName, QString outCylinderName, QString outCylinderGrpName)
+{
+    CT_ResultGroupIterator outResIt(outResult, this, outResultGrpName);
+    while (!isStopped() && outResIt.hasNext()) {
+      CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
+      std::for_each(
+        paramList.begin(), paramList.end(), [this, group, outResult, outCylinderName, outCylinderGrpName](SF_ParamQSM<SF_PointNormal>& params) {
+          std::shared_ptr<SF_ModelQSM> qsm = params._tree;
+          std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = qsm->getBuildingBricks();
+          std::for_each(buildingBricks.begin(),
+                        buildingBricks.end(),
+                        [&params, this, outResult, group, outCylinderName, outCylinderGrpName](std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
+                          Eigen::Vector3f start = buildingBrick->getStart();
+                          Eigen::Vector3f end = buildingBrick->getEnd();
+                          double radius = buildingBrick->getRadius();
+                          double length = buildingBrick->getLength();
+                          CT_CylinderData* data = new CT_CylinderData(
+                            Eigen::Vector3d(static_cast<double>((start[0] + end[0]) / 2 + params._translation[0]),
+                                            static_cast<double>((start[1] + end[1]) / 2 + params._translation[1]),
+                                            static_cast<double>((start[2] + end[2]) / 2 + params._translation[2])),
+                            Eigen::Vector3d(static_cast<double>(end[0] - start[0]),
+                                            static_cast<double>(end[1] - start[1]),
+                                            static_cast<double>(end[2] - start[2])),
+                            radius,
+                            length);
+                          CT_Cylinder* cylinder = new CT_Cylinder(outCylinderName, outResult, data);
+                          CT_StandardItemGroup* cylinderGroup = new CT_StandardItemGroup(outCylinderGrpName, outResult);
+                          group->addGroup(cylinderGroup);
+                          cylinderGroup->addItemDrawable(cylinder);
+                        });
+        });
+    }
+}
+
+void SF_AbstractStep::addColors(CT_ResultGroup* outResult, QList<SF_ParamQSM<SF_PointNormal>> paramList, QString outResultGrpName, QString outColorGrpName, QString outColorName)
+{
+    size_t index = 0;
+    CT_ResultGroupIterator outResIt2(outResult, this, outResultGrpName);
+    while (!isStopped() && outResIt2.hasNext()) {
+      CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt2.next();
+      const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
+        (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, outColorGrpName);
+      SF_ParamQSM<SF_PointNormal> param = paramList[index++];
+      CT_PointsAttributesColor* colorAttribute = new CT_PointsAttributesColor(
+        outColorName, outResult, ct_cloud->getPointCloudIndexRegistered(), param._colors);
+      group->addItemDrawable(colorAttribute);
+    }
 }
 
 void

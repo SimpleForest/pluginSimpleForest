@@ -113,6 +113,14 @@ struct SF_ParamFilter : public SF_ParamCloud<PointType>
 };
 
 template<typename PointType>
+struct SF_ParamQSM : public SF_ParamFilter<PointType>
+{
+    std::shared_ptr<SF_ModelQSM> _tree;
+    Eigen::Vector3d _translation;
+    CT_ColorCloudStdVector* _colors;
+};
+
+template<typename PointType>
 struct SF_ParamEuclideanClustering : public SF_ParamFilter<PointType>
 {
   float _cellSize;
@@ -362,18 +370,15 @@ struct SF_ParamStemFilter : public SF_ParamFilter<PointType>
 };
 
 template<typename PointType>
-struct SF_ParamSpherefollowingBasic : public SF_ParamFilter<PointType>
+struct SF_ParamSpherefollowingBasic : public SF_ParamQSM<PointType>
 {
   SF_SphereFollowingParameters _sphereFollowingParams;
   SF_CloudToModelDistanceParameters _distanceParams;
-  Eigen::Vector3d _translation;
   float _voxelSize = 0.01;
   float _clusteringDistance = 0.2;
   float _modelCloudError;
   int _fittedGeometries;
-  CT_ColorCloudStdVector* _colors;
   size_t m_numClstrs = 1;
-  std::shared_ptr<SF_ModelQSM> _tree;
 
   QString methodToString(int method)
   {
