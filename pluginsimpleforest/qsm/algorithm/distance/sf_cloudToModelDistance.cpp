@@ -69,12 +69,7 @@ Sf_CloudToModelDistance::adaptDistanceToMethod(float distance, std::shared_ptr<S
       distance = std::min(_INLIERDISTANCE * _INLIERDISTANCE, distance);
       break;
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
-      float growthLength = buildingBrick->getGrowthLength();
-      if (distance < _INLIERDISTANCE * 2) {
-        distance = -growthLength;
-      } else {
-        distance = std::numeric_limits<float>::lowest();
-      }
+      distance = - buildingBrick->getGrowthLength();
       break;
   }
   return distance;
@@ -149,7 +144,7 @@ Sf_CloudToModelDistance::getCloudToModelDistances()
   std::vector<float> distances;
   int k = _k;
   if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
-    k = 3;
+    k = 1;
   }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = _tree->getBuildingBricks();
   for (size_t i = 0; i < _cloud->points.size(); i++) {
