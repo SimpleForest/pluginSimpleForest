@@ -153,24 +153,24 @@ SF_ModelAbstractSegment::getVolume() const
   return volume;
 }
 
-float SF_ModelAbstractSegment::getGrowthVolume() const
+float
+SF_ModelAbstractSegment::getGrowthVolume() const
 {
-    if(m_buildingBricks.size()>=0)
-    {
-        size_t index = m_buildingBricks.size()/2;
-        return (m_buildingBricks[index]->getGrowthVolume());
-    }
-    return 0;
+  if (m_buildingBricks.size() >= 0) {
+    size_t index = m_buildingBricks.size() / 2;
+    return (m_buildingBricks[index]->getGrowthVolume());
+  }
+  return 0;
 }
 
-float SF_ModelAbstractSegment::getGrowthLength() const
+float
+SF_ModelAbstractSegment::getGrowthLength() const
 {
-    if(m_buildingBricks.size()>=0)
-    {
-        size_t index = m_buildingBricks.size()/2;
-        return (m_buildingBricks[index]->getGrowthLength());
-    }
-    return 0;
+  if (m_buildingBricks.size() >= 0) {
+    size_t index = m_buildingBricks.size() / 2;
+    return (m_buildingBricks[index]->getGrowthLength());
+  }
+  return 0;
 }
 
 float
@@ -192,102 +192,93 @@ SF_ModelAbstractSegment::isRoot()
   return true;
 }
 
-void SF_ModelAbstractSegment::computeBranchOrder(int branchOrder)
+void
+SF_ModelAbstractSegment::computeBranchOrder(int branchOrder)
 {
-    m_branchOrder = branchOrder;
-    if(m_children.size() == 0)
-    {
-        m_children[0]->computeBranchOrder(branchOrder);
-    }
-    if(m_children.size() > 0)
-    {
-        m_children[0]->computeBranchOrder(branchOrder);
-        std::for_each(m_children.begin() + 1, m_children.end(), [branchOrder](std::shared_ptr<SF_ModelAbstractSegment> child){
-            child->computeBranchOrder(branchOrder + 1);
-        });
-    }
-}
-
-void SF_ModelAbstractSegment::computeReverseBranchOrder(int branchOrder)
-{
-    m_reversePipeBranchOrder = branchOrder;
-    if(!isRoot())
-    {
-        auto sibilings = getSiblings();
-        bool allSibilingsComputed = true;
-        std::for_each(sibilings.begin() + 1, sibilings.end(), [&allSibilingsComputed](std::shared_ptr<SF_ModelAbstractSegment> child){
-            if(child->getBranchOrder() == -1)
-            {
-                allSibilingsComputed = false;
-            }
-        });
-        if(allSibilingsComputed)
-        {
-            auto parent = getParent();
-            parent->computeReverseBranchOrder(branchOrder+1);
-        }
-    }
-}
-
-void SF_ModelAbstractSegment::computeReverseSummedBranchOrder(int branchOrder)
-{
-     m_reversePipeBranchOrder = branchOrder;
-     if(!isRoot())
-     {
-         auto sibilings = getSiblings();
-         bool allSibilingsComputed = true;
-         std::for_each(sibilings.begin() + 1, sibilings.end(), [&allSibilingsComputed](std::shared_ptr<SF_ModelAbstractSegment> child){
-             if(child->getBranchOrder() == -1)
-             {
-                 allSibilingsComputed = false;
-             }
-         });
-         if(allSibilingsComputed)
-         {
-             float sum = std::accumulate(sibilings.begin(), sibilings.end(), 0, [](int sum, std::shared_ptr<SF_ModelAbstractSegment> child)
-             {
-                 return child->getReverseSummedBranchOrder() + sum;
-             });
-             auto parent = getParent();
-             parent->computeReverseBranchOrder(++sum);
-         }
-     }
-}
-
-void SF_ModelAbstractSegment::computeReversePipeBranchOrder(int branchOrder)
-{
-     m_reversePipeBranchOrder = branchOrder;
-     if(!isRoot())
-     {
-         auto sibilings = getSiblings();
-         bool allSibilingsComputed = true;
-         std::for_each(sibilings.begin() + 1, sibilings.end(), [&allSibilingsComputed](std::shared_ptr<SF_ModelAbstractSegment> child){
-             if(child->getBranchOrder() == -1)
-             {
-                 allSibilingsComputed = false;
-             }
-         });
-         if(allSibilingsComputed)
-         {
-             float sum = std::accumulate(sibilings.begin(), sibilings.end(), 0, [](int sum, std::shared_ptr<SF_ModelAbstractSegment> child)
-             {
-                 return child->getReversePipeBranchOrder()*child->getReversePipeBranchOrder() + sum;
-             });
-             auto parent = getParent();
-             parent->computeReverseBranchOrder(std::sqrt(sum));
-         }
-     }
-}
-
-void SF_ModelAbstractSegment::initializeOrder()
-{
-    m_reverseBranchOrder = -1;
-    m_reverseSummedBranchOrder -1;
-    m_reversePipeBranchOrder = -1;
-    m_branchOrder = -1;
-    std::for_each(m_children.begin(), m_children.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> child){
-        child->initializeOrder();
+  m_branchOrder = branchOrder;
+  if (m_children.size() == 0) {
+    m_children[0]->computeBranchOrder(branchOrder);
+  }
+  if (m_children.size() > 0) {
+    m_children[0]->computeBranchOrder(branchOrder);
+    std::for_each(m_children.begin() + 1, m_children.end(), [branchOrder](std::shared_ptr<SF_ModelAbstractSegment> child) {
+      child->computeBranchOrder(branchOrder + 1);
     });
+  }
+}
+
+void
+SF_ModelAbstractSegment::computeReverseBranchOrder(int branchOrder)
+{
+  m_reversePipeBranchOrder = branchOrder;
+  if (!isRoot()) {
+    auto sibilings = getSiblings();
+    bool allSibilingsComputed = true;
+    std::for_each(sibilings.begin() + 1, sibilings.end(), [&allSibilingsComputed](std::shared_ptr<SF_ModelAbstractSegment> child) {
+      if (child->getBranchOrder() == -1) {
+        allSibilingsComputed = false;
+      }
+    });
+    if (allSibilingsComputed) {
+      auto parent = getParent();
+      parent->computeReverseBranchOrder(branchOrder + 1);
+    }
+  }
+}
+
+void
+SF_ModelAbstractSegment::computeReverseSummedBranchOrder(int branchOrder)
+{
+  m_reversePipeBranchOrder = branchOrder;
+  if (!isRoot()) {
+    auto sibilings = getSiblings();
+    bool allSibilingsComputed = true;
+    std::for_each(sibilings.begin() + 1, sibilings.end(), [&allSibilingsComputed](std::shared_ptr<SF_ModelAbstractSegment> child) {
+      if (child->getBranchOrder() == -1) {
+        allSibilingsComputed = false;
+      }
+    });
+    if (allSibilingsComputed) {
+      float sum = std::accumulate(sibilings.begin(), sibilings.end(), 0, [](int sum, std::shared_ptr<SF_ModelAbstractSegment> child) {
+        return child->getReverseSummedBranchOrder() + sum;
+      });
+      auto parent = getParent();
+      parent->computeReverseBranchOrder(++sum);
+    }
+  }
+}
+
+void
+SF_ModelAbstractSegment::computeReversePipeBranchOrder(int branchOrder)
+{
+  m_reversePipeBranchOrder = branchOrder;
+  if (!isRoot()) {
+    auto sibilings = getSiblings();
+    bool allSibilingsComputed = true;
+    std::for_each(sibilings.begin() + 1, sibilings.end(), [&allSibilingsComputed](std::shared_ptr<SF_ModelAbstractSegment> child) {
+      if (child->getBranchOrder() == -1) {
+        allSibilingsComputed = false;
+      }
+    });
+    if (allSibilingsComputed) {
+      float sum = std::accumulate(sibilings.begin(), sibilings.end(), 0, [](int sum, std::shared_ptr<SF_ModelAbstractSegment> child) {
+        return child->getReversePipeBranchOrder() * child->getReversePipeBranchOrder() + sum;
+      });
+      auto parent = getParent();
+      parent->computeReverseBranchOrder(std::sqrt(sum));
+    }
+  }
+}
+
+void
+SF_ModelAbstractSegment::initializeOrder()
+{
+  m_reverseBranchOrder = -1;
+  m_reverseSummedBranchOrder - 1;
+  m_reversePipeBranchOrder = -1;
+  m_branchOrder = -1;
+  std::for_each(
+    m_children.begin(), m_children.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> child) { child->initializeOrder(); });
 }
 
 int
@@ -305,19 +296,19 @@ SF_ModelAbstractSegment::setID(int ID)
 std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
 SF_ModelAbstractSegment::getChildren() const
 {
-    return m_children;
+  return m_children;
 }
 
-std::vector<std::shared_ptr<SF_ModelAbstractSegment> > SF_ModelAbstractSegment::getSiblings()
+std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
+SF_ModelAbstractSegment::getSiblings()
 {
-    if(!isRoot())
-    {
-        auto parent = getParent();
-        return parent->getChildren();
-    }
-    std::vector<std::shared_ptr<SF_ModelAbstractSegment> > children;
-    children.push_back(shared_from_this());
-    return children;
+  if (!isRoot()) {
+    auto parent = getParent();
+    return parent->getChildren();
+  }
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> children;
+  children.push_back(shared_from_this());
+  return children;
 }
 
 std::shared_ptr<SF_ModelQSM>
@@ -344,76 +335,87 @@ SF_ModelAbstractSegment::setBuildingBricks(const std::vector<std::shared_ptr<Sf_
   });
 }
 
-void SF_ModelAbstractSegment::sort(const SF_ModelAbstractSegment::SF_SORTTYPE sortType)
+void
+SF_ModelAbstractSegment::sort(const SF_ModelAbstractSegment::SF_SORTTYPE sortType)
 {
-    std::sort(m_children.begin(),m_children.end(), [sortType](std::shared_ptr<SF_ModelAbstractSegment> child1, std::shared_ptr<SF_ModelAbstractSegment> child2) {
-        switch (sortType) {
-        case SF_SORTTYPE::GROWTH_LENGTH:
-            return(child1->getGrowthLength() > child2->getGrowthLength());
-            break;
-        case SF_SORTTYPE::GROWTH_VOLUME:
-            return(child1->getGrowthVolume() > child2->getGrowthVolume());
-            break;
-        case SF_SORTTYPE::RADIUS:
-            return(child1->getRadius() > child2->getRadius());
-            break;
-        default:
-            std::cout << "Tree sorting with illegal sort type called." << std::endl;
-            break;
-        }
-        return true;
-    });
+  std::sort(m_children.begin(),
+            m_children.end(),
+            [sortType](std::shared_ptr<SF_ModelAbstractSegment> child1, std::shared_ptr<SF_ModelAbstractSegment> child2) {
+              switch (sortType) {
+                case SF_SORTTYPE::GROWTH_LENGTH:
+                  return (child1->getGrowthLength() > child2->getGrowthLength());
+                  break;
+                case SF_SORTTYPE::GROWTH_VOLUME:
+                  return (child1->getGrowthVolume() > child2->getGrowthVolume());
+                  break;
+                case SF_SORTTYPE::RADIUS:
+                  return (child1->getRadius() > child2->getRadius());
+                  break;
+                default:
+                  std::cout << "Tree sorting with illegal sort type called." << std::endl;
+                  break;
+              }
+              return true;
+            });
 }
 
-int SF_ModelAbstractSegment::getBranchOrder() const
+int
+SF_ModelAbstractSegment::getBranchOrder() const
 {
-    return m_branchOrder;
+  return m_branchOrder;
 }
 
-void SF_ModelAbstractSegment::setBranchOrder(int branchOrder)
+void
+SF_ModelAbstractSegment::setBranchOrder(int branchOrder)
 {
-    m_branchOrder = branchOrder;
+  m_branchOrder = branchOrder;
 }
 
-int SF_ModelAbstractSegment::getReverseBranchOrder() const
+int
+SF_ModelAbstractSegment::getReverseBranchOrder() const
 {
-    return m_reverseBranchOrder;
+  return m_reverseBranchOrder;
 }
 
-void SF_ModelAbstractSegment::setReverseBranchOrder(int reverseBranchOrder)
+void
+SF_ModelAbstractSegment::setReverseBranchOrder(int reverseBranchOrder)
 {
-    m_reverseBranchOrder = reverseBranchOrder;
+  m_reverseBranchOrder = reverseBranchOrder;
 }
 
-int SF_ModelAbstractSegment::getReversePipeBranchOrder() const
+int
+SF_ModelAbstractSegment::getReversePipeBranchOrder() const
 {
-    return m_reversePipeBranchOrder;
+  return m_reversePipeBranchOrder;
 }
 
-void SF_ModelAbstractSegment::setReversePipeBranchOrder(int reversePipeBranchOrder)
+void
+SF_ModelAbstractSegment::setReversePipeBranchOrder(int reversePipeBranchOrder)
 {
-    m_reversePipeBranchOrder = reversePipeBranchOrder;
+  m_reversePipeBranchOrder = reversePipeBranchOrder;
 }
 
-int SF_ModelAbstractSegment::getReverseSummedBranchOrder() const
+int
+SF_ModelAbstractSegment::getReverseSummedBranchOrder() const
 {
-    return m_reverseSummedBranchOrder;
+  return m_reverseSummedBranchOrder;
 }
 
-void SF_ModelAbstractSegment::setReverseSummedBranchOrder(int reverseSummedBranchOrder)
+void
+SF_ModelAbstractSegment::setReverseSummedBranchOrder(int reverseSummedBranchOrder)
 {
-    m_reverseSummedBranchOrder = reverseSummedBranchOrder;
+  m_reverseSummedBranchOrder = reverseSummedBranchOrder;
 }
 
 int
 SF_ModelAbstractSegment::getParentID()
 {
-    std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
-    if (parent == nullptr) {
-        return -1;
-    } else {
-        return parent->getID();
-    }
+  std::shared_ptr<SF_ModelAbstractSegment> parent = getParent();
+  if (parent == nullptr) {
+    return -1;
+  } else {
+    return parent->getID();
+  }
 }
 
 void

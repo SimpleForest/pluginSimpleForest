@@ -37,39 +37,37 @@ SF_ModelQSM::getRootSegment() const
 void
 SF_ModelQSM::setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& rootSegment)
 {
-    m_rootSegment = rootSegment;
+  m_rootSegment = rootSegment;
 }
 
-void SF_ModelQSM::setBranchorder()
+void
+SF_ModelQSM::setBranchorder()
 {
-    m_rootSegment->initializeOrder();
-    m_rootSegment->computeBranchOrder(0);
-    while(m_rootSegment->getReverseBranchOrder() == -1)
-    {
-        std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
-        std::for_each(leaves.begin(), leaves.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> leaf) {
-            leaf->computeReverseBranchOrder(1);
-        });
+  m_rootSegment->initializeOrder();
+  m_rootSegment->computeBranchOrder(0);
+  while (m_rootSegment->getReverseBranchOrder() == -1) {
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
+    std::for_each(
+      leaves.begin(), leaves.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> leaf) { leaf->computeReverseBranchOrder(1); });
+  }
+  while (m_rootSegment->getReversePipeBranchOrder() == -1) {
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
+    for (auto leaf : leaves) {
+      leaf->computeReversePipeBranchOrder(1);
     }
-    while(m_rootSegment->getReversePipeBranchOrder() == -1)
-    {
-        std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
-        for(auto leaf : leaves) {
-            leaf->computeReversePipeBranchOrder(1);
-        }
+  }
+  while (m_rootSegment->getReverseSummedBranchOrder() == -1) {
+    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
+    for (auto leaf : leaves) {
+      leaf->computeReverseSummedBranchOrder(1);
     }
-    while(m_rootSegment->getReverseSummedBranchOrder() == -1)
-    {
-        std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
-        for(auto leaf : leaves) {
-            leaf->computeReverseSummedBranchOrder(1);
-        }
-    }
+  }
 }
 
-void SF_ModelQSM::sort(SF_ModelAbstractSegment::SF_SORTTYPE type)
+void
+SF_ModelQSM::sort(SF_ModelAbstractSegment::SF_SORTTYPE type)
 {
-    m_rootSegment->sort(type);
+  m_rootSegment->sort(type);
 }
 
 SF_ModelQSM::SF_ModelQSM(const int ID) : _ID(ID), _species("unknownSpecies") {}

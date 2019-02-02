@@ -52,7 +52,12 @@ protected:
   std::shared_ptr<SF_ModelAbstractSegment> getFirstChild();
 
 public:
-  enum class SF_SORTTYPE {GROWTH_LENGTH, GROWTH_VOLUME, RADIUS};
+  enum class SF_SORTTYPE
+  {
+    GROWTH_LENGTH,
+    GROWTH_VOLUME,
+    RADIUS
+  };
   SF_ModelAbstractSegment(std::shared_ptr<SF_ModelQSM> tree);
   void addChild(std::shared_ptr<SF_ModelAbstractSegment> child);
   void addBuildingBrick(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
