@@ -31,13 +31,45 @@
 std::shared_ptr<SF_ModelAbstractSegment>
 SF_ModelQSM::getRootSegment() const
 {
-  return _rootSegment;
+  return m_rootSegment;
 }
 
 void
 SF_ModelQSM::setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& rootSegment)
 {
-  _rootSegment = rootSegment;
+    m_rootSegment = rootSegment;
+}
+
+void SF_ModelQSM::setBranchorder()
+{
+    m_rootSegment->initializeOrder();
+    m_rootSegment->computeBranchOrder(0);
+    while(m_rootSegment->getReverseBranchOrder() == -1)
+    {
+        std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
+        std::for_each(leaves.begin(), leaves.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> leaf) {
+            leaf->computeReverseBranchOrder(1);
+        });
+    }
+    while(m_rootSegment->getReversePipeBranchOrder() == -1)
+    {
+        std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
+        for(auto leaf : leaves) {
+            leaf->computeReversePipeBranchOrder(1);
+        }
+    }
+    while(m_rootSegment->getReverseSummedBranchOrder() == -1)
+    {
+        std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
+        for(auto leaf : leaves) {
+            leaf->computeReverseSummedBranchOrder(1);
+        }
+    }
+}
+
+void SF_ModelQSM::sort(SF_ModelAbstractSegment::SF_SORTTYPE type)
+{
+    m_rootSegment->sort(type);
 }
 
 SF_ModelQSM::SF_ModelQSM(const int ID) : _ID(ID), _species("unknownSpecies") {}
@@ -64,8 +96,8 @@ std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
 SF_ModelQSM::getSegments()
 {
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments;
-  if (_rootSegment != nullptr) {
-    segments = getSegments(_rootSegment);
+  if (m_rootSegment != nullptr) {
+    segments = getSegments(m_rootSegment);
   }
   return segments;
 }
@@ -75,8 +107,8 @@ SF_ModelQSM::getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment)
 {
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments;
   segments.push_back(segment);
-  for (size_t i = 0; i < segment->getChildSegments().size(); i++) {
-    std::shared_ptr<SF_ModelAbstractSegment> child = segment->getChildSegments()[i];
+  for (size_t i = 0; i < segment->getChildren().size(); i++) {
+    std::shared_ptr<SF_ModelAbstractSegment> child = segment->getChildren()[i];
     std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments = getSegments(child);
     segments.insert(segments.end(), childSegments.begin(), childSegments.end());
   }
@@ -105,7 +137,7 @@ SF_ModelQSM::getLeaveSegments()
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leafes;
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments = getSegments();
   std::for_each(segments.begin(), segments.end(), [&leafes](std::shared_ptr<SF_ModelAbstractSegment> segment) {
-    if (segment->getChildSegments().size() == 0) {
+    if (segment->getChildren().size() == 0) {
       leafes.push_back(segment);
     }
   });

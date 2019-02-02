@@ -35,7 +35,7 @@ class SF_ModelQSM
 {
   int _ID;
   std::string _species;
-  std::shared_ptr<SF_ModelAbstractSegment> _rootSegment;
+  std::shared_ptr<SF_ModelAbstractSegment> m_rootSegment;
 
 public:
   SF_ModelQSM(const int ID);
@@ -48,6 +48,8 @@ public:
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getLeaveSegments();
   std::shared_ptr<SF_ModelAbstractSegment> getRootSegment() const;
   void setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& rootSegment);
+  void setBranchorder();
+  void sort(SF_ModelAbstractSegment::SF_SORTTYPE type);
 };
 
 #endif // SF_MODEL_TREE_H

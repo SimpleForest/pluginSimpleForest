@@ -55,7 +55,7 @@ SF_RemoveFalseConnections::compute(std::shared_ptr<SF_ModelQSM> qsm)
   std::for_each(segments.begin(), segments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> segment) {
     if (!segment->isRoot()) {
       std::shared_ptr<SF_ModelAbstractSegment> parent = segment->getParent();
-      std::vector<std::shared_ptr<SF_ModelAbstractSegment>> children = parent->getChildSegments();
+      std::vector<std::shared_ptr<SF_ModelAbstractSegment>> children = parent->getChildren();
       std::for_each(children.begin(), children.end(), [&segment, this](std::shared_ptr<SF_ModelAbstractSegment> child) {
         if (child != segment) {
           float angle = SF_Math<float>::getAngleBetweenDeg(segment->getAxis(), child->getAxis());

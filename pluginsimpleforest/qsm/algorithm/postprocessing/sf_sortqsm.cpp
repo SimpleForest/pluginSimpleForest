@@ -31,7 +31,7 @@
 void
 SF_SortQSM::sortRecursively(std::shared_ptr<SF_ModelAbstractSegment> segment)
 {
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments = segment->getChildSegments();
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> childSegments = segment->getChildren();
   std::sort(childSegments.begin(),
             childSegments.end(),
             [](std::shared_ptr<SF_ModelAbstractSegment> seg1, std::shared_ptr<SF_ModelAbstractSegment> seg2) {
