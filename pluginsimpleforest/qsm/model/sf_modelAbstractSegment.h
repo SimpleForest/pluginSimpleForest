@@ -56,7 +56,8 @@ public:
   {
     GROWTH_LENGTH,
     GROWTH_VOLUME,
-    RADIUS
+    RADIUS,
+    ANGLE
   };
   SF_ModelAbstractSegment(std::shared_ptr<SF_ModelQSM> tree);
   void addChild(std::shared_ptr<SF_ModelAbstractSegment> child);

@@ -47,7 +47,8 @@ SF_Math<T>::getAngleBetweenDeg(Eigen::Vector3f axis1, Eigen::Vector3f axis2)
 {
   axis1.normalize();
   axis2.normalize();
-  return acos(axis1.dot(axis2)) * SF_Math::_RAD_TO_DEG;
+  float angleBetween0And180 = acos(axis1.dot(axis2)) * SF_Math::_RAD_TO_DEG;
+  return std::min(angleBetween0And180, (180.0f - angleBetween0And180));
 }
 
 template<typename T>

@@ -26,30 +26,30 @@
 
 *****************************************************************************/
 
-#ifndef SF_MODEL_TREE_H
-#define SF_MODEL_TREE_H
+#ifndef SF_QSMFACTORY_H
+#define SF_QSMFACTORY_H
 
-#include "sf_modelAbstractSegment.h"
+#include "qsm/model/sf_modelCylinderBuildingbrick.h"
+#include "qsm/model/sf_modelQSM.h"
 
-class SF_ModelQSM
+enum SORTTYPE
 {
-  int _ID;
-  std::string _species;
-  std::shared_ptr<SF_ModelAbstractSegment> m_rootSegment;
+  LARGEST_GROWTHVOLUME_SECOND,
+  LARGEST_GROWTHLENGTH_SECOND,
+  LARGEST_RADIUS_SECOND,
+  LARGEST_ANGLE_SECOND
+};
+class SF_QSMFactory
+{
+  SF_QSMFactory();
+  static pcl::ModelCoefficients::Ptr circle(float x = 0.0f, float y = 0.0f, float z = 0.0f, float rad = 1.0f);
+  static void largestGrowthvolumeSecond(std::shared_ptr<SF_ModelQSM> qsm);
+  static void largestGrowthlengthSecond(std::shared_ptr<SF_ModelQSM> qsm);
+  static void largestRadiusSecond(std::shared_ptr<SF_ModelQSM> qsm);
+  static void largestAngleSecond(std::shared_ptr<SF_ModelQSM> qsm);
 
 public:
-  SF_ModelQSM(const int ID);
-  virtual std::string toString();
-  virtual std::string toHeaderString();
-
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments();
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment);
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getLeaveSegments();
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> getBuildingBricks();
-  std::shared_ptr<SF_ModelAbstractSegment> getRootSegment() const;
-  void setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& rootSegment);
-  void setBranchorder();
-  void sort(SF_ModelAbstractSegment::SF_SORTTYPE type);
+  static std::shared_ptr<SF_ModelQSM> qsm(SORTTYPE type);
 };
 
-#endif // SF_MODEL_TREE_H
+#endif // SF_QSMFACTORY_H

@@ -156,7 +156,7 @@ SF_ModelAbstractSegment::getVolume() const
 float
 SF_ModelAbstractSegment::getGrowthVolume() const
 {
-  if (m_buildingBricks.size() >= 0) {
+  if (!m_buildingBricks.empty()) {
     size_t index = m_buildingBricks.size() / 2;
     return (m_buildingBricks[index]->getGrowthVolume());
   }
@@ -166,7 +166,7 @@ SF_ModelAbstractSegment::getGrowthVolume() const
 float
 SF_ModelAbstractSegment::getGrowthLength() const
 {
-  if (m_buildingBricks.size() >= 0) {
+  if (!m_buildingBricks.empty()) {
     size_t index = m_buildingBricks.size() / 2;
     return (m_buildingBricks[index]->getGrowthLength());
   }
@@ -274,7 +274,7 @@ void
 SF_ModelAbstractSegment::initializeOrder()
 {
   m_reverseBranchOrder = -1;
-  m_reverseSummedBranchOrder - 1;
+  m_reverseSummedBranchOrder = -1;
   m_reversePipeBranchOrder = -1;
   m_branchOrder = -1;
   std::for_each(
@@ -340,7 +340,7 @@ SF_ModelAbstractSegment::sort(const SF_ModelAbstractSegment::SF_SORTTYPE sortTyp
 {
   std::sort(m_children.begin(),
             m_children.end(),
-            [sortType](std::shared_ptr<SF_ModelAbstractSegment> child1, std::shared_ptr<SF_ModelAbstractSegment> child2) {
+            [sortType, this](std::shared_ptr<SF_ModelAbstractSegment> child1, std::shared_ptr<SF_ModelAbstractSegment> child2) {
               switch (sortType) {
                 case SF_SORTTYPE::GROWTH_LENGTH:
                   return (child1->getGrowthLength() > child2->getGrowthLength());
@@ -351,8 +351,12 @@ SF_ModelAbstractSegment::sort(const SF_ModelAbstractSegment::SF_SORTTYPE sortTyp
                 case SF_SORTTYPE::RADIUS:
                   return (child1->getRadius() > child2->getRadius());
                   break;
+                case SF_SORTTYPE::ANGLE:
+                  return (SF_Math<float>::getAngleBetweenDeg(child1->getAxis(), getAxis()) <
+                          SF_Math<float>::getAngleBetweenDeg(child2->getAxis(), getAxis()));
+                  break;
                 default:
-                  std::cout << "Tree sorting with illegal sort type called." << std::endl;
+                  throw("Tree sorting with illegal sort type called.");
                   break;
               }
               return true;

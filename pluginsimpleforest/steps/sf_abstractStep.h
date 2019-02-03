@@ -75,7 +75,7 @@ protected:
   virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) = 0;
   virtual void writeLogger();
   virtual void createPostConfigurationDialogCitation(CT_StepConfigurableDialog* configDialog);
-  virtual void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog) { configDialog; }
+  virtual void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
 
   void addQSM(CT_ResultGroup* outResult,
               QList<SF_ParamQSM<SF_PointNormal>> paramList,

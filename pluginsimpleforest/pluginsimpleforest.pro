@@ -1,5 +1,5 @@
-    CT_PREFIX = ../../computreev5
-    DEFINES += COMPUTREE_V5
+CT_PREFIX = ../../computreev5
+DEFINES += COMPUTREE_V5
 
 CHECK_CAN_USE_PCL = 1
 CHECK_CAN_USE_OPENCV = 1
@@ -8,22 +8,15 @@ MUST_USE_USE_GSL = 1
 MUST_USE_OPENCV = 1
 
 COMPUTREE += ctlibpcl ctliblas ctlibfilters ctlibmetrics ctlibstdactions
-#COMPUTREE += ctlibpcl ctliblas ctlibgsl ctlibfilters ctlibmetrics ctlibstdactions
 
 include($${CT_PREFIX}/shared.pri)
 include($${CT_PREFIX}/include_ct_library.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
-#contains(DEFINES, COMPUTREE_V5) {
-#    COMPUTREE += ctlibstdactions
-#}
-
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
 
 QT += concurrent
-QT +=  testlib
-CONFIG += testcase
+CONFIG += c++11
 CONFIG   += console
 TARGET = plug_simpleforest
 
@@ -131,7 +124,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/feature/sf_abstractstepfeature.h \
     cloud/filter/multiple/clusterscaling/sf_clustertransfer.h \
     cloud/filter/multiple/clusterscaling/sf_clustertransfer.hpp \
-    cloud/filter/multiple/clusterscaling/sf_testclustertransfer.h \
     parameter/sf_parametersetvoxelgriddownscale.h \
     parameter/sf_parameterSetVoxelgridDownscaling.h \
     parameter/sf_parameterSetPrincipalDirection.h \
@@ -150,7 +142,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/algorithm/postprocessing/sf_qsmmedianfilter.h \
     qsm/algorithm/postprocessing/sf_mergeonechildsegments.h \
     qsm/algorithm/postprocessing/sf_sortqsm.h \
-    steps/visualization/sf_colorfactory.h
+    steps/visualization/sf_colorfactory.h \
+    tests/factory/sf_qsmfactory.h
+
 SOURCES += \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -198,7 +192,8 @@ SOURCES += \
     qsm/algorithm/postprocessing/sf_qsmmedianfilter.cpp \
     qsm/algorithm/postprocessing/sf_mergeonechildsegments.cpp \
     qsm/algorithm/postprocessing/sf_sortqsm.cpp \
-    steps/visualization/sf_colorfactory.cpp
+    steps/visualization/sf_colorfactory.cpp \
+    tests/factory/sf_qsmfactory.cpp
 
 TRANSLATIONS += languages/pluginsimpleforest_en.ts \
                 languages/pluginsimpleforest_fr.ts
