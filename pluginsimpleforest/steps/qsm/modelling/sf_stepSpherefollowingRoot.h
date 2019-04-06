@@ -19,11 +19,12 @@ public:
 protected:
   void createInResultModelListProtected();
   void createOutResultModelListProtected();
-  void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog);
-  void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog);
   void adaptParametersToExpertLevel();
   void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog);
   void createParamList(CT_ResultGroup* out_result);
+  virtual void createPreConfigurationDialog();
+  virtual void createPostConfigurationDialog();
+
   void compute();
   QList<SF_ParamSpherefollowingBasic<SF_PointNormal>> _paramList;
 
@@ -65,11 +66,14 @@ private:
   QStringList _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE;
 
   std::vector<double> paramsStringToNumber(const QString& UISelection);
-  void configDialogGuruAddSphereFollowing(CT_StepConfigurableDialog* configDialog);
+
   void configDialogAddSphereFollowingHyperParameters(CT_StepConfigurableDialog* configDialog);
   void configDialogAddSphereFollowingOptimizableParameters(CT_StepConfigurableDialog* configDialog);
   void configDialogGuruAddPreProcessing(CT_StepConfigurableDialog* configDialog);
   void configDialogGuruAddGridSearchCloudToModelDistance(CT_StepConfigurableDialog* configDialog);
+
+  virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
+  virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
 };
 
 #endif // SF_STEP_SPHEREFOLLOWING_BASIC_H

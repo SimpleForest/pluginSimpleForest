@@ -153,25 +153,40 @@ SF_StepSpherefollowingRoot::configDialogAddSphereFollowingHyperParameters(CT_Ste
                           0.5,
                           2,
                           _SF_heightInitializationSlice);
-  configDialog->addBool(
-    "Or you can let Simple Forest choose method parameters", " select if you want auto parameters", "", _SF_parameterAutoSearch);
   configDialog->addEmpty();
 }
 
 void
 SF_StepSpherefollowingRoot::configDialogAddSphereFollowingOptimizableParameters(CT_StepConfigurableDialog* configDialog)
 {
+  configDialog->addBool("Uncheck to deactivate parameterization possibilities "
+                        "of this step. Only recommended for beginners",
+                        "",
+                        "expert",
+                        _isExpert);
+  configDialog->addStringChoice("In beginner mode select point cloud quality", "", _pointDensities, _choicePointDensity);
+  configDialog->addBool(
+    "You can let Simple Forest choose method parameters", " select if you want auto parameters", "", _SF_parameterAutoSearch);
+
   configDialog->addText("<b>SphereFollowing Method Optimizationable Parameters</b>:");
   configDialog->addText("You can pre select also optimizable sphere following parameters:");
   configDialog->addDouble("To generate a sphere each fitted circle is multiplied with the "
                           "[<em><b>sphere multiplier</b></em>]",
-                          " ",
+                          ".",
                           1.4,
                           4,
                           2,
                           _SF_OPT_sphereRadiusMultiplier);
+  configDialog->addStringChoice("We search for <em>sphere multiplier</em> with the following potential parameterization:",
+                                ".",
+                                _PARAMETERS_LIST_SPHERE_RADIUS_MULTIPLIER,
+                                _PARAMETERS_CHOICE_SPHERE_RADIUS_MULTIPLIER);
   configDialog->addDouble(
     "The sphere surface has a thickness of [<em><b>sphere epsilon</b></em>] ", " (m).", 0.01, 0.1, 2, _SF_OPT_sphereEpsilon);
+  configDialog->addStringChoice("We search for <em>sphere epsilon</em> with the following potential parameterization:",
+                                ".",
+                                _PARAMETERS_LIST_SPHERE_EPSILON,
+                                _PARAMETERS_CHOICE_SPHERE_EPSILON);
   configDialog->addDouble("Point on sphere surface are clustered with threshold  [<em><b>euclidean "
                           "clustering distance</b></em>]  ",
                           " (m) to build new circle clusters.",
@@ -179,14 +194,11 @@ SF_StepSpherefollowingRoot::configDialogAddSphereFollowingOptimizableParameters(
                           0.1,
                           2,
                           _SF_OPT_euclideanClusteringDistance);
+  configDialog->addStringChoice("We search for <em>euclidean clustering distance</em> with the following potential parameterization:",
+                                ".",
+                                _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE,
+                                _PARAMETERS_CHOICE_EUCLIDEAN_CLUSTERING_DISTANCE);
   configDialog->addEmpty();
-}
-
-void
-SF_StepSpherefollowingRoot::configDialogGuruAddSphereFollowing(CT_StepConfigurableDialog* configDialog)
-{
-  configDialogAddSphereFollowingHyperParameters(configDialog);
-  // configDialogAddSphereFollowingOptimizableParameters(configDialog);
 }
 
 void
@@ -250,17 +262,21 @@ SF_StepSpherefollowingRoot::configDialogGuruAddGridSearchCloudToModelDistance(CT
 }
 
 void
-SF_StepSpherefollowingRoot::createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog)
+SF_StepSpherefollowingRoot::createPreConfigurationDialog()
 {
+  CT_StepConfigurableDialog* configDialog = newStandardPreConfigurationDialog();
   configDialogGuruAddPreProcessing(configDialog);
-  configDialogGuruAddSphereFollowing(configDialog);
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
+  configDialogAddSphereFollowingHyperParameters(configDialog);
 }
 
 void
-SF_StepSpherefollowingRoot::createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog)
+SF_StepSpherefollowingRoot::createPostConfigurationDialog()
 {
-  configDialog->addStringChoice("Choose the quality of the point cloud", "", _pointDensities, _choicePointDensity);
+  CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
+  configDialogAddSphereFollowingOptimizableParameters(configDialog);
+  createPostConfigurationDialogCitation(configDialog);
+  addCitationPCL(configDialog);
 }
 
 void
@@ -289,9 +305,11 @@ SF_StepSpherefollowingRoot::adaptParametersToExpertLevel()
     _PARAMETERS_CHOICE_SPHERE_RADIUS_MULTIPLIER = _PARAMETERS_7;
     _PP_voxelSize = 0.01;
     if (_choicePointDensity == _lowDensity) {
+      _SF_OPT_sphereRadiusMultiplier = 3;
       _SF_OPT_euclideanClusteringDistance = 0.1;
       _SF_OPT_sphereEpsilon = 0.05;
     } else if (_choicePointDensity == _mediumDensity) {
+      _SF_OPT_sphereRadiusMultiplier = 2.5;
       _SF_OPT_euclideanClusteringDistance = 0.04;
       _SF_OPT_sphereEpsilon = 0.5;
     } else {
@@ -310,6 +328,7 @@ SF_StepSpherefollowingRoot::createPostConfigurationDialogCitationSecond(CT_StepC
                         "<em>Highly Accurate Tree Models Derived from Terrestrial Laser Scan "
                         "Data: A Method Description.</em>");
   configDialog->addText("", "Forests <b>2014</b>, 5, 1069-1105.");
+  configDialog->addEmpty();
 }
 
 void
