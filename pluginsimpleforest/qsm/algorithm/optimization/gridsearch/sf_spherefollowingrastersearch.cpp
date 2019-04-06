@@ -57,63 +57,18 @@ std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>>
 SF_SphereFollowingRasterSearch::paramVector()
 {
   std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramVec;
-  for (size_t a = 0; a < 5; a++) {
+  auto sphereRadiusMultiplierMultipliers = m_params._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplierMultiplier;
+  for (auto factorSphereRadius : sphereRadiusMultiplierMultipliers) {
     SF_ParamSpherefollowingBasic<SF_PointNormal> paramsA = m_params;
-    switch (a) {
-      case 0:
-        paramsA._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplier = 1.75;
-        break;
-      case 1:
-        paramsA._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplier = 2.25;
-        break;
-      case 2:
-        paramsA._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplier = 2.75;
-        break;
-      case 3:
-        paramsA._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplier = 3.25;
-        break;
-      case 4:
-        paramsA._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplier = 4;
-        break;
-      default:
-        break;
-    }
-    for (size_t b = 0; b < 4; b++) {
+    paramsA._sphereFollowingParams.m_optimizationParams[0]._sphereRadiusMultiplier *= factorSphereRadius;
+    auto euclideanClusterMultipliers = m_params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistanceMultiplier;
+    for (auto factorEuclideanCluster : euclideanClusterMultipliers) {
       SF_ParamSpherefollowingBasic<SF_PointNormal> paramsB = paramsA;
-      switch (b) {
-        case 0:
-          paramsB._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance *= 0.5;
-          break;
-        case 1:
-          paramsB._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance *= 1;
-          break;
-        case 2:
-          paramsB._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance *= 4;
-          break;
-        case 3:
-          paramsB._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance *= 8;
-          break;
-        default:
-          break;
-      }
-      for (size_t c = 0; c < 4; c++) {
+      paramsA._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance *= factorEuclideanCluster;
+      auto epsilonSphereMultipliers = m_params._sphereFollowingParams.m_optimizationParams[0]._epsilonSphereMultiplier;
+      for (auto factorEpsilonSphere : epsilonSphereMultipliers) {
         SF_ParamSpherefollowingBasic<SF_PointNormal> paramsC = paramsB;
-        switch (c) {
-          case 0:
-            paramsC._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere *= 0.5;
-            break;
-          case 1:
-            paramsC._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere *= 1;
-            break;
-          case 2:
-            paramsC._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere *= 2;
-            break;
-          case 3:
-            paramsC._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere *= 3;
-            break;
-          default:
-            break;
-        }
+        paramsA._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere *= factorEpsilonSphere;
         paramVec.push_back(paramsC);
       }
     }

@@ -37,6 +37,27 @@ SF_StepSpherefollowingRoot::SF_StepSpherefollowingRoot(CT_StepInitializeData& da
   _pointDensities.append(_lowDensity);
   _pointDensities.append(_mediumDensity);
   _pointDensities.append(_highDensity);
+
+  _PARAMETERS_LIST_SPHERE_RADIUS_MULTIPLIER.push_back(_PARAMETERS_1);
+  _PARAMETERS_LIST_SPHERE_RADIUS_MULTIPLIER.push_back(_PARAMETERS_3);
+  _PARAMETERS_LIST_SPHERE_RADIUS_MULTIPLIER.push_back(_PARAMETERS_5);
+  _PARAMETERS_LIST_SPHERE_RADIUS_MULTIPLIER.push_back(_PARAMETERS_7);
+  _PARAMETERS_LIST_SPHERE_RADIUS_MULTIPLIER.push_back(_PARAMETERS_9);
+  _PARAMETERS_LIST_SPHERE_RADIUS_MULTIPLIER.push_back(_PARAMETERS_11);
+
+  _PARAMETERS_LIST_SPHERE_EPSILON.push_back(_PARAMETERS_1);
+  _PARAMETERS_LIST_SPHERE_EPSILON.push_back(_PARAMETERS_3);
+  _PARAMETERS_LIST_SPHERE_EPSILON.push_back(_PARAMETERS_5);
+  _PARAMETERS_LIST_SPHERE_EPSILON.push_back(_PARAMETERS_7);
+  _PARAMETERS_LIST_SPHERE_EPSILON.push_back(_PARAMETERS_9);
+  _PARAMETERS_LIST_SPHERE_EPSILON.push_back(_PARAMETERS_11);
+
+  _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE.push_back(_PARAMETERS_1);
+  _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE.push_back(_PARAMETERS_3);
+  _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE.push_back(_PARAMETERS_5);
+  _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE.push_back(_PARAMETERS_7);
+  _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE.push_back(_PARAMETERS_9);
+  _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE.push_back(_PARAMETERS_11);
 }
 
 SF_StepSpherefollowingRoot::~SF_StepSpherefollowingRoot() {}
@@ -263,6 +284,9 @@ SF_StepSpherefollowingRoot::adaptParametersToExpertLevel()
     _SF_inlierDistance = 0.03;
     _SF_minPtsGeometry = 3;
     _SF_heightInitializationSlice = 0.1;
+    _PARAMETERS_CHOICE_SPHERE_EPSILON = _PARAMETERS_7;
+    _PARAMETERS_CHOICE_EUCLIDEAN_CLUSTERING_DISTANCE = _PARAMETERS_7;
+    _PARAMETERS_CHOICE_SPHERE_RADIUS_MULTIPLIER = _PARAMETERS_7;
     _PP_voxelSize = 0.01;
     if (_choicePointDensity == _lowDensity) {
       _SF_OPT_euclideanClusteringDistance = 0.1;
@@ -355,14 +379,70 @@ SF_StepSpherefollowingRoot::toStringCMDMethod()
   return type;
 }
 
+std::vector<double>
+SF_StepSpherefollowingRoot::paramsStringToNumber(const QString& UISelection)
+{
+  std::vector<double> paramVec;
+  if (UISelection == _PARAMETERS_1) {
+    paramVec.push_back(1.0);
+  } else if (UISelection == _PARAMETERS_3) {
+    paramVec.push_back(0.75);
+    paramVec.push_back(1.0);
+    paramVec.push_back(1.5);
+  } else if (UISelection == _PARAMETERS_5) {
+    paramVec.push_back(0.5);
+    paramVec.push_back(0.75);
+    paramVec.push_back(1.0);
+    paramVec.push_back(1.50);
+    paramVec.push_back(2.0);
+  } else if (UISelection == _PARAMETERS_7) {
+    paramVec.push_back(0.5);
+    paramVec.push_back(0.75);
+    paramVec.push_back(0.9);
+    paramVec.push_back(1.0);
+    paramVec.push_back(1.4);
+    paramVec.push_back(1.9);
+    paramVec.push_back(2.5);
+  } else if (UISelection == _PARAMETERS_9) {
+    paramVec.push_back(0.45);
+    paramVec.push_back(0.6);
+    paramVec.push_back(0.75);
+    paramVec.push_back(0.9);
+    paramVec.push_back(1.0);
+    paramVec.push_back(1.4);
+    paramVec.push_back(1.8);
+    paramVec.push_back(2.4);
+    paramVec.push_back(3.0);
+  } else if (UISelection == _PARAMETERS_11) {
+    paramVec.push_back(0.4);
+    paramVec.push_back(0.5);
+    paramVec.push_back(0.65);
+    paramVec.push_back(0.8);
+    paramVec.push_back(0.9);
+    paramVec.push_back(1.0);
+    paramVec.push_back(1.4);
+    paramVec.push_back(1.9);
+    paramVec.push_back(2.4);
+    paramVec.push_back(3.0);
+    paramVec.push_back(4.0);
+  } else {
+    throw("Illegal gird parameter selected.");
+  }
+  return paramVec;
+}
+
 void
 SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup* outResult)
 {
   SF_SphereFollowingParameters sphereFollowingParams;
   SF_SphereFollowingOptimizationParameters sfOptimizationParameters;
   sfOptimizationParameters._epsilonSphere = _SF_OPT_sphereEpsilon;
+  sfOptimizationParameters._epsilonSphereMultiplier = paramsStringToNumber(_PARAMETERS_CHOICE_SPHERE_EPSILON);
   sfOptimizationParameters._euclideanClusteringDistance = _SF_OPT_euclideanClusteringDistance;
+  sfOptimizationParameters._euclideanClusteringDistanceMultiplier = paramsStringToNumber(
+    _PARAMETERS_CHOICE_EUCLIDEAN_CLUSTERING_DISTANCE);
   sfOptimizationParameters._sphereRadiusMultiplier = _SF_OPT_sphereRadiusMultiplier;
+  sfOptimizationParameters._sphereRadiusMultiplierMultiplier = paramsStringToNumber(_PARAMETERS_CHOICE_SPHERE_RADIUS_MULTIPLIER);
   std::vector<SF_SphereFollowingOptimizationParameters> optimizationParametersVector;
   optimizationParametersVector.push_back(sfOptimizationParameters);
   sphereFollowingParams.m_optimizationParams = optimizationParametersVector;

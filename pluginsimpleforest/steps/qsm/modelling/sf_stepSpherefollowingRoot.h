@@ -51,6 +51,20 @@ private:
   int _CMD_numClstrs = 1;
   double _CMD_inlierDistance = 0.05;
 
+  QString _PARAMETERS_1 = "100%";
+  QString _PARAMETERS_3 = "75%; 100%; 150%";
+  QString _PARAMETERS_5 = "50%; 75%; 100%; 150%; 200%";
+  QString _PARAMETERS_7 = "50%; 75%; 90%; 100%; 140%; 190%; 250%";
+  QString _PARAMETERS_9 = "45%; 60%; 75%; 90%; 100%; 140%; 180%; 240%; 300%";
+  QString _PARAMETERS_11 = "40%; 50%; 65%; 80%; 90%; 100%; 140%; 190%; 240%; 300%; 400%";
+  QString _PARAMETERS_CHOICE_SPHERE_RADIUS_MULTIPLIER = _PARAMETERS_5;
+  QString _PARAMETERS_CHOICE_SPHERE_EPSILON = _PARAMETERS_5;
+  QString _PARAMETERS_CHOICE_EUCLIDEAN_CLUSTERING_DISTANCE = _PARAMETERS_5;
+  QStringList _PARAMETERS_LIST_SPHERE_RADIUS_MULTIPLIER;
+  QStringList _PARAMETERS_LIST_SPHERE_EPSILON;
+  QStringList _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE;
+
+  std::vector<double> paramsStringToNumber(const QString& UISelection);
   void configDialogGuruAddSphereFollowing(CT_StepConfigurableDialog* configDialog);
   void configDialogAddSphereFollowingHyperParameters(CT_StepConfigurableDialog* configDialog);
   void configDialogAddSphereFollowingOptimizableParameters(CT_StepConfigurableDialog* configDialog);

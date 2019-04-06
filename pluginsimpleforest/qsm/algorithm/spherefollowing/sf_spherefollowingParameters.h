@@ -36,8 +36,11 @@
 struct SF_SphereFollowingOptimizationParameters
 {
   double _euclideanClusteringDistance = 0.03f;
+  std::vector<double> _euclideanClusteringDistanceMultiplier{ 1.0 };
   double _sphereRadiusMultiplier = 2.0f;
+  std::vector<double> _sphereRadiusMultiplierMultiplier{ 1.0 };
   double _epsilonSphere = 0.035f;
+  std::vector<double> _epsilonSphereMultiplier{ 1.0 };
   SF_SphereFollowingOptimizationParameters() {}
   SF_SphereFollowingOptimizationParameters(float euclideanClusteringDistance, float sphereRadiusMultiplier, float epsilonSphere)
     : _euclideanClusteringDistance(euclideanClusteringDistance)
