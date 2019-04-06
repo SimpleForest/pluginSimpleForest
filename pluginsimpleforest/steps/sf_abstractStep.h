@@ -69,8 +69,8 @@ class SF_AbstractStep : public CT_AbstractStep
 protected:
   virtual void createInResultModelListProtected() = 0;
   virtual void createOutResultModelListProtected() = 0;
-  void createPreConfigurationDialog();
-  void createPostConfigurationDialog();
+  virtual void createPreConfigurationDialog();
+  virtual void createPostConfigurationDialog();
   virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) = 0;
   virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) = 0;
   virtual void writeLogger();
@@ -146,6 +146,7 @@ protected:
   const QString getRISCitationSphereFollowing() const;
 
   void addCitationRaumonen(CT_StepConfigurableDialog* configDialog);
+  void addCitationPCL(CT_StepConfigurableDialog* configDialog);
 
 public:
   SF_AbstractStep(CT_StepInitializeData& dataInit);

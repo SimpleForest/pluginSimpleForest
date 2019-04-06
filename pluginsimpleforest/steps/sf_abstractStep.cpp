@@ -129,6 +129,16 @@ SF_AbstractStep::addCitationRaumonen(CT_StepConfigurableDialog* configDialog)
                         "<em>Fast Automatic Precision Tree Models from "
                         "Terrestrial Laser Scanner Data.</em>");
   configDialog->addText("", "Remote Sensing<b>2013</b>, 5, 491-520.");
+  configDialog->addEmpty();
+}
+
+void
+SF_AbstractStep::addCitationPCL(CT_StepConfigurableDialog* configDialog)
+{
+  configDialog->addText(QObject::tr("For this step please cite in addition:"), "Rusu, Radu Bogdan and Cousins, Steve");
+  configDialog->addText("", "<em>3d is here: Point cloud library (pcl).</em>");
+  configDialog->addText("", "Robotics and Automation (ICRA)<b>2011</b>, IEEE International.");
+  configDialog->addEmpty();
 }
 
 void
