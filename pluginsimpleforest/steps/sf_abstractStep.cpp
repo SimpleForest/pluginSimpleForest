@@ -34,6 +34,10 @@
 
 SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData& dataInit) : CT_AbstractStep(dataInit)
 {
+  _progress = 0;
+  _computationsDone = 0;
+  _computationsTotal = 1;
+
   _SF_methodList.push_back(_RANSAC);
   _SF_methodList.push_back(_LMEDS);
   _SF_methodList.push_back(_MSAC);
@@ -55,6 +59,16 @@ SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData& dataInit) : CT_AbstractS
   _numberPoints.push_back(_few);
   _numberPoints.push_back(_intermediate);
   _numberPoints.push_back(_many);
+
+  _stepProgress.reset(new SF_StepProgress());
+  QObject::connect(&(*_stepProgress), SIGNAL(computationDone()), this, SLOT(computationDone()));
+}
+
+void
+SF_AbstractStep::computationDone()
+{
+  _computationsDone = _computationsDone + 1;
+  _progress = _computationsDone / _computationsTotal;
 }
 
 void
@@ -62,15 +76,18 @@ SF_AbstractStep::addQSM(CT_ResultGroup* outResult,
                         QList<SF_ParamQSM<SF_PointNormal>> paramList,
                         QString outResultGrpName,
                         QString outCylinderName,
-                        QString outCylinderGrpName)
+                        QString outCylinderGrpName,
+                        QString outSFQSMName)
 {
   CT_ResultGroupIterator outResIt(outResult, this, outResultGrpName);
   while (!isStopped() && outResIt.hasNext()) {
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
     std::for_each(paramList.begin(),
                   paramList.end(),
-                  [this, group, outResult, outCylinderName, outCylinderGrpName](SF_ParamQSM<SF_PointNormal>& params) {
+                  [this, group, outResult, outCylinderName, outCylinderGrpName, outSFQSMName](SF_ParamQSM<SF_PointNormal>& params) {
                     std::shared_ptr<SF_ModelQSM> qsm = params._tree;
+                    SF_QSM_Item* qsmItem = new SF_QSM_Item(outSFQSMName, outResult, qsm);
+                    group->addItemDrawable(qsmItem);
                     std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = qsm->getBuildingBricks();
                     std::for_each(buildingBricks.begin(),
                                   buildingBricks.end(),
@@ -81,9 +98,9 @@ SF_AbstractStep::addQSM(CT_ResultGroup* outResult,
                                     double radius = buildingBrick->getRadius();
                                     double length = buildingBrick->getLength();
                                     CT_CylinderData* data = new CT_CylinderData(
-                                      Eigen::Vector3d(static_cast<double>((start[0] + end[0]) / 2 + params._translation[0]),
-                                                      static_cast<double>((start[1] + end[1]) / 2 + params._translation[1]),
-                                                      static_cast<double>((start[2] + end[2]) / 2 + params._translation[2])),
+                                      Eigen::Vector3d(static_cast<double>((start[0] + end[0]) / 2),
+                                                      static_cast<double>((start[1] + end[1]) / 2),
+                                                      static_cast<double>((start[2] + end[2]) / 2)),
                                       Eigen::Vector3d(static_cast<double>(end[0] - start[0]),
                                                       static_cast<double>(end[1] - start[1]),
                                                       static_cast<double>(end[2] - start[2])),
@@ -162,6 +179,12 @@ SF_AbstractStep::setProgressByFuture(QFuture<void>& future, float percentageInte
   while (!future.isFinished()) {
     setProgress(percentageIntervalStart + (percentageIntervalSize * (future.progressValue() - progressMin) / progressSize));
   }
+}
+
+void
+SF_AbstractStep::setProgressByCounter(float percentageIntervalStart, float percentageIntervalSize)
+{
+  setProgress(percentageIntervalStart + (percentageIntervalSize * _progress));
 }
 
 CT_Scene*

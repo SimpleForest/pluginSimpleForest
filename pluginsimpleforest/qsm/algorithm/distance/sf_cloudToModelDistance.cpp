@@ -53,6 +53,7 @@ Sf_CloudToModelDistance::adaptDistanceToMethod(float distance, std::shared_ptr<S
 {
   switch (_METHOD) {
     case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
+      distance = std::abs(distance);
       break;
     case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
       distance = std::abs(distance);
@@ -69,7 +70,11 @@ Sf_CloudToModelDistance::adaptDistanceToMethod(float distance, std::shared_ptr<S
       distance = std::min(_INLIERDISTANCE * _INLIERDISTANCE, distance);
       break;
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
-      distance = -buildingBrick->getGrowthLength();
+      if (distance != maxError()) {
+        distance = buildingBrick->getGrowthLength();
+      } else {
+        distance = 0;
+      }
       break;
   }
   return distance;
@@ -79,6 +84,12 @@ float
 Sf_CloudToModelDistance::getAverageDistance() const
 {
   return _averageDistance;
+}
+
+std::vector<float>
+Sf_CloudToModelDistance::distances() const
+{
+  return _distances;
 }
 
 float
@@ -95,6 +106,12 @@ Sf_CloudToModelDistance::getDistance(const pcl::PointXYZINormal& point, std::sha
   float distance = buildingBrick->getDistance(Eigen::Vector3f(point.x, point.y, point.z));
   distance = adaptDistanceToMethod(distance, buildingBrick);
   return distance;
+}
+
+float
+Sf_CloudToModelDistance::getAngle(const pcl::PointXYZINormal& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
+{
+  return SF_Math<float>::getAngleBetweenDeg(Eigen::Vector3f(point.normal_x, point.normal_y, point.normal_z), buildingBrick->getAxis());
 }
 
 void
@@ -117,6 +134,9 @@ Sf_CloudToModelDistance::compute()
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
       _averageDistance = std::sqrt(SF_Math<float>::getMean(distances));
+      break;
+    case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
+      _averageDistance = std::sqrt(SF_Math<float>::getMedian(distances));
       break;
     default:
       break;
@@ -143,28 +163,46 @@ Sf_CloudToModelDistance::getCloudToModelDistances()
 {
   std::vector<float> distances;
   int k = _k;
-  if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
-    k = 1;
-  }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = _tree->getBuildingBricks();
   for (size_t i = 0; i < _cloud->points.size(); i++) {
     pcl::PointXYZINormal point = _cloud->points[i];
     std::vector<int> pointIdxRadiusSearch;
     std::vector<float> pointRadiusSquaredDistance;
     if (_kdtreeQSM->nearestKSearch(point, k, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
-      float minDistance = std::numeric_limits<float>::max();
+      float minDistance = maxError();
+      float minDistanceAngle = maxError();
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
-        float distance = getDistance(point, neighboringBrick);
-        if (distance < minDistance)
+        auto distance = getDistance(point, neighboringBrick);
+        float distanceAngle;
+        auto angle = getAngle(point, neighboringBrick);
+        if (angle == 0) {
+          distanceAngle = maxError();
+        } else {
+          distanceAngle = distance / angle;
+        }
+
+        if (distanceAngle < minDistanceAngle) {
+          minDistanceAngle = distanceAngle;
           minDistance = distance;
+        }
       }
       distances.push_back(minDistance);
     } else {
-      distances.push_back(adaptDistanceToMethod(_INLIERDISTANCE * 2, buildingBricks[0]));
+      if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
+        distances.push_back(0);
+      } else {
+        distances.push_back(maxError());
+      }
     }
   }
   return distances;
+}
+
+float
+Sf_CloudToModelDistance::maxError() const
+{
+  return _INLIERDISTANCE * 2;
 }
 
 float

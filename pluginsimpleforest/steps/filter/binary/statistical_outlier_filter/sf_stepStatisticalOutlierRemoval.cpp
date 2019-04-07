@@ -170,7 +170,9 @@ SF_StepStatisticalOutlierRemoval::compute()
   identifyAndRemoveCorruptedScenes(outResult);
   createParamList(outResult);
   QFuture<void> future = QtConcurrent::map(_paramList, SF_StatisticalOutlierRemovalAdapter());
-  setProgressByFuture(future, 10, 85);
+  while (!future.isFinished()) {
+    setProgressByCounter(10, 85);
+  }
   writeOutput(outResult);
   writeLogger();
   _paramList.clear();
@@ -208,6 +210,7 @@ SF_StepStatisticalOutlierRemoval::createParamList(CT_ResultGroup* outResult)
     const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
       (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
     SF_ParamStatisticalOutlierFilter<SF_Point> param;
+    param._stepProgress = _stepProgress;
     param._log = PS_LOG;
     param._iterations = _iterations;
     param._k = _k;
@@ -217,4 +220,5 @@ SF_StepStatisticalOutlierRemoval::createParamList(CT_ResultGroup* outResult)
     param._grpCpyGrp = group;
     _paramList.append(param);
   }
+  _computationsTotal = _paramList.size() * _iterations;
 }

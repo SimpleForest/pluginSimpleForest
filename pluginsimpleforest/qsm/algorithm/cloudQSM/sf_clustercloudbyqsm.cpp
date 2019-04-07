@@ -41,7 +41,17 @@ SF_ClusterCloudByQSM::SF_ClusterCloudByQSM(SF_CloudToModelDistanceParameters par
                                            pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
                                            int numCltrs)
   : m_params(params), m_qsm(qsm), m_cloud(cloud), m_numClstrs(numCltrs)
-{}
+{
+  m_cloudUnfitted.reset(new pcl::PointCloud<pcl::PointXYZINormal>());
+  m_clustersCloud.reset(new pcl::PointCloud<pcl::PointXYZINormal>());
+}
+
+void
+SF_ClusterCloudByQSM::initializeKdTree()
+{
+  _kdtreeQSM.reset(new pcl::KdTreeFLANN<pcl::PointXYZINormal>());
+  _kdtreeQSM->setInputCloud(m_clustersCloud);
+}
 
 void
 SF_ClusterCloudByQSM::compute()
@@ -49,7 +59,7 @@ SF_ClusterCloudByQSM::compute()
   SF_CloudToModelDistanceParameters params = m_params;
   params._method = SF_CLoudToModelDistanceMethod::GROWTHDISTANCE;
   Sf_CloudToModelDistance cmd(m_qsm, m_cloud, params);
-  std::vector<float> distances = cmd.getCloudToModelDistances();
+  std::vector<float> distances = cmd.distances();
   size_t index = 0;
   std::vector<pcl::PointXYZINormal> points;
   std::for_each(distances.begin(), distances.end(), [this, &index, &points](float distance) {
@@ -57,6 +67,8 @@ SF_ClusterCloudByQSM::compute()
     point.intensity = distance;
     if (point.intensity != std::numeric_limits<float>::max()) {
       points.push_back(point);
+    } else {
+      m_cloudUnfitted->points.push_back(point);
     }
   });
   std::sort(points.begin(), points.end(), [](const pcl::PointXYZINormal& first, const pcl::PointXYZINormal& second) {
@@ -66,9 +78,21 @@ SF_ClusterCloudByQSM::compute()
     m_clusters.push_back(pcl::PointCloud<pcl::PointXYZINormal>::Ptr(new pcl::PointCloud<pcl::PointXYZINormal>));
   }
   for (size_t index = 0; index < points.size(); index++) {
-    size_t clusterIndex = index / std::ceil(points.size() / m_numClstrs);
+    size_t clusterIndex = index / (std::ceil(points.size() / m_numClstrs));
     clusterIndex = std::min(clusterIndex, static_cast<size_t>(m_numClstrs - 1));
-
-    m_clusters[clusterIndex]->points.push_back(points[index]);
+    pcl::PointXYZINormal point = points[index];
+    m_clusters[clusterIndex]->points.push_back(point);
+    point.intensity = clusterIndex;
+    m_clustersCloud->points.push_back(point);
+  }
+  initializeKdTree();
+  for (size_t i = 0; i < m_cloudUnfitted->points.size(); i++) {
+    pcl::PointXYZINormal unfittedPoint = m_cloudUnfitted->points[i];
+    std::vector<int> pointIdxRadiusSearch;
+    std::vector<float> pointRadiusSquaredDistance;
+    if (_kdtreeQSM->nearestKSearch(unfittedPoint, 1, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
+      pcl::PointXYZINormal clusterPoint = m_clustersCloud->points[pointIdxRadiusSearch[0]];
+      m_clusters[clusterPoint.intensity]->points.push_back(unfittedPoint);
+    }
   }
 }

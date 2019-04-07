@@ -40,9 +40,17 @@ Sf_ModelCylinderBuildingbrick::getRadius()
 }
 
 void
-Sf_ModelCylinderBuildingbrick::setRadius(float radius)
+Sf_ModelCylinderBuildingbrick::setRadius(float radius, FittingType type)
 {
+  _fittingType = type;
   m_radius = radius;
+}
+
+void
+Sf_ModelCylinderBuildingbrick::translate(Eigen::Vector3f translation)
+{
+  _start = _start + translation;
+  _end = _end + translation;
 }
 
 float
@@ -119,8 +127,8 @@ Sf_ModelCylinderBuildingbrick::getCenter()
 Eigen::Vector3f
 Sf_ModelCylinderBuildingbrick::getAxis()
 {
-  Eigen::Vector3f principleDirection((_end[0] - _start[0]), (_end[1] - _start[1]), (_end[2] - _start[2]));
-  return principleDirection;
+  Eigen::Vector3f axis((_end[0] - _start[0]), (_end[1] - _start[1]), (_end[2] - _start[2]));
+  return axis;
 }
 
 Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB)

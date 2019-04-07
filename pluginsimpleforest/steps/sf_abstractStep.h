@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2018 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Dr. Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -28,6 +28,7 @@
 #ifndef SF_ABSTRACT_STEP_H
 #define SF_ABSTRACT_STEP_H
 
+#include "steps/item/sf_qsm_item.h"
 #include <QFuture>
 #include <QObject>
 #include <QString>
@@ -81,18 +82,22 @@ protected:
               QList<SF_ParamQSM<SF_PointNormal>> paramList,
               QString outResultGrpName,
               QString outCylinderName,
-              QString outCylinderGrpName);
+              QString outCylinderGrpName,
+              QString outSFQSMName);
   void addColors(CT_ResultGroup* outResult,
                  QList<SF_ParamQSM<SF_PointNormal>> paramList,
                  QString outResultGrpName,
                  QString outColorGrpName,
                  QString outColorName);
 
+  std::shared_ptr<SF_StepProgress> _stepProgress;
+
   virtual void adaptParametersToExpertLevel() = 0;
   virtual void compute() = 0;
 
   void recursiveRemoveIfEmpty(CT_AbstractItemGroup* parent, CT_AbstractItemGroup* group);
   void setProgressByFuture(QFuture<void>& future, float percentageIntervalStart, float percentageIntervalSize);
+  void setProgressByCounter(float percentageIntervalStart, float percentageIntervalSize);
   void createOutputIndices(std::vector<CT_PointCloudIndexVector*>& indexVectors,
                            const std::vector<int>& indices,
                            const CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn);
@@ -108,6 +113,9 @@ protected:
 
   QList<SF_ParamCT> _paramList;
 
+  std::atomic<float> _progress;
+  std::atomic<float> _computationsDone;
+  std::atomic<float> _computationsTotal;
   bool _isExpert = true;
   QString _RANSAC = "RANSAC  - RANdom SAmple Consensus";
   QString _LMEDS = "LMEDS   - Least Median of Squares";
@@ -151,6 +159,9 @@ protected:
 public:
   SF_AbstractStep(CT_StepInitializeData& dataInit);
   virtual CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData& dataInit) = 0;
+
+public slots:
+  void computationDone();
 };
 
 #endif // SF_ABSTRACT_STEP_H

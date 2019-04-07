@@ -79,6 +79,9 @@ SF_StatisticalOutlierFilter<PointType>::iterate(SF_ParamStatisticalOutlierFilter
       break;
     }
     cloud = SF_StatisticalOutlierFilter<PointType>::_cloudOutFiltered;
+    if (params._stepProgress) {
+      params._stepProgress->fireComputation();
+    }
     iterations--;
   }
 }

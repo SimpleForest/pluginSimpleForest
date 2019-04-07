@@ -103,6 +103,7 @@ float
 SF_SphereFollowing::error()
 {
   Sf_CloudToModelDistance cmd(m_qsm, m_cloud, m_params._distanceParams);
+  m_params._stepProgress->fireComputation();
   return cmd.getAverageDistance();
 }
 
@@ -154,29 +155,6 @@ SF_SphereFollowing::extractCloud(pcl::PointIndices::Ptr indices)
 }
 
 std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>
-SF_SphereFollowing::clusterByID(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, size_t minID)
-{
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters;
-  clusters.push_back(pcl::PointCloud<pcl::PointXYZINormal>::Ptr(new pcl::PointCloud<pcl::PointXYZINormal>()));
-  std::for_each(cloud->points.begin(), cloud->points.end(), [&minID](const pcl::PointXYZINormal& point) {
-    size_t currentID = point.intensity;
-    if (minID > currentID) {
-      minID = currentID;
-    }
-  });
-  size_t maxID = minID;
-  std::for_each(cloud->points.begin(), cloud->points.end(), [&maxID, &minID, &clusters](const pcl::PointXYZINormal& point) {
-    size_t currentID = point.intensity;
-    while (maxID < currentID) {
-      clusters.push_back(pcl::PointCloud<pcl::PointXYZINormal>::Ptr(new pcl::PointCloud<pcl::PointXYZINormal>()));
-      maxID++;
-    }
-    clusters[currentID - minID]->push_back(point);
-  });
-  return clusters;
-}
-
-std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>
 SF_SphereFollowing::clusterEuclidean(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, size_t minIndex)
 {
   std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters;
@@ -194,7 +172,7 @@ SF_SphereFollowing::clusterEuclidean(pcl::PointCloud<pcl::PointXYZINormal>::Ptr 
   for (std::vector<pcl::PointIndices>::const_iterator it = clusterIndices.begin(); it != clusterIndices.end(); ++it) {
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudCluster(new pcl::PointCloud<pcl::PointXYZINormal>);
     for (std::vector<int>::const_iterator pit = it->indices.begin(); pit != it->indices.end(); ++pit)
-      cloudCluster->points.push_back(cloud->points[*pit]); //*
+      cloudCluster->points.push_back(cloud->points[*pit]);
     if (cloudCluster->points.size() >= static_cast<size_t>(m_params._sphereFollowingParams._minPtsGeometry)) {
       cloudCluster->width = cloudCluster->points.size();
       cloudCluster->height = 1;

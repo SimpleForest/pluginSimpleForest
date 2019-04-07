@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2018 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2019 Dr. Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -26,31 +26,26 @@
 
 *****************************************************************************/
 
-#ifndef SF_MODEL_TREE_H
-#define SF_MODEL_TREE_H
+#ifndef SF_VISUALIZEFITQUALITY_H
+#define SF_VISUALIZEFITQUALITY_H
 
-#include "sf_modelAbstractSegment.h"
+#include "qsm/algorithm/distance/sf_cloudToModelDistance.h"
+#include "steps/param/sf_paramAllSteps.h"
 
-class SF_ModelQSM
+class SF_VisualizeFitquality
 {
-  int _ID;
-  std::string _species;
-  std::shared_ptr<SF_ModelAbstractSegment> m_rootSegment;
+  SF_CloudToModelDistanceParameters m_params;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
+  std::shared_ptr<SF_ModelQSM> _qsm;
+  CT_ColorCloudStdVector* m_colors;
 
 public:
-  SF_ModelQSM(const int ID);
-  virtual std::string toString();
-  virtual std::string toHeaderString();
-
-  void translate(const Eigen::Vector3f& translation);
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments();
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment);
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getLeaveSegments();
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> getBuildingBricks();
-  std::shared_ptr<SF_ModelAbstractSegment> getRootSegment() const;
-  void setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& rootSegment);
-  void setBranchorder();
-  void sort(SF_ModelAbstractSegment::SF_SORTTYPE type);
+  SF_VisualizeFitquality();
+  void setParams(const SF_CloudToModelDistanceParameters& params);
+  void setCloud(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud);
+  void setQsm(std::shared_ptr<SF_ModelQSM> qsm);
+  void compute();
+  CT_ColorCloudStdVector* colors() const;
 };
 
-#endif // SF_MODEL_TREE_H
+#endif // SF_VISUALIZEFITQUALITY_H

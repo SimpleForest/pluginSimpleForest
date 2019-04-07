@@ -90,6 +90,15 @@ SF_ModelQSM::toHeaderString()
   return str;
 }
 
+void
+SF_ModelQSM::translate(const Eigen::Vector3f& translation)
+{
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = getBuildingBricks();
+  for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick : buildingBricks) {
+    buildingBrick->translate(translation);
+  }
+}
+
 std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
 SF_ModelQSM::getSegments()
 {

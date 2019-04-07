@@ -37,6 +37,7 @@
 #include "qsm/algorithm/distance/sf_cloudToModelDistanceParameters.h"
 #include "qsm/algorithm/spherefollowing/sf_spherefollowingParameters.h"
 #include "qsm/model/sf_modelQSM.h"
+#include "steps/sf_stepprogress.h"
 #include <pcl/sample_consensus/method_types.h>
 
 struct SF_ParamCT
@@ -50,6 +51,7 @@ struct SF_ParamCT
     QString str;
     return str;
   }
+  std::shared_ptr<SF_StepProgress> _stepProgress;
 
   virtual void log_import()
   {

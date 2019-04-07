@@ -83,7 +83,6 @@ private:
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr lowestSlice(float& minZ);
   pcl::PointIndices::Ptr surfaceIndices(Circle& lastCircle);
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr extractCloud(pcl::PointIndices::Ptr indices);
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusterByID(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud, size_t minID);
   std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusterEuclidean(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
                                                                            size_t minIndex);
   void processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters, const Circle& lastCircle);

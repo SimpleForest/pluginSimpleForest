@@ -285,8 +285,9 @@ SF_StepSpherefollowingRoot::createOutResultModelListProtected()
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
     resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outCylinderGroup, new CT_StandardItemGroup(), tr("QSM Group"));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Spherefollowing Group Color"));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Spherefollowing Fit Quality"));
     resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(), tr("QSM"));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM"));
   }
 }
 
@@ -340,9 +341,15 @@ SF_StepSpherefollowingRoot::compute()
   createParamList(outResult);
   writeLogger();
   QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingRootAdapter());
-  setProgressByFuture(future, 10, 85);
-  addQSM(
-    outResult, paramList(), QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outCylinders.completeName(), _outCylinderGroup.completeName());
+  while (!future.isFinished()) {
+    setProgressByCounter(10.0f, 85.0f);
+  }
+  addQSM(outResult,
+         paramList(),
+         QString::fromUtf8(DEF_IN_GRP_CLUSTER),
+         _outCylinders.completeName(),
+         _outCylinderGroup.completeName(),
+         _outSFQSM.completeName());
   addColors(outResult, paramList(), DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, m_outCloudItem.completeName());
 }
 
@@ -445,7 +452,7 @@ SF_StepSpherefollowingRoot::paramsStringToNumber(const QString& UISelection)
     paramVec.push_back(3.0);
     paramVec.push_back(4.0);
   } else {
-    throw("Illegal gird parameter selected.");
+    throw("SF_StepSpherefollowingRoot: Illegal grid parameter selected.");
   }
   return paramVec;
 }
@@ -485,6 +492,7 @@ SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup* outResult)
     const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
       this, DEF_IN_CLOUD_SEED);
     SF_ParamSpherefollowingBasic<SF_PointNormal> param;
+    param._stepProgress = _stepProgress;
     param._distanceParams = distanceParams;
     param._sphereFollowingParams = sphereFollowingParams;
     param._voxelSize = _PP_voxelSize;
@@ -497,4 +505,9 @@ SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup* outResult)
     param._grpCpyGrp = group;
     _paramList.append(param);
   }
+  int numberClouds = _paramList.size();
+  int numberComputationsPerCloud = sfOptimizationParameters._epsilonSphereMultiplier.size() *
+                                   sfOptimizationParameters._euclideanClusteringDistanceMultiplier.size() *
+                                   sfOptimizationParameters._sphereRadiusMultiplierMultiplier.size();
+  _computationsTotal = numberClouds * numberComputationsPerCloud;
 }

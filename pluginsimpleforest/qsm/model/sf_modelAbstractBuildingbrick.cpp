@@ -132,6 +132,12 @@ Sf_ModelAbstractBuildingbrick::setSegment(std::shared_ptr<SF_ModelAbstractSegmen
 }
 
 void
+Sf_ModelAbstractBuildingbrick::setFittingType(FittingType fittingType)
+{
+  _fittingType = fittingType;
+}
+
+void
 Sf_ModelAbstractBuildingbrick::setID(const size_t& ID)
 {
   _ID = ID;
@@ -161,6 +167,12 @@ Sf_ModelAbstractBuildingbrick::getChildren()
 {
   std::shared_ptr<SF_ModelAbstractSegment> segment = getSegment();
   return segment->getChildBuildingBricks(_indexVector);
+}
+
+FittingType
+Sf_ModelAbstractBuildingbrick::getFittingType() const
+{
+  return _fittingType;
 }
 
 float

@@ -37,7 +37,8 @@
 enum FittingType
 {
   UNKNOWN,
-  SPHEREFOLLOWING
+  SPHEREFOLLOWING,
+  MEDIAN
 };
 
 class SF_ModelAbstractSegment;
@@ -65,8 +66,9 @@ public:
   virtual float getLength() = 0;
   virtual float getVolume() = 0;
   virtual float getRadius() = 0;
-  virtual void setRadius(float radius) = 0;
+  virtual void setRadius(float radius, FittingType type) = 0;
   virtual float getDistance(const Eigen::Vector3f& point) = 0;
+  virtual void translate(Eigen::Vector3f translation) = 0;
   void remove();
   float getDistance(const pcl::PointXYZ& point);
   float getDistance(const pcl::PointXYZINormal& point);
@@ -84,6 +86,8 @@ public:
   Eigen::Vector3f getEnd() const;
   std::shared_ptr<SF_ModelAbstractSegment> getSegment();
   void setSegment(std::shared_ptr<SF_ModelAbstractSegment> segment);
+  void setFittingType(FittingType fittingType);
+  FittingType getFittingType() const;
 };
 
 #endif // SF_MODEL_ABSTRACT_BUILDINGBRICK_H

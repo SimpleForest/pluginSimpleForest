@@ -33,6 +33,7 @@ private:
   CT_AutoRenameModels m_outCloudItem;
   CT_AutoRenameModels _outCylinderGroup;
   CT_AutoRenameModels _outCylinders;
+  CT_AutoRenameModels _outSFQSM;
   int toStringSFMethod();
   int toStringCMDMethod();
   double _PP_voxelSize = 0.01;

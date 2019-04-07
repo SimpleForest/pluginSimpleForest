@@ -21,6 +21,7 @@ CONFIG   += console
 TARGET = plug_simpleforest
 
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
+    qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
     pcl/sf_point.h \
@@ -78,6 +79,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/feature/pca/sf_pcavalues.h \
     pcl/cloud/feature/growth_direction/sf_growthDirection.h \
     pcl/cloud/feature/growth_direction/sf_growthDirection.hpp \
+    steps/item/sf_qsm_item.h \
     steps/sf_abstractStep.h \
     steps/manipulation/merge/sf_stepMergeClouds.h \
     steps/filter/sf_abstractFilterStep.h \
@@ -142,10 +144,12 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/algorithm/postprocessing/sf_qsmmedianfilter.h \
     qsm/algorithm/postprocessing/sf_mergeonechildsegments.h \
     qsm/algorithm/postprocessing/sf_sortqsm.h \
+    steps/sf_stepprogress.h \
     steps/visualization/sf_colorfactory.h \
     tests/factory/sf_qsmfactory.h
 
 SOURCES += \
+    qsm/algorithm/visualization/sf_visualizefitquality.cpp \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
     plot/DTM/sf_dtm.cpp \
@@ -162,6 +166,7 @@ SOURCES += \
     plot/sf_modelPlot.cpp \
     pcl/geometry/sf_pointGeometry.cpp \
     pcl/cloud/filter/binary/stem/sf_stemRansacFilter.cpp \
+    steps/item/sf_qsm_item.cpp \
     steps/sf_abstractStep.cpp \
     steps/filter/sf_abstractFilterStep.cpp \
     steps/filter/multiple/sf_abstractFilterMultipleStep.cpp \
@@ -192,6 +197,7 @@ SOURCES += \
     qsm/algorithm/postprocessing/sf_qsmmedianfilter.cpp \
     qsm/algorithm/postprocessing/sf_mergeonechildsegments.cpp \
     qsm/algorithm/postprocessing/sf_sortqsm.cpp \
+    steps/sf_stepprogress.cpp \
     steps/visualization/sf_colorfactory.cpp \
     tests/factory/sf_qsmfactory.cpp
 

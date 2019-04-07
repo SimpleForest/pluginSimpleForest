@@ -37,8 +37,12 @@ class SF_ClusterCloudByQSM
   SF_CloudToModelDistanceParameters m_params;
   std::shared_ptr<SF_ModelQSM> m_qsm;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_clustersCloud;
   size_t m_numClstrs;
   std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> m_clusters;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloudUnfitted;
+  void initializeKdTree();
+  pcl::KdTreeFLANN<pcl::PointXYZINormal>::Ptr _kdtreeQSM;
 
 public:
   SF_ClusterCloudByQSM(SF_CloudToModelDistanceParameters params,

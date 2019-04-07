@@ -8,11 +8,10 @@ SF_SphereFollowingRasterSearch::compute()
   SF_Descriptor<SF_PointNormal> desc(m_cloud);
   desc.setParameters(2);
   desc.computeFeatures();
-  m_params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance = 2 * (desc.mean() + 2 * desc.sd());
-  m_params._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere = (desc.mean() + 2 * desc.sd());
+  m_params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance = 3 * (desc.mean() + 2 * desc.sd());
+  m_params._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere = 3 * (desc.mean() + 2 * desc.sd());
   std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramVec = paramVector();
-  size_t index = 0;
-  std::for_each(paramVec.begin(), paramVec.end(), [this, &index](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
+  std::for_each(paramVec.begin(), paramVec.end(), [this](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
     SF_SphereFollowing sphereFollowing;
     std::vector<SF_CloudNormal::Ptr> clusters;
     clusters.push_back(m_cloud);
@@ -64,11 +63,11 @@ SF_SphereFollowingRasterSearch::paramVector()
     auto euclideanClusterMultipliers = m_params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistanceMultiplier;
     for (auto factorEuclideanCluster : euclideanClusterMultipliers) {
       SF_ParamSpherefollowingBasic<SF_PointNormal> paramsB = paramsA;
-      paramsA._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance *= factorEuclideanCluster;
+      paramsB._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance *= factorEuclideanCluster;
       auto epsilonSphereMultipliers = m_params._sphereFollowingParams.m_optimizationParams[0]._epsilonSphereMultiplier;
       for (auto factorEpsilonSphere : epsilonSphereMultipliers) {
         SF_ParamSpherefollowingBasic<SF_PointNormal> paramsC = paramsB;
-        paramsA._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere *= factorEpsilonSphere;
+        paramsC._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere *= factorEpsilonSphere;
         paramVec.push_back(paramsC);
       }
     }

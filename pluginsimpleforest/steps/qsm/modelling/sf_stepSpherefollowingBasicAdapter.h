@@ -14,6 +14,7 @@
 #include "qsm/algorithm/postprocessing/sf_qsmmedianfilter.h"
 #include "qsm/algorithm/sf_QSMAlgorithm.h"
 #include "qsm/algorithm/sf_QSMCylinder.h"
+#include "qsm/algorithm/visualization/sf_visualizefitquality.h"
 #include "qsm/build/sf_buildQSM.h"
 #include "steps/param/sf_paramAllSteps.h"
 #include "steps/visualization/sf_colorfactory.h"
@@ -97,71 +98,26 @@ public:
     }
 
     sphereFollowing.compute();
-    SF_DownHillSimplex downhillSimplex;
     {
       QMutexLocker m1(&*mMutex);
       params = sphereFollowing.getParamVec()[0];
       params._cloudIn = largestCluster;
-      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; " << sphereFollowing.getParamVec()[0]._modelCloudError
-                << std::endl;
-      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; " << sphereFollowing.getParamVec()[39]._modelCloudError
-                << std::endl;
-      std::cout << "foo3 " << sphereFollowing.getParamVec().size() << " ; " << sphereFollowing.getParamVec()[79]._modelCloudError
-                << std::endl;
-      downhillSimplex.setParams(params);
-    }
-    downhillSimplex.compute();
-    {
-      QMutexLocker m1(&*mMutex);
-      params = downhillSimplex.params();
 
       SF_QSMMedianFilter med;
       med.compute(params._tree);
-
-      CT_ColorCloudStdVector* _colors;
-      _colors = new CT_ColorCloudStdVector(cloud->points.size());
-      pcl::KdTreeFLANN<pcl::PointXYZINormal> kdtree;
-      kdtree.setInputCloud(params._cloudIn);
-      for (size_t i = 0; i < cloud->points.size(); i++) {
-        pcl::PointXYZINormal point = cloud->points[i];
-        std::vector<int> pointIdxNKNSearch(1);
-        std::vector<float> pointNKNSquaredDistance(1);
-        CT_Color& col = _colors->colorAt(i);
-        if (kdtree.nearestKSearch(point, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
-          pcl::PointXYZINormal closest = params._cloudIn->points[pointIdxNKNSearch[0]];
-          if (closest.intensity == std::numeric_limits<float>::max() || closest.intensity == std::numeric_limits<float>::lowest()) {
-            col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::RED));
-          } else {
-            switch (static_cast<int>(closest.intensity) % 6) {
-              case 0:
-                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::GREEN));
-                break;
-              case 1:
-                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::BLUE));
-                break;
-              case 2:
-                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::YELLOW));
-                break;
-              case 3:
-                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::VIOLET));
-                break;
-              case 4:
-                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::CYAN));
-                break;
-              case 5:
-                col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::BRIGHT));
-                break;
-              default:
-                break;
-            }
-          }
-        } else {
-          col = std::move(SF_ColorFactory::getColor(SF_ColorFactory::Color::DARK));
-        }
-      }
-      params._colors = _colors;
-      std::cout << "foo3 "
-                << " ; " << params._modelCloudError << std::endl;
+    }
+    SF_VisualizeFitquality vfq;
+    {
+      QMutexLocker m1(&*mMutex);
+      vfq.setCloud(cloud);
+      vfq.setParams(params._distanceParams);
+      vfq.setQsm(params._tree);
+    }
+    vfq.compute();
+    {
+      QMutexLocker m1(&*mMutex);
+      params._colors = vfq.colors();
+      params._tree->translate(Eigen::Vector3f(params._translation[0], params._translation[1], params._translation[2]));
     }
   }
 };

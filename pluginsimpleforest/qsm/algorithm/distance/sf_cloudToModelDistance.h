@@ -50,8 +50,11 @@ class Sf_CloudToModelDistance
   const std::vector<float> cropDistances(std::vector<float> distances);
   float getDistance(const pcl::PointXYZ& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   float getDistance(const pcl::PointXYZINormal& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+  float getAngle(const pcl::PointXYZINormal& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   float getNumberInliersNegative(const std::vector<float>& distances);
   float adaptDistanceToMethod(float distance, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+  std::vector<float> getCloudToModelDistances();
+  float maxError() const;
 
 public:
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
@@ -64,7 +67,7 @@ public:
                           pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
                           SF_CloudToModelDistanceParameters params);
   float getAverageDistance() const;
-  std::vector<float> getCloudToModelDistances();
+  std::vector<float> distances() const;
 };
 
 #endif // SF_CLOUD_TO_MODEL_DISTANCE_H

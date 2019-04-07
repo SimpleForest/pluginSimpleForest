@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2018 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2018 Dr. Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -26,31 +26,12 @@
 
 *****************************************************************************/
 
-#ifndef SF_MODEL_TREE_H
-#define SF_MODEL_TREE_H
+#include "sf_stepprogress.h"
 
-#include "sf_modelAbstractSegment.h"
+SF_StepProgress::SF_StepProgress() {}
 
-class SF_ModelQSM
+void
+SF_StepProgress::fireComputation()
 {
-  int _ID;
-  std::string _species;
-  std::shared_ptr<SF_ModelAbstractSegment> m_rootSegment;
-
-public:
-  SF_ModelQSM(const int ID);
-  virtual std::string toString();
-  virtual std::string toHeaderString();
-
-  void translate(const Eigen::Vector3f& translation);
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments();
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment);
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getLeaveSegments();
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> getBuildingBricks();
-  std::shared_ptr<SF_ModelAbstractSegment> getRootSegment() const;
-  void setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& rootSegment);
-  void setBranchorder();
-  void sort(SF_ModelAbstractSegment::SF_SORTTYPE type);
-};
-
-#endif // SF_MODEL_TREE_H
+  emit computationDone();
+}
