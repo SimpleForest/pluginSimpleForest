@@ -35,6 +35,7 @@
 
 class Sf_ModelCylinderBuildingbrick : public Sf_ModelAbstractBuildingbrick
 {
+  friend class SF_UnitTestCylinder;
   float m_radius;
 
 protected:

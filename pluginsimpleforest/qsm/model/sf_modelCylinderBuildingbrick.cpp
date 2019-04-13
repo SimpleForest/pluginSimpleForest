@@ -109,26 +109,21 @@ Sf_ModelCylinderBuildingbrick::getDistanceToInfinitHull(const Eigen::Vector3f& p
 Eigen::Vector3f
 Sf_ModelCylinderBuildingbrick::getProjectionOnAxis(const Eigen::Vector3f& point)
 {
-  Eigen::Vector3f x0 = point;
-  Eigen::Vector3f x1 = getStart();
-  Eigen::Vector3f x2 = getEnd();
-  Eigen::Vector3f a = x0 - x1;
-  Eigen::Vector3f b = x2 - x1;
-  return (x1 + (a.norm() / b.norm()) * b);
+  Eigen::Vector3f a =  point - _start;
+  Eigen::Vector3f b =  _end - _start;
+  return (_start + (a.dot(b) / b.dot(b)) * b);
 }
 
 Eigen::Vector3f
 Sf_ModelCylinderBuildingbrick::getCenter()
 {
-  Eigen::Vector3f center((_start[0] + _end[0]) / 2, (_start[1] + _end[1]) / 2, (_start[2] + _end[2]) / 2);
-  return center;
+  return ((_start + _end) / 2);
 }
 
 Eigen::Vector3f
 Sf_ModelCylinderBuildingbrick::getAxis()
 {
-  Eigen::Vector3f axis((_end[0] - _start[0]), (_end[1] - _start[1]), (_end[2] - _start[2]));
-  return axis;
+  return (_end - _start);
 }
 
 Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB)
