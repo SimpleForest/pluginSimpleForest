@@ -48,8 +48,22 @@ Sf_CloudToModelDistance::initializeKdTree()
   _kdtreeQSM->setInputCloud(centerCloud);
 }
 
+void
+Sf_CloudToModelDistance::initializeGrowthLength()
+{
+  if (!(_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE)) {
+    return;
+  }
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = _tree->getBuildingBricks();
+  size_t id = 0;
+  std::for_each(buildingBricks.begin(), buildingBricks.end(), [this, &id](std::shared_ptr<Sf_ModelAbstractBuildingbrick>& brick) {
+    brick->setID(id++);
+    _growthLengths.push_back(brick->getGrowthLength());
+  });
+}
+
 float
-Sf_CloudToModelDistance::adaptDistanceToMethod(float distance, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
+Sf_CloudToModelDistance::adaptDistanceToMethod(float distance)
 {
   switch (_METHOD) {
     case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
@@ -70,11 +84,7 @@ Sf_CloudToModelDistance::adaptDistanceToMethod(float distance, std::shared_ptr<S
       distance = std::min(_INLIERDISTANCE * _INLIERDISTANCE, distance);
       break;
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
-      if (distance != maxError()) {
-        distance = buildingBrick->getGrowthLength();
-      } else {
-        distance = 0;
-      }
+      distance = std::abs(distance);
       break;
   }
   return distance;
@@ -96,16 +106,14 @@ float
 Sf_CloudToModelDistance::getDistance(const pcl::PointXYZ& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
 {
   float distance = buildingBrick->getDistance(Eigen::Vector3f(point.x, point.y, point.z));
-  distance = adaptDistanceToMethod(distance, buildingBrick);
-  return distance;
+  return adaptDistanceToMethod(distance);
 }
 
 float
 Sf_CloudToModelDistance::getDistance(const pcl::PointXYZINormal& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
 {
   float distance = buildingBrick->getDistance(Eigen::Vector3f(point.x, point.y, point.z));
-  distance = adaptDistanceToMethod(distance, buildingBrick);
-  return distance;
+  return adaptDistanceToMethod(distance);
 }
 
 float
@@ -170,27 +178,38 @@ Sf_CloudToModelDistance::getCloudToModelDistances()
     std::vector<float> pointRadiusSquaredDistance;
     if (_kdtreeQSM->nearestKSearch(point, k, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
       float minDistance = maxError();
-      float minDistanceAngle = maxError();
+            float minDistanceAngle = maxError();
+      std::shared_ptr<Sf_ModelAbstractBuildingbrick> bestBrick;
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
         auto distance = getDistance(point, neighboringBrick);
-        float distanceAngle;
-        auto angle = getAngle(point, neighboringBrick);
-        if (angle == 0) {
-          distanceAngle = maxError();
-        } else {
-          distanceAngle = distance / angle;
-        }
+                float distanceAngle;
+                auto angle = getAngle(point, neighboringBrick);
+                if (angle == 0) {
+                  distanceAngle = maxError();
+                } else {
+                  distanceAngle = distance / angle;
+                }
 
         if (distanceAngle < minDistanceAngle) {
-          minDistanceAngle = distanceAngle;
+//                    if (distance < minDistance) {
+          bestBrick = neighboringBrick;
+                    minDistanceAngle = distanceAngle;
           minDistance = distance;
         }
       }
-      distances.push_back(minDistance);
+      if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
+        if (bestBrick != nullptr) {
+          distances.push_back(std::max(_growthLengths[bestBrick->getID()], _MIN_GROWTH_LENGTH));
+        } else {
+          distances.push_back(_MIN_GROWTH_LENGTH);
+        }
+      } else {
+        distances.push_back(minDistance);
+      }
     } else {
       if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
-        distances.push_back(0);
+        distances.push_back(_MIN_GROWTH_LENGTH);
       } else {
         distances.push_back(maxError());
       }
@@ -226,6 +245,7 @@ Sf_CloudToModelDistance::Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tr
 {
   _averageDistance = std::numeric_limits<float>::max();
   initializeKdTree();
+  initializeGrowthLength();
   compute();
 }
 
@@ -241,5 +261,6 @@ Sf_CloudToModelDistance::Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tr
 {
   _averageDistance = std::numeric_limits<float>::max();
   initializeKdTree();
+  initializeGrowthLength();
   compute();
 }

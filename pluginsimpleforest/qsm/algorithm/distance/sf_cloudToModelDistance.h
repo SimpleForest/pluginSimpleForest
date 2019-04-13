@@ -40,19 +40,22 @@ class Sf_CloudToModelDistance
   int _k;
   float _INLIERDISTANCE;
   float _averageDistance;
+  const float _MIN_GROWTH_LENGTH = 0.001f;
   std::vector<float> _distances;
+  std::vector<float> _growthLengths;
   std::shared_ptr<SF_ModelQSM> _tree;
   pcl::KdTreeFLANN<pcl::PointXYZINormal>::Ptr _kdtreeQSM;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr _cloud;
 
   void initializeKdTree();
+  void initializeGrowthLength();
   void compute();
   const std::vector<float> cropDistances(std::vector<float> distances);
   float getDistance(const pcl::PointXYZ& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   float getDistance(const pcl::PointXYZINormal& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   float getAngle(const pcl::PointXYZINormal& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   float getNumberInliersNegative(const std::vector<float>& distances);
-  float adaptDistanceToMethod(float distance, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+  float adaptDistanceToMethod(float distance);
   std::vector<float> getCloudToModelDistances();
   float maxError() const;
 
