@@ -31,10 +31,11 @@
 
 #include "../distance/sf_cloudToModelDistance.h"
 #include "../distance/sf_cloudToModelDistanceParameters.h"
+#include "steps/param/sf_paramAllSteps.h"
 
 class SF_ClusterCloudByQSM
 {
-  SF_CloudToModelDistanceParameters m_params;
+  SF_CloudToModelDistanceParameters m_paramsDistance;
   std::shared_ptr<SF_ModelQSM> m_qsm;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_clustersCloud;
@@ -44,13 +45,14 @@ class SF_ClusterCloudByQSM
   void initializeKdTree();
   pcl::KdTreeFLANN<pcl::PointXYZINormal>::Ptr _kdtreeQSM;
 
+  SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal> m_params;
+
 public:
-  SF_ClusterCloudByQSM(SF_CloudToModelDistanceParameters params,
-                       std::shared_ptr<SF_ModelQSM> qsm,
-                       pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
-                       int numCltrs);
+  SF_ClusterCloudByQSM();
   void compute();
   std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters() const;
+  void setParams(const SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal>& params);
+  SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal> params() const;
 };
 
 #endif // SF_CLUSTERCLOUDBYQSM_H
