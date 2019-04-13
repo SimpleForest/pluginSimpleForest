@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2018 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2019 Dr. Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -252,12 +252,6 @@ SF_StepSpherefollowingRoot::configDialogGuruAddGridSearchCloudToModelDistance(CT
                           0.3,
                           2,
                           _CMD_inlierDistance);
-  configDialog->addInt("Sorting by growth length the cloud is subdivided in  "
-                       "[<em><b>numClstrs</b></em>] ",
-                       " clusters.",
-                       1,
-                       10,
-                       _CMD_numClstrs);
   configDialog->addEmpty();
 }
 
@@ -416,22 +410,20 @@ SF_StepSpherefollowingRoot::paramsStringToNumber(const QString& UISelection)
     paramVec.push_back(1.0);
     paramVec.push_back(1.5);
   } else if (UISelection == _PARAMETERS_5) {
-    paramVec.push_back(0.5);
     paramVec.push_back(0.75);
     paramVec.push_back(1.0);
     paramVec.push_back(1.50);
     paramVec.push_back(2.0);
+    paramVec.push_back(2.5);
   } else if (UISelection == _PARAMETERS_7) {
-    paramVec.push_back(0.5);
     paramVec.push_back(0.75);
     paramVec.push_back(0.9);
     paramVec.push_back(1.0);
     paramVec.push_back(1.4);
     paramVec.push_back(1.9);
     paramVec.push_back(2.5);
+    paramVec.push_back(3.0);
   } else if (UISelection == _PARAMETERS_9) {
-    paramVec.push_back(0.45);
-    paramVec.push_back(0.6);
     paramVec.push_back(0.75);
     paramVec.push_back(0.9);
     paramVec.push_back(1.0);
@@ -439,11 +431,10 @@ SF_StepSpherefollowingRoot::paramsStringToNumber(const QString& UISelection)
     paramVec.push_back(1.8);
     paramVec.push_back(2.4);
     paramVec.push_back(3.0);
+    paramVec.push_back(3.7);
+    paramVec.push_back(4.5);
   } else if (UISelection == _PARAMETERS_11) {
-    paramVec.push_back(0.4);
-    paramVec.push_back(0.5);
-    paramVec.push_back(0.65);
-    paramVec.push_back(0.8);
+    paramVec.push_back(0.75);
     paramVec.push_back(0.9);
     paramVec.push_back(1.0);
     paramVec.push_back(1.4);
@@ -451,8 +442,11 @@ SF_StepSpherefollowingRoot::paramsStringToNumber(const QString& UISelection)
     paramVec.push_back(2.4);
     paramVec.push_back(3.0);
     paramVec.push_back(4.0);
+    paramVec.push_back(5.0);
+    paramVec.push_back(6.0);
+    paramVec.push_back(7.0);
   } else {
-    throw("SF_StepSpherefollowingRoot: Illegal grid parameter selected.");
+    throw("SF_StepSpherefollowingRoot: Invalid grid parameter selected.");
   }
   return paramVec;
 }

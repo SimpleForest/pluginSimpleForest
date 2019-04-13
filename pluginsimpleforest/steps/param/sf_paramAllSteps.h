@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2017 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2019 Dr. Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -220,6 +220,26 @@ struct SF_ParamNormals : public SF_ParamCloud<PointType>
       str.append(" nearest neighbors ");
     }
     str.append("is started.");
+    return str;
+  }
+};
+
+template<typename PointType>
+struct SF_ParamSegmentTreeFromQSM : public SF_ParamFilter<PointType>
+{
+  int _numClstrs = 3;
+  float _normalRadius = 0.03f;
+  SF_CloudToModelDistanceParameters _distanceParams;
+  std::shared_ptr<SF_ModelQSM> _qsm;
+  CT_ColorCloudStdVector* _colorsGrowthVolume;
+  CT_ColorCloudStdVector* _colorsClusters;
+  virtual QString toString()
+  {
+    QString str = "Firstly the cloud got its normals computed with radius ";
+    str.append(QString::number(_normalRadius));
+    str.append("[m]. Then each tree cloud has been clustered into ");
+    str.append(QString::number(_numClstrs));
+    str.append(" evensized clusters.");
     return str;
   }
 };

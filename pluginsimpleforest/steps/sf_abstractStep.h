@@ -53,6 +53,7 @@
 #define DEF_IN_DTMGRP "igrpdtm"
 #define DEF_IN_DTM "idtm"
 #define DEF_IN_CLOUD_SEED "icloud"
+#define DEF_IN_QSM "iqsm"
 #define DEF_IN_SCENE "igrp2"
 #define DEF_IN_SCENE_CLOUD "icloud2"
 

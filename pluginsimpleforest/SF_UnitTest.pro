@@ -25,7 +25,12 @@ CONFIG += qt console warn_on depend_includepath testcase
 CONFIG -= app_bundle
 TEMPLATE = app
 SOURCES += \
+    tests/sf_unittestcylinder.cpp \
+    tests/sf_unittestmain.cpp \
     tests/sf_unittestqsmsort.cpp
+HEADERS += \
+    tests/sf_unittestcylinder.h \
+    tests/sf_unittestqsmsort.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../ComputreeInstallRelease/plugins/release/ -lplug_simpleforest
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ComputreeInstallRelease/plugins/debug/ -lplug_simpleforest
@@ -33,3 +38,10 @@ else:unix: LIBS += -L$$PWD/../../ComputreeInstallRelease/plugins/ -lplug_simplef
 
 INCLUDEPATH += $$PWD/../../ComputreeInstallRelease/plugins
 DEPENDPATH += $$PWD/../../ComputreeInstallRelease/plugins
+
+
+MOC_DIR = build
+OBJECTS_DIR = build
+UI_DIR = build
+
+DESTDIR = build
