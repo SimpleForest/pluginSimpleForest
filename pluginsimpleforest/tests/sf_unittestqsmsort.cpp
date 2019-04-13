@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2018 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2019 Dr. Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -26,21 +26,7 @@
 
 *****************************************************************************/
 
-#ifndef SF_UNIT_TEST_QSM_SORT_H
-#define SF_UNIT_TEST_QSM_SORT_H
-
-#include "tests/factory/sf_qsmfactory.h"
-#include <QtTest/QtTest>
-
-class SF_UnitTestQSMSort : public QObject
-{
-  Q_OBJECT
-private slots:
-  void growthVolumeSort();
-  void growthLengthSort();
-  void angleSort();
-  void radiusSort();
-};
+#include "tests/sf_unittestqsmsort.h"
 
 void
 SF_UnitTestQSMSort::growthVolumeSort()
@@ -89,9 +75,3 @@ SF_UnitTestQSMSort::radiusSort()
   QVERIFY(growthVolumeQSM->getRootSegment()->getChildren()[0]->getRadius() >
           growthVolumeQSM->getRootSegment()->getChildren()[1]->getRadius());
 }
-
-QTEST_MAIN(SF_UnitTestQSMSort)
-
-#include "sf_unittestqsmsort.moc"
-
-#endif // SF_UNIT_TEST_QSM_SORT_H
