@@ -27,7 +27,10 @@
 *****************************************************************************/
 
 #include "sf_stepSpherefollowingRoot.h"
+
 #include "sf_stepSpherefollowingBasicAdapter.h"
+#include "steps/item/sf_spherefollowing_parameters_item.h"
+
 #include <QtConcurrent/QtConcurrent>
 
 #include <ct_itemdrawable/ct_cylinder.h>
@@ -282,6 +285,7 @@ SF_StepSpherefollowingRoot::createOutResultModelListProtected()
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Spherefollowing Fit Quality"));
     resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(), tr("QSM"));
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM"));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
   }
 }
 
@@ -338,13 +342,15 @@ SF_StepSpherefollowingRoot::compute()
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
+  addColors(outResult, paramList(), DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, m_outCloudItem.completeName());
   addQSM(outResult,
-         paramList(),
+         _paramList,
          QString::fromUtf8(DEF_IN_GRP_CLUSTER),
          _outCylinders.completeName(),
          _outCylinderGroup.completeName(),
-         _outSFQSM.completeName());
-  addColors(outResult, paramList(), DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, m_outCloudItem.completeName());
+         _outSFQSM.completeName(),
+         _outParams.completeName());
+  _paramList.clear();
 }
 
 QList<SF_ParamQSM<SF_PointNormal>>

@@ -62,6 +62,7 @@ private:
   CT_AutoRenameModels _outCylinderGroup;
   CT_AutoRenameModels _outCylinders;
   CT_AutoRenameModels _outSFQSM;
+  CT_AutoRenameModels _outParams;
   int toStringSFMethod();
   SF_CLoudToModelDistanceMethod toStringCMDMethod();
   double _PP_voxelSize = 0.02;

@@ -28,6 +28,7 @@
 
 #include "sf_abstractStep.h"
 #include "qsm/algorithm/distance/sf_cloudToModelDistance.h"
+#include "steps/item/sf_spherefollowing_parameters_item.h"
 #include <pcl/sample_consensus/method_types.h>
 
 #include <ct_itemdrawable/ct_cylinder.h>
@@ -73,21 +74,25 @@ SF_AbstractStep::computationDone()
 
 void
 SF_AbstractStep::addQSM(CT_ResultGroup* outResult,
-                        QList<SF_ParamQSM<SF_PointNormal>> paramList,
+                        QList<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramList,
                         QString outResultGrpName,
                         QString outCylinderName,
                         QString outCylinderGrpName,
-                        QString outSFQSMName)
+                        QString outSFQSMName,
+                        QString outParamName)
 {
   CT_ResultGroupIterator outResIt(outResult, this, outResultGrpName);
   while (!isStopped() && outResIt.hasNext()) {
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
     std::for_each(paramList.begin(),
                   paramList.end(),
-                  [this, group, outResult, outCylinderName, outCylinderGrpName, outSFQSMName](SF_ParamQSM<SF_PointNormal>& params) {
+                  [this, group, outResult, outCylinderName, outCylinderGrpName, outSFQSMName, outParamName](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
                     std::shared_ptr<SF_ModelQSM> qsm = params._tree;
                     SF_QSM_Item* qsmItem = new SF_QSM_Item(outSFQSMName, outResult, qsm);
                     group->addItemDrawable(qsmItem);
+                    params.reset();
+                    SF_SphereFollowing_Parameters_Item* paramItem = new SF_SphereFollowing_Parameters_Item(outParamName, outResult, params);
+                    group->addItemDrawable(paramItem);
                     std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = qsm->getBuildingBricks();
                     std::for_each(buildingBricks.begin(),
                                   buildingBricks.end(),
