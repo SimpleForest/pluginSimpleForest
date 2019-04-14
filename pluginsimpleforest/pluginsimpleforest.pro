@@ -142,6 +142,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/feature/descriptor/sf_descriptor.h \
     qsm/algorithm/optimization/gridsearch/sf_spherefollowingrastersearch.h \
     qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.h \
+    qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.hpp \
     qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h \
     qsm/algorithm/postprocessing/sf_removefalseconnections.h \
     qsm/algorithm/postprocessing/sf_qsmmedianfilter.h \
@@ -162,7 +163,6 @@ SOURCES += \
     qsm/model/sf_modelQSM.cpp \
     qsm/model/sf_modelAbstractBuildingbrick.cpp \
     qsm/build/sf_buildQSM.cpp \
-    qsm/algorithm/distance/sf_cloudToModelDistance.cpp \
     converters/sf_abstractConverter.cpp \
     converters/CT_To_PCL/sf_converterCTToPCLDTM.cpp \
     plot/sf_modelRaster.cpp \
@@ -195,7 +195,6 @@ SOURCES += \
     qsm/model/sf_modelLevelOne.cpp \
     qsm/algorithm/spherefollowing/sf_spherefollowing.cpp \
     qsm/algorithm/optimization/gridsearch/sf_spherefollowingrastersearch.cpp \
-    qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.cpp \
     qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.cpp \
     qsm/algorithm/postprocessing/sf_removefalseconnections.cpp \
     qsm/algorithm/postprocessing/sf_qsmmedianfilter.cpp \

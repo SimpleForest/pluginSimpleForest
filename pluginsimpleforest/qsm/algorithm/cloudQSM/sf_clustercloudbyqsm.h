@@ -33,26 +33,28 @@
 #include "../distance/sf_cloudToModelDistanceParameters.h"
 #include "steps/param/sf_paramAllSteps.h"
 
+template<typename PointType>
 class SF_ClusterCloudByQSM
 {
   SF_CloudToModelDistanceParameters m_paramsDistance;
   std::shared_ptr<SF_ModelQSM> m_qsm;
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_clustersCloud;
+  typename pcl::PointCloud<PointType>::Ptr m_cloud;
+  typename pcl::PointCloud<PointType>::Ptr m_clustersCloud;
   size_t m_numClstrs;
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> m_clusters;
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloudUnfitted;
+  std::vector<typename pcl::PointCloud<PointType>::Ptr> m_clusters;
+  typename pcl::PointCloud<PointType>::Ptr m_cloudUnfitted;
   void initializeKdTree();
-  pcl::KdTreeFLANN<pcl::PointXYZINormal>::Ptr _kdtreeQSM;
-
-  SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal> m_params;
+  typename pcl::KdTreeFLANN<PointType>::Ptr _kdtreeQSM;
+  SF_ParamSegmentTreeFromQSM<PointType> m_params;
 
 public:
   SF_ClusterCloudByQSM();
   void compute();
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> clusters() const;
-  void setParams(const SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal>& params);
-  SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal> params() const;
+  std::vector<typename pcl::PointCloud<PointType>::Ptr> clusters() const;
+  void setParams(const SF_ParamSegmentTreeFromQSM<PointType>& params);
+  SF_ParamSegmentTreeFromQSM<PointType> params() const;
 };
+
+#include "qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.hpp"
 
 #endif // SF_CLUSTERCLOUDBYQSM_H

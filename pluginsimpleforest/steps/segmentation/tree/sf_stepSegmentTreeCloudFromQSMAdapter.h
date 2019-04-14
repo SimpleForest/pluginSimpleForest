@@ -60,7 +60,7 @@ public:
       converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
     }
     converter.compute();
-    SF_ClusterCloudByQSM clustering;
+    SF_ClusterCloudByQSM<pcl::PointXYZINormal> clustering;
     Eigen::Vector3d translation = converter.translation();
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZINormal>);
     {

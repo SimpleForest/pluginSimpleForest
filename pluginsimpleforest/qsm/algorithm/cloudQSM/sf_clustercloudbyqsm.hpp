@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2018 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2019 Dr. Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -26,25 +26,28 @@
 
 *****************************************************************************/
 
-#include "sf_clustercloudbyqsm.h"
+#include "qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.h"
 
 #include "steps/visualization/sf_colorfactory.h"
 #include <cmath>
 
-std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>
-SF_ClusterCloudByQSM::clusters() const
+template<typename PointType>
+std::vector<typename pcl::PointCloud<PointType>::Ptr>
+SF_ClusterCloudByQSM<PointType>::clusters() const
 {
   return m_clusters;
 }
 
-SF_ClusterCloudByQSM::SF_ClusterCloudByQSM()
+template<typename PointType>
+SF_ClusterCloudByQSM<PointType>::SF_ClusterCloudByQSM()
 {
-  m_cloudUnfitted.reset(new pcl::PointCloud<pcl::PointXYZINormal>());
-  m_clustersCloud.reset(new pcl::PointCloud<pcl::PointXYZINormal>());
+  m_cloudUnfitted.reset(new typename pcl::PointCloud<PointType>());
+  m_clustersCloud.reset(new typename pcl::PointCloud<PointType>());
 }
 
+template<typename PointType>
 void
-SF_ClusterCloudByQSM::setParams(const SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal>& params)
+SF_ClusterCloudByQSM<PointType>::setParams(const SF_ParamSegmentTreeFromQSM<PointType>& params)
 {
   m_params = params;
   m_numClstrs = params._numClstrs;
@@ -53,23 +56,26 @@ SF_ClusterCloudByQSM::setParams(const SF_ParamSegmentTreeFromQSM<pcl::PointXYZIN
   m_paramsDistance = params._distanceParams;
 }
 
+template<typename PointType>
 void
-SF_ClusterCloudByQSM::initializeKdTree()
+SF_ClusterCloudByQSM<PointType>::initializeKdTree()
 {
-  _kdtreeQSM.reset(new pcl::KdTreeFLANN<pcl::PointXYZINormal>());
+  _kdtreeQSM.reset(new typename pcl::KdTreeFLANN<PointType>());
   _kdtreeQSM->setInputCloud(m_clustersCloud);
 }
 
-SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal>
-SF_ClusterCloudByQSM::params() const
+template<typename PointType>
+SF_ParamSegmentTreeFromQSM<PointType>
+SF_ClusterCloudByQSM<PointType>::params() const
 {
   return m_params;
 }
 
+template<typename PointType>
 void
-SF_ClusterCloudByQSM::compute()
+SF_ClusterCloudByQSM<PointType>::compute()
 {
-  Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, m_paramsDistance);
+  Sf_CloudToModelDistance<PointType> cmd(m_qsm, m_cloud, m_paramsDistance);
   std::vector<float> growthVolumina = cmd.distances();
   std::vector<float> growthVoluminaSorted = cmd.distances();
   std::sort(growthVoluminaSorted.begin(), growthVoluminaSorted.end());
@@ -87,7 +93,7 @@ SF_ClusterCloudByQSM::compute()
   std::vector<int> ids;
   m_clusters.clear();
   for (size_t i = 0; i < m_numClstrs; i++) {
-    m_clusters.push_back(pcl::PointCloud<pcl::PointXYZINormal>::Ptr(new pcl::PointCloud<pcl::PointXYZINormal>));
+    m_clusters.push_back(typename pcl::PointCloud<PointType>::Ptr(new typename pcl::PointCloud<PointType>));
   }
   for (size_t i = 0; i < m_cloud->points.size(); i++) {
     float growthVolume = growthVolumina[i];
