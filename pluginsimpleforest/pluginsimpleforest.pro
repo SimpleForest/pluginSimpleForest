@@ -21,11 +21,12 @@ CONFIG   += console
 TARGET = plug_simpleforest
 
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
+    qsm/algorithm/distance/sf_cloudToModelDistance.hpp \
     qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
     pcl/sf_point.h \
-    steps/filter/multiple/euclideanclustering/sf_binary_filter.h \
+    steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.h \
     pcl/cloud/feature/normals/sf_normal.h \
     pcl/cloud/feature/normals/sf_normal.hpp \
     pcl/sf_math.h \

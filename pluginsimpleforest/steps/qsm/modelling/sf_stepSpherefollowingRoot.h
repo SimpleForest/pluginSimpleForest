@@ -63,7 +63,7 @@ private:
   CT_AutoRenameModels _outCylinders;
   CT_AutoRenameModels _outSFQSM;
   int toStringSFMethod();
-  int toStringCMDMethod();
+  SF_CLoudToModelDistanceMethod toStringCMDMethod();
   double _PP_voxelSize = 0.02;
   double _PP_euclideanClusteringDistance = 0.1;
   double _SF_OPT_euclideanClusteringDistance = 0.03;

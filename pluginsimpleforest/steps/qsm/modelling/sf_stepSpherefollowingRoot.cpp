@@ -382,21 +382,20 @@ SF_StepSpherefollowingRoot::toStringSFMethod()
   return type;
 }
 
-int
+SF_CLoudToModelDistanceMethod
 SF_StepSpherefollowingRoot::toStringCMDMethod()
 {
-  int type = -1;
   if (_CMD_methodChoice == _ZEROMOMENTUMORDER)
-    type = SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER;
+    return SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER;
   if (_CMD_methodChoice == _FIRSTMOMENTUMORDERMSAC)
-    type = SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC;
+    return SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC;
   if (_CMD_methodChoice == _FIRSTMOMENTUMORDER)
-    type = SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER;
+    return SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER;
   if (_CMD_methodChoice == _SECONDMOMENTUMORDERMSAC)
-    type = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC;
+    return SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC;
   if (_CMD_methodChoice == _SECONDMOMENTUMORDER)
-    type = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER;
-  return type;
+    return SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER;
+  return SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER;
 }
 
 std::vector<double>

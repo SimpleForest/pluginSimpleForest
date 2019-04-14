@@ -102,7 +102,7 @@ SF_SphereFollowing::compute()
 float
 SF_SphereFollowing::error()
 {
-  Sf_CloudToModelDistance cmd(m_qsm, m_cloud, m_params._distanceParams);
+  Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, m_params._distanceParams);
   m_params._stepProgress->fireComputation();
   return cmd.getAverageDistance();
 }

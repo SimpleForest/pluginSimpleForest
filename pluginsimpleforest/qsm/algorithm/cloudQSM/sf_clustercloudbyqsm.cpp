@@ -69,7 +69,7 @@ SF_ClusterCloudByQSM::params() const
 void
 SF_ClusterCloudByQSM::compute()
 {
-  Sf_CloudToModelDistance cmd(m_qsm, m_cloud, m_paramsDistance);
+  Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, m_paramsDistance);
   std::vector<float> growthVolumina = cmd.distances();
   std::vector<float> growthVoluminaSorted = cmd.distances();
   std::sort(growthVoluminaSorted.begin(), growthVoluminaSorted.end());
