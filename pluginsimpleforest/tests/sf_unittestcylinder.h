@@ -29,8 +29,8 @@
 #ifndef SF_UNITTESTCYLINDER_H
 #define SF_UNITTESTCYLINDER_H
 
-#include "qsm/model/sf_modelCylinderBuildingbrick.h"
 #include "pcl/sf_math.h"
+#include "qsm/model/sf_modelCylinderBuildingbrick.h"
 
 #include <QtTest/QtTest>
 

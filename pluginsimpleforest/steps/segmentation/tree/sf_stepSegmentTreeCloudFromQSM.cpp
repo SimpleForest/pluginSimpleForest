@@ -70,7 +70,7 @@ SF_StepSegmentTreeCloudFromQSM::createNewInstance(CT_StepInitializeData& dataIni
 QStringList
 SF_StepSegmentTreeCloudFromQSM::getStepRISCitations() const
 {
-  QStringList _risCitationList;  
+  QStringList _risCitationList;
   _risCitationList.append(getRISCitationSimpleTree());
   _risCitationList.append(getRISCitationPCL());
   return _risCitationList;

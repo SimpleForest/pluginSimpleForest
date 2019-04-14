@@ -109,8 +109,8 @@ Sf_ModelCylinderBuildingbrick::getDistanceToInfinitHull(const Eigen::Vector3f& p
 Eigen::Vector3f
 Sf_ModelCylinderBuildingbrick::getProjectionOnAxis(const Eigen::Vector3f& point)
 {
-  Eigen::Vector3f a =  point - _start;
-  Eigen::Vector3f b =  _end - _start;
+  Eigen::Vector3f a = point - _start;
+  Eigen::Vector3f b = _end - _start;
   return (_start + (a.dot(b) / b.dot(b)) * b);
 }
 

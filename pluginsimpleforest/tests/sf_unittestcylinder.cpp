@@ -31,170 +31,175 @@
 void
 SF_UnitTestCylinder::cylinderConstructor()
 {
-    pcl::ModelCoefficients::Ptr circleA (new pcl::ModelCoefficients);
-    pcl::ModelCoefficients::Ptr circleB (new pcl::ModelCoefficients);
-    circleA->values.push_back(-1);
-    circleA->values.push_back(0);
-    circleA->values.push_back(2);
-    circleA->values.push_back(4);
+  pcl::ModelCoefficients::Ptr circleA(new pcl::ModelCoefficients);
+  pcl::ModelCoefficients::Ptr circleB(new pcl::ModelCoefficients);
+  circleA->values.push_back(-1);
+  circleA->values.push_back(0);
+  circleA->values.push_back(2);
+  circleA->values.push_back(4);
 
-    circleB->values.push_back(1);
-    circleB->values.push_back(0);
-    circleB->values.push_back(2);
-    circleB->values.push_back(1);
-    Sf_ModelCylinderBuildingbrick cylinder{circleA, circleB};
-    auto start = cylinder.getStart();
-    auto end = cylinder.getEnd();
-    auto radius = cylinder.getRadius();
+  circleB->values.push_back(1);
+  circleB->values.push_back(0);
+  circleB->values.push_back(2);
+  circleB->values.push_back(1);
+  Sf_ModelCylinderBuildingbrick cylinder{ circleA, circleB };
+  auto start = cylinder.getStart();
+  auto end = cylinder.getEnd();
+  auto radius = cylinder.getRadius();
 
-    // assure only second cylinder radius is applied
-    QVERIFY(radius == 1);
-    QVERIFY(start == Eigen::Vector3f(-1,0,2));
-    QVERIFY(end == Eigen::Vector3f(1,0,2));
+  // assure only second cylinder radius is applied
+  QVERIFY(radius == 1);
+  QVERIFY(start == Eigen::Vector3f(-1, 0, 2));
+  QVERIFY(end == Eigen::Vector3f(1, 0, 2));
 }
 
 void
 SF_UnitTestCylinder::lengthAndVolume()
 {
-    pcl::ModelCoefficients::Ptr circleA (new pcl::ModelCoefficients);
-    pcl::ModelCoefficients::Ptr circleB (new pcl::ModelCoefficients);
-    circleA->values.push_back(-1);
-    circleA->values.push_back(0);
-    circleA->values.push_back(2);
-    circleA->values.push_back(4);
+  pcl::ModelCoefficients::Ptr circleA(new pcl::ModelCoefficients);
+  pcl::ModelCoefficients::Ptr circleB(new pcl::ModelCoefficients);
+  circleA->values.push_back(-1);
+  circleA->values.push_back(0);
+  circleA->values.push_back(2);
+  circleA->values.push_back(4);
 
-    circleB->values.push_back(1);
-    circleB->values.push_back(0);
-    circleB->values.push_back(2);
-    circleB->values.push_back(1);
-    Sf_ModelCylinderBuildingbrick cylinder{circleA, circleB};
-    auto length = cylinder.getLength();
-    auto volume = cylinder.getVolume();
+  circleB->values.push_back(1);
+  circleB->values.push_back(0);
+  circleB->values.push_back(2);
+  circleB->values.push_back(1);
+  Sf_ModelCylinderBuildingbrick cylinder{ circleA, circleB };
+  auto length = cylinder.getLength();
+  auto volume = cylinder.getVolume();
 
-    QVERIFY(length == 2);
-    // radius is 1, so is squared radius
-    QVERIFY(volume == 2*SF_Math<float>::_PI);
+  QVERIFY(length == 2);
+  // radius is 1, so is squared radius
+  QVERIFY(volume == 2 * SF_Math<float>::_PI);
 }
 
 void
 SF_UnitTestCylinder::distance()
 {
-    pcl::ModelCoefficients::Ptr circleA (new pcl::ModelCoefficients);
-    pcl::ModelCoefficients::Ptr circleB (new pcl::ModelCoefficients);
-    circleA->values.push_back(-1);
-    circleA->values.push_back(0);
-    circleA->values.push_back(2);
-    circleA->values.push_back(4);
+  pcl::ModelCoefficients::Ptr circleA(new pcl::ModelCoefficients);
+  pcl::ModelCoefficients::Ptr circleB(new pcl::ModelCoefficients);
+  circleA->values.push_back(-1);
+  circleA->values.push_back(0);
+  circleA->values.push_back(2);
+  circleA->values.push_back(4);
 
-    circleB->values.push_back(1);
-    circleB->values.push_back(0);
-    circleB->values.push_back(2);
-    circleB->values.push_back(1);
-    Sf_ModelCylinderBuildingbrick cylinder{circleA, circleB};
-    {
-        Eigen::Vector3f point (0,0,0);
-        auto distance = cylinder.getDistance(point);
-        QVERIFY(distance == 1);
-    }
-    {
-        Eigen::Vector3f point (-2,0,0);
-        auto distance = cylinder.getDistance(point);
-        QVERIFY(distance == std::sqrt(2.0f));
-    }
-    {
-        Eigen::Vector3f point (2,0,0);
-        auto distance = cylinder.getDistance(point);
-        QVERIFY(distance == std::sqrt(2.0f));
-    }
+  circleB->values.push_back(1);
+  circleB->values.push_back(0);
+  circleB->values.push_back(2);
+  circleB->values.push_back(1);
+  Sf_ModelCylinderBuildingbrick cylinder{ circleA, circleB };
+  {
+    Eigen::Vector3f point(0, 0, 0);
+    auto distance = cylinder.getDistance(point);
+    QVERIFY(distance == 1);
+  }
+  {
+    Eigen::Vector3f point(-2, 0, 0);
+    auto distance = cylinder.getDistance(point);
+    QVERIFY(distance == std::sqrt(2.0f));
+  }
+  {
+    Eigen::Vector3f point(2, 0, 0);
+    auto distance = cylinder.getDistance(point);
+    QVERIFY(distance == std::sqrt(2.0f));
+  }
 }
 
 void
 SF_UnitTestCylinder::distanceToAxis()
 {
-    pcl::ModelCoefficients::Ptr circleA (new pcl::ModelCoefficients);
-    pcl::ModelCoefficients::Ptr circleB (new pcl::ModelCoefficients);
-    circleA->values.push_back(-1);
-    circleA->values.push_back(0);
-    circleA->values.push_back(2);
-    circleA->values.push_back(4);
+  pcl::ModelCoefficients::Ptr circleA(new pcl::ModelCoefficients);
+  pcl::ModelCoefficients::Ptr circleB(new pcl::ModelCoefficients);
+  circleA->values.push_back(-1);
+  circleA->values.push_back(0);
+  circleA->values.push_back(2);
+  circleA->values.push_back(4);
 
-    circleB->values.push_back(1);
-    circleB->values.push_back(0);
-    circleB->values.push_back(2);
-    circleB->values.push_back(1);
-    Sf_ModelCylinderBuildingbrick cylinder{circleA, circleB};
-    Eigen::Vector3f point (0,0,0);
-    auto distance = cylinder.getDistanceToAxis(point);
-    QVERIFY(distance == 2);
+  circleB->values.push_back(1);
+  circleB->values.push_back(0);
+  circleB->values.push_back(2);
+  circleB->values.push_back(1);
+  Sf_ModelCylinderBuildingbrick cylinder{ circleA, circleB };
+  Eigen::Vector3f point(0, 0, 0);
+  auto distance = cylinder.getDistanceToAxis(point);
+  QVERIFY(distance == 2);
 }
 
-void SF_UnitTestCylinder::distanceToInfinitHull()
+void
+SF_UnitTestCylinder::distanceToInfinitHull()
 {
-    pcl::ModelCoefficients::Ptr circleA (new pcl::ModelCoefficients);
-    pcl::ModelCoefficients::Ptr circleB (new pcl::ModelCoefficients);
-    circleA->values.push_back(-1);
-    circleA->values.push_back(0);
-    circleA->values.push_back(2);
-    circleA->values.push_back(4);
+  pcl::ModelCoefficients::Ptr circleA(new pcl::ModelCoefficients);
+  pcl::ModelCoefficients::Ptr circleB(new pcl::ModelCoefficients);
+  circleA->values.push_back(-1);
+  circleA->values.push_back(0);
+  circleA->values.push_back(2);
+  circleA->values.push_back(4);
 
-    circleB->values.push_back(1);
-    circleB->values.push_back(0);
-    circleB->values.push_back(2);
-    circleB->values.push_back(1);
-    Sf_ModelCylinderBuildingbrick cylinder{circleA, circleB};
-    Eigen::Vector3f point (0,0,0);
-    auto distance = cylinder.getDistanceToInfinitHull(point);
-    QVERIFY(distance == 1);
+  circleB->values.push_back(1);
+  circleB->values.push_back(0);
+  circleB->values.push_back(2);
+  circleB->values.push_back(1);
+  Sf_ModelCylinderBuildingbrick cylinder{ circleA, circleB };
+  Eigen::Vector3f point(0, 0, 0);
+  auto distance = cylinder.getDistanceToInfinitHull(point);
+  QVERIFY(distance == 1);
 }
 
-void SF_UnitTestCylinder::projectionOnAxis()
+void
+SF_UnitTestCylinder::projectionOnAxis()
 {
-    pcl::ModelCoefficients::Ptr circleA (new pcl::ModelCoefficients);
-    pcl::ModelCoefficients::Ptr circleB (new pcl::ModelCoefficients);
-    circleA->values.push_back(-1);
-    circleA->values.push_back(0);
-    circleA->values.push_back(2);
-    circleA->values.push_back(4);
+  pcl::ModelCoefficients::Ptr circleA(new pcl::ModelCoefficients);
+  pcl::ModelCoefficients::Ptr circleB(new pcl::ModelCoefficients);
+  circleA->values.push_back(-1);
+  circleA->values.push_back(0);
+  circleA->values.push_back(2);
+  circleA->values.push_back(4);
 
-    circleB->values.push_back(1);
-    circleB->values.push_back(0);
-    circleB->values.push_back(2);
-    circleB->values.push_back(1);
-    Sf_ModelCylinderBuildingbrick cylinder{circleA, circleB};
-    Eigen::Vector3f point (0,0,0);
-    auto projection = cylinder.getProjectionOnAxis(point);
-    QVERIFY(projection == Eigen::Vector3f(0,0,2));
-    cylinder.getProjectedDistanceToSegment(point);
+  circleB->values.push_back(1);
+  circleB->values.push_back(0);
+  circleB->values.push_back(2);
+  circleB->values.push_back(1);
+  Sf_ModelCylinderBuildingbrick cylinder{ circleA, circleB };
+  Eigen::Vector3f point(0, 0, 0);
+  auto projection = cylinder.getProjectionOnAxis(point);
+  QVERIFY(projection == Eigen::Vector3f(0, 0, 2));
+  cylinder.getProjectedDistanceToSegment(point);
 }
 
-void SF_UnitTestCylinder::projectedDistanceToSegment()
+void
+SF_UnitTestCylinder::projectedDistanceToSegment()
 {
-    pcl::ModelCoefficients::Ptr circleA (new pcl::ModelCoefficients);
-     pcl::ModelCoefficients::Ptr circleB (new pcl::ModelCoefficients);
-     circleA->values.push_back(-1);
-     circleA->values.push_back(0);
-     circleA->values.push_back(2);
-     circleA->values.push_back(4);
+  pcl::ModelCoefficients::Ptr circleA(new pcl::ModelCoefficients);
+  pcl::ModelCoefficients::Ptr circleB(new pcl::ModelCoefficients);
+  circleA->values.push_back(-1);
+  circleA->values.push_back(0);
+  circleA->values.push_back(2);
+  circleA->values.push_back(4);
 
-     circleB->values.push_back(1);
-     circleB->values.push_back(0);
-     circleB->values.push_back(2);
-     circleB->values.push_back(1);
-     Sf_ModelCylinderBuildingbrick cylinder{circleA, circleB};
-     {
-         Eigen::Vector3f point (0,0,0);
-         auto distance = cylinder.getProjectedDistanceToSegment(point);
-         QVERIFY(distance == 0); ;
-     }
-     {
-         Eigen::Vector3f point (-10,0,0);
-         auto distance = cylinder.getProjectedDistanceToSegment(point);
-         QVERIFY(distance == 9); ;
-     }
-     {
-         Eigen::Vector3f point (10,0,0);
-         auto distance = cylinder.getProjectedDistanceToSegment(point);
-         QVERIFY(distance == 9); ;
-     }
-
+  circleB->values.push_back(1);
+  circleB->values.push_back(0);
+  circleB->values.push_back(2);
+  circleB->values.push_back(1);
+  Sf_ModelCylinderBuildingbrick cylinder{ circleA, circleB };
+  {
+    Eigen::Vector3f point(0, 0, 0);
+    auto distance = cylinder.getProjectedDistanceToSegment(point);
+    QVERIFY(distance == 0);
+    ;
+  }
+  {
+    Eigen::Vector3f point(-10, 0, 0);
+    auto distance = cylinder.getProjectedDistanceToSegment(point);
+    QVERIFY(distance == 9);
+    ;
+  }
+  {
+    Eigen::Vector3f point(10, 0, 0);
+    auto distance = cylinder.getProjectedDistanceToSegment(point);
+    QVERIFY(distance == 9);
+    ;
+  }
 }

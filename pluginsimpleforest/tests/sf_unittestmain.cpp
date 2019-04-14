@@ -26,20 +26,20 @@
 
 *****************************************************************************/
 
-#include "tests/sf_unittestqsmsort.h"
 #include "tests/sf_unittestcylinder.h"
+#include "tests/sf_unittestqsmsort.h"
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
-   int status = 0;
-   {
-      SF_UnitTestQSMSort tc;
-      status |= QTest::qExec(&tc, argc, argv);
-   }
-   {
-      SF_UnitTestCylinder tc;
-      status |= QTest::qExec(&tc, argc, argv);
-   }
-   return status;
+  int status = 0;
+  {
+    SF_UnitTestQSMSort tc;
+    status |= QTest::qExec(&tc, argc, argv);
+  }
+  {
+    SF_UnitTestCylinder tc;
+    status |= QTest::qExec(&tc, argc, argv);
+  }
+  return status;
 }
-

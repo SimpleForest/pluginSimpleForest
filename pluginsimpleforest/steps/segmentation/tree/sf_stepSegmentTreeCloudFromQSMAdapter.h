@@ -78,9 +78,9 @@ public:
     }
     ne.compute(*cloud);
     {
-        QMutexLocker m1(&*mMutex);
-        params._cloudIn = cloud;
-        clustering.setParams(params);
+      QMutexLocker m1(&*mMutex);
+      params._cloudIn = cloud;
+      clustering.setParams(params);
     }
     clustering.compute();
     {
