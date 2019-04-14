@@ -81,6 +81,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/feature/growth_direction/sf_growthDirection.h \
     pcl/cloud/feature/growth_direction/sf_growthDirection.hpp \
     steps/item/sf_qsm_item.h \
+    steps/item/sf_spherefollowing_parameters_item.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSMAdapter.h \
     steps/sf_abstractStep.h \
@@ -170,6 +171,7 @@ SOURCES += \
     pcl/geometry/sf_pointGeometry.cpp \
     pcl/cloud/filter/binary/stem/sf_stemRansacFilter.cpp \
     steps/item/sf_qsm_item.cpp \
+    steps/item/sf_spherefollowing_parameters_item.cpp \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.cpp \
     steps/sf_abstractStep.cpp \
     steps/filter/sf_abstractFilterStep.cpp \

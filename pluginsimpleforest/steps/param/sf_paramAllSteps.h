@@ -75,6 +75,15 @@ struct SF_ParamCT
     return str;
   }
 
+  virtual void reset()
+  {
+    _grpCpyGrp = nullptr;
+    _log = nullptr;
+    _itemCpyCloudIn = nullptr;
+    _resCpyRes = nullptr;
+    _stepProgress = nullptr;
+  }
+
 private:
   virtual QString toStringImport()
   {
@@ -95,6 +104,12 @@ struct SF_ParamCloud : public SF_ParamCT
     _log->addMessage(LogInterface::info, LogInterface::step, str);
   }
 
+  virtual void reset()
+  {
+    SF_ParamCT::reset();
+    _cloudIn = nullptr;
+  }
+
 private:
   virtual QString toStringFilter(double percentage)
   {
@@ -112,6 +127,11 @@ struct SF_ParamFilter : public SF_ParamCloud<PointType>
 {
   int _sizeOutput;
   std::vector<int> _outputIndices;
+  virtual void reset()
+  {
+    SF_ParamCloud<PointType>::reset();
+    _outputIndices.clear();
+  }
 };
 
 template<typename PointType>
@@ -120,6 +140,12 @@ struct SF_ParamQSM : public SF_ParamFilter<PointType>
   std::shared_ptr<SF_ModelQSM> _tree;
   Eigen::Vector3d _translation;
   CT_ColorCloudStdVector* _colors;
+  virtual void reset()
+  {
+    SF_ParamFilter<PointType>::reset();
+    _tree = nullptr;
+    _colors = nullptr;
+  }
 };
 
 template<typename PointType>
