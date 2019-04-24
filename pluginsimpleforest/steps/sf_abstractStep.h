@@ -80,7 +80,7 @@ protected:
   virtual void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
 
   void addQSM(CT_ResultGroup* outResult,
-              QList<SF_ParamSpherefollowingBasic<SF_PointNormal> > paramList,
+              QList<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramList,
               QString outResultGrpName,
               QString outCylinderName,
               QString outCylinderGrpName,
