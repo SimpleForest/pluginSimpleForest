@@ -285,7 +285,8 @@ SF_StepSpherefollowingRoot::createOutResultModelListProtected()
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Spherefollowing Fit Quality"));
     resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(), tr("QSM"));
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM"));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
+    resModelw->addItemModel(
+      DEF_IN_GRP_CLUSTER, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
   }
 }
 

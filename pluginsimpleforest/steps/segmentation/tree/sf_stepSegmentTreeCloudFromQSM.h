@@ -61,6 +61,7 @@ private:
   CT_AutoRenameModels m_outColorGrowthVolume;
   CT_AutoRenameModels m_outColorClusters;
   CT_AutoRenameModels m_clusterIndices;
+  CT_AutoRenameModels m_outClusterID;
 };
 
 #endif // SF_SEGMENTTREECLOUDFROMQSM_H

@@ -31,7 +31,8 @@
 #include "steps/item/sf_qsm_item.h"
 #include "steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSMAdapter.h"
 
-#include "ct_itemdrawable/ct_pointsattributescolor.h"
+#include <ct_itemdrawable/ct_pointsattributescolor.h>
+#include <ct_itemdrawable/ct_pointsattributesscalartemplated.h>
 
 #include <QtConcurrent/QtConcurrent>
 
@@ -114,6 +115,7 @@ SF_StepSegmentTreeCloudFromQSM::createOutResultModelListProtected()
       _outCloudCluster, m_clusterIndices, new CT_StdItemAttributeT<int>(CT_AbstractCategory::DATA_VALUE), tr("Tree Segment ID"));
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outColorGrowthVolume, new CT_PointsAttributesColor(), tr("log GrowthVolume"));
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outColorClusters, new CT_PointsAttributesColor(), tr("Cluster Colors"));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outClusterID, new CT_PointsAttributesScalarTemplated<int>(), tr("Cluster ID"));
   }
 }
 
@@ -139,6 +141,9 @@ SF_StepSegmentTreeCloudFromQSM::compute()
     group->addItemDrawable(colorAttributeClusters);
     CT_PointsAttributesColor* colorAttribute = new CT_PointsAttributesColor(
       m_outColorGrowthVolume.completeName(), outResult, ct_cloud->getPointCloudIndexRegistered(), param._colorsGrowthVolume);
+    CT_PointsAttributesScalarTemplated<int>* idAttribute = new CT_PointsAttributesScalarTemplated<int>(
+      m_outClusterID.completeName(), outResult, ct_cloud->getPointCloudIndexRegistered(), param._clusterIDs, 0, param._numClstrs - 1);
+    group->addItemDrawable(idAttribute);
     group->addItemDrawable(colorAttribute);
   }
   _paramList.clear();
