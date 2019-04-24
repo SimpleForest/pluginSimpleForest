@@ -90,7 +90,7 @@ SF_ClusterCloudByQSM<PointType>::compute()
   float logMin = std::log(growthVoluminaSorted[0]);
   CT_ColorCloudStdVector* colorsLogGrowthVolume = new CT_ColorCloudStdVector(m_cloud->points.size());
   CT_ColorCloudStdVector* colorsCluster = new CT_ColorCloudStdVector(m_cloud->points.size());
-  std::vector<int> ids;
+  CT_StandardCloudStdVectorT<int>* clusterID = new CT_StandardCloudStdVectorT<int>();
   m_clusters.clear();
   for (size_t i = 0; i < m_numClstrs; i++) {
     m_clusters.push_back(typename pcl::PointCloud<PointType>::Ptr(new typename pcl::PointCloud<PointType>));
@@ -109,12 +109,12 @@ SF_ClusterCloudByQSM<PointType>::compute()
       CT_Color& col = colorsCluster->colorAt(i);
       for (size_t j = 0; j < m_numClstrs; j++) {
         if (j == m_numClstrs - 1) {
-          ids.push_back(j);
+          clusterID->addT(j);
           col = SF_ColorFactory::getColor(SF_ColorFactory::Color::RED);
           m_clusters[j]->points.push_back(m_cloud->points[i]);
         }
         if (growthVolume < upperGrowthVolumina[j]) {
-          ids.push_back(j);
+          clusterID->addT(j);
           switch (j % 5) {
             case 0:
               col = SF_ColorFactory::getColor(SF_ColorFactory::Color::GREEN);
@@ -142,5 +142,5 @@ SF_ClusterCloudByQSM<PointType>::compute()
   }
   m_params._colorsClusters = colorsCluster;
   m_params._colorsGrowthVolume = colorsLogGrowthVolume;
-  m_params._outputIndices = ids;
+  m_params._clusterIDs = clusterID;
 }

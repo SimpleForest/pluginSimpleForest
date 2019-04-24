@@ -32,6 +32,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
 #include "ct_itemdrawable/ct_image2d.h"
 #include "ct_itemdrawable/ct_pointsattributescolor.h"
+#include "ct_itemdrawable/ct_pointsattributesscalartemplated.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "pcl/sf_point.h"
 #include "qsm/algorithm/distance/sf_cloudToModelDistanceParameters.h"
@@ -259,6 +260,7 @@ struct SF_ParamSegmentTreeFromQSM : public SF_ParamFilter<PointType>
   std::shared_ptr<SF_ModelQSM> _qsm;
   CT_ColorCloudStdVector* _colorsGrowthVolume;
   CT_ColorCloudStdVector* _colorsClusters;
+  CT_StandardCloudStdVectorT<int>* _clusterIDs;
   virtual QString toString()
   {
     QString str = "Firstly the cloud got its normals computed with radius ";
