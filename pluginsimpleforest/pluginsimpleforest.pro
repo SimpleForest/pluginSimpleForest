@@ -21,6 +21,7 @@ CONFIG   += console
 TARGET = plug_simpleforest
 
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
+    cloud/sf_transferfeature.h \
     qsm/algorithm/distance/sf_cloudToModelDistance.hpp \
     qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
