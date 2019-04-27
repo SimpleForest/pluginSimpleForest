@@ -13,8 +13,7 @@ include($${CT_PREFIX}/shared.pri)
 include($${CT_PREFIX}/include_ct_library.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
-
+greaterThan(QT_MAJOR_VERSION, 4):
 QT += concurrent
 QT +=  testlib
 QT -= gui
