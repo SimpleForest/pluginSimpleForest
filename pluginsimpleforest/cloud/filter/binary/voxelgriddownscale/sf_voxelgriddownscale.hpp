@@ -57,7 +57,6 @@ SF_VoxelGridDownscale<PointType>::computeCentroids(
   const std::vector<std::pair<typename pcl::PointCloud<PointType>::Ptr, std::vector<size_t>>>& clusters)
 {
   typename pcl::PointCloud<PointType>::Ptr centroids(new pcl::PointCloud<PointType>());
-  //     centroids->points.resize(clusters.size());
   for (const auto& cluster : clusters) {
     auto cloud = cluster.first;
     pcl::CentroidPoint<PointType> centroid;
@@ -105,10 +104,6 @@ SF_VoxelGridDownscale<PointType>::downScale(
         CTIndicesTwo.push_back(CTindices[cloudIndex++]);
       }
     }
-    //        if(pcl::traits::has_field<PointType, pcl::fields::label>::value)
-    //        {
-    //            closestPoint.label = cloud->points.size();
-    //        }
     cloudOne->points.push_back(std::move(closestPoint));
     CTIndicesOne.push_back(std::move(closestIndex));
   }
