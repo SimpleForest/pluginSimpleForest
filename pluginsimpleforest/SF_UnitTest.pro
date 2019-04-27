@@ -26,10 +26,12 @@ TEMPLATE = app
 SOURCES += \
     tests/sf_unittestcylinder.cpp \
     tests/sf_unittestmain.cpp \
-    tests/sf_unittestqsmsort.cpp
+    tests/sf_unittestqsmsort.cpp \
+    tests/sf_unittesttransferfeature.cpp
 HEADERS += \
     tests/sf_unittestcylinder.h \
-    tests/sf_unittestqsmsort.h
+    tests/sf_unittestqsmsort.h \
+    tests/sf_unittesttransferfeature.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../ComputreeInstallRelease/plugins/release/ -lplug_simpleforest
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ComputreeInstallRelease/plugins/debug/ -lplug_simpleforest
