@@ -26,38 +26,38 @@
 
 *****************************************************************************/
 
-#ifndef SF_CONVERTER_CT_TO_PCL_H
-#define SF_CONVERTER_CT_TO_PCL_H
+#ifndef SF_CONVERTERCTIDTOPCLCLOUD_H
+#define SF_CONVERTERCTIDTOPCLCLOUD_H
 
 #include <pcl/sf_point.h>
 
 #include "ct_iterator/ct_pointiterator.h"
 #include <converters/sf_abstractConverter.h>
 #include <ct_itemdrawable/ct_grid3d_sparse.h>
+#include <ct_itemdrawable/ct_pointsattributesscalartemplated.h>
 
 template<typename PointType>
-class Sf_ConverterCTToPCL : public SF_AbstractConverter
+class Sf_ConverterCTIDToPCLCloud : public SF_AbstractConverter
 {
 public:
-  Sf_ConverterCTToPCL();
+  Sf_ConverterCTIDToPCLCloud();
   void compute();
-  void downScale(float range, typename pcl::PointCloud<PointType>::Ptr downscaledCloud);
-  typename pcl::PointCloud<PointType>::Ptr cloudTranslated() const;
-  typename pcl::PointCloud<PointType>::Ptr getCloudOriginal() const;
+  typename pcl::PointCloud<PointType>::Ptr cloud() const;
+  void setCloudAndID(typename pcl::PointCloud<PointType>::Ptr cloud, CT_PointsAttributesScalarTemplated<int>* IDs);
+  std::vector<typename pcl::PointCloud<PointType>::Ptr> clusters() const;
 
 private:
-  typename pcl::PointCloud<PointType>::Ptr _cloudTranslated;
-  typename pcl::PointCloud<PointType>::Ptr _cloudOriginal;
-  void iterateCloudAndConvert(const CT_AbstractPointCloudIndex* index);
-  void convertPoint(CT_PointIterator& it);
-  void convert();
-
-  std::vector<typename pcl::PointCloud<PointType>::Ptr> mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices);
-  void mergeSubCloudsToVector(CT_Grid3D_Sparse<int>* indices,
-                              std::vector<typename pcl::PointCloud<PointType>::Ptr> cloudsVec,
-                              typename pcl::PointCloud<PointType>::Ptr downscaled_cloud);
+  typename pcl::PointCloud<PointType>::Ptr m_cloud;
+  typename std::vector<typename pcl::PointCloud<PointType>::Ptr> m_clusters;
+  CT_PointsAttributesScalarTemplated<int>* m_IDs;
+  CT_AbstractItemDrawableWithPointCloud* m_itemCpyCloudIn;
+  int m_numClusters = -1;
+  void retrieveNumberClusters();
+  void initializeClusters();
+  void writeIdsAndClusters();
+  void revertClusters();
 };
 
-#endif // SF_CONVERTER_CT_TO_PCL_H
+#include "converters/CT_To_PCL/sf_converterCTIDToPCLCloud.hpp"
 
-#include "sf_converterCTToPCL.hpp"
+#endif // SF_CONVERTERCTIDTOPCLCLOUD_H

@@ -56,7 +56,7 @@ protected:
   virtual void createPreConfigurationDialog();
   virtual void createPostConfigurationDialog();
   void compute();
-  QList<SF_ParamSpherefollowingBasic<SF_PointNormal>> _paramList;
+  QList<SF_ParamSpherefollowingAdvanced<SF_PointNormal>> _paramList;
 
 private:
   QList<SF_ParamQSM<SF_PointNormal>> paramList();

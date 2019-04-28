@@ -84,7 +84,6 @@ SF_PluginManager::loadGenericsStep()
   addNewPointsStep<SF_StepSegmentTreeCloudFromQSM>(CT_StepsMenu::LP_Clusters);
   addNewGeometricalShapesStep<SF_StepSpherefollowingRoot>("QSM");
   addNewGeometricalShapesStep<SF_StepSphereFollowingAdvanced>("QSM");
-
   return true;
 }
 

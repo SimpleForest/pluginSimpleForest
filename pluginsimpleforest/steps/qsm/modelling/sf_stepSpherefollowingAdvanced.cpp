@@ -28,8 +28,8 @@
 
 #include "sf_stepSpherefollowingAdvanced.h"
 
-#include "sf_stepSpherefollowingBasicAdapter.h"
 #include "steps/item/sf_spherefollowing_parameters_item.h"
+#include "steps/qsm/modelling/sf_stepSpherefollowingAdvancedAdapter.h"
 
 #include <QtConcurrent/QtConcurrent>
 
@@ -210,7 +210,7 @@ SF_StepSphereFollowingAdvanced::compute()
   identifyAndRemoveCorruptedScenes(outResult);
   createParamList(outResult);
   writeLogger();
-  QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingRootAdapter());
+  QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingAdvancedAdapter());
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
@@ -286,54 +286,39 @@ SF_StepSphereFollowingAdvanced::paramsStringToNumber(const QString& UISelection)
 void
 SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
 {
-  SF_SphereFollowingParameters sphereFollowingParams;
-  SF_SphereFollowingOptimizationParameters sfOptimizationParameters;
-  sfOptimizationParameters._epsilonSphere = _SF_OPT_sphereEpsilon;
-  //  sfOptimizationParameters._epsilonSphereMultiplier = paramsStringToNumber(_PARAMETERS_CHOICE_SPHERE_EPSILON);
-  sfOptimizationParameters._euclideanClusteringDistance = _SF_OPT_euclideanClusteringDistance;
-  //  sfOptimizationParameters._euclideanClusteringDistanceMultiplier = paramsStringToNumber(
-  //    _PARAMETERS_CHOICE_EUCLIDEAN_CLUSTERING_DISTANCE);
-  sfOptimizationParameters._sphereRadiusMultiplier = _SF_OPT_sphereRadiusMultiplier;
-  //  sfOptimizationParameters._sphereRadiusMultiplierMultiplier = paramsStringToNumber(_PARAMETERS_CHOICE_SPHERE_RADIUS_MULTIPLIER);
-  std::vector<SF_SphereFollowingOptimizationParameters> optimizationParametersVector;
-  optimizationParametersVector.push_back(sfOptimizationParameters);
-  sphereFollowingParams.m_optimizationParams = optimizationParametersVector;
-  sphereFollowingParams._minPtsGeometry = _SF_minPtsGeometry;
-  sphereFollowingParams._inlierDistance = _SF_inlierDistance;
-  sphereFollowingParams._RANSACIterations = _SF_RANSACIiterations;
-  sphereFollowingParams._heightInitializationSlice = _SF_heightInitializationSlice;
-  sphereFollowingParams._minGlobalRadius = _SF_minRadiusGlobal;
-  sphereFollowingParams._fittingMethod = toStringSFMethod();
-
   SF_CloudToModelDistanceParameters distanceParams;
   distanceParams._method = toStringCMDMethod();
   distanceParams._k = _CMD_k;
   distanceParams._inlierDistance = _CMD_inlierDistance;
   distanceParams._robustPercentage = _CMD_robustPercentage;
 
-  adaptParametersToExpertLevel();
-  CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
-  while (!isStopped() && outResIt.hasNext()) {
-    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
+  CT_ResultGroupIterator outResItCloud(outResult, this, DEF_IN_GRP_CLUSTER);
+  while (!isStopped() && outResItCloud.hasNext()) {
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResItCloud.next();
     const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
       this, DEF_IN_CLOUD_SEED);
-    SF_ParamSpherefollowingBasic<SF_PointNormal> param;
-    param._stepProgress = _stepProgress;
-    param._distanceParams = distanceParams;
-    param._sphereFollowingParams = sphereFollowingParams;
-    param._voxelSize = _PP_voxelSize;
-    param._clusteringDistance = _PP_euclideanClusteringDistance;
-    param.m_numClstrs = _CMD_numClstrs;
-    param._modelCloudError = 1337;
-    param._fittedGeometries = 0;
-    param._log = PS_LOG;
-    param._itemCpyCloudIn = ctCloud;
-    param._grpCpyGrp = group;
-    _paramList.append(param);
+    CT_PointsAttributesScalarTemplated<int>* ctID = (CT_PointsAttributesScalarTemplated<int>*)group->firstItemByINModelName(this,
+                                                                                                                            DEF_IN_ID);
+    const SF_SphereFollowing_Parameters_Item* ctParameters = (const SF_SphereFollowing_Parameters_Item*)group->firstItemByINModelName(
+      this, DEF_IN_PARAMS);
+
+    SF_ParamSpherefollowingBasic<SF_PointNormal> param = ctParameters->getParams();
+    SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramAdvanced;
+    paramAdvanced._sphereFollowingParams = param._sphereFollowingParams;
+    paramAdvanced._stepProgress = _stepProgress;
+    paramAdvanced._distanceParams = distanceParams;
+    paramAdvanced._voxelSize = _PP_voxelSize;
+    paramAdvanced._clusteringDistance = _PP_euclideanClusteringDistance;
+    paramAdvanced.m_numClstrs = _CMD_numClstrs;
+    paramAdvanced._modelCloudError = 1337;
+    paramAdvanced._fittedGeometries = 0;
+    paramAdvanced._log = PS_LOG;
+    paramAdvanced._itemCpyCloudIn = ctCloud;
+    paramAdvanced._ctID = ctID;
+    paramAdvanced._grpCpyGrp = group;
+    _paramList.append(paramAdvanced);
   }
   int numberClouds = _paramList.size();
-  int numberComputationsPerCloud = sfOptimizationParameters._epsilonSphereMultiplier.size() *
-                                   sfOptimizationParameters._euclideanClusteringDistanceMultiplier.size() *
-                                   sfOptimizationParameters._sphereRadiusMultiplierMultiplier.size();
+  int numberComputationsPerCloud = 300;
   _computationsTotal = numberClouds * numberComputationsPerCloud;
 }

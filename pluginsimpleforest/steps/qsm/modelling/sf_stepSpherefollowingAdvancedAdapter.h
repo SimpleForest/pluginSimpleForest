@@ -26,10 +26,11 @@
 
 *****************************************************************************/
 
-#ifndef SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
-#define SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
+#ifndef SF_STEPSPHEREFOLLOWINGADVANCEDADAPTER_H
+#define SF_STEPSPHEREFOLLOWINGADVANCEDADAPTER_H
 
 #include <QThreadPool>
+#include <converters/CT_To_PCL/sf_converterCTIDToPCLCloud.h>
 #include <converters/CT_To_PCL/sf_converterCTToPCL.h>
 #include <pcl/ModelCoefficients.h>
 #include <pcl/features/normal_3d.h>
@@ -37,8 +38,8 @@
 #include <pcl/kdtree/kdtree.h>
 #include <pcl/segmentation/extract_clusters.h>
 
+#include "cloud/sf_transferfeature.h"
 #include "qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h"
-#include "qsm/algorithm/optimization/gridsearch/sf_spherefollowingrastersearch.h"
 #include "qsm/algorithm/postprocessing/sf_qsmmedianfilter.h"
 #include "qsm/algorithm/sf_QSMAlgorithm.h"
 #include "qsm/algorithm/sf_QSMCylinder.h"
@@ -47,26 +48,26 @@
 #include "steps/param/sf_paramAllSteps.h"
 #include "steps/visualization/sf_colorfactory.h"
 
-class SF_SpherefollowingRootAdapter
+class SF_SpherefollowingAdvancedAdapter
 {
 public:
   std::shared_ptr<QMutex> mMutex;
 
-  SF_SpherefollowingRootAdapter(const SF_SpherefollowingRootAdapter& obj) { mMutex = obj.mMutex; }
+  SF_SpherefollowingAdvancedAdapter(const SF_SpherefollowingAdvancedAdapter& obj) { mMutex = obj.mMutex; }
 
-  SF_SpherefollowingRootAdapter() { mMutex.reset(new QMutex); }
+  SF_SpherefollowingAdvancedAdapter() { mMutex.reset(new QMutex); }
 
-  ~SF_SpherefollowingRootAdapter() {}
+  ~SF_SpherefollowingAdvancedAdapter() {}
 
-  void operator()(SF_ParamSpherefollowingBasic<SF_PointNormal>& params)
+  void operator()(SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params)
   {
     Sf_ConverterCTToPCL<SF_PointNormal> converter;
     {
       QMutexLocker m1(&*mMutex);
       converter.setItemCpyCloudInDeprecated(params._itemCpyCloudIn);
     }
+    SF_CloudNormal::Ptr cloudDownscaled(new SF_CloudNormal);
     SF_CloudNormal::Ptr cloud;
-    SF_CloudNormal::Ptr cloudDownscaled(new SF_CloudNormal());
     converter.compute();
     {
       QMutexLocker m1(&*mMutex);
@@ -80,16 +81,7 @@ public:
       sor.setLeafSize(params._voxelSize, params._voxelSize, params._voxelSize);
     }
     sor.filter(*cloudDownscaled);
-    pcl::NormalEstimation<SF_PointNormal, SF_PointNormal> ne;
-    {
-      QMutexLocker m1(&*mMutex);
 
-      ne.setInputCloud(cloudDownscaled);
-      pcl::search::KdTree<SF_PointNormal>::Ptr tree(new pcl::search::KdTree<SF_PointNormal>());
-      ne.setSearchMethod(tree);
-      ne.setRadiusSearch(params._voxelSize * 3);
-    }
-    ne.compute(*cloudDownscaled);
     SF_CloudNormal::Ptr largestCluster(new SF_CloudNormal());
     pcl::EuclideanClusterExtraction<SF_PointNormal> ec;
     {
@@ -100,7 +92,7 @@ public:
       ec.setMinClusterSize(10);
       ec.setMaxClusterSize(std::numeric_limits<int>::max());
       ec.setSearchMethod(tree);
-      ec.setInputCloud(cloudDownscaled);
+      ec.setInputCloud(largestCluster);
     }
 
     std::vector<pcl::PointIndices> clusterIndices;
@@ -110,23 +102,47 @@ public:
         largestCluster->points.push_back(cloudDownscaled->points[*pit]);
     }
 
-    SF_SphereFollowingRasterSearch sphereFollowing;
+    Sf_ConverterCTIDToPCLCloud<SF_PointNormal> converterID;
+    {
+      QMutexLocker m1(&*mMutex);
+      converterID.setCloudAndID(cloud, params._ctID);
+    }
+    converterID.compute();
+    std::vector<SF_CloudNormal::Ptr> clusters;
+
+    {
+      QMutexLocker m1(&*mMutex);
+      clusters = converterID.clusters();
+      std::for_each(clusters.begin(), clusters.end(), [&cloud, &params](SF_CloudNormal::Ptr cluster) {
+        SF_TransferFeature<SF_PointNormal> tf;
+        tf.setInputClouds(cloud, cluster);
+        tf.compute();
+        pcl::NormalEstimation<SF_PointNormal, SF_PointNormal> ne;
+        {
+          ne.setInputCloud(cluster);
+          pcl::search::KdTree<SF_PointNormal>::Ptr tree(new pcl::search::KdTree<SF_PointNormal>());
+          ne.setSearchMethod(tree);
+          ne.setRadiusSearch(params._voxelSize * 3);
+        }
+        ne.compute(*cluster);
+      });
+      params._clusters = clusters;
+    }
+
+    SF_DownHillSimplex sphereFollowing;
     {
       QMutexLocker m1(&*mMutex);
       sphereFollowing.setParams(params);
-      sphereFollowing.setCloud(largestCluster);
     }
-
     sphereFollowing.compute();
     {
       QMutexLocker m1(&*mMutex);
-      params = sphereFollowing.getParamVec()[0];
+      params = sphereFollowing.params();
       params._cloudIn = largestCluster;
 
       SF_QSMMedianFilter med;
       med.compute(params._tree);
     }
-
     SF_VisualizeFitquality vfq;
     {
       QMutexLocker m1(&*mMutex);
@@ -134,9 +150,7 @@ public:
       vfq.setParams(params._distanceParams);
       vfq.setQsm(params._tree);
     }
-
     vfq.compute();
-
     {
       QMutexLocker m1(&*mMutex);
       params._colors = vfq.colors();
@@ -145,4 +159,4 @@ public:
   }
 };
 
-#endif // SF_STEP_SPHEREFOLLOWING_BASIC_ADAPTER_H
+#endif // SF_STEPSPHEREFOLLOWINGADVANCEDADAPTER_H

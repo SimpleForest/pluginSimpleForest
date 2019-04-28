@@ -46,15 +46,16 @@ downhillSimplex(const gsl_vector* v, void* params);
 
 class SF_DownHillSimplex
 {
-  SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
-  void serializeParams(std::uintptr_t* par);
-  void serializeVec(gsl_vector* x, double fac);
+  SF_ParamSpherefollowingAdvanced<SF_PointNormal> m_params;
+  void serializeVec(gsl_vector* x, double fac, size_t numberClusters);
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>> m_clustersTotal;
+  std::vector<pcl::PointCloud<pcl::PointXYZINormal>> m_currentCluster;
 
 public:
   SF_DownHillSimplex();
   void compute();
-  SF_ParamSpherefollowingBasic<SF_PointNormal> params() const;
-  void setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal>& params);
+  SF_ParamSpherefollowingAdvanced<SF_PointNormal> params() const;
+  void setParams(const SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params);
 };
 
 #endif // SF_DOWNHILLSIMPLEX_H

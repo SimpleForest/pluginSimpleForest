@@ -546,6 +546,13 @@ struct SF_ParamStatisticalOutlierFilter : public SF_ParamFilter<PointType>
 };
 
 template<typename PointType>
+struct SF_ParamSpherefollowingAdvanced : public SF_ParamSpherefollowingBasic<PointType>
+{
+  CT_PointsAttributesScalarTemplated<int>* _ctID;
+  std::vector<typename pcl::PointCloud<PointType>::Ptr> _clusters;
+};
+
+template<typename PointType>
 struct SF_ParamRadiusOutlierFilter : public SF_ParamFilter<PointType>
 {
   int _minPts = 15;

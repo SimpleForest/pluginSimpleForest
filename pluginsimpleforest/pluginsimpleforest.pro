@@ -23,6 +23,8 @@ TARGET = plug_simpleforest
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     cloud/sf_transferfeature.h \
     cloud/sf_transferfeature.hpp \
+    converters/CT_To_PCL/sf_converterCTIDToPCLCloud.h \
+    converters/CT_To_PCL/sf_converterCTIDToPCLCloud.hpp \
     qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
@@ -85,6 +87,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/item/sf_qsm_item.h \
     steps/item/sf_spherefollowing_parameters_item.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h \
+    steps/qsm/modelling/sf_stepSpherefollowingAdvancedAdapter.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSMAdapter.h \
     steps/sf_abstractStep.h \
