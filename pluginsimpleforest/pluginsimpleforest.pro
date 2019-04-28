@@ -22,6 +22,7 @@ TARGET = plug_simpleforest
 
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     cloud/sf_transferfeature.h \
+    cloud/sf_transferfeature.hpp \
     qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
