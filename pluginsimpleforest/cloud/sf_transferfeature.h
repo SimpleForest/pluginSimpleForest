@@ -30,40 +30,39 @@
 template<typename PointType>
 class SF_TransferFeature
 {
-    pcl::PointCloud<PointType>::Ptr m_src;
-    pcl::PointCloud<PointType>::Ptr m_tar;
+  typename pcl::PointCloud<PointType>::Ptr m_tar;
+  typename pcl::PointCloud<PointType>::Ptr m_src;
+
 public:
-    SF_TransferFeature();
-    void setInputClouds(pcl::PointCloud<PointType>::Ptr src, pcl::PointCloud<PointType>::Ptr tar);
-    void compute();
+  void setInputClouds(typename pcl::PointCloud<PointType>::Ptr src, typename pcl::PointCloud<PointType>::Ptr tar);
+  void compute();
 };
 
 template<typename PointType>
-void SF_TransferFeature::setInputClouds(pcl::PointCloud::Ptr src, pcl::PointCloud::Ptr tar)
+void
+SF_TransferFeature<PointType>::setInputClouds(typename pcl::PointCloud<PointType>::Ptr src,
+                                              typename pcl::PointCloud<PointType>::Ptr tar)
 {
-    m_src = src;
-    m_tar = tar;
+  m_tar = tar;
+  m_src = src;
 }
 
 template<typename PointType>
-void SF_TransferFeature::compute()
+void
+SF_TransferFeature<PointType>::compute()
 {
-    typename pcl::search::KdTree<PointType>::Ptr tree(new pcl::search::KdTree<PointType>);
-    tree->setInputCloud(m_src);
-    for(size_t i = 0; i < m_tar->points.size(); i++)
-    {
-        PointType tarPoint = m_tar->points[i];
-        std::vector<int> pointIdxNKNSearch(1);
-        std::vector<float> pointNKNSquaredDistance(1);
-        if ( tree->nearestKSearch (tarPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 )
-        {
-            PointType srcPoint = m_src->points[pointIdxNKNSearch[0]];
-            srcPoint.x = tarPoint.x;
-            srcPoint.y = tarPoint.y;
-            srcPoint.z = tarPoint.z;
-            m_tar->points[i] = srcPoint;
-        }
+  typename pcl::search::KdTree<PointType>::Ptr tree(new pcl::search::KdTree<PointType>);
+  tree->setInputCloud(m_src);
+  for (size_t i = 0; i < m_tar->points.size(); i++) {
+    PointType& tarPoint = m_tar->points[i];
+    std::vector<int> pointIdxNKNSearch(1);
+    std::vector<float> pointNKNSquaredDistance(1);
+    if (tree->nearestKSearch(tarPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
+      PointType newTarPoint = m_src->points[pointIdxNKNSearch[0]];
+      newTarPoint.getVector3fMap() = tarPoint.getVector3fMap();
+      tarPoint = std::move(newTarPoint);
     }
+  }
 }
 
 #endif // SF_TRANSFERFEATURE_H

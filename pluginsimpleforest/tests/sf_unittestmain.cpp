@@ -28,6 +28,7 @@
 
 #include "tests/sf_unittestcylinder.h"
 #include "tests/sf_unittestqsmsort.h"
+//#include "tests/sf_unittesttransferfeature.h"
 
 int
 main(int argc, char** argv)
@@ -41,5 +42,9 @@ main(int argc, char** argv)
     SF_UnitTestCylinder tc;
     status |= QTest::qExec(&tc, argc, argv);
   }
+  /*{
+    SF_UnitTestTransferFeature tc;
+    status |= QTest::qExec(&tc, argc, argv);
+  }*/
   return status;
 }

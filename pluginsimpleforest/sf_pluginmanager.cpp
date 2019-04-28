@@ -17,6 +17,7 @@
 #include "steps/filter/binary/stem_filter/sf_stepStemRANSACFilter.h"
 #include "steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.h"
 #include "steps/manipulation/merge/sf_stepMergeClouds.h"
+#include "steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingRoot.h"
 #include "steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h"
 #include "steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h"
@@ -82,6 +83,7 @@ SF_PluginManager::loadGenericsStep()
   addNewPointsStep<SF_StepMergeClouds>(CT_StepsMenu::LP_Clusters);
   addNewPointsStep<SF_StepSegmentTreeCloudFromQSM>(CT_StepsMenu::LP_Clusters);
   addNewGeometricalShapesStep<SF_StepSpherefollowingRoot>("QSM");
+  addNewGeometricalShapesStep<SF_StepSphereFollowingAdvanced>("QSM");
 
   return true;
 }
