@@ -75,8 +75,7 @@ QString
 SF_StepSpherefollowingRoot::getStepDetailledDescription() const
 {
   return tr("This implementation of the SphereFollowing method utilizes an "
-            "unsegmented tree cloud. Only one set of parameters will be optimized."
-            "Results in a fast QSM estimation with less accuracy.");
+            "unsegmented tree cloud. On the sphere following parameters a raster search if performed.");
 }
 
 QString
