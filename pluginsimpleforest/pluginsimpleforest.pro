@@ -22,7 +22,6 @@ TARGET = plug_simpleforest
 
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     cloud/sf_transferfeature.h \
-    qsm/algorithm/distance/sf_cloudToModelDistance.hpp \
     qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
@@ -50,6 +49,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/algorithm/sf_QSMAlgorithm.h \
     qsm/algorithm/sf_QSMCylinder.h \
     qsm/algorithm/distance/sf_cloudToModelDistance.h \
+    qsm/algorithm/distance/sf_cloudToModelDistance.hpp \
     qsm/algorithm/distance/sf_cloudToModelDistanceParameters.h \
     plot/sf_modelRaster.h \
     plot/sf_modelPlot.h \
