@@ -117,7 +117,7 @@ SF_DownHillSimplex::compute()
       if (status)
         break;
       size = gsl_multimin_fminimizer_size(s);
-      status = gsl_multimin_test_size(size, 5 * 1e-4);
+      status = gsl_multimin_test_size(size, m_params._fitQuality * 1e-3);
       if (status == GSL_SUCCESS) {
         printf("converged to minimum at\n");
       }
@@ -144,7 +144,7 @@ SF_DownHillSimplex::compute()
              size);
       std::cout << std::endl;
 
-    } while (status == GSL_CONTINUE && iter < 100);
+    } while (status == GSL_CONTINUE && iter < m_params._iterations);
     gsl_vector_free(x);
     gsl_vector_free(ss);
     gsl_multimin_fminimizer_free(s);

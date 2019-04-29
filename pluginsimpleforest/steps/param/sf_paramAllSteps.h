@@ -550,6 +550,8 @@ struct SF_ParamSpherefollowingAdvanced : public SF_ParamSpherefollowingBasic<Poi
 {
   CT_PointsAttributesScalarTemplated<int>* _ctID;
   std::vector<typename pcl::PointCloud<PointType>::Ptr> _clusters;
+  double _fitQuality;
+  int _iterations;
 };
 
 template<typename PointType>

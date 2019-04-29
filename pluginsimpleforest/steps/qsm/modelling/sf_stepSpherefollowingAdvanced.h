@@ -73,6 +73,8 @@ private:
   double _SF_OPT_sphereRadiusMultiplier = 2;
   double _SF_OPT_sphereEpsilon = 0.035;
   bool _SF_parameterAutoSearch = true;
+  double _NM_minSize = 0.5;
+  int _NM_iterations = 100;
   int _SF_RANSACIiterations = 100;
   double _SF_minRadiusGlobal = 0.04;
   double _SF_inlierDistance = 0.03;

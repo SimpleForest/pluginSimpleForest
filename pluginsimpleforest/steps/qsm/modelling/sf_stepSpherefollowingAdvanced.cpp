@@ -83,7 +83,22 @@ SF_StepSphereFollowingAdvanced::getStepRISCitations() const
 
 void
 SF_StepSphereFollowingAdvanced::configDialogAddSphereFollowingNelderMead(CT_StepConfigurableDialog* configDialog)
-{}
+{
+    configDialog->addText("<b>Downhill Simplex</b>:");
+    configDialog->addDouble("The downhill simplex search reaches it convergence criteria"
+                            " with[<em><b>min size</b></em>] ",
+                            " (m). ",
+                            0.001,
+                            0.999,
+                            3,
+                            _NM_minSize);
+    configDialog->addInt("We set for the simplex search a maximal"
+                            "[<em><b> number of iterations</b></em>]  ",
+                            " .",
+                            1,
+                            1000,
+                            _NM_iterations);
+}
 
 void
 SF_StepSphereFollowingAdvanced::configDialogGuruAddPreProcessing(CT_StepConfigurableDialog* configDialog)
@@ -151,6 +166,7 @@ void
 SF_StepSphereFollowingAdvanced::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
+  configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
   createPostConfigurationDialogCitation(configDialog);
   addCitationPCL(configDialog);
 }
@@ -316,6 +332,8 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
     paramAdvanced._itemCpyCloudIn = ctCloud;
     paramAdvanced._ctID = ctID;
     paramAdvanced._grpCpyGrp = group;
+    paramAdvanced._iterations = _NM_iterations;
+    paramAdvanced._fitQuality = _NM_minSize;
     _paramList.append(paramAdvanced);
   }
   int numberClouds = _paramList.size();
