@@ -356,7 +356,7 @@ SF_ModelAbstractSegment::sort(const SF_ModelAbstractSegment::SF_SORTTYPE sortTyp
                           SF_Math<float>::getAngleBetweenDeg(child2->getAxis(), getAxis()));
                   break;
                 default:
-                  throw("Tree sorting with illegal sort type called.");
+                  throw("Tree sorting with undefined sort type called.");
                   break;
               }
               return true;
