@@ -36,6 +36,15 @@ class SF_ModelQSM
   int _ID;
   std::string _species;
   std::shared_ptr<SF_ModelAbstractSegment> m_rootSegment;
+  bool m_hasCorrectedParameters = false;
+
+  float m_aGrowthLength;
+  float m_bGrowthLength;
+  float m_cGrowthLength;
+
+  float m_aGrowthVolume;
+  float m_bGrowthVolume;
+  float m_cGrowthVolume;
 
 public:
   SF_ModelQSM(const int ID);
@@ -43,6 +52,7 @@ public:
   virtual std::string toHeaderString();
 
   void translate(const Eigen::Vector3f& translation);
+  Eigen::Vector3f translateToOrigin();
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments();
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment);
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getLeaveSegments();
@@ -51,6 +61,20 @@ public:
   void setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& rootSegment);
   void setBranchorder();
   void sort(SF_ModelAbstractSegment::SF_SORTTYPE type);
+  bool getHasCorrectedParameters() const;
+  void setHasCorrectedParameters(bool hasCorrectedParameters);
+  float getAGrowthLength() const;
+  void setAGrowthLength(float aGrowthLength);
+  float getBGrowthLength() const;
+  void setBGrowthLength(float bGrowthLength);
+  float getCGrowthLength() const;
+  void setCGrowthLength(float cGrowthLength);
+  float getAGrowthVolume() const;
+  void setAGrowthVolume(float aGrowthVolume);
+  float getBGrowthVolume() const;
+  void setBGrowthVolume(float bGrowthVolume);
+  float getCGrowthVolume() const;
+  void setCGrowthVolume(float cGrowthVolume);
 };
 
 #endif // SF_MODEL_TREE_H

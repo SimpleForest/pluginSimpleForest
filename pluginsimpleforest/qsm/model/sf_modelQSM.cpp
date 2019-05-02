@@ -70,6 +70,90 @@ SF_ModelQSM::sort(SF_ModelAbstractSegment::SF_SORTTYPE type)
   m_rootSegment->sort(type);
 }
 
+bool
+SF_ModelQSM::getHasCorrectedParameters() const
+{
+  return m_hasCorrectedParameters;
+}
+
+void
+SF_ModelQSM::setHasCorrectedParameters(bool hasCorrectedParameters)
+{
+  m_hasCorrectedParameters = hasCorrectedParameters;
+}
+
+float
+SF_ModelQSM::getAGrowthLength() const
+{
+  return m_aGrowthLength;
+}
+
+void
+SF_ModelQSM::setAGrowthLength(float aGrowthLength)
+{
+  m_aGrowthLength = aGrowthLength;
+}
+
+float
+SF_ModelQSM::getBGrowthLength() const
+{
+  return m_bGrowthLength;
+}
+
+void
+SF_ModelQSM::setBGrowthLength(float bGrowthLength)
+{
+  m_bGrowthLength = bGrowthLength;
+}
+
+float
+SF_ModelQSM::getCGrowthLength() const
+{
+  return m_cGrowthLength;
+}
+
+void
+SF_ModelQSM::setCGrowthLength(float cGrowthLength)
+{
+  m_cGrowthLength = cGrowthLength;
+}
+
+float
+SF_ModelQSM::getAGrowthVolume() const
+{
+  return m_aGrowthVolume;
+}
+
+void
+SF_ModelQSM::setAGrowthVolume(float aGrowthVolume)
+{
+  m_aGrowthVolume = aGrowthVolume;
+}
+
+float
+SF_ModelQSM::getBGrowthVolume() const
+{
+  return m_bGrowthVolume;
+}
+
+void
+SF_ModelQSM::setBGrowthVolume(float bGrowthVolume)
+{
+  m_bGrowthVolume = bGrowthVolume;
+}
+
+float
+SF_ModelQSM::getCGrowthVolume() const
+{
+  return m_cGrowthVolume;
+}
+
+void
+SF_ModelQSM::setCGrowthVolume(float cGrowthVolume)
+{
+  m_cGrowthVolume = cGrowthVolume;
+}
+
 SF_ModelQSM::SF_ModelQSM(const int ID) : _ID(ID), _species("unknownSpecies") {}
 
 std::string
@@ -97,6 +181,22 @@ SF_ModelQSM::translate(const Eigen::Vector3f& translation)
   for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick : buildingBricks) {
     buildingBrick->translate(translation);
   }
+}
+
+Eigen::Vector3f
+SF_ModelQSM::translateToOrigin()
+{
+  Eigen::Vector3f translation(0, 0, 0);
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = getBuildingBricks();
+  if (buildingBricks.empty()) {
+    return translation;
+  }
+  for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick : buildingBricks) {
+    translation += buildingBrick->getCenter();
+  }
+  translation /= buildingBricks.size();
+  translate(translation);
+  return translation;
 }
 
 std::vector<std::shared_ptr<SF_ModelAbstractSegment>>
