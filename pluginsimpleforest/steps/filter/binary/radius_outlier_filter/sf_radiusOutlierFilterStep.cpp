@@ -196,7 +196,7 @@ SF_RadiusOutlierFilterStep::adaptParametersToExpertLevel()
     } else if (_choiceNumberPoints == _many) {
       _minPts = 40;
     } else {
-      throw std::runtime_error("SF_RadiusOutlierFilterStep::adaptParametersToExpertLevel() illegal "
+      throw std::runtime_error("SF_RadiusOutlierFilterStep::adaptParametersToExpertLevel() undefined "
                                "setting.");
     }
   }

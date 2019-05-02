@@ -84,20 +84,20 @@ SF_StepSphereFollowingAdvanced::getStepRISCitations() const
 void
 SF_StepSphereFollowingAdvanced::configDialogAddSphereFollowingNelderMead(CT_StepConfigurableDialog* configDialog)
 {
-    configDialog->addText("<b>Downhill Simplex</b>:");
-    configDialog->addDouble("The downhill simplex search reaches it convergence criteria"
-                            " with[<em><b>min size</b></em>] ",
-                            " (m). ",
-                            0.001,
-                            0.999,
-                            3,
-                            _NM_minSize);
-    configDialog->addInt("We set for the simplex search a maximal"
-                            "[<em><b> number of iterations</b></em>]  ",
-                            " .",
-                            1,
-                            1000,
-                            _NM_iterations);
+  configDialog->addText("<b>Downhill Simplex</b>:");
+  configDialog->addDouble("The downhill simplex search reaches it convergence criteria"
+                          " with[<em><b>min size</b></em>] ",
+                          " (m). ",
+                          0.001,
+                          0.999,
+                          3,
+                          _NM_minSize);
+  configDialog->addInt("We set for the simplex search a maximal"
+                       "[<em><b> number of iterations</b></em>]  ",
+                       " .",
+                       1,
+                       1000,
+                       _NM_iterations);
 }
 
 void

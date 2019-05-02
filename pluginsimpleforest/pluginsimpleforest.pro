@@ -29,6 +29,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     math/fit/line/sf_fitransacline.hpp \
     math/fit/power/sf_fitgnpower.h \
     math/fit/power/sf_fitgnpower.hpp \
+    qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.h \
+    qsm/algorithm/postprocessing/sf_correctbranchjunction.h \
+    qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.h \
     qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
@@ -90,8 +93,12 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/feature/growth_direction/sf_growthDirection.hpp \
     steps/item/sf_qsm_item.h \
     steps/item/sf_spherefollowing_parameters_item.h \
+    steps/qsm/modelling/sf_stepQSMAllometricCorrection.h \
+    steps/qsm/modelling/sf_stepQSMAllometricCorrectionAdapter.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvancedAdapter.h \
+    steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h \
+    steps/qsm/postprocessing/sf_stepcorrectbranchjunctionsadapter.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSMAdapter.h \
     steps/sf_abstractStep.h \
@@ -164,6 +171,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     tests/factory/sf_qsmfactory.h
 
 SOURCES += \
+    qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.cpp \
+    qsm/algorithm/postprocessing/sf_correctbranchjunction.cpp \
+    qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.cpp \
     qsm/algorithm/visualization/sf_visualizefitquality.cpp \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -182,7 +192,9 @@ SOURCES += \
     pcl/cloud/filter/binary/stem/sf_stemRansacFilter.cpp \
     steps/item/sf_qsm_item.cpp \
     steps/item/sf_spherefollowing_parameters_item.cpp \
+    steps/qsm/modelling/sf_stepQSMAllometricCorrection.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.cpp \
+    steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.cpp \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.cpp \
     steps/sf_abstractStep.cpp \
     steps/filter/sf_abstractFilterStep.cpp \

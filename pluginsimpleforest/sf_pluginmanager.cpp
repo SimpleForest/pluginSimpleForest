@@ -17,17 +17,13 @@
 #include "steps/filter/binary/stem_filter/sf_stepStemRANSACFilter.h"
 #include "steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.h"
 #include "steps/manipulation/merge/sf_stepMergeClouds.h"
+#include "steps/qsm/modelling/sf_stepQSMAllometricCorrection.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingRoot.h"
 #include "steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h"
 #include "steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h"
 #include "steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h"
 #include "steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h"
-
-//#include "steps/filter/multiple/voxel/sf_filter3dGridSubCloud.h"
-
-// Inclure ici les entetes des classes definissant des Ã©tapes/actions/exporters
-// ou readers
 
 SF_PluginManager::SF_PluginManager() : CT_AbstractStepPlugin() {}
 
