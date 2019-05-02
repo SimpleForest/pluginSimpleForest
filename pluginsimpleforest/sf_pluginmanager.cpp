@@ -19,6 +19,7 @@
 #include "steps/manipulation/merge/sf_stepMergeClouds.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingRoot.h"
+#include "steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h"
 #include "steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h"
 #include "steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h"
 #include "steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h"
@@ -84,6 +85,8 @@ SF_PluginManager::loadGenericsStep()
   addNewPointsStep<SF_StepSegmentTreeCloudFromQSM>(CT_StepsMenu::LP_Clusters);
   addNewGeometricalShapesStep<SF_StepSpherefollowingRoot>("QSM");
   addNewGeometricalShapesStep<SF_StepSphereFollowingAdvanced>("QSM");
+  addNewGeometricalShapesStep<SF_StepQSMAllometricCorrection>("QSM");
+  addNewGeometricalShapesStep<SF_StepCorrectBranchJunctions>("QSM");
   return true;
 }
 
