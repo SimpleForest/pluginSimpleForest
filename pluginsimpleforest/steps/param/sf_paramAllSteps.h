@@ -545,6 +545,23 @@ struct SF_ParamStatisticalOutlierFilter : public SF_ParamFilter<PointType>
   }
 };
 
+struct SF_ParamAllometricCorrectionNeighboring : public SF_ParamCT
+{
+  double _range = 0.5;
+  double _scalingFactor = 2.5;
+  double _minRadius = 0.0025;
+  double m_power = 1 / 2.49;
+  bool m_useGrowthLength = true;
+  bool m_withIntercept;
+  double m_quantile = 0.5;
+  size_t m_minPts = 10;
+  double m_inlierDistance = 0.03;
+  size_t m_ransacIterations = 1000;
+  size_t m_gaussNewtonIterations = 20;
+  bool m_estimateParams = false;
+  std::shared_ptr<SF_ModelQSM> _qsm;
+};
+
 template<typename PointType>
 struct SF_ParamSpherefollowingAdvanced : public SF_ParamSpherefollowingBasic<PointType>
 {
