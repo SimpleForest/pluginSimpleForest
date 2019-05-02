@@ -115,9 +115,6 @@ SF_FitGNPower<T>::getJacobian(const std::vector<T>& xVec)
       jacobian(index, 0) = std::pow(x, m_b);
       jacobian(index, 1) = m_a * (std::log(x)) * std::pow(x, m_b);
       jacobian(index, 2) = 1;
-//      jacobian(index, 0) = std::pow((1 - std::pow(EULER, -m_b * x)), m_c);
-//      jacobian(index, 1) = m_a * x * m_c * (std::pow(EULER, -m_b * x)) * (std::pow((1 - std::pow(EULER, -m_b * x)), (m_c - 1)));
-//      jacobian(index, 2) = m_a * std::log(1 - (std::pow(EULER, -m_b * x))) * std::pow(1 - (std::pow(EULER, -m_b * x)), m_c);
     }
   } else {
     jacobian.resize(xVec.size(), 2);
