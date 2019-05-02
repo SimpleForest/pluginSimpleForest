@@ -55,43 +55,29 @@ public:
     }
     if (paramsCpy.m_estimateParams) {
       QMutexLocker m1(&*mMutex);
-      std::cout << "FOOO 01 " << std::endl;
       SF_QSMAllometricCorrectionParameterEstimation paramEst;
       paramEst.setParams(paramsCpy);
-      std::cout << "FOOO 02 " << std::endl;
       try {
-        std::cout << "FOOO 03 " << std::endl;
         paramEst.compute();
-        std::cout << "FOOO 04 " << std::endl;
       } catch (std::exception& exp) {
-        std::cout << exp.what() << std::endl;
-        std::cout << "FOOO 05 " << std::endl;
         if (paramsCpy.m_useGrowthLength) {
           paramsCpy.m_useGrowthLength = false;
           paramEst.setParams(paramsCpy);
-          std::cout << "FOOO 06 " << std::endl;
           try {
-            std::cout << "FOOO 07 " << std::endl;
             paramEst.compute();
-            std::cout << "FOOO 08 " << std::endl;
           } catch (...) {
           }
         }
       } catch (...) {
-        std::cout << "FOOO 05 " << std::endl;
         if (paramsCpy.m_useGrowthLength) {
           paramsCpy.m_useGrowthLength = false;
           paramEst.setParams(paramsCpy);
-          std::cout << "FOOO 06 " << std::endl;
           try {
-            std::cout << "FOOO 07 " << std::endl;
             paramEst.compute();
-            std::cout << "FOOO 08 " << std::endl;
           } catch (...) {
           }
         }
       }
-      std::cout << "FOOO 09 " << std::endl;
       if (paramsCpy.m_useGrowthLength) {
         paramsCpy.m_power = paramsCpy._qsm->getBGrowthLength();
         std::cout << "paramsCpy.m_power " << paramsCpy.m_power << std::endl;
