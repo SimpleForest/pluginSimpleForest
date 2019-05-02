@@ -64,8 +64,6 @@ SF_ModelAbstractSegment::toString()
   str.append(", ");
   str.append(std::to_string(m_buildingBricks[m_buildingBricks.size() / 2]->getGrowthVolume()));
   str.append(", ");
-  str.append(std::to_string(getLength()));
-  str.append(", ");
   str.append(std::to_string(m_buildingBricks[m_buildingBricks.size() / 2]->getGrowthLength()));
   str.append(", ");
   str.append(std::to_string(m_branchOrder));

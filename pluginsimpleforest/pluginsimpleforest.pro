@@ -32,6 +32,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.h \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.h \
     qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.h \
+    qsm/algorithm/postprocessing/sf_qsmrefitcylinder.h \
     qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
@@ -99,6 +100,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvancedAdapter.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctionsadapter.h \
+    steps/qsm/postprocessing/sf_stepqsmrefitcylinders.h \
+    steps/qsm/postprocessing/sf_stepqsmrefitcylindersadapter.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSMAdapter.h \
     steps/sf_abstractStep.h \
@@ -174,6 +177,7 @@ SOURCES += \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.cpp \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.cpp \
     qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.cpp \
+    qsm/algorithm/postprocessing/sf_qsmrefitcylinder.cpp \
     qsm/algorithm/visualization/sf_visualizefitquality.cpp \
     sf_pluginentry.cpp \
     sf_pluginmanager.cpp \
@@ -195,6 +199,7 @@ SOURCES += \
     steps/qsm/modelling/sf_stepQSMAllometricCorrection.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.cpp \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.cpp \
+    steps/qsm/postprocessing/sf_stepqsmrefitcylinders.cpp \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.cpp \
     steps/sf_abstractStep.cpp \
     steps/filter/sf_abstractFilterStep.cpp \

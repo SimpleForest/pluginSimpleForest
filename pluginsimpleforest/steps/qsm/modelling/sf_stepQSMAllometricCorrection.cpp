@@ -1,3 +1,31 @@
+/****************************************************************************
+
+ Copyright (C) 2017-2019 Dr. Jan Hackenberg, free software developer
+ All rights reserved.
+
+ Contact : https://github.com/SimpleForest
+
+ Developers : Jan Hackenberg
+
+ This file is part of SimpleForest plugin Version 1 for Computree.
+
+ SimpleForest plugin is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleForest plugin is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleForest plugin.  If not, see <http://www.gnu.org/licenses/>.
+
+ PluginSimpleForest is an extended version of the SimpleTree platform.
+
+*****************************************************************************/
+
 #include "sf_stepQSMAllometricCorrection.h"
 
 #include "steps/item/sf_spherefollowing_parameters_item.h"
@@ -65,19 +93,20 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
                           0.01,
                           5,
                           _minRadius);
-  configDialog->addBool("Uses growthLength instead of growthVolume ", "", "growthLength", m_useGrowthLength);
+  configDialog->addBool(
+    "Uses growthLength instead of growthVolume ", "", "growthLength if checked, growthvolume otherwise", m_useGrowthLength);
 
   configDialog->addBool("Estimate 3 parameter equations ", "", "3 parameters with intercept", m_withIntercept);
-  configDialog->addDouble("Only use most inner  "
-                          " [<em><b>percentage</b></em>] ",
-                          " of cylinders. ",
+  configDialog->addDouble("Only use most inner cylinder representing the major branching structure "
+                          " [<em><b>percentage of cylinders</b></em>] ",
+                          " .",
                           0.1,
                           1.0,
                           2,
                           m_quantile);
   configDialog->addDouble("Use as inlier distance  "
                           " [<em><b>inlierDistance</b></em>] ",
-                          " of cylinders. ",
+                          " (m). ",
                           0.01,
                           2.0,
                           2,
@@ -111,8 +140,9 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
                        10,
                        50,
                        m_gaussNewtonIterations);
+  configDialog->addFileChoice(tr("Choose export file"), CT_FileChoiceButton::OneNewFile, "csv (*.csv)", m_filePath);
 
-  configDialog->addBool("Estimate parameters ", "", "growthLength", m_estimateParams);
+  configDialog->addBool("Estimate [<em><b>power parameter</b></em>] ", "", "automatic search", m_estimateParams);
   createPostConfigurationDialogCitation(configDialog);
 }
 
@@ -159,6 +189,27 @@ SF_StepQSMAllometricCorrection::compute()
          _outCylinderGroup.completeName(),
          _outSFQSM.completeName(),
          "");
+  if (m_filePath.size() > 0) {
+    QFile file(m_filePath.first());
+    if (file.open(QFile::WriteOnly)) {
+      for (int i = 0; i < _paramList.size(); i++) {
+        QTextStream stream(&file);
+        SF_ParamAllometricCorrectionNeighboring param = _paramList[i];
+        auto qsm = param._qsm;
+        qsm->setID(i);
+        auto cylinders = qsm->getBuildingBricks();
+        if (cylinders.size() == 0) {
+          return;
+        }
+        stream << QString::fromStdString(cylinders.at(0)->toHeaderString()) << "\n";
+        for (int j = 0; j < cylinders.size(); j++) {
+          auto cylinder = cylinders[j];
+          stream << QString::fromStdString(cylinder->toString());
+        }
+      }
+    }
+    file.close();
+  }
   _paramList.clear();
 }
 

@@ -32,6 +32,7 @@
 #include "sf_modelAbstractBuildingbrick.h"
 #include "sf_modelAbstractSegment.h"
 #include "sf_modelCylinderBuildingbrick.h"
+#include <clocale>
 
 float
 Sf_ModelCylinderBuildingbrick::getRadius()
@@ -138,6 +139,23 @@ Sf_ModelCylinderBuildingbrick::setStartEndRadius(const Eigen::Vector3f& start,
   _fittingType = type;
 }
 
+void
+Sf_ModelCylinderBuildingbrick::setCoefficients(pcl::ModelCoefficients::Ptr coefficients)
+{
+  if (coefficients->values.size() == 7) {
+    auto oldStart = _start;
+    auto oldEnd = _end;
+    auto newAxis = Eigen::Vector3f(coefficients->values[3], coefficients->values[4], coefficients->values[5]);
+    auto newPoint = Eigen::Vector3f(coefficients->values[0], coefficients->values[1], coefficients->values[2]);
+    Eigen::Vector3f a = oldStart - newPoint;
+    Eigen::Vector3f b = newAxis;
+    auto newStart = (newPoint + (a.dot(b) / b.dot(b)) * b);
+    a = oldEnd - newPoint;
+    auto newEnd = (newPoint + (a.dot(b) / b.dot(b)) * b);
+    setStartEndRadius(newStart, newEnd, coefficients->values[6], FittingType::CYLINDERCORRECTION);
+  }
+}
+
 Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB)
 {
   assert(circleA->values.size() == 4 && circleB->values.size() == 4);
@@ -154,6 +172,7 @@ Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficie
 std::string
 Sf_ModelCylinderBuildingbrick::toString()
 {
+  std::setlocale(LC_NUMERIC, "C");
   std::string str("cylinder");
   str.append(", ");
   str.append(std::to_string(_ID));

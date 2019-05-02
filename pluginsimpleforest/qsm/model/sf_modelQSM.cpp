@@ -154,6 +154,18 @@ SF_ModelQSM::setCGrowthVolume(float cGrowthVolume)
   m_cGrowthVolume = cGrowthVolume;
 }
 
+int
+SF_ModelQSM::getID() const
+{
+  return _ID;
+}
+
+void
+SF_ModelQSM::setID(int ID)
+{
+  _ID = ID;
+}
+
 SF_ModelQSM::SF_ModelQSM(const int ID) : _ID(ID), _species("unknownSpecies") {}
 
 std::string
@@ -162,6 +174,18 @@ SF_ModelQSM::toString()
   std::string str(std::to_string(_ID));
   str.append(", ");
   str.append(_species);
+  str.append(", ");
+  str.append(std::to_string(m_aGrowthVolume));
+  str.append(", ");
+  str.append(std::to_string(m_bGrowthVolume));
+  str.append(", ");
+  str.append(std::to_string(m_cGrowthVolume));
+  str.append(", ");
+  str.append(std::to_string(m_aGrowthLength));
+  str.append(", ");
+  str.append(std::to_string(m_bGrowthLength));
+  str.append(", ");
+  str.append(std::to_string(m_cGrowthLength));
   str.append("\n");
   return str;
 }
@@ -169,7 +193,7 @@ SF_ModelQSM::toString()
 std::string
 SF_ModelQSM::toHeaderString()
 {
-  std::string str("treeID, treeSpecies");
+  std::string str("treeID, treeSpecies, gvA, gvB, gvC, glA, glB, glC");
   str.append("\n");
   return str;
 }

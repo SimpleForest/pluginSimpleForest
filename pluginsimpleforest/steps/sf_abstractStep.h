@@ -100,6 +100,13 @@ protected:
               QString outCylinderGrpName,
               QString outSFQSMName,
               QString outParamName);
+  void addQSM(CT_ResultGroup* outResult,
+              QList<SF_ParamRefitCylinders> paramList,
+              QString outResultGrpName,
+              QString outCylinderName,
+              QString outCylinderGrpName,
+              QString outSFQSMName,
+              QString outParamName);
   void addColors(CT_ResultGroup* outResult,
                  QList<SF_ParamQSM<SF_PointNormal>> paramList,
                  QString outResultGrpName,

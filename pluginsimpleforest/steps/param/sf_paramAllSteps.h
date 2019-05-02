@@ -545,6 +545,21 @@ struct SF_ParamStatisticalOutlierFilter : public SF_ParamFilter<PointType>
   }
 };
 
+struct SF_ParamRefitCylinders : public SF_ParamCT
+{
+  size_t m_minPts = 10;
+  double m_inlierDistance = 0.03;
+  size_t m_ransacIterations = 100;
+  double m_angle = 30;
+  double m_voxelSize = 0.015;
+  int m_knn = 9;
+  int m_fittingType = pcl::SAC_MLESAC;
+  double m_range = 0.2;
+  double m_minMaxDistance = 0.01;
+  Eigen::Vector3d _translation;
+  std::shared_ptr<SF_ModelQSM> _qsm;
+};
+
 struct SF_ParamAllometricCorrectionNeighboring : public SF_ParamCT
 {
   double _range = 0.5;

@@ -38,13 +38,13 @@ class SF_ModelQSM
   std::shared_ptr<SF_ModelAbstractSegment> m_rootSegment;
   bool m_hasCorrectedParameters = false;
 
-  float m_aGrowthLength;
-  float m_bGrowthLength;
-  float m_cGrowthLength;
+  float m_aGrowthLength = 0;
+  float m_bGrowthLength = 0;
+  float m_cGrowthLength = 0;
 
-  float m_aGrowthVolume;
-  float m_bGrowthVolume;
-  float m_cGrowthVolume;
+  float m_aGrowthVolume = 0;
+  float m_bGrowthVolume = 0;
+  float m_cGrowthVolume = 0;
 
 public:
   SF_ModelQSM(const int ID);
@@ -75,6 +75,8 @@ public:
   void setBGrowthVolume(float bGrowthVolume);
   float getCGrowthVolume() const;
   void setCGrowthVolume(float cGrowthVolume);
+  int getID() const;
+  void setID(int ID);
 };
 
 #endif // SF_MODEL_TREE_H

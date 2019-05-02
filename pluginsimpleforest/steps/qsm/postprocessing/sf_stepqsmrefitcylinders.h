@@ -26,18 +26,18 @@
 
 *****************************************************************************/
 
-#ifndef SF_QSMALLOMETRICCHECK_H
-#define SF_QSMALLOMETRICCHECK_H
+#ifndef SF_QSMREFITCYLINDERS_H
+#define SF_QSMREFITCYLINDERS_H
 
 #include "steps/segmentation/sf_AbstractStepSegmentation.h"
 
-class SF_StepQSMAllometricCorrection : public SF_AbstractStepSegmentation
+class SF_StepQSMRefitCylinders : public SF_AbstractStepSegmentation
 {
   Q_OBJECT
 
 public:
-  SF_StepQSMAllometricCorrection(CT_StepInitializeData& dataInit);
-  ~SF_StepQSMAllometricCorrection();
+  SF_StepQSMRefitCylinders(CT_StepInitializeData& dataInit);
+  ~SF_StepQSMRefitCylinders();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;
@@ -48,36 +48,27 @@ protected:
   void createInResultModelListProtected();
   void createOutResultModelListProtected();
   void adaptParametersToExpertLevel() {}
-  void createParamList(CT_ResultGroup* out_result);
+  void createParamList(CT_ResultGroup* outResult);
   virtual void createPreConfigurationDialog() {}
   virtual void createPostConfigurationDialog();
   void compute();
-  QList<SF_ParamAllometricCorrectionNeighboring> _paramList;
+  QList<SF_ParamRefitCylinders> _paramList;
 
 private:
   CT_AutoRenameModels m_outCloudItem;
   CT_AutoRenameModels _outCylinderGroup;
   CT_AutoRenameModels _outCylinders;
   CT_AutoRenameModels _outSFQSM;
+  int m_minPts = 10;
+  double m_inlierDistance = 0.03;
+  int m_ransacIterations = 100;
+  double m_angle = 30;
+  double _PP_voxelSize = 0.02;
   int toStringSFMethod();
   SF_CLoudToModelDistanceMethod toStringCMDMethod();
-
-  double _range = 0.5;
-  double _minRadius = 0.0025;
-
-  QStringList m_filePath;
-  double m_power = 1.0 / 2.49;
-  bool m_useGrowthLength = true;
-  bool m_withIntercept = true;
-  double m_quantile = 0.5;
-  int m_minPts = 10;
-  double m_inlierDistance = 0.3;
-  int m_ransacIterations = 1000;
-  int m_gaussNewtonIterations = 20;
-  bool m_estimateParams = false;
 
   virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
   virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
 };
 
-#endif // SF_QSMALLOMETRICCHECK_H
+#endif // SF_QSMREFITCYLINDERS_H

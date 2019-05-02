@@ -57,6 +57,7 @@ public:
   virtual Eigen::Vector3f getCenter() override;
   virtual Eigen::Vector3f getAxis() override;
   virtual void setStartEndRadius(const Eigen::Vector3f& start, const Eigen::Vector3f& end, float radius, FittingType type) override;
+  virtual void setCoefficients(pcl::ModelCoefficients::Ptr coefficients) override;
 };
 
 #endif // SF_MODEL_CYLINDER_BUILDINGBRICK_H
