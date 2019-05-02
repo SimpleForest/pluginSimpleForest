@@ -72,6 +72,7 @@ public:
   virtual float getLength() = 0;
   virtual float getVolume() = 0;
   virtual float getRadius() = 0;
+  virtual void setStartEndRadius(const Eigen::Vector3f& start, const Eigen::Vector3f& end, float radius, FittingType type) = 0;
   virtual void setRadius(float radius, FittingType type) = 0;
   virtual float getDistance(const Eigen::Vector3f& point) = 0;
   virtual void translate(Eigen::Vector3f translation) = 0;

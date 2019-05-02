@@ -126,6 +126,18 @@ Sf_ModelCylinderBuildingbrick::getAxis()
   return (_end - _start);
 }
 
+void
+Sf_ModelCylinderBuildingbrick::setStartEndRadius(const Eigen::Vector3f& start,
+                                                 const Eigen::Vector3f& end,
+                                                 float radius,
+                                                 FittingType type)
+{
+  _start = start;
+  _end = end;
+  m_radius = radius;
+  _fittingType = type;
+}
+
 Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB)
 {
   assert(circleA->values.size() == 4 && circleB->values.size() == 4);
