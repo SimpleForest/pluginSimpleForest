@@ -93,7 +93,7 @@ SF_DownHillSimplex::compute()
       m_params._sphereFollowingParams.m_optimizationParams.push_back(
         m_params._sphereFollowingParams.m_optimizationParams[m_params._sphereFollowingParams.m_optimizationParams.size() - 1]);
     }
-    std::uintptr_t par[1] = {reinterpret_cast<std::uintptr_t>(new SF_ParamSpherefollowingAdvanced<SF_PointNormal>(m_params))};
+    std::uintptr_t par[1] = { reinterpret_cast<std::uintptr_t>(new SF_ParamSpherefollowingAdvanced<SF_PointNormal>(m_params)) };
     const gsl_multimin_fminimizer_type* T = gsl_multimin_fminimizer_nmsimplex2;
     gsl_multimin_fminimizer* s = NULL;
     gsl_vector *ss, *x;
@@ -161,8 +161,9 @@ SF_DownHillSimplex::compute()
 double
 downhillSimplex(const gsl_vector* v, void* params)
 {
-    std::uintptr_t* p = (std::uintptr_t*)params;
-  SF_ParamSpherefollowingAdvanced<pcl::PointXYZINormal>* paramsBasic = reinterpret_cast<SF_ParamSpherefollowingAdvanced<pcl::PointXYZINormal>*>(p[0]);
+  std::uintptr_t* p = (std::uintptr_t*)params;
+  SF_ParamSpherefollowingAdvanced<pcl::PointXYZINormal>* paramsBasic =
+    reinterpret_cast<SF_ParamSpherefollowingAdvanced<pcl::PointXYZINormal>*>(p[0]);
   std::vector<SF_SphereFollowingOptimizationParameters> paramVec;
   size_t index = 0;
   SF_SphereFollowingOptimizationParameters paramsOptim = paramsBasic->_sphereFollowingParams.m_optimizationParams[0];
