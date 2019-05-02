@@ -25,6 +25,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     cloud/sf_transferfeature.hpp \
     converters/CT_To_PCL/sf_converterCTIDToPCLCloud.h \
     converters/CT_To_PCL/sf_converterCTIDToPCLCloud.hpp \
+    math/fit/line/sf_fitransacline.h \
+    math/fit/line/sf_fitransacline.hpp \
     qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
     sf_pluginmanager.h \
