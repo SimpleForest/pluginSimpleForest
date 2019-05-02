@@ -72,7 +72,14 @@ template<typename T>
 T
 SF_Math<T>::getMedian(std::vector<T>& vec)
 {
-  size_t n = vec.size() / 2;
+  return getQuantile(vec, 0.5);
+}
+
+template<typename T>
+T
+SF_Math<T>::getQuantile(std::vector<T>& vec, T quantile)
+{
+  size_t n = vec.size() * quantile;
   std::nth_element(vec.begin(), vec.begin() + n, vec.end());
   return vec[n];
 }

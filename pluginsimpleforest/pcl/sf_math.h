@@ -41,6 +41,7 @@ public:
   static T distance(const Eigen::Vector3f& pointA, const Eigen::Vector3f& pointB);
   static T getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2);
   static T getMedian(std::vector<T>& vec);
+  static T getQuantile(std::vector<T>& vec, T quantile);
   static T getMean(std::vector<T>& vec);
   static T getStandardDeviation(std::vector<T>& vec);
   static T getStandardDeviation(std::vector<T>& vec, T mean);
