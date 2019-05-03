@@ -99,6 +99,14 @@ SF_StepQSMRefitCylinders::createPostConfigurationDialog()
                           2.0,
                           2,
                           m_inlierDistance);
+  configDialog->addDouble("Use as percentage of radii deviation this inlier distance  "
+                          " [<em><b>perc  inlierDistance</b></em>] ",
+                          " . ",
+                          0.01,
+                          1.0,
+                          2,
+                          m_range);
+
   configDialog->addInt("Fit a cylinder only with "
                        " [<em><b>min Points</b></em>] ",
                        "",
@@ -171,6 +179,7 @@ SF_StepQSMRefitCylinders::createParamList(CT_ResultGroup* outResult)
     params._qsm = qsm;
     params.m_minPts = m_minPts;
     params.m_voxelSize = _PP_voxelSize;
+    params.m_range = m_range;
     params.m_inlierDistance = m_inlierDistance;
     params.m_ransacIterations = m_ransacIterations;
     params.m_angle = m_angle;

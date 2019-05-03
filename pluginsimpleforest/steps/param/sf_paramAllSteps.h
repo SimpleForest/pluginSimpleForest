@@ -554,8 +554,8 @@ struct SF_ParamRefitCylinders : public SF_ParamCT
   double m_voxelSize = 0.015;
   int m_knn = 9;
   int m_fittingType = pcl::SAC_MLESAC;
-  double m_range = 0.2;
-  double m_minMaxDistance = 0.01;
+  double m_range = 0.5;
+  double m_minMaxDistance = 0.015;
   Eigen::Vector3d _translation;
   std::shared_ptr<SF_ModelQSM> _qsm;
 };

@@ -61,6 +61,7 @@ private:
   CT_AutoRenameModels _outSFQSM;
   int m_minPts = 10;
   double m_inlierDistance = 0.03;
+  double m_range = 0.50;
   int m_ransacIterations = 100;
   double m_angle = 30;
   double _PP_voxelSize = 0.02;

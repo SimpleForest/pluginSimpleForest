@@ -84,8 +84,8 @@ SF_QSMRefitCylinder::compute()
           Eigen::Vector3f(coefficientsCylinder->values[3], coefficientsCylinder->values[4], coefficientsCylinder->values[5]));
         if (angle < m_params.m_angle) {
           float radius = buildingBricks[index]->getRadius();
-          double minRad = std::min(radius - m_params.m_minMaxDistance, radius * (1 - m_params.m_range));
-          double maxRad = std::max(radius + m_params.m_minMaxDistance, radius * (1 + m_params.m_range));
+          double minRad = std::min(radius - m_params.m_minMaxDistance, radius * m_params.m_range);
+          double maxRad = std::max(radius + m_params.m_minMaxDistance, radius / m_params.m_range);
           if (coefficientsCylinder->values[6] > minRad && coefficientsCylinder->values[6] < maxRad) {
             buildingBricks[index]->setCoefficients(coefficientsCylinder);
           }
