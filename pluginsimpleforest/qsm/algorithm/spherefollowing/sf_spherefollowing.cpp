@@ -248,7 +248,6 @@ SF_SphereFollowing::processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINo
                             dist,
                             cluster->points[0].intensity,
                             Eigen::Vector3f(coeff.values[0], coeff.values[1], coeff.values[2]));
-
             } else {
               pushbackQueue(circleFit.coeff(), dist, cluster->points[0].intensity, lastCircle.m_firstSplit);
             }

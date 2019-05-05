@@ -154,6 +154,7 @@ public:
     {
       QMutexLocker m1(&*mMutex);
       params._colors = vfq.colors();
+      params._tree->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
       params._tree->translate(Eigen::Vector3f(params._translation[0], params._translation[1], params._translation[2]));
     }
   }

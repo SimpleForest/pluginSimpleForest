@@ -97,6 +97,7 @@ public:
     {
       QMutexLocker m1(&*mMutex);
       ac.setParams(paramsCpy);
+      paramsCpy._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
     }
     ac.compute();
     {
