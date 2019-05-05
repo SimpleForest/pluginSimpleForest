@@ -562,6 +562,7 @@ struct SF_ParamRefitCylinders : public SF_ParamCT
 
 struct SF_ParamAllometricCorrectionNeighboring : public SF_ParamCT
 {
+  double _crownStartFraction = 0.33;
   double _range = 0.5;
   double _scalingFactor = 2.5;
   double _minRadius = 0.0025;

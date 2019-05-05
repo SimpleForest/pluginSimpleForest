@@ -87,11 +87,13 @@ SF_QSMAllometryCorrectionNeighboring::correct(std::shared_ptr<Sf_ModelAbstractBu
 void
 SF_QSMAllometryCorrectionNeighboring::correct(std::shared_ptr<Sf_ModelAbstractBuildingbrick> cylinder)
 {
+  auto parent = cylinder->getParent();
+  if (parent) {
+    correct(parent, cylinder);
+  }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> children = cylinder->getChildren();
-  std::for_each(children.begin(), children.end(), [this, &cylinder](std::shared_ptr<Sf_ModelAbstractBuildingbrick> child) {
-    correct(cylinder, child);
-    correct(child);
-  });
+  std::for_each(
+    children.begin(), children.end(), [this, &cylinder](std::shared_ptr<Sf_ModelAbstractBuildingbrick> child) { correct(child); });
 }
 
 SF_QSMAllometryCorrectionNeighboring::SF_QSMAllometryCorrectionNeighboring() {}

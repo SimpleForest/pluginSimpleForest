@@ -50,6 +50,7 @@ SF_QSMAllometricCorrectionParameterEstimation::isUnCorrectedRadiusFit(std::share
   return (buildingBrick->getFittingType() == SPHEREFOLLOWING || buildingBrick->getFittingType() == CYLINDERCORRECTION ||
           buildingBrick->getFittingType() == TRUNCATEDCONECORRECTION);
 }
+
 std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
 SF_QSMAllometricCorrectionParameterEstimation::chooseBestBricks(std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks)
 {
@@ -113,13 +114,31 @@ SF_QSMAllometricCorrectionParameterEstimation::unCorrectedBuildingBricks()
   return buildingbricks;
 }
 
+std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
+SF_QSMAllometricCorrectionParameterEstimation::removeStem(std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks)
+{
+  auto crownStart = m_params._qsm->crownStartBrick(m_params._crownStartFraction);
+  float height = crownStart->getCenter()[2];
+
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> noStemBricks;
+  std::for_each(bricks.begin(), bricks.end(), [&height, &noStemBricks](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+    auto cylinderHeight = brick->getCenter()[2];
+    if (cylinderHeight > height || brick->getSegment()->getBranchOrder() != 0) {
+      noStemBricks.push_back(brick);
+    }
+  });
+  return noStemBricks;
+}
+
 void
 SF_QSMAllometricCorrectionParameterEstimation::compute()
 {
   std::vector<float> y;
   std::vector<float> x;
+
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> uncorrectedBricks = unCorrectedBuildingBricks();
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bestBricks = chooseBestBricks(uncorrectedBricks);
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> noStemBricks = removeStem(uncorrectedBricks);
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bestBricks = chooseBestBricks(noStemBricks);
   std::transform(bestBricks.begin(),
                  bestBricks.end(),
                  std::back_inserter(y),

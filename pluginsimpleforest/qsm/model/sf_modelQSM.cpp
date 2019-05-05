@@ -68,6 +68,7 @@ void
 SF_ModelQSM::sort(SF_ModelAbstractSegment::SF_SORTTYPE type)
 {
   m_rootSegment->sort(type);
+  setBranchorder();
 }
 
 bool
@@ -221,6 +222,68 @@ SF_ModelQSM::translateToOrigin()
   translation /= buildingBricks.size();
   translate(translation);
   return translation;
+}
+
+std::shared_ptr<SF_ModelAbstractSegment>
+SF_ModelQSM::crownStartSegment(float minPercentage)
+{
+  auto segment = m_rootSegment;
+  while (segment && segment->getChildren().size() > 0) {
+    auto children = segment->getChildren();
+    if (children.size() >= 2) {
+      float totalLengthStem = 0;
+      float totalLengthBranches = 0;
+      totalLengthStem = children[0]->getBuildingBricks()[0]->getGrowthLength();
+      for (size_t i = 1; i < children.size(); i++) {
+        totalLengthBranches += children[1]->getBuildingBricks()[0]->getGrowthLength();
+      }
+      float totalLengthAll = totalLengthBranches + totalLengthStem;
+      float fraction = 0;
+      if (totalLengthAll > 0) {
+        fraction = totalLengthBranches / totalLengthAll;
+      }
+      if (fraction > minPercentage) {
+        break;
+      }
+    }
+    if (children.size() <= 0) {
+      break;
+    }
+    segment = children[0];
+  }
+
+  // TODO extract here subfunction minmax (to qsm model) and rest (to private) in 2 functions:
+  auto bricks = getBuildingBricks();
+  float minZ = std::numeric_limits<float>::max();
+  float maxZ = std::numeric_limits<float>::lowest();
+  std::for_each(bricks.begin(), bricks.end(), [&minZ, &maxZ](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+    auto center = brick->getCenter();
+    auto z = center[2];
+    if (z < minZ)
+      minZ = z;
+    if (z > maxZ)
+      maxZ = z;
+  });
+  auto centerHeight = minZ + (maxZ - minZ) / 2;
+  if (centerHeight < segment->getEnd()[2]) {
+    segment = m_rootSegment;
+    while (segment && segment->getChildren().size() > 0) {
+      auto children = segment->getChildren();
+      if (segment->getEnd()[2] < centerHeight) {
+        segment = children[0];
+      } else {
+        break;
+      }
+    }
+  }
+  return segment;
+}
+
+std::shared_ptr<Sf_ModelAbstractBuildingbrick>
+SF_ModelQSM::crownStartBrick(float minPercentage)
+{
+  auto segment = crownStartSegment(minPercentage);
+  return segment->getBuildingBricks().back();
 }
 
 std::vector<std::shared_ptr<SF_ModelAbstractSegment>>

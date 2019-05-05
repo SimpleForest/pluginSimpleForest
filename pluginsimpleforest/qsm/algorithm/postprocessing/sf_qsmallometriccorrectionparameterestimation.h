@@ -43,7 +43,10 @@ public:
   SF_ParamAllometricCorrectionNeighboring params() const;
   void compute();
   bool isUnCorrectedRadiusFit(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> unCorrectedBuildingBricks();
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> removeStem(
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks);
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> chooseBestBricks(
     std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks);
 };

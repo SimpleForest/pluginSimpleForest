@@ -53,6 +53,8 @@ public:
 
   void translate(const Eigen::Vector3f& translation);
   Eigen::Vector3f translateToOrigin();
+  std::shared_ptr<SF_ModelAbstractSegment> crownStartSegment(float minPercentage);
+  std::shared_ptr<Sf_ModelAbstractBuildingbrick> crownStartBrick(float minPercentage);
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments();
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment);
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getLeaveSegments();
