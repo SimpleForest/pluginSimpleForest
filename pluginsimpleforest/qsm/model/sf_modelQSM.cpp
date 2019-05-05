@@ -68,7 +68,7 @@ void
 SF_ModelQSM::sort(SF_ModelAbstractSegment::SF_SORTTYPE type)
 {
   m_rootSegment->sort(type);
-  setBranchorder();
+  //setBranchorder();
 }
 
 bool
