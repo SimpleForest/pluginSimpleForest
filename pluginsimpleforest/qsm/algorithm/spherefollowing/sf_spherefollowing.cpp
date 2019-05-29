@@ -96,7 +96,7 @@ SF_SphereFollowing::compute()
   }
   buildTree();
   SF_RemoveFalseConnections rfc;
-  rfc.compute(m_qsm);
+  rfc.compute(m_qsm, m_params.m_overLapAngle);
 }
 
 float

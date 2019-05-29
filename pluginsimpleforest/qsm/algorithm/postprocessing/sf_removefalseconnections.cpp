@@ -36,7 +36,7 @@
 SF_RemoveFalseConnections::SF_RemoveFalseConnections() {}
 
 void
-SF_RemoveFalseConnections::compute(std::shared_ptr<SF_ModelQSM> qsm)
+SF_RemoveFalseConnections::compute(std::shared_ptr<SF_ModelQSM> qsm, float maxAngle)
 {
   m_qsm = qsm;
   SF_SortQSM sq;
@@ -52,14 +52,14 @@ SF_RemoveFalseConnections::compute(std::shared_ptr<SF_ModelQSM> qsm)
   sq.compute(m_qsm);
 
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments = m_qsm->getSegments();
-  std::for_each(segments.begin(), segments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> segment) {
+  std::for_each(segments.begin(), segments.end(), [this, maxAngle](std::shared_ptr<SF_ModelAbstractSegment> segment) {
     if (!segment->isRoot()) {
       std::shared_ptr<SF_ModelAbstractSegment> parent = segment->getParent();
       std::vector<std::shared_ptr<SF_ModelAbstractSegment>> children = parent->getChildren();
-      std::for_each(children.begin(), children.end(), [&segment, this](std::shared_ptr<SF_ModelAbstractSegment> child) {
+      std::for_each(children.begin(), children.end(), [&segment, maxAngle, this](std::shared_ptr<SF_ModelAbstractSegment> child) {
         if (child != segment) {
           float angle = SF_Math<float>::getAngleBetweenDeg(segment->getAxis(), child->getAxis());
-          if (angle < _M_MAXANGLE || angle > (180 - _M_MAXANGLE)) {
+          if (angle < maxAngle) {
             if (segment->getBuildingBricks()[0]->getGrowthLength() > child->getBuildingBricks()[0]->getGrowthLength()) {
               child->remove();
             } else {
