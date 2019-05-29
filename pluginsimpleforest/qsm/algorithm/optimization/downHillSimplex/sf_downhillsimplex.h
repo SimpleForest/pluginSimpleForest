@@ -48,8 +48,6 @@ class SF_DownHillSimplex
 {
   SF_ParamSpherefollowingAdvanced<SF_PointNormal> m_params;
   void serializeVec(gsl_vector* x, double fac, size_t numberClusters, SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params);
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>> m_clustersTotal;
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>> m_currentCluster;
 
 public:
   SF_DownHillSimplex();
