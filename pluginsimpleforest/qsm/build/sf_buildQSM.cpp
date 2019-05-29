@@ -40,8 +40,9 @@ SF_BuildQSM::initializeOctree()
   m_cloud.reset(new SF_Cloud);
   for (size_t i = 1; i < _buildingBricksPtr.size(); i++) {
     std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = _buildingBricksPtr[i];
-    SF_Point point(buildingBrick->getStart()[0], buildingBrick->getStart()[1], buildingBrick->getStart()[2]);
-    m_cloud->push_back(point);
+    auto start = buildingBrick->getStart();
+    SF_Point point(start[0], start[1], start[2]);
+    m_cloud->push_back(std::move(point));
   }
 
   _octree->setInputCloud(m_cloud);
@@ -121,7 +122,8 @@ void
 SF_BuildQSM::buildTree(std::shared_ptr<SF_ModelAbstractSegment> segment)
 {
   std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = segment->getBuildingBricks().back();
-  SF_Point end(buildingBrick->getEnd()[0], buildingBrick->getEnd()[1], buildingBrick->getEnd()[2]);
+  const auto end = buildingBrick->getEnd();
+  SF_Point end(end[0], end[1], end[2]);
   std::vector<int> pointIdxNKNSearch;
   std::vector<float> pointNKNSquaredDistance;
   if (_octree->radiusSearch(end, _MINEQUALDISTANCE, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
