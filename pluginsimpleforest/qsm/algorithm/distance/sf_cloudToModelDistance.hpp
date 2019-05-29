@@ -117,7 +117,7 @@ template<typename PointType>
 void
 Sf_CloudToModelDistance<PointType>::initializeGrowthLength()
 {
-  if (!(_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE)) {
+  if (_METHOD != SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
     return;
   }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = _tree->getBuildingBricks();
