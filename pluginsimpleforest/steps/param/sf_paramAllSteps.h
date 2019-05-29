@@ -427,6 +427,7 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamQSM<PointType>
   float _voxelSize = 0.01;
   float _clusteringDistance = 0.2;
   float _modelCloudError;
+  float m_overLapAngle = 10.f;
   int _fittedGeometries;
   size_t m_numClstrs = 1;
 
