@@ -81,7 +81,9 @@ SF_DownHillSimplex::compute()
 {
   size_t size = m_params._clusters.size();
   auto allClusters = m_params._clusters;
+  SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramCpy = m_params;
   for (size_t numClusters = 1; numClusters <= size; numClusters++) {
+    paramCpy.m_numClstrs = numClusters;
     m_params.m_numClstrs = numClusters;
     std::vector<SF_CloudNormal::Ptr> clusters;
     for (size_t i = 0; i < numClusters; i++) {
@@ -122,8 +124,8 @@ SF_DownHillSimplex::compute()
         printf("converged to minimum at\n");
       }
       double error = s->fval;
-      if (m_params._modelCloudError > error) {
-        m_params._modelCloudError = error;
+      if (paramCpy._modelCloudError > error) {
+        paramCpy._modelCloudError = error;
         size_t index = 0;
         std::vector<SF_SphereFollowingOptimizationParameters> paramVec;
         SF_SphereFollowingOptimizationParameters paramsOptim;
@@ -150,9 +152,10 @@ SF_DownHillSimplex::compute()
     gsl_multimin_fminimizer_free(s);
 
     SF_SphereFollowing sphereFollowing;
-    sphereFollowing.setParams(m_params);
     sphereFollowing.setClusters(clusters);
+    sphereFollowing.setParams(paramCpy);
     sphereFollowing.compute();
+    m_params = paramCpy;
     m_params._qsm = sphereFollowing.getQSM();
     m_params._cloudIn = sphereFollowing.cloud();
   }
