@@ -100,7 +100,7 @@ SF_StepSegmentTreeCloudFromQSM::createPostConfigurationDialog()
                        "[<em><b>numClstrs</b></em>] ",
                        " clusters.",
                        2,
-                       10,
+                       6,
                        _numClstrs);
   createPostConfigurationDialogCitation(configDialog);
 }
@@ -110,7 +110,6 @@ SF_StepSegmentTreeCloudFromQSM::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    //    resModelw->addItemModel(DEF_IN_SCENE, _outCloudCluster, new CT_Scene(), tr("Dijsktra Segmented"));
     resModelw->addItemAttributeModel(
       _outCloudCluster, m_clusterIndices, new CT_StdItemAttributeT<int>(CT_AbstractCategory::DATA_VALUE), tr("Tree Segment ID"));
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outColorGrowthVolume, new CT_PointsAttributesColor(), tr("log GrowthVolume"));
