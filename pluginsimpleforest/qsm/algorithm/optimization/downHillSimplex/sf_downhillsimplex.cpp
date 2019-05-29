@@ -179,10 +179,10 @@ downhillSimplex(const gsl_vector* v, void* params)
   sphereFollowing.setClusters(paramsBasic->_clusters);
   try {
     sphereFollowing.compute();
-    paramsBasic->_tree = sphereFollowing.getQSM();
+    paramsBasic->_qsm = sphereFollowing.getQSM();
     paramsBasic->_modelCloudError = sphereFollowing.error();
   } catch (...) {
-    paramsBasic->_tree = sphereFollowing.getQSM();
+    paramsBasic->_qsm = sphereFollowing.getQSM();
     paramsBasic->_modelCloudError = std::numeric_limits<float>::max();
   }
   double res = (paramsBasic->_modelCloudError);
