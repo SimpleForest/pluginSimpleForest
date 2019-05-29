@@ -64,15 +64,18 @@ SF_DownHillSimplex::setParams(const SF_ParamSpherefollowingAdvanced<SF_PointNorm
 SF_DownHillSimplex::SF_DownHillSimplex() {}
 
 void
-SF_DownHillSimplex::serializeVec(gsl_vector* x, double fac, size_t numberClusters)
+SF_DownHillSimplex::serializeVec(gsl_vector* x,
+                                 double fac,
+                                 size_t numberClusters,
+                                 SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params)
 {
   size_t index = 0;
   for (size_t i = 0; i < numberClusters; i++) {
-    gsl_vector_set(x, index++, static_cast<double>(m_params._sphereFollowingParams.m_optimizationParams[i]._epsilonSphere * fac));
+    gsl_vector_set(x, index++, static_cast<double>(params._sphereFollowingParams.m_optimizationParams[i]._epsilonSphere * fac));
     gsl_vector_set(
-      x, index++, static_cast<double>(m_params._sphereFollowingParams.m_optimizationParams[i]._euclideanClusteringDistance * fac));
+      x, index++, static_cast<double>(params._sphereFollowingParams.m_optimizationParams[i]._euclideanClusteringDistance * fac));
     gsl_vector_set(
-      x, index++, static_cast<double>(m_params._sphereFollowingParams.m_optimizationParams[i]._sphereRadiusMultiplier * fac));
+      x, index++, static_cast<double>(params._sphereFollowingParams.m_optimizationParams[i]._sphereRadiusMultiplier * fac));
   }
 }
 
@@ -105,8 +108,8 @@ SF_DownHillSimplex::compute()
     size_t iter = 0;
     int status;
     double size;
-    serializeVec(x, 1.0, numClusters);
-    serializeVec(ss, 0.2, numClusters);
+    serializeVec(x, 1.0, numClusters, paramCpy);
+    serializeVec(ss, 0.2, numClusters, paramCpy);
     minex_func.n = numClusters * 3;
     minex_func.f = downhillSimplex;
     minex_func.params = par;
