@@ -21,6 +21,8 @@ CONFIG   += console
 TARGET = plug_simpleforest
 
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
+    cloud/filter/unary/maxIntensity/sf_maxintensity.h \
+    cloud/filter/unary/sf_abstractUnaryFilter.h \
     cloud/sf_transferfeature.h \
     cloud/sf_transferfeature.hpp \
     converters/CT_To_PCL/sf_converterCTIDToPCLCloud.h \
