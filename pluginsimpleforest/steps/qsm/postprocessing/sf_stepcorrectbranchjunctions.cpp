@@ -140,5 +140,5 @@ SF_StepCorrectBranchJunctions::createParamList(CT_ResultGroup* outResult)
     params._qsm = qsm;
     _paramList.append(std::move(params));
   }
-  _computationsTotal = _paramList.size();
+  m_computationsTotal = _paramList.size();
 }

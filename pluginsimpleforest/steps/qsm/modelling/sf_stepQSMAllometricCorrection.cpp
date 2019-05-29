@@ -236,5 +236,5 @@ SF_StepQSMAllometricCorrection::createParamList(CT_ResultGroup* outResult)
     params.m_estimateParams = m_estimateParams;
     _paramList.append(std::move(params));
   }
-  _computationsTotal = _paramList.size();
+  m_computationsTotal = _paramList.size();
 }

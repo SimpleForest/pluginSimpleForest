@@ -508,5 +508,5 @@ SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup* outResult)
   int numberComputationsPerCloud = sfOptimizationParameters._epsilonSphereMultiplier.size() *
                                    sfOptimizationParameters._euclideanClusteringDistanceMultiplier.size() *
                                    sfOptimizationParameters._sphereRadiusMultiplierMultiplier.size();
-  _computationsTotal = numberClouds * numberComputationsPerCloud;
+  m_computationsTotal = numberClouds * numberComputationsPerCloud;
 }

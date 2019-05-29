@@ -220,5 +220,5 @@ SF_StepStatisticalOutlierRemoval::createParamList(CT_ResultGroup* outResult)
     param._grpCpyGrp = group;
     _paramList.append(param);
   }
-  _computationsTotal = _paramList.size() * _iterations;
+  m_computationsTotal = _paramList.size() * _iterations;
 }

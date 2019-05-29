@@ -338,5 +338,5 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
   }
   int numberClouds = _paramList.size();
   int numberComputationsPerCloud = 300;
-  _computationsTotal = numberClouds * numberComputationsPerCloud;
+  m_computationsTotal = numberClouds * numberComputationsPerCloud;
 }

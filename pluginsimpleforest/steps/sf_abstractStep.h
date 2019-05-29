@@ -136,9 +136,9 @@ protected:
 
   QList<SF_ParamCT> _paramList;
 
-  std::atomic<float> _progress;
-  std::atomic<float> _computationsDone;
-  std::atomic<float> _computationsTotal;
+  std::atomic<float> m_progress;
+  std::atomic<float> m_computationsDone;
+  std::atomic<float> m_computationsTotal;
   bool _isExpert = true;
   QString _RANSAC = "RANSAC  - RANdom SAmple Consensus";
   QString _LMEDS = "LMEDS   - Least Median of Squares";

@@ -185,5 +185,5 @@ SF_StepQSMRefitCylinders::createParamList(CT_ResultGroup* outResult)
     params.m_angle = m_angle;
     _paramList.append(std::move(params));
   }
-  _computationsTotal = _paramList.size();
+  m_computationsTotal = _paramList.size();
 }

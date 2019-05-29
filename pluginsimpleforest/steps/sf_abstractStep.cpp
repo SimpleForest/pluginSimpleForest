@@ -35,9 +35,9 @@
 
 SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData& dataInit) : CT_AbstractStep(dataInit)
 {
-  _progress = 0;
-  _computationsDone = 0;
-  _computationsTotal = 1;
+  m_progress = 0;
+  m_computationsDone = 0;
+  m_computationsTotal = 1;
 
   _SF_methodList.push_back(_RANSAC);
   _SF_methodList.push_back(_LMEDS);
@@ -68,8 +68,8 @@ SF_AbstractStep::SF_AbstractStep(CT_StepInitializeData& dataInit) : CT_AbstractS
 void
 SF_AbstractStep::computationDone()
 {
-  _computationsDone = _computationsDone + 1;
-  _progress = _computationsDone / _computationsTotal;
+  m_computationsDone = m_computationsDone + 1;
+  m_progress = m_computationsDone / m_computationsTotal;
 }
 
 void
@@ -319,7 +319,7 @@ SF_AbstractStep::setProgressByFuture(QFuture<void>& future, float percentageInte
 void
 SF_AbstractStep::setProgressByCounter(float percentageIntervalStart, float percentageIntervalSize)
 {
-  setProgress(percentageIntervalStart + (percentageIntervalSize * _progress));
+  setProgress(percentageIntervalStart + (percentageIntervalSize * m_progress));
 }
 
 CT_Scene*
