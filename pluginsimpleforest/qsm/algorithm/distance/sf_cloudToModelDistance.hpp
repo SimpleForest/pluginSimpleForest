@@ -95,9 +95,9 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
       }
       if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
         if (bestBrick != nullptr) {
-          distances.push_back(std::max(_growthLengths[bestBrick->getID()], _MIN_GROWTH_LENGTH));
+          distances.push_back(std::min(-_growthLengths[bestBrick->getID()], -_MIN_GROWTH_LENGTH));
         } else {
-          distances.push_back(_MIN_GROWTH_LENGTH);
+          distances.push_back(-_MIN_GROWTH_LENGTH);
         }
       } else {
         distances.push_back(minDistance);
