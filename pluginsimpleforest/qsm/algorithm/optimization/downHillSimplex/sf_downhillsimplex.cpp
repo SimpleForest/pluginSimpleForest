@@ -82,7 +82,7 @@ SF_DownHillSimplex::serializeVec(gsl_vector* x,
 void
 SF_DownHillSimplex::compute()
 {
-  size_t size = m_params._clusters.size();
+  size_t size = m_params.m_numClstrs;
   auto allClusters = m_params._clusters;
   SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramCpy = m_params;
   for (size_t numClusters = 1; numClusters <= size; numClusters++) {
