@@ -583,7 +583,7 @@ template<typename PointType>
 struct SF_ParamSpherefollowingAdvanced : public SF_ParamSpherefollowingBasic<PointType>
 {
   CT_PointsAttributesScalarTemplated<int>* _ctID;
-  std::vector<typename pcl::PointCloud<PointType>::Ptr> _clusters;
+  typename pcl::PointCloud<PointType>::Ptr m_cloudSphereFollowing;
   double _fitQuality;
   int _iterations;
 };
