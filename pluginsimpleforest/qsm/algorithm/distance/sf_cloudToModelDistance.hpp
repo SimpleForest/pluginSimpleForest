@@ -81,18 +81,15 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
     std::vector<float> pointRadiusSquaredDistance;
     if (_kdtreeQSM->nearestKSearch(point, _k, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
       float minDistance = maxError();
-      float minDistanceAngle = maxError();
       std::shared_ptr<Sf_ModelAbstractBuildingbrick> bestBrick;
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
         auto distance = getDistance(point, neighboringBrick);
-        float distanceAngle;
-        auto angle = getAngle(point, neighboringBrick);
-        distanceAngle = (angle == 0) ? maxError() : distance / angle;
-
-        if (distanceAngle < minDistanceAngle) {
+        if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
+          distance = -_growthLengths[pointIdxRadiusSearch[j]];
+        }
+        if (distance < minDistance) {
           bestBrick = neighboringBrick;
-          minDistanceAngle = distanceAngle;
           minDistance = distance;
         }
       }
