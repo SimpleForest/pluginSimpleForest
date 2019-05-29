@@ -343,13 +343,14 @@ SF_StepSpherefollowingRoot::compute()
     setProgressByCounter(10.0f, 85.0f);
   }
   addColors(outResult, paramList(), DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, m_outCloudItem.completeName());
-  addQSM(outResult,
-         _paramList,
-         QString::fromUtf8(DEF_IN_GRP_CLUSTER),
-         _outCylinders.completeName(),
-         _outCylinderGroup.completeName(),
-         _outSFQSM.completeName(),
-         _outParams.completeName());
+
+  SF_AbstractStep::addQSM<SF_ParamSpherefollowingBasic<SF_PointNormal>>(outResult,
+                                                                        _paramList,
+                                                                        QString::fromUtf8(DEF_IN_GRP_CLUSTER),
+                                                                        _outCylinders.completeName(),
+                                                                        _outCylinderGroup.completeName(),
+                                                                        _outSFQSM.completeName(),
+                                                                        _outParams.completeName());
   _paramList.clear();
 }
 

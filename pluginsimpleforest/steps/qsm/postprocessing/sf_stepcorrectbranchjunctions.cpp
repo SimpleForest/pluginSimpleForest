@@ -118,13 +118,12 @@ SF_StepCorrectBranchJunctions::compute()
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
-  addQSM(outResult,
-         _paramList,
-         QString::fromUtf8(DEF_IN_GRP_CLUSTER),
-         _outCylinders.completeName(),
-         _outCylinderGroup.completeName(),
-         _outSFQSM.completeName(),
-         "");
+  SF_AbstractStep::addQSM<SF_ParamAllometricCorrectionNeighboring>(outResult,
+                                                                   _paramList,
+                                                                   QString::fromUtf8(DEF_IN_GRP_CLUSTER),
+                                                                   _outCylinders.completeName(),
+                                                                   _outCylinderGroup.completeName(),
+                                                                   _outSFQSM.completeName());
   _paramList.clear();
 }
 

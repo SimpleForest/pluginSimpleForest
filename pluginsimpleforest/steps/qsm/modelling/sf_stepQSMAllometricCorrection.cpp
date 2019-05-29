@@ -182,13 +182,12 @@ SF_StepQSMAllometricCorrection::compute()
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
-  addQSM(outResult,
-         _paramList,
-         QString::fromUtf8(DEF_IN_GRP_CLUSTER),
-         _outCylinders.completeName(),
-         _outCylinderGroup.completeName(),
-         _outSFQSM.completeName(),
-         "");
+  SF_AbstractStep::addQSM<SF_ParamAllometricCorrectionNeighboring>(outResult,
+                                                                   _paramList,
+                                                                   QString::fromUtf8(DEF_IN_GRP_CLUSTER),
+                                                                   _outCylinders.completeName(),
+                                                                   _outCylinderGroup.completeName(),
+                                                                   _outSFQSM.completeName());
   if (m_filePath.size() > 0) {
     QFile file(m_filePath.first());
     if (file.open(QFile::WriteOnly)) {

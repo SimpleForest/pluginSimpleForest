@@ -29,10 +29,12 @@
 #define SF_ABSTRACT_STEP_H
 
 #include "steps/item/sf_qsm_item.h"
+#include "steps/item/sf_spherefollowing_parameters_item.h"
 #include <QFuture>
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <ct_itemdrawable/ct_cylinder.h>
 #include <ct_itemdrawable/ct_grid3d_sparse.h>
 #include <ct_itemdrawable/ct_scene.h>
 #include <ct_iterator/ct_pointiterator.h>
@@ -78,30 +80,16 @@ protected:
   virtual void writeLogger();
   virtual void createPostConfigurationDialogCitation(CT_StepConfigurableDialog* configDialog);
   virtual void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
-
+  template<typename T>
   void addQSM(CT_ResultGroup* outResult,
-              QList<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramList,
+              QList<T> paramList,
               QString outResultGrpName,
               QString outCylinderName,
               QString outCylinderGrpName,
-              QString outSFQSMName,
-              QString outParamName);
+              QString outSFQSMName);
+  template<typename T>
   void addQSM(CT_ResultGroup* outResult,
-              QList<SF_ParamSpherefollowingAdvanced<SF_PointNormal>> paramList,
-              QString outResultGrpName,
-              QString outCylinderName,
-              QString outCylinderGrpName,
-              QString outSFQSMName,
-              QString outParamName);
-  void addQSM(CT_ResultGroup* outResult,
-              QList<SF_ParamAllometricCorrectionNeighboring> paramList,
-              QString outResultGrpName,
-              QString outCylinderName,
-              QString outCylinderGrpName,
-              QString outSFQSMName,
-              QString outParamName);
-  void addQSM(CT_ResultGroup* outResult,
-              QList<SF_ParamRefitCylinders> paramList,
+              QList<T> paramList,
               QString outResultGrpName,
               QString outCylinderName,
               QString outCylinderGrpName,
@@ -186,5 +174,96 @@ public:
 public slots:
   void computationDone();
 };
+
+template<typename T>
+void
+SF_AbstractStep::addQSM(CT_ResultGroup* outResult,
+                        QList<T> paramList,
+                        QString outResultGrpName,
+                        QString outCylinderName,
+                        QString outCylinderGrpName,
+                        QString outSFQSMName)
+{
+  CT_ResultGroupIterator outResIt(outResult, this, outResultGrpName);
+  size_t index = 0;
+  while (!isStopped() && outResIt.hasNext()) {
+    T& params = paramList[index++];
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
+    std::shared_ptr<SF_ModelQSM> qsm = params._qsm;
+    SF_QSM_Item* qsmItem = new SF_QSM_Item(outSFQSMName, outResult, qsm);
+    group->addItemDrawable(qsmItem);
+    params.reset();
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = qsm->getBuildingBricks();
+    std::for_each(buildingBricks.begin(),
+                  buildingBricks.end(),
+                  [&params, this, outResult, group, outCylinderName, outCylinderGrpName](
+                    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
+                    Eigen::Vector3f start = buildingBrick->getStart();
+                    Eigen::Vector3f end = buildingBrick->getEnd();
+                    double radius = buildingBrick->getRadius();
+                    double length = buildingBrick->getLength();
+                    CT_CylinderData* data = new CT_CylinderData(Eigen::Vector3d(static_cast<double>((start[0] + end[0]) / 2),
+                                                                                static_cast<double>((start[1] + end[1]) / 2),
+                                                                                static_cast<double>((start[2] + end[2]) / 2)),
+                                                                Eigen::Vector3d(static_cast<double>(end[0] - start[0]),
+                                                                                static_cast<double>(end[1] - start[1]),
+                                                                                static_cast<double>(end[2] - start[2])),
+                                                                radius,
+                                                                length);
+                    CT_Cylinder* cylinder = new CT_Cylinder(outCylinderName, outResult, data);
+                    CT_StandardItemGroup* cylinderGroup = new CT_StandardItemGroup(outCylinderGrpName, outResult);
+                    group->addGroup(cylinderGroup);
+                    cylinderGroup->addItemDrawable(cylinder);
+                  });
+  }
+}
+
+template<typename T>
+void
+SF_AbstractStep::addQSM(CT_ResultGroup* outResult,
+                        QList<T> paramList,
+                        QString outResultGrpName,
+                        QString outCylinderName,
+                        QString outCylinderGrpName,
+                        QString outSFQSMName,
+                        QString outParamName)
+{
+  CT_ResultGroupIterator outResIt(outResult, this, outResultGrpName);
+  size_t index = 0;
+  while (!isStopped() && outResIt.hasNext()) {
+    T& params = paramList[index++];
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
+    std::shared_ptr<SF_ModelQSM> qsm = params._qsm;
+    SF_QSM_Item* qsmItem = new SF_QSM_Item(outSFQSMName, outResult, qsm);
+    group->addItemDrawable(qsmItem);
+    params.reset();
+    if (outParamName != "") {
+      SF_SphereFollowing_Parameters_Item* paramItem = new SF_SphereFollowing_Parameters_Item(outParamName, outResult, params);
+      group->addItemDrawable(paramItem);
+    }
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = qsm->getBuildingBricks();
+    std::for_each(buildingBricks.begin(),
+                  buildingBricks.end(),
+                  [&params, this, outResult, group, outCylinderName, outCylinderGrpName](
+                    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
+                    Eigen::Vector3f start = buildingBrick->getStart();
+                    Eigen::Vector3f end = buildingBrick->getEnd();
+                    double radius = buildingBrick->getRadius();
+                    double length = buildingBrick->getLength();
+                    CT_CylinderData* data = new CT_CylinderData(Eigen::Vector3d(static_cast<double>((start[0] + end[0]) / 2),
+                                                                                static_cast<double>((start[1] + end[1]) / 2),
+                                                                                static_cast<double>((start[2] + end[2]) / 2)),
+                                                                Eigen::Vector3d(static_cast<double>(end[0] - start[0]),
+                                                                                static_cast<double>(end[1] - start[1]),
+                                                                                static_cast<double>(end[2] - start[2])),
+                                                                radius,
+                                                                length);
+                    CT_Cylinder* cylinder = new CT_Cylinder(outCylinderName, outResult, data);
+                    CT_StandardItemGroup* cylinderGroup = new CT_StandardItemGroup(outCylinderGrpName, outResult);
+                    group->addGroup(cylinderGroup);
+                    cylinderGroup->addItemDrawable(cylinder);
+                  });
+  }
+}
 
 #endif // SF_ABSTRACT_STEP_H
