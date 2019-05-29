@@ -1,0 +1,4 @@
+#ifndef SF_MAXINTENSITY_H
+#define SF_MAXINTENSITY_H
+
+#endif // SF_MAXINTENSITY_H

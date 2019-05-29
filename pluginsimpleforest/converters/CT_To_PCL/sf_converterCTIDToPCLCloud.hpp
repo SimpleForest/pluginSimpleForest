@@ -36,20 +36,11 @@ Sf_ConverterCTIDToPCLCloud<PointType>::Sf_ConverterCTIDToPCLCloud()
 {}
 
 template<typename PointType>
-std::vector<typename pcl::PointCloud<PointType>::Ptr>
-Sf_ConverterCTIDToPCLCloud<PointType>::clusters() const
-{
-  return m_clusters;
-}
-
-template<typename PointType>
 void
 Sf_ConverterCTIDToPCLCloud<PointType>::compute()
 {
   retrieveNumberClusters();
-  initializeClusters();
-  writeIdsAndClusters();
-  revertClusters();
+  writeIds();
 }
 
 template<typename PointType>
@@ -59,6 +50,13 @@ Sf_ConverterCTIDToPCLCloud<PointType>::setCloudAndID(typename pcl::PointCloud<Po
 {
   m_cloud = cloud;
   m_IDs = IDs;
+}
+
+template<typename PointType>
+int
+Sf_ConverterCTIDToPCLCloud<PointType>::numClusters() const
+{
+  return m_numClusters;
 }
 
 template<typename PointType>
@@ -77,30 +75,12 @@ Sf_ConverterCTIDToPCLCloud<PointType>::retrieveNumberClusters()
 
 template<typename PointType>
 void
-Sf_ConverterCTIDToPCLCloud<PointType>::initializeClusters()
-{
-  for (size_t i = 0; i < m_numClusters; i++) {
-    SF_CloudNormal::Ptr cloud(new typename pcl::PointCloud<PointType>());
-    m_clusters.push_back(cloud);
-  }
-}
-
-template<typename PointType>
-void
-Sf_ConverterCTIDToPCLCloud<PointType>::writeIdsAndClusters()
+Sf_ConverterCTIDToPCLCloud<PointType>::writeIds()
 {
   for (size_t i = 0; i < m_cloud->points.size(); i++) {
     int ID = m_IDs->valueAt(i);
     m_cloud->points[i].intensity = m_numClusters - 1 - ID;
-    m_clusters[ID]->push_back(m_cloud->points[i]);
   }
-}
-
-template<typename PointType>
-void
-Sf_ConverterCTIDToPCLCloud<PointType>::revertClusters()
-{
-  std::reverse(m_clusters.begin(), m_clusters.end());
 }
 
 #endif // SF_CONVERTERCTIDTOPCLCLOUD_HPP

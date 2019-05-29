@@ -44,18 +44,16 @@ public:
   void compute();
   typename pcl::PointCloud<PointType>::Ptr cloud() const;
   void setCloudAndID(typename pcl::PointCloud<PointType>::Ptr cloud, CT_PointsAttributesScalarTemplated<int>* IDs);
-  std::vector<typename pcl::PointCloud<PointType>::Ptr> clusters() const;
+
+  int numClusters() const;
 
 private:
   typename pcl::PointCloud<PointType>::Ptr m_cloud;
-  typename std::vector<typename pcl::PointCloud<PointType>::Ptr> m_clusters;
   CT_PointsAttributesScalarTemplated<int>* m_IDs;
   CT_AbstractItemDrawableWithPointCloud* m_itemCpyCloudIn;
   int m_numClusters = -1;
   void retrieveNumberClusters();
-  void initializeClusters();
-  void writeIdsAndClusters();
-  void revertClusters();
+  void writeIds();
 };
 
 #include "converters/CT_To_PCL/sf_converterCTIDToPCLCloud.hpp"
