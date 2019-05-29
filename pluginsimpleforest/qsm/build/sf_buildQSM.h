@@ -41,9 +41,9 @@ class SF_BuildQSM
   const float _RESOLUTION = 0.02f;
   const float _MINEQUALDISTANCE = 0.0001f;
   const float _MINLENGTH = 0.01f;
-  std::shared_ptr<SF_ModelQSM> _tree;
-  pcl::octree::OctreePointCloudSearch<SF_Point>::Ptr _octree;
-  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> _buildingBricksPtr;
+  std::shared_ptr<SF_ModelQSM> m_tree;
+  pcl::octree::OctreePointCloudSearch<SF_Point>::Ptr m_octree;
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> m_buildingBricks;
 
 public:
   SF_BuildQSM(const std::vector<SF_QSMDetectionCylinder>& cylinders, int index);
