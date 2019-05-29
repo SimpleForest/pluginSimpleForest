@@ -54,13 +54,14 @@ SF_TransferFeature<PointType>::compute()
   typename pcl::search::KdTree<PointType>::Ptr tree(new pcl::search::KdTree<PointType>);
   tree->setInputCloud(m_src);
   for (size_t i = 0; i < m_tar->points.size(); i++) {
-    PointType& tarPoint = m_tar->points[i];
+    PointType tarPoint = m_tar->points[i];
     std::vector<int> pointIdxNKNSearch(1);
     std::vector<float> pointNKNSquaredDistance(1);
     if (tree->nearestKSearch(tarPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
       PointType newTarPoint = m_src->points[pointIdxNKNSearch[0]];
       newTarPoint.getVector3fMap() = tarPoint.getVector3fMap();
       tarPoint = std::move(newTarPoint);
+      m_tar->points[i] = std::move(newTarPoint);
     }
   }
 }
