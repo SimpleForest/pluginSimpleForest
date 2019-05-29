@@ -318,14 +318,15 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
                                                                                                                             DEF_IN_ID);
     const SF_SphereFollowing_Parameters_Item* ctParameters = (const SF_SphereFollowing_Parameters_Item*)group->firstItemByINModelName(
       this, DEF_IN_PARAMS);
-
     SF_ParamSpherefollowingBasic<SF_PointNormal> param = ctParameters->getParams();
     SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramAdvanced;
     paramAdvanced._sphereFollowingParams = param._sphereFollowingParams;
+    paramAdvanced._sphereFollowingParams.m_optimizationParams.clear();
+    paramAdvanced._sphereFollowingParams.m_optimizationParams.push_back(paramAdvanced._sphereFollowingParams.m_optimizationParams[0]);
     paramAdvanced._stepProgress = _stepProgress;
     paramAdvanced._distanceParams = distanceParams;
-    paramAdvanced._voxelSize = _PP_voxelSize;
-    paramAdvanced._clusteringDistance = _PP_euclideanClusteringDistance;
+    paramAdvanced._voxelSize = param._voxelSize;
+    paramAdvanced._clusteringDistance = param._clusteringDistance;
     paramAdvanced.m_numClstrs = _CMD_numClstrs;
     paramAdvanced._modelCloudError = 1337;
     paramAdvanced._fittedGeometries = 0;
