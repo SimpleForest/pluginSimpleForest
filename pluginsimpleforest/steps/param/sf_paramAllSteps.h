@@ -138,13 +138,13 @@ struct SF_ParamFilter : public SF_ParamCloud<PointType>
 template<typename PointType>
 struct SF_ParamQSM : public SF_ParamFilter<PointType>
 {
-  std::shared_ptr<SF_ModelQSM> _tree;
+  std::shared_ptr<SF_ModelQSM> _qsm;
   Eigen::Vector3d _translation;
   CT_ColorCloudStdVector* _colors;
   virtual void reset()
   {
     SF_ParamFilter<PointType>::reset();
-    _tree = nullptr;
+    _qsm = nullptr;
     _colors = nullptr;
   }
 };

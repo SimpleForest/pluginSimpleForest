@@ -141,21 +141,21 @@ public:
       params._cloudIn = largestCluster;
 
       SF_QSMMedianFilter med;
-      med.compute(params._tree);
+      med.compute(params._qsm);
     }
     SF_VisualizeFitquality vfq;
     {
       QMutexLocker m1(&*mMutex);
       vfq.setCloud(cloud);
       vfq.setParams(params._distanceParams);
-      vfq.setQsm(params._tree);
+      vfq.setQsm(params._qsm);
     }
     vfq.compute();
     {
       QMutexLocker m1(&*mMutex);
       params._colors = vfq.colors();
-      params._tree->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
-      params._tree->translate(Eigen::Vector3f(params._translation[0], params._translation[1], params._translation[2]));
+      params._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
+      params._qsm->translate(Eigen::Vector3f(params._translation[0], params._translation[1], params._translation[2]));
     }
   }
 };

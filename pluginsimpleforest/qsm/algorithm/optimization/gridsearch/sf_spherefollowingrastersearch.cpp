@@ -19,10 +19,10 @@ SF_SphereFollowingRasterSearch::compute()
     sphereFollowing.setClusters(clusters);
     try {
       sphereFollowing.compute();
-      params._tree = sphereFollowing.getQSM();
+      params._qsm = sphereFollowing.getQSM();
       params._modelCloudError = sphereFollowing.error();
     } catch (...) {
-      params._tree = sphereFollowing.getQSM();
+      params._qsm = sphereFollowing.getQSM();
       params._modelCloudError = std::numeric_limits<float>::max();
     }
   });

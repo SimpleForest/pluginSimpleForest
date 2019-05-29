@@ -359,7 +359,7 @@ SF_StepSpherefollowingRoot::paramList()
   QList<SF_ParamQSM<SF_PointNormal>> paramList;
   std::for_each(_paramList.begin(), _paramList.end(), [&paramList](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
     SF_ParamQSM<SF_PointNormal> param;
-    param._tree = params._tree;
+    param._qsm = params._qsm;
     param._translation = params._translation;
     param._colors = params._colors;
     paramList.push_back(param);

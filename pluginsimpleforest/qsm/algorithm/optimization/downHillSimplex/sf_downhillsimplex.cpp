@@ -153,7 +153,7 @@ SF_DownHillSimplex::compute()
     sphereFollowing.setParams(m_params);
     sphereFollowing.setClusters(clusters);
     sphereFollowing.compute();
-    m_params._tree = sphereFollowing.getQSM();
+    m_params._qsm = sphereFollowing.getQSM();
     m_params._cloudIn = sphereFollowing.cloud();
   }
 }
