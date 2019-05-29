@@ -92,7 +92,7 @@ public:
       ec.setMinClusterSize(10);
       ec.setMaxClusterSize(std::numeric_limits<int>::max());
       ec.setSearchMethod(tree);
-      ec.setInputCloud(largestCluster);
+      ec.setInputCloud(cloudDownscaled);
     }
 
     std::vector<pcl::PointIndices> clusterIndices;
@@ -108,30 +108,28 @@ public:
       converterID.setCloudAndID(cloud, params._ctID);
     }
     converterID.compute();
-    std::vector<SF_CloudNormal::Ptr> clusters;
-
+    SF_TransferFeature<SF_PointNormal> tf;
     {
       QMutexLocker m1(&*mMutex);
-      clusters = converterID.clusters();
-      std::for_each(clusters.begin(), clusters.end(), [&cloud, &params](SF_CloudNormal::Ptr cluster) {
-        SF_TransferFeature<SF_PointNormal> tf;
-        tf.setInputClouds(cloud, cluster);
-        tf.compute();
-        pcl::NormalEstimation<SF_PointNormal, SF_PointNormal> ne;
-        {
-          ne.setInputCloud(cluster);
-          pcl::search::KdTree<SF_PointNormal>::Ptr tree(new pcl::search::KdTree<SF_PointNormal>());
-          ne.setSearchMethod(tree);
-          ne.setRadiusSearch(params._voxelSize * 3);
-        }
-        ne.compute(*cluster);
-      });
-      params._clusters = clusters;
+      params.m_numClstrs = converterID.numClusters();
+      tf.setInputClouds(cloud, largestCluster);
+    }
+    tf.compute();
+    pcl::NormalEstimation<SF_PointNormal, SF_PointNormal> ne;
+    {
+      QMutexLocker m1(&*mMutex);
+      ne.setInputCloud(largestCluster);
+      pcl::search::KdTree<SF_PointNormal>::Ptr tree(new pcl::search::KdTree<SF_PointNormal>());
+      tree->setInputCloud(largestCluster);
+      ne.setSearchMethod(tree);
+      ne.setRadiusSearch(params._voxelSize * 3);
     }
 
+    ne.compute(*largestCluster);
     SF_DownHillSimplex sphereFollowing;
     {
       QMutexLocker m1(&*mMutex);
+      params.m_cloudSphereFollowing = largestCluster;
       sphereFollowing.setParams(params);
     }
     sphereFollowing.compute();
@@ -139,6 +137,9 @@ public:
       QMutexLocker m1(&*mMutex);
       params = sphereFollowing.params();
       params._cloudIn = largestCluster;
+    }
+    {
+      QMutexLocker m1(&*mMutex);
 
       SF_QSMMedianFilter med;
       med.compute(params._qsm);

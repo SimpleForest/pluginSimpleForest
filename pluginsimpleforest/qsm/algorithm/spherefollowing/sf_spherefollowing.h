@@ -69,8 +69,8 @@ public:
   void compute() override;
   float error() override;
   void setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZINormal>& params);
-  void setClusters(const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters);
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud() const;
+  void setCloud(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr& cloud);
 
 private:
   typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>::Ptr m_octree;
@@ -79,7 +79,6 @@ private:
   std::shared_ptr<SF_ModelQSM> m_qsm;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
   std::map<float, Circle> m_map;
-  std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr> m_clusters;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr lowestSlice(float& minZ);
   pcl::PointIndices::Ptr surfaceIndices(Circle& lastCircle);
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr extractCloud(pcl::PointIndices::Ptr indices);
@@ -87,7 +86,6 @@ private:
                                                                            size_t minIndex);
   void processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters, const Circle& lastCircle);
   void initialize();
-  void initializeCloud();
   void initializeOctree();
   void initializeHeap();
   void pushbackQueue(pcl::ModelCoefficients circleCoeff, float distance, int clusterID, Eigen::Vector3f firstSplit);

@@ -265,24 +265,8 @@ SF_SphereFollowing::processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINo
 void
 SF_SphereFollowing::initialize()
 {
-  initializeCloud();
   initializeOctree();
   initializeHeap();
-}
-
-void
-SF_SphereFollowing::initializeCloud()
-{
-  pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZINormal>());
-  size_t index = 0;
-  std::for_each(m_clusters.begin(), m_clusters.end(), [&index, &cloud](pcl::PointCloud<pcl::PointXYZINormal>::Ptr cluster) {
-    std::for_each(cluster->points.begin(), cluster->points.end(), [&index, &cloud](pcl::PointXYZINormal& point) {
-      point.intensity = index;
-      cloud->push_back(point);
-    });
-    index++;
-  });
-  m_cloud = cloud;
 }
 
 void
@@ -353,14 +337,14 @@ SF_SphereFollowing::setParams(const SF_ParamSpherefollowingBasic<pcl::PointXYZIN
   m_params = params;
 }
 
-void
-SF_SphereFollowing::setClusters(const std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters)
-{
-  m_clusters = clusters;
-}
-
 pcl::PointCloud<pcl::PointXYZINormal>::Ptr
 SF_SphereFollowing::cloud() const
 {
   return m_cloud;
+}
+
+void
+SF_SphereFollowing::setCloud(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr& cloud)
+{
+  m_cloud = cloud;
 }

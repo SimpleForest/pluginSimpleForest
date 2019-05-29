@@ -13,10 +13,8 @@ SF_SphereFollowingRasterSearch::compute()
   std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramVec = paramVector();
   std::for_each(paramVec.begin(), paramVec.end(), [this](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
     SF_SphereFollowing sphereFollowing;
-    std::vector<SF_CloudNormal::Ptr> clusters;
-    clusters.push_back(m_cloud);
     sphereFollowing.setParams(params);
-    sphereFollowing.setClusters(clusters);
+    sphereFollowing.setCloud(m_cloud);
     try {
       sphereFollowing.compute();
       params._qsm = sphereFollowing.getQSM();
