@@ -195,13 +195,13 @@ SF_ModelAbstractSegment::computeBranchOrder(int branchOrder)
 {
   m_branchOrder = branchOrder;
   if (m_children.size() == 0) {
-      return;
+    return;
   }
   if (m_children.size() == 1) {
-      m_children[0]->computeBranchOrder(branchOrder);
-      return;
+    m_children[0]->computeBranchOrder(branchOrder);
+    return;
   }
-  if (m_children.size() >  1) {
+  if (m_children.size() > 1) {
     m_children[0]->computeBranchOrder(branchOrder);
     std::for_each(std::next(m_children.begin(), 1), m_children.end(), [branchOrder](std::shared_ptr<SF_ModelAbstractSegment> child) {
       child->computeBranchOrder(branchOrder + 1);
