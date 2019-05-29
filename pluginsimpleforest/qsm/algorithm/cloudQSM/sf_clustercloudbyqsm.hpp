@@ -80,12 +80,12 @@ SF_ClusterCloudByQSM<PointType>::compute()
   std::vector<float> growthVoluminaSorted = cmd.distances();
   std::sort(growthVoluminaSorted.begin(), growthVoluminaSorted.end());
   std::vector<float> upperGrowthVolumina;
-  int sizeCluster = m_cloud->points.size() / m_numClstrs;
+  size_t sizeCluster = m_cloud->points.size() / m_numClstrs;
   size_t upperBorder = 0;
-  upperGrowthVolumina.push_back(growthVoluminaSorted[0]);
+  upperGrowthVolumina.push_back(growthVoluminaSorted[upperBorder]);
   for (size_t i = 0; i < m_numClstrs - 1; i++) {
     upperBorder += sizeCluster;
-    upperBorder = std::min(upperBorder, growthVoluminaSorted.size() - 1);
+    upperBorder = std::min(upperBorder, std::max(static_cast<size_t>(1), growthVoluminaSorted.size()) - 1);
     upperGrowthVolumina.push_back(growthVoluminaSorted[upperBorder]);
   }
   float logMin = std::log(-growthVoluminaSorted[growthVoluminaSorted.size() - 1]);

@@ -121,8 +121,8 @@ void
 SF_BuildQSM::buildTree(std::shared_ptr<SF_ModelAbstractSegment> segment)
 {
   std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = segment->getBuildingBricks().back();
-  const auto end = buildingBrick->getEnd();
-  SF_Point end(end[0], end[1], end[2]);
+  const auto endVec3f = buildingBrick->getEnd();
+  SF_Point end(endVec3f[0], endVec3f[1], endVec3f[2]);
   std::vector<int> pointIdxNKNSearch;
   std::vector<float> pointNKNSquaredDistance;
   if (m_octree->radiusSearch(end, _MINEQUALDISTANCE, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
