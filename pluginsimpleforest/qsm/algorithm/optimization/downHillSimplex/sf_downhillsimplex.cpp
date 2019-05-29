@@ -28,6 +28,7 @@
 
 #include "sf_downhillsimplex.h"
 
+#include "cloud/filter/unary/maxIntensity/sf_maxintensity.h"
 #include "qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.h"
 
 #include <cstdint>
@@ -83,22 +84,23 @@ void
 SF_DownHillSimplex::compute()
 {
   size_t size = m_params.m_numClstrs;
-  auto allClusters = m_params._clusters;
   SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramCpy = m_params;
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudCpy = m_params.m_cloudSphereFollowing;
   for (size_t numClusters = 1; numClusters <= size; numClusters++) {
     paramCpy.m_numClstrs = numClusters;
-    m_params.m_numClstrs = numClusters;
-    std::vector<SF_CloudNormal::Ptr> clusters;
-    for (size_t i = 0; i < numClusters; i++) {
-      clusters.push_back(allClusters[i]);
+    SF_MaxIntensityFilter<pcl::PointXYZINormal> maxFilter;
+    maxFilter.setMaxIntensity(numClusters - 1);
+    maxFilter.setCloudIn(cloudCpy);
+    maxFilter.compute();
+    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = maxFilter.cloudOut();
+    paramCpy.m_cloudSphereFollowing = cloud;
     }
-    m_params._clusters = clusters;
-    m_params.m_numClstrs = numClusters;
-    if (numClusters > m_params._sphereFollowingParams.m_optimizationParams.size()) {
-      m_params._sphereFollowingParams.m_optimizationParams.push_back(
-        m_params._sphereFollowingParams.m_optimizationParams[m_params._sphereFollowingParams.m_optimizationParams.size() - 1]);
+
+    if (numClusters > paramCpy._sphereFollowingParams.m_optimizationParams.size()) {
+      paramCpy._sphereFollowingParams.m_optimizationParams.push_back(
+        paramCpy._sphereFollowingParams.m_optimizationParams[paramCpy._sphereFollowingParams.m_optimizationParams.size() - 1]);
     }
-    std::uintptr_t par[1] = { reinterpret_cast<std::uintptr_t>(new SF_ParamSpherefollowingAdvanced<SF_PointNormal>(m_params)) };
+    std::uintptr_t par[1] = { reinterpret_cast<std::uintptr_t>(new SF_ParamSpherefollowingAdvanced<SF_PointNormal>(paramCpy)) };
     const gsl_multimin_fminimizer_type* T = gsl_multimin_fminimizer_nmsimplex2;
     gsl_multimin_fminimizer* s = NULL;
     gsl_vector *ss, *x;
@@ -122,7 +124,7 @@ SF_DownHillSimplex::compute()
       if (status)
         break;
       size = gsl_multimin_fminimizer_size(s);
-      status = gsl_multimin_test_size(size, m_params._fitQuality * 1e-3);
+      status = gsl_multimin_test_size(size, paramCpy._fitQuality * 1e-4);
       if (status == GSL_SUCCESS) {
         printf("converged to minimum at\n");
       }
@@ -139,7 +141,7 @@ SF_DownHillSimplex::compute()
           paramsOptim._sphereRadiusMultiplier = gsl_vector_get(v, index++);
           paramVec.push_back(paramsOptim);
         }
-        m_params._sphereFollowingParams.m_optimizationParams = paramVec;
+        paramCpy._sphereFollowingParams.m_optimizationParams = paramVec;
       }
       printf("%5d %10.6e %10.6e f() = %7.6f size = %.6f\n",
              static_cast<int>(iter),
@@ -149,14 +151,14 @@ SF_DownHillSimplex::compute()
              size);
       std::cout << std::endl;
 
-    } while (status == GSL_CONTINUE && iter < m_params._iterations);
+    } while (status == GSL_CONTINUE && iter < paramCpy._iterations);
     gsl_vector_free(x);
     gsl_vector_free(ss);
     gsl_multimin_fminimizer_free(s);
 
     SF_SphereFollowing sphereFollowing;
-    sphereFollowing.setClusters(clusters);
     sphereFollowing.setParams(paramCpy);
+    sphereFollowing.setCloud(paramCpy.m_cloudSphereFollowing);
     sphereFollowing.compute();
     m_params = paramCpy;
     m_params._qsm = sphereFollowing.getQSM();
@@ -182,7 +184,7 @@ downhillSimplex(const gsl_vector* v, void* params)
   paramsBasic->_sphereFollowingParams.m_optimizationParams = paramVec;
   SF_SphereFollowing sphereFollowing;
   sphereFollowing.setParams(*paramsBasic);
-  sphereFollowing.setClusters(paramsBasic->_clusters);
+  sphereFollowing.setCloud(paramsBasic->m_cloudSphereFollowing);
   try {
     sphereFollowing.compute();
     paramsBasic->_qsm = sphereFollowing.getQSM();
