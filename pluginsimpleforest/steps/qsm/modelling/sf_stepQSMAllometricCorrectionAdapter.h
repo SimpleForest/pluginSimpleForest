@@ -65,6 +65,7 @@ public:
           paramEst.setParams(paramsCpy);
           try {
             paramEst.compute();
+            paramsCpy = paramEst.params();
           } catch (...) {
           }
         }
@@ -74,6 +75,7 @@ public:
           paramEst.setParams(paramsCpy);
           try {
             paramEst.compute();
+            paramsCpy = paramEst.params();
           } catch (...) {
           }
         }
@@ -99,7 +101,10 @@ public:
       ac.setParams(paramsCpy);
       paramsCpy._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
     }
-    ac.compute();
+    if(paramsCpy.m_power > 0.25 && paramsCpy.m_power < 0.75)
+    {
+        ac.compute();
+    }
     {
       QMutexLocker m1(&*mMutex);
       params = paramsCpy;
