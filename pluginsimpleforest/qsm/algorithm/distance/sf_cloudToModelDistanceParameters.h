@@ -41,7 +41,7 @@ enum SF_CLoudToModelDistanceMethod
 
 struct SF_CloudToModelDistanceParameters
 {
-  SF_CLoudToModelDistanceMethod _method = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC;
+  SF_CLoudToModelDistanceMethod _method = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER;
   float _inlierDistance = 0.05f;
   int _k = 5;
   SF_CloudToModelDistanceParameters() {}
