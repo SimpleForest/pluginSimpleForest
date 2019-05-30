@@ -130,15 +130,15 @@ Sf_CloudToModelDistance<PointType>::adaptDistanceToMethod(float distance)
       distance = std::abs(distance);
       break;
     case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
-      distance = std::abs(distance);
       distance = std::min(_INLIERDISTANCE, distance);
+      distance = std::abs(distance);
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
       distance = distance * distance;
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
+      distance = std::min(_INLIERDISTANCE, distance);
       distance = distance * distance;
-      distance = std::min(_INLIERDISTANCE * _INLIERDISTANCE, distance);
       break;
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
       distance = std::abs(distance);
@@ -166,25 +166,24 @@ void
 Sf_CloudToModelDistance<PointType>::compute()
 {
   _distances = getCloudToModelDistances();
-  std::vector<float> distances = cropDistances(_distances);
   switch (_METHOD) {
     case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
-      _averageDistance = getNumberInliersNegative(distances);
+      _averageDistance = getNumberInliersNegative(_distances);
       break;
     case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
-      _averageDistance = SF_Math<float>::getMean(distances);
+      _averageDistance = SF_Math<float>::getMean(_distances);
       break;
     case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
-      _averageDistance = SF_Math<float>::getMean(distances);
+      _averageDistance = SF_Math<float>::getMean(_distances);
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
-      _averageDistance = std::sqrt(SF_Math<float>::getMean(distances));
+      _averageDistance = std::sqrt(SF_Math<float>::getMean(_distances));
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
-      _averageDistance = std::sqrt(SF_Math<float>::getMean(distances));
+      _averageDistance = std::sqrt(SF_Math<float>::getMean(_distances));
       break;
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
-      _averageDistance = std::sqrt(SF_Math<float>::getMedian(distances));
+      _averageDistance = std::sqrt(SF_Math<float>::getMedian(_distances));
       break;
     default:
       break;
