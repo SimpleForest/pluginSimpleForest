@@ -43,15 +43,13 @@ struct SF_CloudToModelDistanceParameters
 {
   SF_CLoudToModelDistanceMethod _method = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC;
   float _inlierDistance = 0.05f;
-  int _robustPercentage = 100;
   int _k = 5;
   SF_CloudToModelDistanceParameters() {}
-  SF_CloudToModelDistanceParameters(SF_CLoudToModelDistanceMethod& method, float inlierDistance, int k, int percentage)
+  SF_CloudToModelDistanceParameters(SF_CLoudToModelDistanceMethod& method, float inlierDistance, int k)
   {
     _method = method;
     _inlierDistance = inlierDistance;
     _k = k;
-    _robustPercentage = percentage;
   }
 };
 

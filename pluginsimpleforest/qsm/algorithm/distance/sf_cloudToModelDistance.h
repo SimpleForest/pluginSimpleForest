@@ -37,7 +37,6 @@ template<typename PointType>
 class Sf_CloudToModelDistance
 {
   SF_CLoudToModelDistanceMethod _METHOD;
-  int _percentage;
   int _k;
   float _INLIERDISTANCE;
   float _averageDistance;
@@ -51,7 +50,6 @@ class Sf_CloudToModelDistance
   void initializeKdTree();
   void initializeGrowthLength();
   void compute();
-  const std::vector<float> cropDistances(std::vector<float> distances);
   float getDistance(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   float getAngle(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   float getNumberInliersNegative(const std::vector<float>& distances);
@@ -64,8 +62,7 @@ public:
                           typename pcl::PointCloud<PointType>::Ptr cloud,
                           SF_CLoudToModelDistanceMethod& method,
                           float inlierDistance,
-                          int k,
-                          int percentage);
+                          int k);
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                           typename pcl::PointCloud<PointType>::Ptr cloud,
                           SF_CloudToModelDistanceParameters& params);

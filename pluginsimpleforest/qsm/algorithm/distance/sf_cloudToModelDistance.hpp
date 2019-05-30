@@ -42,9 +42,8 @@ Sf_CloudToModelDistance<PointType>::Sf_CloudToModelDistance(std::shared_ptr<SF_M
                                                             typename pcl::PointCloud<PointType>::Ptr cloud,
                                                             SF_CLoudToModelDistanceMethod& method,
                                                             float inlierDistance,
-                                                            int k,
-                                                            int percentage)
-  : _METHOD(method), _percentage(percentage), _k(k), _INLIERDISTANCE(inlierDistance), _tree(tree), _cloud(cloud)
+                                                            int k)
+  : _METHOD(method), _k(k), _INLIERDISTANCE(inlierDistance), _tree(tree), _cloud(cloud)
 {
   _averageDistance = std::numeric_limits<float>::max();
   initializeKdTree();
@@ -56,17 +55,8 @@ template<typename PointType>
 Sf_CloudToModelDistance<PointType>::Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                                                             typename pcl::PointCloud<PointType>::Ptr cloud,
                                                             SF_CloudToModelDistanceParameters& params)
-  : _METHOD(params._method)
-  , _percentage(params._robustPercentage)
-  , _k(params._k)
-  , _INLIERDISTANCE(params._inlierDistance)
-  , _tree(tree)
-  , _cloud(cloud)
+    :Sf_CloudToModelDistance(tree, cloud, params._method, params._inlierDistance, params._k)
 {
-  _averageDistance = std::numeric_limits<float>::max();
-  initializeKdTree();
-  initializeGrowthLength();
-  compute();
 }
 
 template<typename PointType>
@@ -199,20 +189,6 @@ Sf_CloudToModelDistance<PointType>::compute()
     default:
       break;
   }
-}
-
-template<typename PointType>
-const std::vector<float>
-Sf_CloudToModelDistance<PointType>::cropDistances(std::vector<float> distances)
-{
-  if (_percentage >= 100) {
-    return distances;
-  }
-  std::sort(distances.begin(), distances.end());
-  size_t size = static_cast<size_t>(static_cast<float>(distances.size()) * static_cast<float>(_percentage) / 100.0f);
-  std::vector<float> croppedDistances;
-  std::copy_n(distances.begin(), size, std::back_inserter(croppedDistances));
-  return croppedDistances;
 }
 
 template<typename PointType>

@@ -241,17 +241,11 @@ SF_StepSpherefollowingRoot::configDialogGuruAddGridSearchCloudToModelDistance(CT
                        3,
                        9,
                        _CMD_k);
-  configDialog->addInt("For each point the distance to the model is computed. "
-                       "Only a  [<em><b>robust percentage</b></em>] ",
-                       " of smallest distances is used.",
-                       50,
-                       100,
-                       _CMD_robustPercentage);
   configDialog->addDouble("For MSAC and inlier methods the distance is cropped "
                           "at [<em><b>crop distance</b></em>] ",
                           "",
                           0.01,
-                          0.3,
+                          0.5,
                           2,
                           _CMD_inlierDistance);
   configDialog->addEmpty();
@@ -483,7 +477,6 @@ SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup* outResult)
   distanceParams._method = toStringCMDMethod();
   distanceParams._k = _CMD_k;
   distanceParams._inlierDistance = _CMD_inlierDistance;
-  distanceParams._robustPercentage = _CMD_robustPercentage;
 
   adaptParametersToExpertLevel();
   CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);

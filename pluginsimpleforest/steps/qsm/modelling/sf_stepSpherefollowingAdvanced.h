@@ -80,7 +80,6 @@ private:
   double _SF_inlierDistance = 0.03;
   int _SF_minPtsGeometry = 5;
   double _SF_heightInitializationSlice = 0.05;
-  int _CMD_robustPercentage = 100;
   int _CMD_fittingMethod = toStringCMDMethod();
   int _CMD_k = 9;
   int _CMD_numClstrs = 1;

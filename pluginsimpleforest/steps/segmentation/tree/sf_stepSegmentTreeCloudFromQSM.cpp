@@ -154,7 +154,6 @@ SF_StepSegmentTreeCloudFromQSM::createParamList(CT_ResultGroup* outResult)
   SF_CloudToModelDistanceParameters distanceParams;
   distanceParams._inlierDistance = 1000000;
   distanceParams._k = 5;
-  distanceParams._robustPercentage = 100;
   distanceParams._method = SF_CLoudToModelDistanceMethod::GROWTHDISTANCE;
   CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
   while (!isStopped() && outResIt.hasNext()) {

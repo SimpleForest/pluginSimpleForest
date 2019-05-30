@@ -138,12 +138,6 @@ SF_StepSphereFollowingAdvanced::configDialogGuruAddGridSearchCloudToModelDistanc
                        3,
                        9,
                        _CMD_k);
-  configDialog->addInt("For each point the distance to the model is computed. "
-                       "Only a  [<em><b>robust percentage</b></em>] ",
-                       " of smallest distances is used.",
-                       50,
-                       100,
-                       _CMD_robustPercentage);
   configDialog->addDouble("For MSAC and inlier methods the distance is cropped "
                           "at [<em><b>crop distance</b></em>] ",
                           "",
@@ -307,7 +301,6 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
   distanceParams._method = toStringCMDMethod();
   distanceParams._k = _CMD_k;
   distanceParams._inlierDistance = _CMD_inlierDistance;
-  distanceParams._robustPercentage = _CMD_robustPercentage;
 
   CT_ResultGroupIterator outResItCloud(outResult, this, DEF_IN_GRP_CLUSTER);
   while (!isStopped() && outResItCloud.hasNext()) {
