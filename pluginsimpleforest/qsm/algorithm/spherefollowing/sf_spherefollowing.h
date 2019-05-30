@@ -63,7 +63,6 @@ public:
 class SF_SphereFollowing : public SF_IDetection
 {
 public:
-  static constexpr float M_OCTREERESOLUTION = 0.015;
   SF_SphereFollowing();
   std::shared_ptr<SF_ModelQSM> getQSM() override;
   void compute() override;
