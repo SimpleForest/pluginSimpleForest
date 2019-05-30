@@ -79,7 +79,7 @@ private:
   int _CMD_fittingMethod = toStringCMDMethod();
   int _CMD_k = 9;
   int _CMD_numClstrs = 1;
-  double _CMD_inlierDistance = 0.05;
+  double _CMD_inlierDistance = 0.15;
 
   QString _PARAMETERS_1 = "100%";
   QString _PARAMETERS_3 = "75%; 100%; 150%";

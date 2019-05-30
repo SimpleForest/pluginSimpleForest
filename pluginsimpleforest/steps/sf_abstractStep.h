@@ -144,7 +144,7 @@ protected:
   QString _FIRSTMOMENTUMORDER = "FIRSTMOMENTUMORDER      - minimize average absolute distance";
   QString _SECONDMOMENTUMORDERMSAC = "SECONDMOMENTUMORDERMSAC - minimize cropped (MSAC) root squared distance";
   QString _SECONDMOMENTUMORDER = "SECONDMOMENTUMORDER     - minimize average root squared distance";
-  QString _CMD_methodChoice = _SECONDMOMENTUMORDERMSAC;
+  QString _CMD_methodChoice = _SECONDMOMENTUMORDER;
   QStringList _CMD_methodList;
 
   QStringList _pointDensities;
