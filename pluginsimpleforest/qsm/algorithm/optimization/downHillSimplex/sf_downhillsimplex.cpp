@@ -111,7 +111,7 @@ SF_DownHillSimplex::compute()
     int status;
     double size;
     serializeVec(x, 1.0, numClusters, paramCpy);
-    serializeVec(ss, 0.2, numClusters, paramCpy);
+    serializeVec(ss, 0.1, numClusters, paramCpy);
     minex_func.n = numClusters * 3;
     minex_func.f = downhillSimplex;
     minex_func.params = par;
