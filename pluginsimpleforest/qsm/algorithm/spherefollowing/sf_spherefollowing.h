@@ -72,6 +72,7 @@ public:
   void setCloud(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr& cloud);
 
 private:
+  float getDistance(const pcl::ModelCoefficients &circle, const Circle& lastCircle);
   Eigen::Vector3f getCentroid(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud);
   typename pcl::octree::OctreePointCloudSearch<pcl::PointXYZINormal>::Ptr m_octree;
   std::vector<SF_QSMDetectionCylinder> m_cylinders;

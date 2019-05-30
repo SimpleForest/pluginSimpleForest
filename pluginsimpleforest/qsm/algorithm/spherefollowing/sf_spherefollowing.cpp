@@ -175,6 +175,15 @@ SF_SphereFollowing::getCentroid(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud
     return Eigen::Vector3f (centroidPoint.x, centroidPoint.y, centroidPoint.z);
 }
 
+float
+SF_SphereFollowing::getDistance(const pcl::ModelCoefficients &circle, const Circle& lastCircle)
+{
+    Eigen::Vector3f diff =
+      Eigen::Vector3f(lastCircle.m_circleCoeff.values[0], lastCircle.m_circleCoeff.values[1], lastCircle.m_circleCoeff.values[2]) -
+      Eigen::Vector3f(circle.values[0], circle.values[1], circle.values[2]);
+    return diff.norm();
+}
+
 void
 SF_SphereFollowing::processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters, const Circle& lastCircle)
 {
@@ -200,27 +209,23 @@ SF_SphereFollowing::processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINo
       SF_Circle<pcl::PointXYZINormal> circleFit(cluster, params, static_cast<size_t>(intensity));
       pcl::ModelCoefficients coeff = circleFit.coeff();
       if (coeff.values.size() == 4) {
-        Eigen::Vector3f diff =
-          Eigen::Vector3f(lastCircle.m_circleCoeff.values[0], lastCircle.m_circleCoeff.values[1], lastCircle.m_circleCoeff.values[2]) -
-          Eigen::Vector3f(coeff.values[0], coeff.values[1], coeff.values[2]);
-        float distance = diff.norm();
-          float dist = lastCircle.m_distance + distance;
+          float heapDistance = lastCircle.m_distance + getDistance(coeff, lastCircle);
           if (cluster != *clusters.begin()) {
-            dist += params._sphereFollowingParams._heapDelta;
+            heapDistance += params._sphereFollowingParams._heapDelta;
           }
           if (clusters.size() > 1) {
             if (cluster != *clusters.begin()) {
               pushbackQueue(circleFit.coeff(),
-                            dist,
+                            heapDistance,
                             intensity,
                             Eigen::Vector3f(coeff.values[0], coeff.values[1], coeff.values[2]));
             } else {
-              pushbackQueue(circleFit.coeff(), dist, intensity, lastCircle.m_firstSplit);
+              pushbackQueue(circleFit.coeff(), heapDistance, intensity, lastCircle.m_firstSplit);
             }
           } else {
-            pushbackQueue(circleFit.coeff(), dist, intensity, lastCircle.m_firstSplit);
+            pushbackQueue(circleFit.coeff(), heapDistance, intensity, lastCircle.m_firstSplit);
           }
-          SF_QSMDetectionCylinder cyl(dist, lastCircle.m_circleCoeff);
+          SF_QSMDetectionCylinder cyl(heapDistance, lastCircle.m_circleCoeff);
           cyl.addSecondCircle(coeff);
           m_cylinders.push_back(cyl);
       }
