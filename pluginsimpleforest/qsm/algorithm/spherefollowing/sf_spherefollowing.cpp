@@ -187,6 +187,18 @@ SF_SphereFollowing::clusterEuclidean(pcl::PointCloud<pcl::PointXYZINormal>::Ptr 
   return clusters;
 }
 
+Eigen::Vector3f
+SF_SphereFollowing::getCentroid(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud)
+{
+    pcl::CentroidPoint<pcl::PointXYZINormal> centroid;
+    for (const pcl::PointXYZINormal& point : cloud->points) {
+      centroid.add(point);
+    }
+    pcl::PointXYZINormal centroidPoint;
+    centroid.get(centroidPoint);
+    return Eigen::Vector3f (centroidPoint.x, centroidPoint.y, centroidPoint.z);
+}
+
 void
 SF_SphereFollowing::processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINormal>::Ptr>& clusters, const Circle& lastCircle)
 {
@@ -197,26 +209,12 @@ SF_SphereFollowing::processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINo
     std::sort(
       clusters.begin(),
       clusters.end(),
-      [&lastCircle, &oldSphereCenter](pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud1,
+      [&lastCircle, &oldSphereCenter, this](pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud1,
                                       pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud2) {
-        pcl::CentroidPoint<pcl::PointXYZINormal> centroid1;
-        for (const pcl::PointXYZINormal& point : cloud1->points) {
-          centroid1.add(point);
-        }
-        pcl::PointXYZINormal centroidPoint1;
-        centroid1.get(centroidPoint1);
-        Eigen::Vector3f centerVec1(centroidPoint1.x, centroidPoint1.y, centroidPoint1.z);
-
-        pcl::CentroidPoint<pcl::PointXYZINormal> centroid2;
-        for (const pcl::PointXYZINormal& point : cloud2->points) {
-          centroid2.add(point);
-        }
-        pcl::PointXYZINormal centroidPoint2;
-        centroid2.get(centroidPoint2);
-        Eigen::Vector3f centerVec2(centroidPoint2.x, centroidPoint2.y, centroidPoint2.z);
-
-        float angle1 = SF_Math<float>::getAngleBetweenDeg(centerVec1 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
-        float angle2 = SF_Math<float>::getAngleBetweenDeg(centerVec2 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
+        Eigen::Vector3f centroid1 = getCentroid(cloud1);
+        Eigen::Vector3f centroid2 = getCentroid(cloud2);
+        float angle1 = SF_Math<float>::getAngleBetweenDeg(centroid1 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
+        float angle2 = SF_Math<float>::getAngleBetweenDeg(centroid2 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
         return angle1 < angle2;
       });
   }
