@@ -37,38 +37,14 @@
 #include <pcl/filters/extract_indices.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/segmentation/sac_segmentation.h>
+#include <tests/factory/sf_qsmfactory.h>
 
 SF_SphereFollowing::SF_SphereFollowing() {}
 
 void
 SF_SphereFollowing::artificialTree()
 {
-  pcl::ModelCoefficients circleA;
-  circleA.values.push_back(0);
-  circleA.values.push_back(0);
-  circleA.values.push_back(0);
-  circleA.values.push_back(1);
-
-  pcl::ModelCoefficients circleB;
-  circleB.values.push_back(0);
-  circleB.values.push_back(0);
-  circleB.values.push_back(1);
-  circleB.values.push_back(1);
-
-  pcl::ModelCoefficients circleC;
-  circleC.values.push_back(0);
-  circleC.values.push_back(0);
-  circleC.values.push_back(2);
-  circleC.values.push_back(1);
-
-  SF_QSMDetectionCylinder cylinder(0, circleA);
-  cylinder.addSecondCircle(circleB);
-  SF_QSMDetectionCylinder cylinder2(1, circleB);
-  cylinder2.addSecondCircle(circleC);
-  m_cylinders.push_back(cylinder);
-  m_cylinders.push_back(cylinder2);
-  SF_BuildQSM qsmBuilder(m_cylinders, 0);
-  m_qsm = qsmBuilder.getTree();
+    m_qsm = SF_QSMFactory::qsm(SORTTYPE::LARGEST_GROWTHLENGTH_SECOND);
 }
 
 void
