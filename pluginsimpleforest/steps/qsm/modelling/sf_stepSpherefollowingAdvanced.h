@@ -32,9 +32,9 @@
 #define DEF_IN_ID "iID"
 #define DEF_IN_PARAMS "iParams"
 
-#include "steps/segmentation/sf_AbstractStepSegmentation.h"
+#include "steps/qsm/sf_abstractStepQSM.h"
 
-class SF_StepSphereFollowingAdvanced : public SF_AbstractStepSegmentation
+class SF_StepSphereFollowingAdvanced : public SF_AbstractStepQSM
 {
   Q_OBJECT
 

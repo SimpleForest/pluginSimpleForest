@@ -35,7 +35,7 @@
 
 #include <ct_itemdrawable/ct_cylinder.h>
 
-SF_StepQSMRefitCylinders::SF_StepQSMRefitCylinders(CT_StepInitializeData& dataInit) : SF_AbstractStepSegmentation(dataInit) {}
+SF_StepQSMRefitCylinders::SF_StepQSMRefitCylinders(CT_StepInitializeData& dataInit) : SF_AbstractStepQSM(dataInit) {}
 
 SF_StepQSMRefitCylinders::~SF_StepQSMRefitCylinders() {}
 
@@ -137,9 +137,8 @@ SF_StepQSMRefitCylinders::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outCylinderGroup, new CT_StandardItemGroup(), tr("QSM Group"));
-    resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(), tr("QSM Cylinders"));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM Item"));
+    addQSMToOutResult(resModelw, QString("QSM refit cylinders"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders refit cylinders"));
   }
 }
 
@@ -154,12 +153,8 @@ SF_StepQSMRefitCylinders::compute()
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
-  SF_AbstractStep::addQSM<SF_ParamRefitCylinders>(outResult,
-                                                  _paramList,
-                                                  QString::fromUtf8(DEF_IN_GRP_CLUSTER),
-                                                  _outCylinders.completeName(),
-                                                  _outCylinderGroup.completeName(),
-                                                  _outSFQSM.completeName());
+  SF_AbstractStepQSM::addQSM<SF_ParamRefitCylinders>(
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName());
   _paramList.clear();
 }
 

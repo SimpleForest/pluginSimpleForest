@@ -35,8 +35,7 @@
 
 #include <ct_itemdrawable/ct_cylinder.h>
 
-SF_StepQSMAllometricCorrection::SF_StepQSMAllometricCorrection(CT_StepInitializeData& dataInit) : SF_AbstractStepSegmentation(dataInit)
-{}
+SF_StepQSMAllometricCorrection::SF_StepQSMAllometricCorrection(CT_StepInitializeData& dataInit) : SF_AbstractStepQSM(dataInit) {}
 
 SF_StepQSMAllometricCorrection::~SF_StepQSMAllometricCorrection() {}
 
@@ -165,9 +164,8 @@ SF_StepQSMAllometricCorrection::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outCylinderGroup, new CT_StandardItemGroup(), tr("QSM Group"));
-    resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(), tr("QSM Cylinders"));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM Item"));
+    addQSMToOutResult(resModelw, QString("QSM Allometric correction"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders allometric corrected"));
   }
 }
 
@@ -182,12 +180,8 @@ SF_StepQSMAllometricCorrection::compute()
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
-  SF_AbstractStep::addQSM<SF_ParamAllometricCorrectionNeighboring>(outResult,
-                                                                   _paramList,
-                                                                   QString::fromUtf8(DEF_IN_GRP_CLUSTER),
-                                                                   _outCylinders.completeName(),
-                                                                   _outCylinderGroup.completeName(),
-                                                                   _outSFQSM.completeName());
+  SF_AbstractStepQSM::addQSM<SF_ParamAllometricCorrectionNeighboring>(
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName());
   if (m_filePath.size() > 0) {
     QFile file(m_filePath.first());
     if (file.open(QFile::WriteOnly)) {

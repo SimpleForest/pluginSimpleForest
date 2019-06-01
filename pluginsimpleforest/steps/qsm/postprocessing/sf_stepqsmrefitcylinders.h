@@ -29,9 +29,9 @@
 #ifndef SF_QSMREFITCYLINDERS_H
 #define SF_QSMREFITCYLINDERS_H
 
-#include "steps/segmentation/sf_AbstractStepSegmentation.h"
+#include "steps/qsm/sf_abstractStepQSM.h"
 
-class SF_StepQSMRefitCylinders : public SF_AbstractStepSegmentation
+class SF_StepQSMRefitCylinders : public SF_AbstractStepQSM
 {
   Q_OBJECT
 

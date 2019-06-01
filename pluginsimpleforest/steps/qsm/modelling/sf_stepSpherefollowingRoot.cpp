@@ -35,7 +35,7 @@
 
 #include <ct_itemdrawable/ct_cylinder.h>
 
-SF_StepSpherefollowingRoot::SF_StepSpherefollowingRoot(CT_StepInitializeData& dataInit) : SF_AbstractStepSegmentation(dataInit)
+SF_StepSpherefollowingRoot::SF_StepSpherefollowingRoot(CT_StepInitializeData& dataInit) : SF_AbstractStepQSM(dataInit)
 {
   _pointDensities.append(_lowDensity);
   _pointDensities.append(_mediumDensity);
@@ -274,10 +274,9 @@ SF_StepSpherefollowingRoot::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    resModelw->addGroupModel(DEF_IN_GRP_CLUSTER, _outCylinderGroup, new CT_StandardItemGroup(), tr("QSM Group"));
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Spherefollowing Fit Quality"));
-    resModelw->addItemModel(_outCylinderGroup, _outCylinders, new CT_Cylinder(), tr("QSM"));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM"));
+    addQSMToOutResult(resModelw, QString("QSM SphereFollowing"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM spherefollowing"));
     resModelw->addItemModel(
       DEF_IN_GRP_CLUSTER, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
   }
@@ -338,13 +337,8 @@ SF_StepSpherefollowingRoot::compute()
   }
   addColors(outResult, paramList(), DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, m_outCloudItem.completeName());
 
-  SF_AbstractStep::addQSM<SF_ParamSpherefollowingBasic<SF_PointNormal>>(outResult,
-                                                                        _paramList,
-                                                                        QString::fromUtf8(DEF_IN_GRP_CLUSTER),
-                                                                        _outCylinders.completeName(),
-                                                                        _outCylinderGroup.completeName(),
-                                                                        _outSFQSM.completeName(),
-                                                                        _outParams.completeName());
+  SF_AbstractStepQSM::addQSM<SF_ParamSpherefollowingBasic<SF_PointNormal>>(
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), _outParams.completeName());
   _paramList.clear();
 }
 

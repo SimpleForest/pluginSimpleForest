@@ -29,9 +29,9 @@
 #ifndef SF_QSMALLOMETRICCHECK_H
 #define SF_QSMALLOMETRICCHECK_H
 
-#include "steps/segmentation/sf_AbstractStepSegmentation.h"
+#include "steps/qsm/sf_abstractStepQSM.h"
 
-class SF_StepQSMAllometricCorrection : public SF_AbstractStepSegmentation
+class SF_StepQSMAllometricCorrection : public SF_AbstractStepQSM
 {
   Q_OBJECT
 
