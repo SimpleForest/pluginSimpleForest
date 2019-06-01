@@ -59,52 +59,28 @@ public:
       paramEst.setParams(paramsCpy);
       try {
         paramEst.compute();
+        if (paramsCpy.m_useGrowthLength) {
+          paramsCpy.m_power = paramsCpy._qsm->getBGrowthLength();
+        } else {
+          paramsCpy.m_power = paramsCpy._qsm->getBGrowthVolume();
+        }
+        if (paramsCpy.m_power < 0.3 || paramsCpy.m_power > 0.65) {
+          paramsCpy.m_power = 1.f / 2.49f;
+        }
       } catch (std::exception& exp) {
-        if (paramsCpy.m_useGrowthLength) {
-          paramsCpy.m_useGrowthLength = false;
-          paramEst.setParams(paramsCpy);
-          try {
-            paramEst.compute();
-            paramsCpy = paramEst.params();
-          } catch (...) {
-          }
-        }
+        paramsCpy.m_power = 1.f / 2.49f;
       } catch (...) {
-        if (paramsCpy.m_useGrowthLength) {
-          paramsCpy.m_useGrowthLength = false;
-          paramEst.setParams(paramsCpy);
-          try {
-            paramEst.compute();
-            paramsCpy = paramEst.params();
-          } catch (...) {
-          }
-        }
-      }
-      if (paramsCpy.m_useGrowthLength) {
-        paramsCpy.m_power = paramsCpy._qsm->getBGrowthLength();
-        std::cout << "paramsCpy.m_power " << paramsCpy.m_power << std::endl;
-        std::cout << "paramsCpy._qsm->a() " << paramsCpy._qsm->getAGrowthLength() << std::endl;
-        std::cout << "paramsCpy._qsm->b() " << paramsCpy._qsm->getBGrowthLength() << std::endl;
-        std::cout << "paramsCpy._qsm->c() " << paramsCpy._qsm->getCGrowthLength() << std::endl;
-      } else {
-        paramsCpy.m_power = paramsCpy._qsm->getBGrowthVolume();
-        std::cout << "paramsCpy.m_power " << paramsCpy.m_power << std::endl;
-        std::cout << "paramsCpy._qsm->a() " << paramsCpy._qsm->getAGrowthVolume() << std::endl;
-        std::cout << "paramsCpy._qsm->b() " << paramsCpy._qsm->getBGrowthVolume() << std::endl;
-        std::cout << "paramsCpy._qsm->c() " << paramsCpy._qsm->getCGrowthVolume() << std::endl;
+        paramsCpy.m_power = 1.f / 2.49f;
       }
     }
 
     SF_QSMAllometryCorrectionNeighboring ac;
     {
       QMutexLocker m1(&*mMutex);
-      ac.setParams(paramsCpy);
       paramsCpy._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
+      ac.setParams(paramsCpy);
     }
-    if(paramsCpy.m_power > 0.25 && paramsCpy.m_power < 0.75)
-    {
-        ac.compute();
-    }
+    ac.compute();
     {
       QMutexLocker m1(&*mMutex);
       params = paramsCpy;
