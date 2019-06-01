@@ -69,8 +69,8 @@ SF_QSMAllometryCorrectionNeighboring::correct(std::shared_ptr<Sf_ModelAbstractBu
     yChild = child->getGrowthVolume();
   }
   float xNew = xParent * (std::pow((yChild / yParent), m_params.m_power));
-  float minX = xNew - (1 - m_params._range) * xNew;
-  float maxX = xNew + (1 - m_params._range) * xNew;
+  float minX = xNew - m_params._range * xNew;
+  float maxX = xNew + m_params._range * xNew;
   if (xChild < minX || xChild > maxX) {
     if (xNew > m_params._minRadius) {
       if (m_params.m_useGrowthLength) {
