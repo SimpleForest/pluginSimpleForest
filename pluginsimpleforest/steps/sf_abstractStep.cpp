@@ -27,6 +27,7 @@
 *****************************************************************************/
 
 #include "sf_abstractStep.h"
+
 #include "qsm/algorithm/distance/sf_cloudToModelDistance.h"
 #include <pcl/sample_consensus/method_types.h>
 

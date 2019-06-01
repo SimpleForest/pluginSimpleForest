@@ -83,7 +83,8 @@ private:
   int _CMD_fittingMethod = toStringCMDMethod();
   int _CMD_k = 9;
   int _CMD_numClstrs = 1;
-  double _CMD_inlierDistance = 0.15;
+  double _CMD_cropDistance = 0.15;
+  double _CMD_inlierDistance = 0.05;
 
   std::vector<double> paramsStringToNumber(const QString& UISelection);
 

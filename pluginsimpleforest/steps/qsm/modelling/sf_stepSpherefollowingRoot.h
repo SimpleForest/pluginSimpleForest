@@ -29,9 +29,9 @@
 #ifndef SF_STEP_SPHEREFOLLOWING_BASIC_H
 #define SF_STEP_SPHEREFOLLOWING_BASIC_H
 
-#include "steps/segmentation/sf_AbstractStepSegmentation.h"
+#include "steps/qsm/sf_abstractStepQSM.h"
 
-class SF_StepSpherefollowingRoot : public SF_AbstractStepSegmentation
+class SF_StepSpherefollowingRoot : public SF_AbstractStepQSM
 {
   Q_OBJECT
 
@@ -79,7 +79,8 @@ private:
   int _CMD_fittingMethod = toStringCMDMethod();
   int _CMD_k = 9;
   int _CMD_numClstrs = 1;
-  double _CMD_inlierDistance = 0.15;
+  double _CMD_cropDistance = 0.15;
+  double _CMD_inlierDistance = 0.05;
 
   QString _PARAMETERS_1 = "100%";
   QString _PARAMETERS_3 = "75%; 100%; 150%";

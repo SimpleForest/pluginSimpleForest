@@ -243,9 +243,16 @@ SF_StepSpherefollowingRoot::configDialogGuruAddGridSearchCloudToModelDistance(CT
                        _CMD_k);
   configDialog->addDouble("For MSAC and inlier methods the distance is cropped "
                           "at [<em><b>crop distance</b></em>] ",
-                          "",
-                          0.01,
+                          " (m).",
+                          0.05,
                           0.5,
+                          2,
+                          _CMD_cropDistance);
+  configDialog->addDouble("The "
+                          "at [<em><b>inlier distance</b></em>] ",
+                          " (m).",
+                          0.01,
+                          0.1,
                           2,
                           _CMD_inlierDistance);
   configDialog->addEmpty();
@@ -470,6 +477,7 @@ SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup* outResult)
   SF_CloudToModelDistanceParameters distanceParams;
   distanceParams._method = toStringCMDMethod();
   distanceParams._k = _CMD_k;
+  distanceParams._cropDistance = _CMD_cropDistance;
   distanceParams._inlierDistance = _CMD_inlierDistance;
 
   adaptParametersToExpertLevel();

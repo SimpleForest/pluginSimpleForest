@@ -62,7 +62,7 @@ private:
   int toStringSFMethod();
   SF_CLoudToModelDistanceMethod toStringCMDMethod();
 
-  double _range = 0.5;
+  double _range = 0.2;
   double _minRadius = 0.0025;
 
   QStringList m_filePath;
