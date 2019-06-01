@@ -9,7 +9,7 @@ SF_SphereFollowingRasterSearch::compute()
   desc.setParameters(2);
   desc.computeFeatures();
   m_params._sphereFollowingParams.m_optimizationParams[0]._euclideanClusteringDistance = 3 * (desc.mean() + 2 * desc.sd());
-  m_params._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere = 3 * (desc.mean() + 2 * desc.sd());
+  m_params._sphereFollowingParams.m_optimizationParams[0]._epsilonSphere = (desc.mean() + 4 * desc.sd());
   std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> paramVec = paramVector();
   std::for_each(paramVec.begin(), paramVec.end(), [this](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
     SF_SphereFollowing sphereFollowing;
