@@ -1,3 +1,31 @@
+/****************************************************************************
+
+ Copyright (C) 2017-2019 Dr. Jan Hackenberg, free software developer
+ All rights reserved.
+
+ Contact : https://github.com/SimpleForest
+
+ Developers : Jan Hackenberg
+
+ This file is part of SimpleForest plugin Version 1 for Computree.
+
+ SimpleForest plugin is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ SimpleForest plugin is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with SimpleForest plugin.  If not, see <http://www.gnu.org/licenses/>.
+
+ PluginSimpleForest is an extended version of the SimpleTree platform.
+
+*****************************************************************************/
+
 #ifndef SF_CLOUDTOMODELDISTANCE_HPP
 #define SF_CLOUDTOMODELDISTANCE_HPP
 
@@ -41,9 +69,9 @@ template<typename PointType>
 Sf_CloudToModelDistance<PointType>::Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                                                             typename pcl::PointCloud<PointType>::Ptr cloud,
                                                             SF_CLoudToModelDistanceMethod& method,
-                                                            float inlierDistance,
+                                                            float cropDistance,
                                                             int k)
-  : _METHOD(method), _k(k), _INLIERDISTANCE(inlierDistance), _tree(tree), _cloud(cloud)
+  : _METHOD(method), _k(k), _cropDistance(cropDistance), _tree(tree), _cloud(cloud)
 {
   _averageDistance = std::numeric_limits<float>::max();
   initializeKdTree();
@@ -55,9 +83,8 @@ template<typename PointType>
 Sf_CloudToModelDistance<PointType>::Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                                                             typename pcl::PointCloud<PointType>::Ptr cloud,
                                                             SF_CloudToModelDistanceParameters& params)
-    :Sf_CloudToModelDistance(tree, cloud, params._method, params._inlierDistance, params._k)
-{
-}
+  : Sf_CloudToModelDistance(tree, cloud, params._method, params._cropDistance, params._k)
+{}
 
 template<typename PointType>
 std::vector<float>
@@ -75,9 +102,6 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
         auto distance = getDistance(point, neighboringBrick);
-        if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
-          distance = -_growthLengths[pointIdxRadiusSearch[j]];
-        }
         if (distance < minDistance) {
           bestBrick = neighboringBrick;
           minDistance = distance;
@@ -130,14 +154,14 @@ Sf_CloudToModelDistance<PointType>::adaptDistanceToMethod(float distance)
       distance = std::abs(distance);
       break;
     case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
-      distance = std::min(_INLIERDISTANCE, distance);
+      distance = std::min(_cropDistance, distance);
       distance = std::abs(distance);
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
       distance = distance * distance;
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
-      distance = std::min(_INLIERDISTANCE, distance);
+      distance = std::min(_cropDistance, distance);
       distance = distance * distance;
       break;
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
@@ -166,24 +190,25 @@ void
 Sf_CloudToModelDistance<PointType>::compute()
 {
   _distances = getCloudToModelDistances();
+  auto distancesCopy = _distances;
   switch (_METHOD) {
     case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
-      _averageDistance = getNumberInliersNegative(_distances);
+      _averageDistance = getNumberInliersNegative(distancesCopy);
       break;
     case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
-      _averageDistance = SF_Math<float>::getMean(_distances);
+      _averageDistance = SF_Math<float>::getMean(distancesCopy);
       break;
     case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
-      _averageDistance = SF_Math<float>::getMean(_distances);
+      _averageDistance = SF_Math<float>::getMean(distancesCopy);
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
-      _averageDistance = std::sqrt(SF_Math<float>::getMean(_distances));
+      _averageDistance = std::sqrt(SF_Math<float>::getMean(distancesCopy));
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
-      _averageDistance = std::sqrt(SF_Math<float>::getMean(_distances));
+      _averageDistance = std::sqrt(SF_Math<float>::getMean(distancesCopy));
       break;
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
-      _averageDistance = std::sqrt(SF_Math<float>::getMedian(_distances));
+      _averageDistance = std::sqrt(SF_Math<float>::getMedian(distancesCopy));
       break;
     default:
       break;
@@ -194,14 +219,14 @@ template<typename PointType>
 float
 Sf_CloudToModelDistance<PointType>::maxError() const
 {
-  return _INLIERDISTANCE * 2;
+  return std::numeric_limits<float>::max();
 }
 
 template<typename PointType>
 float
 Sf_CloudToModelDistance<PointType>::getNumberInliersNegative(const std::vector<float>& distances)
 {
-  float sum = std::count_if(distances.begin(), distances.end(), [this](float distance) { return distance < _INLIERDISTANCE; });
+  float sum = std::count_if(distances.begin(), distances.end(), [this](float distance) { return distance < _cropDistance; });
   return -sum;
 }
 

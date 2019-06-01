@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2018 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2019 Dr. Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -38,7 +38,7 @@ class Sf_CloudToModelDistance
 {
   SF_CLoudToModelDistanceMethod _METHOD;
   int _k;
-  float _INLIERDISTANCE;
+  float _cropDistance;
   float _averageDistance;
   const float _MIN_GROWTH_LENGTH = 0.001f;
   std::vector<float> _distances;
@@ -61,7 +61,7 @@ public:
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                           typename pcl::PointCloud<PointType>::Ptr cloud,
                           SF_CLoudToModelDistanceMethod& method,
-                          float inlierDistance,
+                          float cropDistance,
                           int k);
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                           typename pcl::PointCloud<PointType>::Ptr cloud,

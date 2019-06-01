@@ -1,6 +1,6 @@
 /****************************************************************************
 
- Copyright (C) 2017-2018 Jan Hackenberg, free software developer
+ Copyright (C) 2017-2019 Dr. Jan Hackenberg, free software developer
  All rights reserved.
 
  Contact : https://github.com/SimpleForest
@@ -26,33 +26,31 @@
 
 *****************************************************************************/
 
-#ifndef SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
-#define SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
+#ifndef SF_EXTRACTFITTEDPOINTS_H
+#define SF_EXTRACTFITTEDPOINTS_H
 
-enum SF_CLoudToModelDistanceMethod
+#include "qsm/model/sf_modelQSM.h"
+#include "sf_cloudToModelDistanceParameters.h"
+#include <pcl/kdtree/kdtree_flann.h>
+
+template<typename PointType>
+class SF_ExtractFittedPoints
 {
-  ZEROMOMENTUMORDER,
-  FIRSTMOMENTUMORDERMSAC,
-  FIRSTMOMENTUMORDER,
-  SECONDMOMENTUMORDERMSAC,
-  SECONDMOMENTUMORDER,
-  GROWTHDISTANCE
+  SF_CloudToModelDistanceParameters m_params;
+  std::shared_ptr<SF_ModelQSM> m_tree;
+  typename pcl::PointCloud<PointType>::Ptr m_cloud;
+  typename pcl::PointCloud<PointType>::Ptr m_cloudFitted;
+  typename pcl::PointCloud<PointType>::Ptr m_cloudUnFitted;
+
+public:
+  SF_ExtractFittedPoints(std::shared_ptr<SF_ModelQSM> tree,
+                         typename pcl::PointCloud<PointType>::Ptr cloud,
+                         SF_CloudToModelDistanceParameters& params);
+  void compute();
+  typename pcl::PointCloud<PointType>::Ptr cloudFitted() const;
+  pcl::PointCloud<PointType>::Ptr cloudUnFitted() const;
 };
 
-struct SF_CloudToModelDistanceParameters
-{
-  SF_CLoudToModelDistanceMethod _method = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER;
-  float _cropDistance = 0.15f;
-  float _inlierDistance = 0.05f;
-  int _k = 5;
-  SF_CloudToModelDistanceParameters() {}
-  SF_CloudToModelDistanceParameters(SF_CLoudToModelDistanceMethod& method, float cropDistance, float inlierDistance, int k)
-  {
-    _method = method;
-    _cropDistance = cropDistance;
-    _inlierDistance = inlierDistance;
-    _k = k;
-  }
-};
+#include "qsm/algorithm/distance/sf_extractFittedPoints.hpp"
 
-#endif // SF_CLOUD_TO_MODEL_DISTANCE_PARAMETERS_H
+#endif // SF_EXTRACTFITTEDPOINTS_H

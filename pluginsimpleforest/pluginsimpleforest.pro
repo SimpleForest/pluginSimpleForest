@@ -31,6 +31,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     math/fit/line/sf_fitransacline.hpp \
     math/fit/power/sf_fitgnpower.h \
     math/fit/power/sf_fitgnpower.hpp \
+    qsm/algorithm/distance/sf_extractFittedPoints.h \
+    qsm/algorithm/distance/sf_extractFittedPoints.hpp \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.h \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.h \
     qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.h \
