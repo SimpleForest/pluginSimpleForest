@@ -38,14 +38,14 @@ SF_QSMRefitCylinder::initialize()
     std::vector<int> pointIdxRadiusSearch;
     std::vector<float> pointRadiusSquaredDistance;
     if (m_kdtreeQSM->nearestKSearch(point, m_params.m_knn, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
-      float minDistance = std::numeric_limits<float>::max();
+      float minDistance = m_params.m_inlierDistance;
       int index = -1;
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
         float angle = SF_Math<float>::getAngleBetweenDeg(neighboringBrick->getAxis(),
                                                          Eigen::Vector3f(point.normal_x, point.normal_y, point.normal_z));
         if (90 - angle < m_params.m_angle) {
-          float distance = pointRadiusSquaredDistance[j];
+          float distance = std::sqrt(pointRadiusSquaredDistance[j]);
           if (distance < minDistance) {
             minDistance = distance;
             index = pointIdxRadiusSearch[j];
@@ -84,9 +84,10 @@ SF_QSMRefitCylinder::compute()
           Eigen::Vector3f(coefficientsCylinder->values[3], coefficientsCylinder->values[4], coefficientsCylinder->values[5]));
         if (angle < m_params.m_angle) {
           float radius = buildingBricks[index]->getRadius();
-          double minRad = std::min(radius - m_params.m_minMaxDistance, radius * m_params.m_range);
-          double maxRad = std::max(radius + m_params.m_minMaxDistance, radius / m_params.m_range);
-          if (coefficientsCylinder->values[6] > minRad && coefficientsCylinder->values[6] < maxRad) {
+          double minRad = std::min(radius - m_params.m_minMaxDistance, radius * (1 - m_params.m_range));
+          double maxRad = std::max(radius + m_params.m_minMaxDistance, radius * (1 + m_params.m_range));
+          float fittedRadius = coefficientsCylinder->values[6];
+          if (fittedRadius > minRad && fittedRadius < maxRad) {
             buildingBricks[index]->setCoefficients(coefficientsCylinder);
           }
         }
