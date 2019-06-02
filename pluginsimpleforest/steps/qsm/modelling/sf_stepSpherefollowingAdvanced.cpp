@@ -162,7 +162,7 @@ SF_StepSphereFollowingAdvanced::createPostConfigurationDialog()
 void
 SF_StepSphereFollowingAdvanced::createInResultModelListProtected()
 {
-  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
+  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Result spherefollowing clustered"));
   resModel->setZeroOrMoreRootGroup();
   resModel->addGroupModel("",
                           DEF_IN_GRP_CLUSTER,
@@ -181,11 +181,9 @@ SF_StepSphereFollowingAdvanced::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Spherefollowing Fit Quality"));
     addQSMToOutResult(resModelw, QString("QSM SphereFollowing clustered"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders clustered spherefollowing"));
-    resModelw->addItemModel(
-      DEF_IN_GRP_CLUSTER, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
+    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders clustered spherefollowing"));
+    resModelw->addItemModel(_QSMGrp, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
   }
 }
 
@@ -217,10 +215,13 @@ SF_StepSphereFollowingAdvanced::compute()
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
-  addColors(outResult, paramList(), DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, m_outCloudItem.completeName());
 
-  SF_AbstractStepQSM::addQSM<SF_ParamSpherefollowingAdvanced<SF_PointNormal>>(
-    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), _outParams.completeName());
+  SF_AbstractStepQSM::addQSM<SF_ParamSpherefollowingAdvanced<SF_PointNormal>>(outResult,
+                                                                              _paramList,
+                                                                              QString::fromUtf8(DEF_IN_GRP_CLUSTER),
+                                                                              _outSFQSM.completeName(),
+                                                                              _outParams.completeName(),
+                                                                              QString::fromUtf8(DEF_IN_CLOUD_SEED));
   _paramList.clear();
 }
 

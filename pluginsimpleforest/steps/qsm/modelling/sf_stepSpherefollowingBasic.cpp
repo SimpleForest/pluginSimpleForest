@@ -101,20 +101,6 @@ SF_StepSpherefollowingBasic::getStepRISCitations() const
 }
 
 void
-SF_StepSpherefollowingBasic::createInResultModelListProtected()
-{
-  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
-  resModel->setZeroOrMoreRootGroup();
-  resModel->addGroupModel("",
-                          DEF_IN_GRP_CLUSTER,
-                          CT_AbstractItemGroup::staticGetType(),
-                          tr("Tree Group"),
-                          "",
-                          CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Tree Cloud"));
-}
-
-void
 SF_StepSpherefollowingBasic::configDialogAddSphereFollowingHyperParameters(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addText("<b>SphereFollowing Method Hyper Parameters</b>:");
@@ -161,15 +147,6 @@ SF_StepSpherefollowingBasic::configDialogAddSphereFollowingHyperParameters(CT_St
 void
 SF_StepSpherefollowingBasic::configDialogAddSphereFollowingOptimizableParameters(CT_StepConfigurableDialog* configDialog)
 {
-  configDialog->addBool("Uncheck to deactivate parameterization possibilities "
-                        "of this step. Only recommended for beginners",
-                        "",
-                        "expert",
-                        _isExpert);
-  configDialog->addStringChoice("In beginner mode select point cloud quality", "", _pointDensities, _choicePointDensity);
-  configDialog->addBool(
-    "You can let Simple Forest choose method parameters", " select if you want auto parameters", "", _SF_parameterAutoSearch);
-
   configDialog->addText("<b>SphereFollowing Method Optimizationable Parameters</b>:");
   configDialog->addText("You can pre select also optimizable sphere following parameters:");
   configDialog->addDouble("To generate a sphere each fitted circle is multiplied with the "
@@ -262,18 +239,26 @@ void
 SF_StepSpherefollowingBasic::createPreConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPreConfigurationDialog();
-  configDialogGuruAddPreProcessing(configDialog);
-  configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
-  configDialogAddSphereFollowingHyperParameters(configDialog);
+  configDialog->addBool("Uncheck to deactivate parameterization possibilities "
+                        "of this step. Only recommended for beginners",
+                        "",
+                        "expert",
+                        _isExpert);
+  configDialog->addStringChoice("In beginner mode select point cloud quality", "", _pointDensities, _choicePointDensity);
+  configDialog->addBool(
+    "You can let Simple Forest choose method parameters", " select if you want auto parameters", "", _SF_parameterAutoSearch);
+  createPostConfigurationDialogCitation(configDialog);
+  addCitationPCL(configDialog);
 }
 
 void
 SF_StepSpherefollowingBasic::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
+  configDialogGuruAddPreProcessing(configDialog);
   configDialogAddSphereFollowingOptimizableParameters(configDialog);
-  createPostConfigurationDialogCitation(configDialog);
-  addCitationPCL(configDialog);
+  configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
+  configDialogAddSphereFollowingHyperParameters(configDialog);
 }
 
 void
@@ -281,12 +266,25 @@ SF_StepSpherefollowingBasic::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Spherefollowing Fit Quality"));
     addQSMToOutResult(resModelw, QString("QSM SphereFollowing"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(_treeGroup, _outSFQSM, new SF_QSM_Item(), tr("QSM spherefollowing"));
+    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), tr("Internal QSM SphereFollowing"));
     resModelw->addItemModel(
-      _treeGroup, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
+      _QSMGrp, _outParams, new SF_SphereFollowing_Parameters_Item(), tr(" Internal parameters QSM SphereFollowing"));
   }
+}
+
+void
+SF_StepSpherefollowingBasic::createInResultModelListProtected()
+{
+  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Input Result QSM SphereFollowing"));
+  resModel->setZeroOrMoreRootGroup();
+  resModel->addGroupModel("",
+                          DEF_IN_GRP_CLUSTER,
+                          CT_AbstractItemGroup::staticGetType(),
+                          tr("Tree Group"),
+                          "",
+                          CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Input Cloud QSM SphereFollowing"));
 }
 
 void
@@ -342,10 +340,12 @@ SF_StepSpherefollowingBasic::compute()
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
-  addColors(outResult, paramList(), DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, m_outCloudItem.completeName());
-
-  SF_AbstractStepQSM::addQSM<SF_ParamSpherefollowingBasic<SF_PointNormal>>(
-    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), _outParams.completeName());
+  SF_AbstractStepQSM::addQSM<SF_ParamSpherefollowingBasic<SF_PointNormal>>(outResult,
+                                                                           _paramList,
+                                                                           QString::fromUtf8(DEF_IN_GRP_CLUSTER),
+                                                                           _outSFQSM.completeName(),
+                                                                           _outParams.completeName(),
+                                                                           QString::fromUtf8(DEF_IN_CLOUD_SEED));
   _paramList.clear();
 }
 

@@ -153,7 +153,7 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
 void
 SF_StepQSMAllometricCorrection::createInResultModelListProtected()
 {
-  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Result"));
+  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Input result Step Allometric Correction"));
   resModel->setZeroOrMoreRootGroup();
   resModel->addGroupModel("",
                           DEF_IN_GRP_CLUSTER,
@@ -161,7 +161,8 @@ SF_StepQSMAllometricCorrection::createInResultModelListProtected()
                           tr("QSM Group"),
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("QSM item"));
+  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("internal QSM"));
+  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("QSM cloud"));
 }
 
 void
@@ -170,7 +171,7 @@ SF_StepQSMAllometricCorrection::createOutResultModelListProtected()
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
     addQSMToOutResult(resModelw, QString("QSM Allometric correction"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders allometric corrected"));
+    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders allometric corrected"));
   }
 }
 
@@ -186,7 +187,7 @@ SF_StepQSMAllometricCorrection::compute()
     setProgressByCounter(10.0f, 85.0f);
   }
   SF_AbstractStepQSM::addQSM<SF_ParamAllometricCorrectionNeighboring>(
-    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName());
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), QString::fromUtf8(DEF_IN_CLOUD_SEED));
   if (m_filePath.size() > 0) {
     QFile file(m_filePath.first());
     if (file.open(QFile::WriteOnly)) {

@@ -58,8 +58,6 @@ protected:
 private:
   QList<SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal>> _paramList;
   int _numClstrs = 2;
-  CT_AutoRenameModels m_outColorGrowthVolume;
-  CT_AutoRenameModels m_outColorClusters;
   CT_AutoRenameModels m_clusterIndices;
   CT_AutoRenameModels m_outClusterID;
 };

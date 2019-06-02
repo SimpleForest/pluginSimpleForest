@@ -62,7 +62,6 @@ private:
   int getNumberOfClusters(CT_PointsAttributesScalarTemplated<int>* ctID);
 
   QList<SF_ParamQSM<SF_PointNormal>> paramList();
-  CT_AutoRenameModels m_outCloudItem;
   CT_AutoRenameModels _outCylinderGroup;
   CT_AutoRenameModels _outCylinders;
   CT_AutoRenameModels _outSFQSM;

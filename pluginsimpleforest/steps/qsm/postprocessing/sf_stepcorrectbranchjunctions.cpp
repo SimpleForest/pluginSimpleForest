@@ -93,6 +93,7 @@ SF_StepCorrectBranchJunctions::createInResultModelListProtected()
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("QSM item"));
+  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Tree Cloud"));
 }
 
 void
@@ -117,7 +118,7 @@ SF_StepCorrectBranchJunctions::compute()
     setProgressByCounter(10.0f, 85.0f);
   }
   SF_AbstractStepQSM::addQSM<SF_ParamAllometricCorrectionNeighboring>(
-    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName());
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), QString::fromUtf8(DEF_IN_CLOUD_SEED));
   _paramList.clear();
 }
 

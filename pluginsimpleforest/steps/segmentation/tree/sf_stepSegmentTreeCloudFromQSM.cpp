@@ -110,10 +110,6 @@ SF_StepSegmentTreeCloudFromQSM::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    resModelw->addItemAttributeModel(
-      _outCloudCluster, m_clusterIndices, new CT_StdItemAttributeT<int>(CT_AbstractCategory::DATA_VALUE), tr("Tree Segment ID"));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outColorGrowthVolume, new CT_PointsAttributesColor(), tr("log GrowthVolume"));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outColorClusters, new CT_PointsAttributesColor(), tr("Cluster Colors"));
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outClusterID, new CT_PointsAttributesScalarTemplated<int>(), tr("Cluster ID"));
   }
 }
@@ -135,15 +131,9 @@ SF_StepSegmentTreeCloudFromQSM::compute()
     const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
       (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
     SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal> param = _paramList[index++];
-    CT_PointsAttributesColor* colorAttributeClusters = new CT_PointsAttributesColor(
-      m_outColorClusters.completeName(), outResult, ct_cloud->getPointCloudIndexRegistered(), param._colorsClusters);
-    group->addItemDrawable(colorAttributeClusters);
-    CT_PointsAttributesColor* colorAttribute = new CT_PointsAttributesColor(
-      m_outColorGrowthVolume.completeName(), outResult, ct_cloud->getPointCloudIndexRegistered(), param._colorsGrowthVolume);
     CT_PointsAttributesScalarTemplated<int>* idAttribute = new CT_PointsAttributesScalarTemplated<int>(
       m_outClusterID.completeName(), outResult, ct_cloud->getPointCloudIndexRegistered(), param._clusterIDs, 0, param._numClstrs - 1);
     group->addItemDrawable(idAttribute);
-    group->addItemDrawable(colorAttribute);
   }
   _paramList.clear();
 }
