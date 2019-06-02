@@ -126,16 +126,16 @@ public:
     }
 
     ne.compute(*largestCluster);
-    SF_DownHillSimplex sphereFollowing;
+    SF_DownHillSimplex downhillSimplex;
     {
       QMutexLocker m1(&*mMutex);
       params.m_cloudSphereFollowing = largestCluster;
-      sphereFollowing.setParams(params);
+      downhillSimplex.setParams(params);
     }
-    sphereFollowing.compute();
+    downhillSimplex.compute();
     {
       QMutexLocker m1(&*mMutex);
-      params = sphereFollowing.params();
+      params = downhillSimplex.params();
       params._cloudIn = largestCluster;
     }
     {
