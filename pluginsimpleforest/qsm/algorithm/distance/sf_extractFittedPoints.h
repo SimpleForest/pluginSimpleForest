@@ -36,11 +36,11 @@
 template<typename PointType>
 class SF_ExtractFittedPoints
 {
-  SF_CloudToModelDistanceParameters m_params;
   std::shared_ptr<SF_ModelQSM> m_tree;
   typename pcl::PointCloud<PointType>::Ptr m_cloud;
   typename pcl::PointCloud<PointType>::Ptr m_cloudFitted;
-  typename pcl::PointCloud<PointType>::Ptr m_cloudUnFitted;
+  typename pcl::PointCloud<PointType>::Ptr m_cloudUnfitted;
+  SF_CloudToModelDistanceParameters m_params;
 
 public:
   SF_ExtractFittedPoints(std::shared_ptr<SF_ModelQSM> tree,
@@ -48,7 +48,7 @@ public:
                          SF_CloudToModelDistanceParameters& params);
   void compute();
   typename pcl::PointCloud<PointType>::Ptr cloudFitted() const;
-  pcl::PointCloud<PointType>::Ptr cloudUnFitted() const;
+  typename pcl::PointCloud<PointType>::Ptr cloudUnfitted() const;
 };
 
 #include "qsm/algorithm/distance/sf_extractFittedPoints.hpp"

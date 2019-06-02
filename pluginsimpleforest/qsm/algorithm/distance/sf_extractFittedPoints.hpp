@@ -39,7 +39,7 @@ template<typename PointType>
 SF_ExtractFittedPoints<PointType>::SF_ExtractFittedPoints(std::shared_ptr<SF_ModelQSM> tree,
                                                           typename pcl::PointCloud<PointType>::Ptr cloud,
                                                           SF_CloudToModelDistanceParameters& params)
-  : m_params(params), m_cloud(cloud), m_tree(tree)
+  : m_tree(tree), m_cloud(cloud), m_params(params)
 {}
 
 template<typename PointType>
@@ -50,10 +50,10 @@ SF_ExtractFittedPoints<PointType>::cloudFitted() const
 }
 
 template<typename PointType>
-pcl::PointCloud<PointType>::Ptr
-SF_ExtractFittedPoints<PointType>::cloudUnFitted() const
+typename pcl::PointCloud<PointType>::Ptr
+SF_ExtractFittedPoints<PointType>::cloudUnfitted() const
 {
-  return m_cloudUnFitted;
+  return m_cloudUnfitted;
 }
 
 template<typename PointType>
@@ -61,7 +61,7 @@ void
 SF_ExtractFittedPoints<PointType>::compute()
 {
   m_cloudFitted.reset(new pcl::PointCloud<PointType>());
-  m_cloudUnFitted.reset(new pcl::PointCloud<PointType>());
+  m_cloudUnfitted.reset(new pcl::PointCloud<PointType>());
   SF_CloudToModelDistanceParameters distanceParams = m_params;
   float inlierDistance = distanceParams._inlierDistance;
   distanceParams._method = SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER;
@@ -72,7 +72,7 @@ SF_ExtractFittedPoints<PointType>::compute()
     if (distance < inlierDistance) {
       m_cloudFitted->points.push_back(m_cloud->points[index]);
     } else {
-      m_cloudUnFitted->points.push_back(m_cloud->points[index]);
+      m_cloudUnfitted->points.push_back(m_cloud->points[index]);
     }
     ++index;
   }
