@@ -80,7 +80,7 @@ SF_PluginManager::loadGenericsStep()
   addNewRastersStep<SF_StepDTM>(CT_StepsMenu::LP_DEM);
   addNewPointsStep<SF_StepMergeClouds>(CT_StepsMenu::LP_Clusters);
   addNewPointsStep<SF_StepSegmentTreeCloudFromQSM>(CT_StepsMenu::LP_Clusters);
-  addNewGeometricalShapesStep<SF_StepSpherefollowingRoot>("QSM");
+  addNewGeometricalShapesStep<SF_StepSpherefollowingBasic>("QSM");
   addNewGeometricalShapesStep<SF_StepSphereFollowingAdvanced>("QSM");
   addNewGeometricalShapesStep<SF_StepQSMAllometricCorrection>("QSM");
   addNewGeometricalShapesStep<SF_StepCorrectBranchJunctions>("QSM");

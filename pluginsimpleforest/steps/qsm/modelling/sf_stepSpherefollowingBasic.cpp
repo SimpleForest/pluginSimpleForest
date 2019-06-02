@@ -35,7 +35,7 @@
 
 #include <ct_itemdrawable/ct_cylinder.h>
 
-SF_StepSpherefollowingRoot::SF_StepSpherefollowingRoot(CT_StepInitializeData& dataInit) : SF_AbstractStepQSM(dataInit)
+SF_StepSpherefollowingBasic::SF_StepSpherefollowingBasic(CT_StepInitializeData& dataInit) : SF_AbstractStepQSM(dataInit)
 {
   _pointDensities.append(_lowDensity);
   _pointDensities.append(_mediumDensity);
@@ -63,35 +63,35 @@ SF_StepSpherefollowingRoot::SF_StepSpherefollowingRoot(CT_StepInitializeData& da
   _PARAMETERS_LIST_EUCLIDEAN_CLUSTERING_DISTANCE.push_back(_PARAMETERS_11);
 }
 
-SF_StepSpherefollowingRoot::~SF_StepSpherefollowingRoot() {}
+SF_StepSpherefollowingBasic::~SF_StepSpherefollowingBasic() {}
 
 QString
-SF_StepSpherefollowingRoot::getStepDescription() const
+SF_StepSpherefollowingBasic::getStepDescription() const
 {
   return tr("SphereFollowing Basic");
 }
 
 QString
-SF_StepSpherefollowingRoot::getStepDetailledDescription() const
+SF_StepSpherefollowingBasic::getStepDetailledDescription() const
 {
   return tr("This implementation of the SphereFollowing method utilizes an "
             "unsegmented tree cloud. On the sphere following parameters a raster search if performed.");
 }
 
 QString
-SF_StepSpherefollowingRoot::getStepURL() const
+SF_StepSpherefollowingBasic::getStepURL() const
 {
   return tr("");
 }
 
 CT_VirtualAbstractStep*
-SF_StepSpherefollowingRoot::createNewInstance(CT_StepInitializeData& dataInit)
+SF_StepSpherefollowingBasic::createNewInstance(CT_StepInitializeData& dataInit)
 {
-  return new SF_StepSpherefollowingRoot(dataInit);
+  return new SF_StepSpherefollowingBasic(dataInit);
 }
 
 QStringList
-SF_StepSpherefollowingRoot::getStepRISCitations() const
+SF_StepSpherefollowingBasic::getStepRISCitations() const
 {
   QStringList _risCitationList;
   _risCitationList.append(getRISCitationSimpleTree());
@@ -101,7 +101,7 @@ SF_StepSpherefollowingRoot::getStepRISCitations() const
 }
 
 void
-SF_StepSpherefollowingRoot::createInResultModelListProtected()
+SF_StepSpherefollowingBasic::createInResultModelListProtected()
 {
   CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
   resModel->setZeroOrMoreRootGroup();
@@ -115,7 +115,7 @@ SF_StepSpherefollowingRoot::createInResultModelListProtected()
 }
 
 void
-SF_StepSpherefollowingRoot::configDialogAddSphereFollowingHyperParameters(CT_StepConfigurableDialog* configDialog)
+SF_StepSpherefollowingBasic::configDialogAddSphereFollowingHyperParameters(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addText("<b>SphereFollowing Method Hyper Parameters</b>:");
   configDialog->addText("First Hyper Parameters are set. Those parameters will "
@@ -159,7 +159,7 @@ SF_StepSpherefollowingRoot::configDialogAddSphereFollowingHyperParameters(CT_Ste
 }
 
 void
-SF_StepSpherefollowingRoot::configDialogAddSphereFollowingOptimizableParameters(CT_StepConfigurableDialog* configDialog)
+SF_StepSpherefollowingBasic::configDialogAddSphereFollowingOptimizableParameters(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addBool("Uncheck to deactivate parameterization possibilities "
                         "of this step. Only recommended for beginners",
@@ -204,7 +204,7 @@ SF_StepSpherefollowingRoot::configDialogAddSphereFollowingOptimizableParameters(
 }
 
 void
-SF_StepSpherefollowingRoot::configDialogGuruAddPreProcessing(CT_StepConfigurableDialog* configDialog)
+SF_StepSpherefollowingBasic::configDialogGuruAddPreProcessing(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addText("<b>Pre Processing</b>:");
   configDialog->addDouble("To even out the distribution and speed things up the cloud is "
@@ -225,7 +225,7 @@ SF_StepSpherefollowingRoot::configDialogGuruAddPreProcessing(CT_StepConfigurable
 }
 
 void
-SF_StepSpherefollowingRoot::configDialogGuruAddGridSearchCloudToModelDistance(CT_StepConfigurableDialog* configDialog)
+SF_StepSpherefollowingBasic::configDialogGuruAddGridSearchCloudToModelDistance(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addText("<b>Cloud To Model Distance</b>:");
   configDialog->addText("For the grid search evaluation the parameter set with "
@@ -259,7 +259,7 @@ SF_StepSpherefollowingRoot::configDialogGuruAddGridSearchCloudToModelDistance(CT
 }
 
 void
-SF_StepSpherefollowingRoot::createPreConfigurationDialog()
+SF_StepSpherefollowingBasic::createPreConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPreConfigurationDialog();
   configDialogGuruAddPreProcessing(configDialog);
@@ -268,7 +268,7 @@ SF_StepSpherefollowingRoot::createPreConfigurationDialog()
 }
 
 void
-SF_StepSpherefollowingRoot::createPostConfigurationDialog()
+SF_StepSpherefollowingBasic::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
   configDialogAddSphereFollowingOptimizableParameters(configDialog);
@@ -277,20 +277,20 @@ SF_StepSpherefollowingRoot::createPostConfigurationDialog()
 }
 
 void
-SF_StepSpherefollowingRoot::createOutResultModelListProtected()
+SF_StepSpherefollowingBasic::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, m_outCloudItem, new CT_PointsAttributesColor(), tr("Spherefollowing Fit Quality"));
     addQSMToOutResult(resModelw, QString("QSM SphereFollowing"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM spherefollowing"));
+    resModelw->addItemModel(_treeGroup, _outSFQSM, new SF_QSM_Item(), tr("QSM spherefollowing"));
     resModelw->addItemModel(
-      DEF_IN_GRP_CLUSTER, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
+      _treeGroup, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
   }
 }
 
 void
-SF_StepSpherefollowingRoot::adaptParametersToExpertLevel()
+SF_StepSpherefollowingBasic::adaptParametersToExpertLevel()
 {
   if (!_isExpert) {
     _SF_OPT_euclideanClusteringDistance = 0.02;
@@ -319,7 +319,7 @@ SF_StepSpherefollowingRoot::adaptParametersToExpertLevel()
 }
 
 void
-SF_StepSpherefollowingRoot::createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog)
+SF_StepSpherefollowingBasic::createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addText(QObject::tr("For this step please cite in addition:"),
                         "Hackenberg, J.; Morhart, C.; Sheppard, J.; Spiecker, H.; Disney, M.");
@@ -331,7 +331,7 @@ SF_StepSpherefollowingRoot::createPostConfigurationDialogCitationSecond(CT_StepC
 }
 
 void
-SF_StepSpherefollowingRoot::compute()
+SF_StepSpherefollowingBasic::compute()
 {
   const QList<CT_ResultGroup*>& out_result_list = getOutResultList();
   CT_ResultGroup* outResult = out_result_list.at(0);
@@ -350,7 +350,7 @@ SF_StepSpherefollowingRoot::compute()
 }
 
 QList<SF_ParamQSM<SF_PointNormal>>
-SF_StepSpherefollowingRoot::paramList()
+SF_StepSpherefollowingBasic::paramList()
 {
   QList<SF_ParamQSM<SF_PointNormal>> paramList;
   std::for_each(_paramList.begin(), _paramList.end(), [&paramList](SF_ParamSpherefollowingBasic<SF_PointNormal>& params) {
@@ -364,7 +364,7 @@ SF_StepSpherefollowingRoot::paramList()
 }
 
 int
-SF_StepSpherefollowingRoot::toStringSFMethod()
+SF_StepSpherefollowingBasic::toStringSFMethod()
 {
   int type = -1;
   if (_SF_methodChoice == _RANSAC)
@@ -385,7 +385,7 @@ SF_StepSpherefollowingRoot::toStringSFMethod()
 }
 
 SF_CLoudToModelDistanceMethod
-SF_StepSpherefollowingRoot::toStringCMDMethod()
+SF_StepSpherefollowingBasic::toStringCMDMethod()
 {
   if (_CMD_methodChoice == _ZEROMOMENTUMORDER)
     return SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER;
@@ -401,7 +401,7 @@ SF_StepSpherefollowingRoot::toStringCMDMethod()
 }
 
 std::vector<double>
-SF_StepSpherefollowingRoot::paramsStringToNumber(const QString& UISelection)
+SF_StepSpherefollowingBasic::paramsStringToNumber(const QString& UISelection)
 {
   std::vector<double> paramVec;
   if (UISelection == _PARAMETERS_1) {
@@ -453,7 +453,7 @@ SF_StepSpherefollowingRoot::paramsStringToNumber(const QString& UISelection)
 }
 
 void
-SF_StepSpherefollowingRoot::createParamList(CT_ResultGroup* outResult)
+SF_StepSpherefollowingBasic::createParamList(CT_ResultGroup* outResult)
 {
   SF_SphereFollowingParameters sphereFollowingParams;
   SF_SphereFollowingOptimizationParameters sfOptimizationParameters;

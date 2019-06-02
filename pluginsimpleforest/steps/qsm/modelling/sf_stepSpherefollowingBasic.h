@@ -31,13 +31,13 @@
 
 #include "steps/qsm/sf_abstractStepQSM.h"
 
-class SF_StepSpherefollowingRoot : public SF_AbstractStepQSM
+class SF_StepSpherefollowingBasic : public SF_AbstractStepQSM
 {
   Q_OBJECT
 
 public:
-  SF_StepSpherefollowingRoot(CT_StepInitializeData& dataInit);
-  ~SF_StepSpherefollowingRoot();
+  SF_StepSpherefollowingBasic(CT_StepInitializeData& dataInit);
+  ~SF_StepSpherefollowingBasic();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;
