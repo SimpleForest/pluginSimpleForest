@@ -86,7 +86,7 @@ SF_StepSphereFollowingAdvanced::configDialogAddSphereFollowingNelderMead(CT_Step
   configDialog->addText("<b>Downhill Simplex</b>:");
   configDialog->addDouble("The downhill simplex search reaches it convergence criteria"
                           " with[<em><b>min size</b></em>] ",
-                          " (m). ",
+                          " 1e-3(m). ",
                           0.001,
                           0.999,
                           3,
@@ -102,21 +102,9 @@ SF_StepSphereFollowingAdvanced::configDialogAddSphereFollowingNelderMead(CT_Step
 void
 SF_StepSphereFollowingAdvanced::configDialogGuruAddPreProcessing(CT_StepConfigurableDialog* configDialog)
 {
-  configDialog->addText("<b>Pre Processing</b>:");
-  configDialog->addDouble("To even out the distribution and speed things up the cloud is "
-                          "downscaled first to [<em><b>voxel size</b></em>] ",
-                          " (m). ",
-                          0.005,
-                          0.03,
-                          3,
-                          _PP_voxelSize);
-  configDialog->addDouble("Only the largest cluster will be processed with "
-                          "[<em><b>clustering range</b></em>]  ",
-                          " (m). ",
-                          0.03,
-                          0.9,
-                          2,
-                          _PP_euclideanClusteringDistance);
+  configDialog->addText("<b>Pre Processing and Spherefollowing</b>:");
+  configDialog->addText(
+    "Spherefollowing parameters as well as preprocessing parameters are imported from basic spherefollowing step.");
   configDialog->addEmpty();
 }
 
@@ -159,7 +147,8 @@ SF_StepSphereFollowingAdvanced::createPreConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPreConfigurationDialog();
   configDialogGuruAddPreProcessing(configDialog);
-  configDialogAddSphereFollowingNelderMead(configDialog);
+  createPostConfigurationDialogCitation(configDialog);
+  addCitationPCL(configDialog);
 }
 
 void
@@ -167,8 +156,7 @@ SF_StepSphereFollowingAdvanced::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
-  createPostConfigurationDialogCitation(configDialog);
-  addCitationPCL(configDialog);
+  configDialogAddSphereFollowingNelderMead(configDialog);
 }
 
 void
