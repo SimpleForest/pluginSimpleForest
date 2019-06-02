@@ -59,6 +59,8 @@ protected:
   QList<SF_ParamSpherefollowingAdvanced<SF_PointNormal>> _paramList;
 
 private:
+  int getNumberOfClusters(CT_PointsAttributesScalarTemplated<int>* ctID);
+
   QList<SF_ParamQSM<SF_PointNormal>> paramList();
   CT_AutoRenameModels m_outCloudItem;
   CT_AutoRenameModels _outCylinderGroup;
@@ -73,7 +75,7 @@ private:
   double _SF_OPT_sphereRadiusMultiplier = 2;
   double _SF_OPT_sphereEpsilon = 0.035;
   bool _SF_parameterAutoSearch = true;
-  double _NM_minSize = 0.5;
+  double _NM_minSize = 0.05;
   int _NM_iterations = 100;
   int _SF_RANSACIiterations = 100;
   double _SF_minRadiusGlobal = 0.04;

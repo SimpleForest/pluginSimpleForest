@@ -224,6 +224,19 @@ SF_StepSphereFollowingAdvanced::compute()
   _paramList.clear();
 }
 
+int
+SF_StepSphereFollowingAdvanced::getNumberOfClusters(CT_PointsAttributesScalarTemplated<int>* ctID)
+{
+  int numberClusters = 0;
+  for (size_t i = 0; i < ctID->attributesSize(); i++) {
+    int ID = ctID->valueAt(i);
+    if (numberClusters < ID + 1) {
+      numberClusters = ID + 1;
+    }
+  }
+  return numberClusters;
+}
+
 QList<SF_ParamQSM<SF_PointNormal>>
 SF_StepSphereFollowingAdvanced::paramList()
 {
@@ -292,6 +305,7 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
   distanceParams._inlierDistance = _CMD_inlierDistance;
 
   CT_ResultGroupIterator outResItCloud(outResult, this, DEF_IN_GRP_CLUSTER);
+  int numberComputationsPerCloud = 300;
   while (!isStopped() && outResItCloud.hasNext()) {
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResItCloud.next();
     const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
@@ -303,24 +317,26 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
     SF_ParamSpherefollowingBasic<SF_PointNormal> param = ctParameters->getParams();
     SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramAdvanced;
     paramAdvanced._sphereFollowingParams = param._sphereFollowingParams;
+    paramAdvanced.m_numClstrs = getNumberOfClusters(ctID);
     paramAdvanced._sphereFollowingParams.m_optimizationParams.clear();
-    paramAdvanced._sphereFollowingParams.m_optimizationParams.push_back(paramAdvanced._sphereFollowingParams.m_optimizationParams[0]);
+    for (size_t m = 0; m < paramAdvanced.m_numClstrs; m++) {
+      paramAdvanced._sphereFollowingParams.m_optimizationParams.push_back(param._sphereFollowingParams.m_optimizationParams[0]);
+    }
     paramAdvanced._stepProgress = _stepProgress;
     paramAdvanced._distanceParams = distanceParams;
     paramAdvanced._voxelSize = param._voxelSize;
     paramAdvanced._clusteringDistance = param._clusteringDistance;
-    paramAdvanced.m_numClstrs = _CMD_numClstrs;
-    paramAdvanced._modelCloudError = 1337;
+    paramAdvanced._modelCloudError = std::numeric_limits<float>::max();
     paramAdvanced._fittedGeometries = 0;
     paramAdvanced._log = PS_LOG;
     paramAdvanced._itemCpyCloudIn = ctCloud;
     paramAdvanced._ctID = ctID;
     paramAdvanced._grpCpyGrp = group;
     paramAdvanced._iterations = _NM_iterations;
+    numberComputationsPerCloud = (_NM_iterations + 27) * (paramAdvanced.m_numClstrs + 1);
     paramAdvanced._fitQuality = _NM_minSize;
     _paramList.append(paramAdvanced);
   }
   int numberClouds = _paramList.size();
-  int numberComputationsPerCloud = 300;
   m_computationsTotal = numberClouds * numberComputationsPerCloud;
 }
