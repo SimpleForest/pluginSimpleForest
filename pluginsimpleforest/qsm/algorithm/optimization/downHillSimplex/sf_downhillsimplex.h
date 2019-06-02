@@ -48,6 +48,14 @@ class SF_DownHillSimplex
 {
   SF_ParamSpherefollowingAdvanced<SF_PointNormal> m_params;
   void serializeVec(gsl_vector* x, double fac, size_t numberClusters, SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params);
+  void computeDHS(SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params, size_t numClusters);
+  void adjustParameters(SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params, size_t numClusters);
+  std::vector<SF_ParamSpherefollowingAdvanced<SF_PointNormal>> paramVector(
+    const SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params,
+    SF_SphereFollowingOptimizationParameters optimizationParams);
+  void transferOptimizationParams(SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params,
+                                  size_t numClusters,
+                                  SF_SphereFollowingOptimizationParameters optimParams);
 
 public:
   SF_DownHillSimplex();

@@ -30,6 +30,7 @@ PluginSimpleForest is an extended version of the SimpleTree platform.
 
 #include "cloud/filter/unary/maxIntensity/sf_maxintensity.h"
 #include "qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.h"
+#include "qsm/algorithm/distance/sf_extractFittedPoints.h"
 
 #include <cstdint>
 #include <stdio.h>
@@ -81,89 +82,195 @@ SF_DownHillSimplex::serializeVec(gsl_vector* x,
 }
 
 void
+SF_DownHillSimplex::computeDHS(SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params, size_t numClusters)
+{
+  adjustParameters(params, numClusters);
+  std::uintptr_t par[1] = { reinterpret_cast<std::uintptr_t>(new SF_ParamSpherefollowingAdvanced<SF_PointNormal>(params)) };
+  const gsl_multimin_fminimizer_type* T = gsl_multimin_fminimizer_nmsimplex2;
+  gsl_multimin_fminimizer* s = NULL;
+  gsl_vector *ss, *x;
+  x = gsl_vector_alloc(numClusters * 3);
+  ss = gsl_vector_alloc(numClusters * 3);
+  gsl_multimin_function minex_func;
+  size_t iter = 0;
+  int status;
+  double size;
+  serializeVec(x, 1.0, numClusters, params);
+  serializeVec(ss, 0.1, numClusters, params);
+  minex_func.n = numClusters * 3;
+  minex_func.f = downhillSimplex;
+  minex_func.params = par;
+  s = gsl_multimin_fminimizer_alloc(T, numClusters * 3);
+  gsl_multimin_fminimizer_set(s, &minex_func, x, ss);
+
+  do {
+    iter++;
+    status = gsl_multimin_fminimizer_iterate(s);
+
+    if (status)
+      break;
+    size = gsl_multimin_fminimizer_size(s);
+    status = gsl_multimin_test_size(size, params._fitQuality * 1e-3);
+    double error = s->fval;
+    if (params._modelCloudError > error) {
+      params._modelCloudError = error;
+      size_t index = 0;
+      std::vector<SF_SphereFollowingOptimizationParameters> paramVec = params._sphereFollowingParams.m_optimizationParams;
+      gsl_vector* v = s->x;
+      for (size_t i = 0; i < numClusters; i++) {
+        paramVec[i]._epsilonSphere = gsl_vector_get(v, index++);
+        paramVec[i]._euclideanClusteringDistance = gsl_vector_get(v, index++);
+        paramVec[i]._sphereRadiusMultiplier = gsl_vector_get(v, index++);
+      }
+      params._sphereFollowingParams.m_optimizationParams = paramVec;
+      m_params = params;
+    }
+    m_params._stepProgress->fireComputation();
+  } while (status == GSL_CONTINUE && iter < static_cast<size_t>(params._iterations));
+  while (iter < static_cast<size_t>(params._iterations)) {
+    iter++;
+    m_params._stepProgress->fireComputation();
+  }
+  gsl_vector_free(x);
+  gsl_vector_free(ss);
+  gsl_multimin_fminimizer_free(s);
+
+  SF_SphereFollowing sphereFollowing;
+  sphereFollowing.setParams(m_params);
+  sphereFollowing.setCloud(params.m_cloudSphereFollowing);
+  sphereFollowing.compute();
+
+  params._qsm = sphereFollowing.getQSM();
+  m_params = params;
+  m_params.m_cloudSphereFollowing = sphereFollowing.cloud();
+}
+
+void
+SF_DownHillSimplex::adjustParameters(SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params, size_t numClusters)
+{
+  size_t lastOpimizedIndex = static_cast<size_t>(std::max(0, static_cast<int>(numClusters) - 1));
+  auto optimizationParams = params._sphereFollowingParams.m_optimizationParams[lastOpimizedIndex];
+  std::vector<SF_ParamSpherefollowingAdvanced<SF_PointNormal>> testParameters = paramVector(params, optimizationParams);
+
+  std::for_each(testParameters.begin(), testParameters.end(), [this](SF_ParamSpherefollowingAdvanced<SF_PointNormal>& paramsRef) {
+    SF_SphereFollowing sphereFollowing;
+    sphereFollowing.setParams(paramsRef);
+    sphereFollowing.setCloud(paramsRef.m_cloudSphereFollowing);
+    try {
+      sphereFollowing.compute();
+      paramsRef._qsm = sphereFollowing.getQSM();
+      paramsRef._modelCloudError = sphereFollowing.error();
+    } catch (...) {
+      paramsRef._qsm = sphereFollowing.getQSM();
+      paramsRef._modelCloudError = std::numeric_limits<float>::max();
+    }
+    m_params._stepProgress->fireComputation();
+  });
+  std::sort(testParameters.begin(),
+            testParameters.end(),
+            [](SF_ParamSpherefollowingAdvanced<SF_PointNormal> params1, SF_ParamSpherefollowingAdvanced<SF_PointNormal> params2) {
+              return params1._modelCloudError < params2._modelCloudError;
+            });
+  for (SF_ParamSpherefollowingAdvanced<SF_PointNormal> param : testParameters) {
+    if (param._modelCloudError < params._modelCloudError) {
+      params = param;
+      m_params = param;
+    }
+  }
+}
+
+std::vector<SF_ParamSpherefollowingAdvanced<SF_PointNormal>>
+SF_DownHillSimplex::paramVector(const SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params,
+                                SF_SphereFollowingOptimizationParameters optimizationParams)
+{
+  std::vector<SF_ParamSpherefollowingAdvanced<SF_PointNormal>> paramVec;
+  for (size_t k = 0; k < 3; ++k) {
+    auto optimizationParamsK = optimizationParams;
+    switch (k) {
+      case 0:
+        break;
+      case 1:
+        optimizationParamsK._epsilonSphere = (optimizationParamsK._epsilonSphere + 0.01) / 2.0;
+        break;
+      case 2:
+        optimizationParamsK._epsilonSphere = 0.01;
+        break;
+      default:
+        break;
+    }
+    for (size_t l = 0; l < 3; ++l) {
+      auto optimizationParamsL = optimizationParamsK;
+      switch (l) {
+        case 0:
+          break;
+        case 1:
+          optimizationParamsL._euclideanClusteringDistance = (optimizationParamsL._euclideanClusteringDistance + 0.03) / 2.0;
+          break;
+        case 2:
+          optimizationParamsL._euclideanClusteringDistance = 0.03;
+          break;
+        default:
+          break;
+      }
+      for (size_t m = 0; m < 3; ++m) {
+        auto optimizationParamsM = optimizationParamsL;
+        switch (m) {
+          case 0:
+            break;
+          case 1:
+            optimizationParamsM._sphereRadiusMultiplier = (optimizationParamsM._sphereRadiusMultiplier + 2.0) / 2.0;
+            break;
+          case 2:
+            optimizationParamsM._sphereRadiusMultiplier = 2;
+            break;
+          default:
+            break;
+        }
+        SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramCpy = params;
+        transferOptimizationParams(paramCpy, params.m_numClstrs, optimizationParamsM);
+        paramVec.push_back(paramCpy);
+      }
+    }
+  }
+  return paramVec;
+}
+
+void
+SF_DownHillSimplex::transferOptimizationParams(SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params,
+                                               size_t numClusters,
+                                               SF_SphereFollowingOptimizationParameters optimParams)
+{
+  size_t firstCopyIndex = static_cast<size_t>(std::max(0, static_cast<int>(numClusters) - 1));
+  for (size_t index = firstCopyIndex; index < params._sphereFollowingParams.m_optimizationParams.size(); ++index) {
+    params._sphereFollowingParams.m_optimizationParams[index] = optimParams;
+  }
+}
+
+void
 SF_DownHillSimplex::compute()
 {
   size_t size = m_params.m_numClstrs;
+  m_params._modelCloudError = std::numeric_limits<float>::max();
+  while (size > m_params._sphereFollowingParams.m_optimizationParams.size()) {
+    m_params._sphereFollowingParams.m_optimizationParams.push_back(
+      m_params._sphereFollowingParams.m_optimizationParams[m_params._sphereFollowingParams.m_optimizationParams.size() - 1]);
+  }
+
   SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramCpy = m_params;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudCpy = m_params.m_cloudSphereFollowing;
   for (size_t numClusters = 1; numClusters <= size; numClusters++) {
+    paramCpy = m_params;
     paramCpy.m_numClstrs = numClusters;
-    SF_MaxIntensityFilter<pcl::PointXYZINormal> maxFilter;
-    maxFilter.setMaxIntensity(numClusters - 1);
-    maxFilter.setCloudIn(cloudCpy);
-    maxFilter.compute();
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = maxFilter.cloudOut();
-    paramCpy.m_cloudSphereFollowing = cloud;
-    }
-
-    if (numClusters > paramCpy._sphereFollowingParams.m_optimizationParams.size()) {
-      paramCpy._sphereFollowingParams.m_optimizationParams.push_back(
-        paramCpy._sphereFollowingParams.m_optimizationParams[paramCpy._sphereFollowingParams.m_optimizationParams.size() - 1]);
-    }
-    std::uintptr_t par[1] = { reinterpret_cast<std::uintptr_t>(new SF_ParamSpherefollowingAdvanced<SF_PointNormal>(paramCpy)) };
-    const gsl_multimin_fminimizer_type* T = gsl_multimin_fminimizer_nmsimplex2;
-    gsl_multimin_fminimizer* s = NULL;
-    gsl_vector *ss, *x;
-    x = gsl_vector_alloc(numClusters * 3);
-    ss = gsl_vector_alloc(numClusters * 3);
-    gsl_multimin_function minex_func;
-    size_t iter = 0;
-    int status;
-    double size;
-    serializeVec(x, 1.0, numClusters, paramCpy);
-    serializeVec(ss, 0.1, numClusters, paramCpy);
-    minex_func.n = numClusters * 3;
-    minex_func.f = downhillSimplex;
-    minex_func.params = par;
-    s = gsl_multimin_fminimizer_alloc(T, numClusters * 3);
-    gsl_multimin_fminimizer_set(s, &minex_func, x, ss);
-    do {
-      iter++;
-      status = gsl_multimin_fminimizer_iterate(s);
-
-      if (status)
-        break;
-      size = gsl_multimin_fminimizer_size(s);
-      status = gsl_multimin_test_size(size, paramCpy._fitQuality * 1e-4);
-      if (status == GSL_SUCCESS) {
-        printf("converged to minimum at\n");
-      }
-      double error = s->fval;
-      if (paramCpy._modelCloudError > error) {
-        paramCpy._modelCloudError = error;
-        size_t index = 0;
-        std::vector<SF_SphereFollowingOptimizationParameters> paramVec;
-        SF_SphereFollowingOptimizationParameters paramsOptim;
-        gsl_vector* v = s->x;
-        for (size_t i = 0; i < numClusters; i++) {
-          paramsOptim._epsilonSphere = gsl_vector_get(v, index++);
-          paramsOptim._euclideanClusteringDistance = gsl_vector_get(v, index++);
-          paramsOptim._sphereRadiusMultiplier = gsl_vector_get(v, index++);
-          paramVec.push_back(paramsOptim);
-        }
-        paramCpy._sphereFollowingParams.m_optimizationParams = paramVec;
-      }
-      printf("%5d %10.6e %10.6e f() = %7.6f size = %.6f\n",
-             static_cast<int>(iter),
-             gsl_vector_get(s->x, 0),
-             gsl_vector_get(s->x, 1),
-             error,
-             size);
-      std::cout << std::endl;
-
-    } while (status == GSL_CONTINUE && iter < paramCpy._iterations);
-    gsl_vector_free(x);
-    gsl_vector_free(ss);
-    gsl_multimin_fminimizer_free(s);
-
-    SF_SphereFollowing sphereFollowing;
-    sphereFollowing.setParams(paramCpy);
-    sphereFollowing.setCloud(paramCpy.m_cloudSphereFollowing);
-    sphereFollowing.compute();
-    m_params = paramCpy;
-    m_params._qsm = sphereFollowing.getQSM();
-    m_params._cloudIn = sphereFollowing.cloud();
+    computeDHS(paramCpy, numClusters);
   }
+  m_params.m_numClstrs = size;
+  paramCpy = m_params;
+  SF_ExtractFittedPoints<pcl::PointXYZINormal> extract(paramCpy._qsm, cloudCpy, paramCpy._distanceParams);
+  extract.compute();
+  pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = extract.cloudFitted();
+  std::cout << " cloud cloud " << cloud->points.size() << " ; " << cloudCpy->points.size() << std::endl;
+  paramCpy.m_cloudSphereFollowing = cloud;
+  computeDHS(paramCpy, size);
 }
 
 double
@@ -172,16 +279,14 @@ downhillSimplex(const gsl_vector* v, void* params)
   std::uintptr_t* p = (std::uintptr_t*)params;
   SF_ParamSpherefollowingAdvanced<pcl::PointXYZINormal>* paramsBasic =
     reinterpret_cast<SF_ParamSpherefollowingAdvanced<pcl::PointXYZINormal>*>(p[0]);
-  std::vector<SF_SphereFollowingOptimizationParameters> paramVec;
   size_t index = 0;
-  SF_SphereFollowingOptimizationParameters paramsOptim = paramsBasic->_sphereFollowingParams.m_optimizationParams[0];
+  std::vector<SF_SphereFollowingOptimizationParameters> paramsOptim = paramsBasic->_sphereFollowingParams.m_optimizationParams;
   for (size_t i = 0; i < paramsBasic->m_numClstrs; i++) {
-    paramsOptim._epsilonSphere = gsl_vector_get(v, index++);
-    paramsOptim._euclideanClusteringDistance = gsl_vector_get(v, index++);
-    paramsOptim._sphereRadiusMultiplier = gsl_vector_get(v, index++);
-    paramVec.push_back(paramsOptim);
+    paramsOptim[i]._epsilonSphere = gsl_vector_get(v, index++);
+    paramsOptim[i]._euclideanClusteringDistance = gsl_vector_get(v, index++);
+    paramsOptim[i]._sphereRadiusMultiplier = gsl_vector_get(v, index++);
   }
-  paramsBasic->_sphereFollowingParams.m_optimizationParams = paramVec;
+  paramsBasic->_sphereFollowingParams.m_optimizationParams = paramsOptim;
   SF_SphereFollowing sphereFollowing;
   sphereFollowing.setParams(*paramsBasic);
   sphereFollowing.setCloud(paramsBasic->m_cloudSphereFollowing);
