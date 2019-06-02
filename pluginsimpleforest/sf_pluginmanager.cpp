@@ -19,7 +19,7 @@
 #include "steps/manipulation/merge/sf_stepMergeClouds.h"
 #include "steps/qsm/modelling/sf_stepQSMAllometricCorrection.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h"
-#include "steps/qsm/modelling/sf_stepSpherefollowingRoot.h"
+#include "steps/qsm/modelling/sf_stepSpherefollowingBasic.h"
 #include "steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h"
 #include "steps/qsm/postprocessing/sf_stepqsmrefitcylinders.h"
 #include "steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h"

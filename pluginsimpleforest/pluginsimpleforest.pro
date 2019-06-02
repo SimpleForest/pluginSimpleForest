@@ -102,6 +102,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/qsm/modelling/sf_stepQSMAllometricCorrectionAdapter.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvancedAdapter.h \
+    steps/qsm/modelling/sf_stepSpherefollowingBasic.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctionsadapter.h \
     steps/qsm/postprocessing/sf_stepqsmrefitcylinders.h \
@@ -127,7 +128,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/filter/binary/ground_filter/sf_stepGroundFilterAdapter.h \
     steps/filter/binary/cut_cloud_above_dtm/sf_stepCutCloudAboveDTM.h \
     steps/filter/binary/cut_cloud_above_dtm/sf_stepCutCloudAboveDTMAdapter.h \
-    steps/qsm/modelling/sf_stepSpherefollowingRoot.h \
     steps/qsm/modelling/sf_stepSpherefollowingBasicAdapter.h \
     steps/segmentation/sf_AbstractStepSegmentation.h \
     steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h \
@@ -203,6 +203,7 @@ SOURCES += \
     steps/item/sf_spherefollowing_parameters_item.cpp \
     steps/qsm/modelling/sf_stepQSMAllometricCorrection.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.cpp \
+    steps/qsm/modelling/sf_stepSpherefollowingBasic.cpp \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.cpp \
     steps/qsm/postprocessing/sf_stepqsmrefitcylinders.cpp \
     steps/qsm/sf_abstractStepQSM.cpp \
@@ -219,7 +220,6 @@ SOURCES += \
     steps/filter/binary/radius_outlier_filter/sf_radiusOutlierFilterStep.cpp \
     steps/filter/binary/ground_filter/sf_stepGroundFilter.cpp \
     steps/filter/binary/cut_cloud_above_dtm/sf_stepCutCloudAboveDTM.cpp \
-    steps/qsm/modelling/sf_stepSpherefollowingRoot.cpp \
     steps/segmentation/sf_AbstractStepSegmentation.cpp \
     steps/segmentation/voronoi/sf_stepSegmentationVoronoi.cpp \
     steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.cpp \

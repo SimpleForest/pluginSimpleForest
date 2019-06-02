@@ -26,7 +26,7 @@
 
 *****************************************************************************/
 
-#include "sf_stepSpherefollowingRoot.h"
+#include "sf_stepSpherefollowingBasic.h"
 
 #include "sf_stepSpherefollowingBasicAdapter.h"
 #include "steps/item/sf_spherefollowing_parameters_item.h"
