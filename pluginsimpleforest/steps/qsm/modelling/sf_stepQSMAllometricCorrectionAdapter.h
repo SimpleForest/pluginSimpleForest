@@ -72,6 +72,8 @@ public:
       } catch (...) {
         paramsCpy.m_power = 1.f / 2.49f;
       }
+    } else {
+      paramsCpy.m_power = 1.f / 2.49f;
     }
 
     SF_QSMAllometryCorrectionNeighboring ac;

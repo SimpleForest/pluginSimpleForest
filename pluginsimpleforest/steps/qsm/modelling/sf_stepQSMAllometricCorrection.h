@@ -74,7 +74,7 @@ private:
   double m_inlierDistance = 0.3;
   int m_ransacIterations = 1000;
   int m_gaussNewtonIterations = 20;
-  bool m_estimateParams = false;
+  bool m_estimateParams = true;
 
   virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
   virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
