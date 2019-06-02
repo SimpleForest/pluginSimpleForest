@@ -64,38 +64,8 @@ QStringList
 SF_StepSegmentationVoronoi::getStepRISCitations() const
 {
   QStringList _risCitationList;
-  _risCitationList.append(QString("TY  - JOUR\n"
-                                  "T1  - SimpleTree - an efficient open source tool to build tree "
-                                  "models from TLS clouds\n"
-                                  "A1  - Hackenberg, Jan\n"
-                                  "A1  - Spiecker, Heinrich\n"
-                                  "A1  - Calders, Kim\n"
-                                  "A1  - Disney, Mathias\n"
-                                  "A1  - Raumonen, Pasi\n"
-                                  "JO  - Forests\n"
-                                  "VL  - 6\n"
-                                  "IS  - 11\n"
-                                  "SP  - 4245\n"
-                                  "EP  - 4294\n"
-                                  "Y1  - 2015\n"
-                                  "PB  - Multidisciplinary Digital Publishing Institute\n"
-                                  "UL  - http://www.simpletree.uni-freiburg.de/\n"
-                                  "ER  - \n"));
-
-  _risCitationList.append(QString("TY  - CONF\n"
-                                  "T1  - 3d is here: Point cloud library (pcl)\n"
-                                  "A1  - Rusu, Radu Bogdan\n"
-                                  "A1  - Cousins, Steve\n"
-                                  "JO  - Robotics and Automation (ICRA), 2011 IEEE International "
-                                  "Conference on\n"
-                                  "SP  - 1\n"
-                                  "EP  - 4\n"
-                                  "SN  - 1612843859\n"
-                                  "Y1  - 2011\n"
-                                  "PB  - IEEE\n"
-                                  "UL  - "
-                                  "http://pointclouds.org/documentation/tutorials/statistical_outlier.php\n"
-                                  "ER  - \n"));
+  _risCitationList.append(getRISCitationSimpleTree());
+  _risCitationList.append(getRISCitationPCL());
   return _risCitationList;
 }
 
