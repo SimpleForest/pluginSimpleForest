@@ -42,13 +42,18 @@ SF_StepQSMAllometricCorrection::~SF_StepQSMAllometricCorrection() {}
 QString
 SF_StepQSMAllometricCorrection::getStepDescription() const
 {
-  return tr("SphereFollowing Allometric Check");
+  return tr("QSM Allometric Check");
 }
 
 QString
 SF_StepQSMAllometricCorrection::getStepDetailledDescription() const
 {
-  return tr("TODO ");
+  return tr(
+    "This step utilizes a relation between the growthlength or growthvolume between and the radius of a cylinder in form"
+    " of the two parameter equation (radius = a*growthlength^b) or the three parameter equation (radius = a*growthlength^b +c)."
+    " See PhD Hackenberg et al 2016 and following for the invention of those two parameters."
+    " According to Xu et al(2006) the original function utilizing length instead of growth length is in agreement with."
+    " the metabolic scaling theory.");
 }
 
 QString
