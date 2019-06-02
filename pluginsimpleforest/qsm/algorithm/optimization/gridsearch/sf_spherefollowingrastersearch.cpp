@@ -23,6 +23,7 @@ SF_SphereFollowingRasterSearch::compute()
       params._qsm = sphereFollowing.getQSM();
       params._modelCloudError = std::numeric_limits<float>::max();
     }
+    m_params._stepProgress->fireComputation();
   });
   std::sort(paramVec.begin(),
             paramVec.end(),
