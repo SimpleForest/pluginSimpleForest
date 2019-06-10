@@ -137,8 +137,17 @@ SF_QSMAllometricCorrectionParameterEstimation::compute()
   std::vector<float> x;
 
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> uncorrectedBricks = unCorrectedBuildingBricks();
+  if (uncorrectedBricks.size() < 5) {
+    return;
+  }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> noStemBricks = removeStem(uncorrectedBricks);
+  if (noStemBricks.size() < 5) {
+    return;
+  }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bestBricks = chooseBestBricks(noStemBricks);
+  if (bestBricks.size() < 5) {
+    return;
+  }
   std::transform(bestBricks.begin(),
                  bestBricks.end(),
                  std::back_inserter(y),

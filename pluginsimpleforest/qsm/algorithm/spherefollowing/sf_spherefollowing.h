@@ -92,6 +92,7 @@ private:
   void pushbackQueue(pcl::ModelCoefficients circleCoeff, float distance, int clusterID, Eigen::Vector3f firstSplit);
   void artificialTree();
   void buildTree();
+  bool failedComputation = false;
 };
 
 #endif // SF_SPHERE_FOLLOWING_H

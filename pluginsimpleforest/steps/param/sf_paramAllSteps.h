@@ -333,13 +333,15 @@ struct SF_ParamDtm : public SF_ParamFilter<PointType>
 
 struct SF_ParamStemRansacFilter : public SF_ParamFilter<pcl::PointXYZINormal>
 {
+  bool _sliceClouds = false;
   float _voxelSize = 0.01f;
   float _radiusNormal = 0.03f;
   float _inlierDistance = 0.1f;
+  float _iterations = 10000;
   float _x = 0;
   float _y = 0;
   float _z = 1;
-  int _angle = 20;
+  int _angle = 30;
 
   virtual QString toString()
   {

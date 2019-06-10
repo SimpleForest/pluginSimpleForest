@@ -51,7 +51,12 @@
 #include "converters/CT_To_PCL/sf_converterCTCloudToPCLCloud.h"
 
 #define DEF_IN_RESULT "ires"
+#define DEF_IN_RESULT2 "ires2"
 #define DEF_IN_GRP_CLUSTER "igrp"
+#define DEF_IN_GRP_CLUSTER2 "igrp2"
+#define DEF_IN_GRP_CLUSTER3 "igrp3"
+#define DEF_IN_NAME "iname"
+#define DEF_IN_FILE "ifile"
 #define DEF_IN_RESULT_DTM "idtmres"
 #define DEF_IN_DTMGRP "igrpdtm"
 #define DEF_IN_DTM "idtm"
@@ -64,14 +69,15 @@ class SF_AbstractStep : public CT_AbstractStep
 {
   Q_OBJECT
 
-  QList<CT_AbstractItemGroup*> _groupsToBeRemoved;
   void checkIsEmpty(CT_StandardItemGroup* group, const CT_AbstractItemDrawableWithPointCloud* ctCloud);
   void checkIsNullOrEmpty(const CT_AbstractItemDrawableWithPointCloud* ct_cloud, CT_StandardItemGroup* group);
   void checkGrpAndCloud(CT_StandardItemGroup* group);
   void identifyCorruptedScenes(CT_ResultGroup* outResult, int progress = 4);
-  void removeCorruptedScenes(int progress = 7);
 
 protected:
+  QList<CT_AbstractItemGroup*> _groupsToBeRemoved;
+  void removeCorruptedScenes(int progress = 7);
+
   virtual void createInResultModelListProtected() = 0;
   virtual void createOutResultModelListProtected() = 0;
   virtual void createPreConfigurationDialog();

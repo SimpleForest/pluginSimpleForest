@@ -38,6 +38,10 @@ class SF_QSMAllometryCorrectionNeighboring
   SF_ParamAllometricCorrectionNeighboring m_params;
   void correct(std::shared_ptr<Sf_ModelAbstractBuildingbrick> parent, std::shared_ptr<Sf_ModelAbstractBuildingbrick> child);
   void correct(std::shared_ptr<Sf_ModelAbstractBuildingbrick> cylinder);
+  std::shared_ptr<Sf_ModelAbstractBuildingbrick> startBrick();
+  bool isInPipeModelRelation(std::shared_ptr<Sf_ModelAbstractBuildingbrick> parent,
+                             std::shared_ptr<Sf_ModelAbstractBuildingbrick> child,
+                             float& xNew);
 
 public:
   SF_QSMAllometryCorrectionNeighboring();

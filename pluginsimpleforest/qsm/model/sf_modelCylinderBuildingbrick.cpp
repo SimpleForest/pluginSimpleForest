@@ -34,103 +34,103 @@
 #include "sf_modelCylinderBuildingbrick.h"
 #include <clocale>
 
-float
+double
 Sf_ModelCylinderBuildingbrick::getRadius()
 {
   return m_radius;
 }
 
 void
-Sf_ModelCylinderBuildingbrick::setRadius(float radius, FittingType type)
+Sf_ModelCylinderBuildingbrick::setRadius(double radius, FittingType type)
 {
   _fittingType = type;
   m_radius = radius;
 }
 
 void
-Sf_ModelCylinderBuildingbrick::translate(Eigen::Vector3f translation)
+Sf_ModelCylinderBuildingbrick::translate(Eigen::Vector3d translation)
 {
   _start = _start + translation;
   _end = _end + translation;
 }
 
-float
+double
 Sf_ModelCylinderBuildingbrick::getVolume()
 {
-  float volume = SF_Math<float>::_PI * m_radius * m_radius * getLength();
+  double volume = SF_Math<double>::_PI * m_radius * m_radius * getLength();
   return volume;
 }
 
-float
+double
 Sf_ModelCylinderBuildingbrick::getLength()
 {
-  Eigen::Vector3f c = _end - _start;
+  Eigen::Vector3d c = _end - _start;
   return c.norm();
 }
 
-float
-Sf_ModelCylinderBuildingbrick::getDistance(const Eigen::Vector3f& point)
+double
+Sf_ModelCylinderBuildingbrick::getDistance(const Eigen::Vector3d& point)
 {
-  float distToAxis = getDistanceToAxis(point);
-  float distToSegment = getProjectedDistanceToSegment(point);
-  float distToHull = distToAxis - m_radius;
-  float distance = (std::sqrt((distToHull * distToHull) + (distToSegment * distToSegment)));
+  double distToAxis = getDistanceToAxis(point);
+  double distToSegment = getProjectedDistanceToSegment(point);
+  double distToHull = distToAxis - m_radius;
+  double distance = (std::sqrt((distToHull * distToHull) + (distToSegment * distToSegment)));
   return distance;
 }
 
-float
-Sf_ModelCylinderBuildingbrick::getDistanceToAxis(const Eigen::Vector3f& point)
+double
+Sf_ModelCylinderBuildingbrick::getDistanceToAxis(const Eigen::Vector3d& point)
 {
-  Eigen::Vector3f a = point - _start;
-  Eigen::Vector3f b = point - _end;
-  Eigen::Vector3f c = _end - _start;
-  Eigen::Vector3f d = a.cross(b);
+  Eigen::Vector3d a = point - _start;
+  Eigen::Vector3d b = point - _end;
+  Eigen::Vector3d c = _end - _start;
+  Eigen::Vector3d d = a.cross(b);
   return d.norm() / c.norm();
 }
 
-float
-Sf_ModelCylinderBuildingbrick::getProjectedDistanceToSegment(const Eigen::Vector3f& point)
+double
+Sf_ModelCylinderBuildingbrick::getProjectedDistanceToSegment(const Eigen::Vector3d& point)
 {
-  Eigen::Vector3f projection = getProjectionOnAxis(point);
-  float distToStart = SF_Math<float>::distance(_start, projection);
-  float distToEnd = SF_Math<float>::distance(_end, projection);
-  float length = getLength();
+  Eigen::Vector3d projection = getProjectionOnAxis(point);
+  double distToStart = SF_Math<double>::distance(_start, projection);
+  double distToEnd = SF_Math<double>::distance(_end, projection);
+  double length = getLength();
   if (distToStart <= length && distToEnd <= length) {
     return 0;
   }
   return std::min(distToStart, distToEnd);
 }
 
-float
-Sf_ModelCylinderBuildingbrick::getDistanceToInfinitHull(const Eigen::Vector3f& point)
+double
+Sf_ModelCylinderBuildingbrick::getDistanceToInfinitHull(const Eigen::Vector3d& point)
 {
   return getDistanceToAxis(point) - m_radius;
 }
 
-Eigen::Vector3f
-Sf_ModelCylinderBuildingbrick::getProjectionOnAxis(const Eigen::Vector3f& point)
+Eigen::Vector3d
+Sf_ModelCylinderBuildingbrick::getProjectionOnAxis(const Eigen::Vector3d& point)
 {
-  Eigen::Vector3f a = point - _start;
-  Eigen::Vector3f b = _end - _start;
+  Eigen::Vector3d a = point - _start;
+  Eigen::Vector3d b = _end - _start;
   return (_start + (a.dot(b) / b.dot(b)) * b);
 }
 
-Eigen::Vector3f
+Eigen::Vector3d
 Sf_ModelCylinderBuildingbrick::getCenter()
 {
   return ((_start + _end) / 2);
 }
 
-Eigen::Vector3f
+Eigen::Vector3d
 Sf_ModelCylinderBuildingbrick::getAxis()
 {
   return (_end - _start);
 }
 
 void
-Sf_ModelCylinderBuildingbrick::setStartEndRadius(const Eigen::Vector3f& start,
-                                                 const Eigen::Vector3f& end,
-                                                 float radius,
+Sf_ModelCylinderBuildingbrick::setStartEndRadius(const Eigen::Vector3d& start,
+                                                 const Eigen::Vector3d& end,
+                                                 double radius,
                                                  FittingType type)
 {
   _start = start;
@@ -145,10 +145,10 @@ Sf_ModelCylinderBuildingbrick::setCoefficients(pcl::ModelCoefficients::Ptr coeff
   if (coefficients->values.size() == 7) {
     auto oldStart = _start;
     auto oldEnd = _end;
-    auto newAxis = Eigen::Vector3f(coefficients->values[3], coefficients->values[4], coefficients->values[5]);
-    auto newPoint = Eigen::Vector3f(coefficients->values[0], coefficients->values[1], coefficients->values[2]);
-    Eigen::Vector3f a = oldStart - newPoint;
-    Eigen::Vector3f b = newAxis;
+    auto newAxis = Eigen::Vector3d(coefficients->values[3], coefficients->values[4], coefficients->values[5]);
+    auto newPoint = Eigen::Vector3d(coefficients->values[0], coefficients->values[1], coefficients->values[2]);
+    Eigen::Vector3d a = oldStart - newPoint;
+    Eigen::Vector3d b = newAxis;
     auto newStart = (newPoint + (a.dot(b) / b.dot(b)) * b);
     a = oldEnd - newPoint;
     auto newEnd = (newPoint + (a.dot(b) / b.dot(b)) * b);

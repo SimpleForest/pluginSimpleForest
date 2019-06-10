@@ -86,6 +86,10 @@ SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
 
     std::shared_ptr<SF_ModelQSM> qsm = params._qsm;
+    if (!qsm) {
+      _groupsToBeRemoved.push_back(group);
+      continue;
+    }
     qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
 
     CT_TTreeGroup* tree = constructTopology(outResult, qsm);
@@ -119,6 +123,7 @@ SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
     qsmGrp->addItemDrawable(qsmItem);
     params.reset();
   }
+  removeCorruptedScenes();
 }
 
 template<typename T>
@@ -137,6 +142,10 @@ SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
     T& params = paramList[index++];
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
     std::shared_ptr<SF_ModelQSM> qsm = params._qsm;
+    if (!qsm) {
+      _groupsToBeRemoved.push_back(group);
+      continue;
+    }
     qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
 
     CT_TTreeGroup* tree = constructTopology(outResult, qsm);
@@ -172,6 +181,7 @@ SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
     qsmGrp->addItemDrawable(qsmItem);
     params.reset();
   }
+  removeCorruptedScenes();
 }
 
 #endif // SF_ABSTRACTSTEPQSM_H

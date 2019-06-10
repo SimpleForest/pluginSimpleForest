@@ -268,7 +268,6 @@ SF_DownHillSimplex::compute()
   SF_ExtractFittedPoints<pcl::PointXYZINormal> extract(paramCpy._qsm, cloudCpy, paramCpy._distanceParams);
   extract.compute();
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = extract.cloudFitted();
-  std::cout << " cloud cloud " << cloud->points.size() << " ; " << cloudCpy->points.size() << std::endl;
   paramCpy.m_cloudSphereFollowing = cloud;
   computeDHS(paramCpy, size);
 }

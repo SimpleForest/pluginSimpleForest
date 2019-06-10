@@ -57,11 +57,10 @@ SF_StemRANSACFilter::segment(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud,
                              pcl::PointIndices::Ptr inliersCylinder)
 {
   pcl::SACSegmentationFromNormals<pcl::PointXYZINormal, pcl::PointXYZINormal> seg;
-  seg.setOptimizeCoefficients(true);
   seg.setModelType(pcl::SACMODEL_CYLINDER);
-  seg.setNormalDistanceWeight(0.1);
-  seg.setMethodType(pcl::SAC_RANSAC);
-  seg.setMaxIterations(100);
+  seg.setOptimizeCoefficients(false);
+  seg.setMethodType(pcl::SAC_MLESAC);
+  seg.setMaxIterations(_params._iterations);
   seg.setDistanceThreshold(_params._inlierDistance);
   seg.setRadiusLimits(0, 2);
   seg.setInputCloud(cloud);
@@ -84,7 +83,7 @@ SF_StemRANSACFilter::addInliers(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud
       zAxis[2] = lastCoeffCylinder->values[5];
     }
     Eigen::Vector3f cylinderAxis(coeffCylinder->values[3], coeffCylinder->values[4], coeffCylinder->values[5]);
-    float angle = SF_Math<float>::getAngleBetweenDeg(zAxis, cylinderAxis);
+    float angle = SF_Math<float>::getAngleBetweenDegf(zAxis, cylinderAxis);
     if (!(angle > _params._angle && angle < (180 - _params._angle))) {
       *lastCoeffCylinder = *coeffCylinder;
       for (size_t j = 0; j < inliersCylinder->indices.size(); ++j)
@@ -101,28 +100,30 @@ SF_StemRANSACFilter::filterIteratively(pcl::PointCloud<pcl::PointXYZINormal>::Pt
     pcl::ModelCoefficients::Ptr coeffCylinder(new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliersCylinder(new pcl::PointIndices);
     pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud = _clouds[i];
-    if (lastcoeffCylinder->values.size() == 7) {
-      pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudInlier(new pcl::PointCloud<pcl::PointXYZINormal>());
-      Eigen::Vector3d x1(lastcoeffCylinder->values[0], lastcoeffCylinder->values[1], lastcoeffCylinder->values[2]);
-      Eigen::Vector3d x2(lastcoeffCylinder->values[0] + lastcoeffCylinder->values[3],
-                         lastcoeffCylinder->values[1] + lastcoeffCylinder->values[4],
-                         lastcoeffCylinder->values[2] + lastcoeffCylinder->values[5]);
-      for (size_t i = 0; i < cloud->points.size(); i++) {
-        Eigen::Vector3d x0(cloud->points[i].x, cloud->points[i].y, cloud->points[i].z);
-        Eigen::Vector3d a = x0 - x1;
-        Eigen::Vector3d b = x0 - x2;
-        Eigen::Vector3d c = x2 - x1;
-        double dist = ((a.cross(b)).norm()) / (c.norm());
-        float radius = std::max<float>((float)lastcoeffCylinder->values[6] + _params._inlierDistance,
-                                       (float)(lastcoeffCylinder->values[6]) * 1.5);
-        if (dist < radius) {
-          cloudInlier->points.push_back(cloud->points[i]);
-        }
-      }
-      cloud = cloudInlier;
-    }
+    //    if (lastcoeffCylinder->values.size() == 7) {
+    //      pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudInlier(new pcl::PointCloud<pcl::PointXYZINormal>());
+    //      Eigen::Vector3d x1(lastcoeffCylinder->values[0], lastcoeffCylinder->values[1], lastcoeffCylinder->values[2]);
+    //      Eigen::Vector3d x2(lastcoeffCylinder->values[0] + lastcoeffCylinder->values[3],
+    //                         lastcoeffCylinder->values[1] + lastcoeffCylinder->values[4],
+    //                         lastcoeffCylinder->values[2] + lastcoeffCylinder->values[5]);
+    //      for (size_t i = 0; i < cloud->points.size(); i++) {
+    //        Eigen::Vector3d x0(cloud->points[i].x, cloud->points[i].y, cloud->points[i].z);
+    //        Eigen::Vector3d a = x0 - x1;
+    //        Eigen::Vector3d b = x0 - x2;
+    //        Eigen::Vector3d c = x2 - x1;
+    //        double dist = ((a.cross(b)).norm()) / (c.norm());
+    //        float radius = std::max<float>((float)lastcoeffCylinder->values[6] + _params._inlierDistance,
+    //                                       (float)(lastcoeffCylinder->values[6]) * 1.5);
+    //        if (dist < radius) {
+    //          cloudInlier->points.push_back(cloud->points[i]);
+    //        }
+    //      }
+    //      cloud = cloudInlier;
+    //    }
     segment(cloud, coeffCylinder, inliersCylinder);
-    addInliers(downScaledCloudFiltered, cloud, coeffCylinder, lastcoeffCylinder, inliersCylinder);
+    for (size_t j = 0; j < inliersCylinder->indices.size(); ++j)
+      downScaledCloudFiltered->points.push_back(cloud->points[inliersCylinder->indices[j]]);
+    //    addInliers(downScaledCloudFiltered, cloud, coeffCylinder, lastcoeffCylinder, inliersCylinder);
   }
 }
 
@@ -138,7 +139,7 @@ SF_StemRANSACFilter::backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downSc
     std::vector<int> pointIdxNKNSearch(1);
     std::vector<float> pointNKNSquaredDistance(1);
     if (kdtree.nearestKSearch(point, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
-      if (std::sqrt(pointNKNSquaredDistance[0]) < _params._voxelSize * 2) {
+      if (std::sqrt(pointNKNSquaredDistance[0]) < _params._voxelSize * 2.5) {
         _cloudOutFiltered->points.push_back(point);
       } else {
         _cloudOutFilteredNoise->points.push_back(point);
@@ -152,6 +153,9 @@ SF_StemRANSACFilter::backScale(pcl::PointCloud<pcl::PointXYZINormal>::Ptr downSc
 void
 SF_StemRANSACFilter::compute()
 {
+  std::cout << "FOO "
+            << " voxelSize " << _params._voxelSize << " inlierDistance " << _params._inlierDistance << "iterations "
+            << _params._iterations << std::endl;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr downScaledCloud = downScale(_params._voxelSize);
   computeNormals(downScaledCloud);
   initializeClouds(downScaledCloud);
@@ -166,26 +170,30 @@ SF_StemRANSACFilter::compute()
 void
 SF_StemRANSACFilter::initializeClouds(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud)
 {
-  int size = static_cast<int>(cloud->points.size());
-  float zMin = std::numeric_limits<float>::max();
-  float zMax = std::numeric_limits<float>::lowest();
-  for (int i = 0; i < size; i++) {
-    pcl::PointXYZINormal point = cloud->points[i];
-    if (point.z < zMin)
-      zMin = point.z;
-    if (point.z > zMax)
-      zMax = point.z;
-  }
-  int sliceNumber = std::ceil(zMax - zMin);
   _clouds.clear();
-  for (int i = 0; i < sliceNumber; i++) {
-    pcl::PointCloud<pcl::PointXYZINormal>::Ptr slice(new pcl::PointCloud<pcl::PointXYZINormal>());
-    _clouds.push_back(slice);
-  }
-  for (int i = 0; i < size; i++) {
-    pcl::PointXYZINormal point = cloud->points[i];
-    int index = std::floor(point.z - zMin);
-    _clouds[index]->points.push_back(point);
+  if (_params._sliceClouds) {
+    int size = static_cast<int>(cloud->points.size());
+    float zMin = std::numeric_limits<float>::max();
+    float zMax = std::numeric_limits<float>::lowest();
+    for (int i = 0; i < size; i++) {
+      pcl::PointXYZINormal point = cloud->points[i];
+      if (point.z < zMin)
+        zMin = point.z;
+      if (point.z > zMax)
+        zMax = point.z;
+    }
+    int sliceNumber = std::ceil(zMax - zMin);
+    for (int i = 0; i < sliceNumber; i++) {
+      pcl::PointCloud<pcl::PointXYZINormal>::Ptr slice(new pcl::PointCloud<pcl::PointXYZINormal>());
+      _clouds.push_back(slice);
+    }
+    for (int i = 0; i < size; i++) {
+      pcl::PointXYZINormal point = cloud->points[i];
+      int index = std::floor(point.z - zMin);
+      _clouds[index]->points.push_back(point);
+    }
+  } else {
+    _clouds.push_back(cloud);
   }
 }
 

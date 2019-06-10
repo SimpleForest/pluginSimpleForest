@@ -79,15 +79,17 @@ SF_StepMergeClouds::getStepRISCitations() const
 void
 SF_StepMergeClouds::createInResultModelListProtected()
 {
-  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
+  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("First Group result"));
   assert(resModel != NULL);
   resModel->setZeroOrMoreRootGroup();
   resModel->addGroupModel(
     "", DEF_IN_GRP1, CT_AbstractItemGroup::staticGetType(), tr("First Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP1, DEF_IN_CLOUD1, CT_Scene::staticGetType(), tr("First Cloud"));
-  resModel->addGroupModel(
+  CT_InResultModelGroup* resModel2 = createNewInResultModel(DEF_IN_RESULT2, tr("Second group result"));
+  resModel2->setZeroOrMoreRootGroup();
+  resModel2->addGroupModel(
     "", DEF_IN_GRP2, CT_AbstractItemGroup::staticGetType(), tr("Second Group"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-  resModel->addItemModel(DEF_IN_GRP2, DEF_IN_CLOUD2, CT_Scene::staticGetType(), tr("Second Cloud"));
+  resModel2->addItemModel(DEF_IN_GRP2, DEF_IN_CLOUD2, CT_Scene::staticGetType(), tr("Second Cloud"));
 }
 
 void
@@ -140,8 +142,9 @@ SF_StepMergeClouds::compute()
 {
   const QList<CT_ResultGroup*>& outResultList = getOutResultList();
   CT_ResultGroup* outResult = outResultList.at(0);
+  CT_ResultGroup* inResult2 = getInputResults().at(1);
   CT_ResultGroupIterator outResIt1(outResult, this, DEF_IN_GRP1);
-  CT_ResultGroupIterator outResIt2(outResult, this, DEF_IN_GRP2);
+  CT_ResultGroupIterator outResIt2(inResult2, this, DEF_IN_GRP2);
   std::vector<CT_AbstractItemDrawableWithPointCloud*> clouds1;
   std::vector<CT_AbstractItemDrawableWithPointCloud*> clouds2;
   while (!isStopped() && outResIt1.hasNext()) {
@@ -162,17 +165,21 @@ SF_StepMergeClouds::compute()
       CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt3.next();
       CT_AbstractItemDrawableWithPointCloud* cloud1 = clouds1[i];
       CT_AbstractItemDrawableWithPointCloud* cloud2 = clouds2[i];
-      const CT_AbstractPointCloudIndex* indices1 = cloud1->getPointCloudIndex();
-      const CT_AbstractPointCloudIndex* indices2 = cloud2->getPointCloudIndex();
-      CT_PointCloudIndexVector* vec = new CT_PointCloudIndexVector();
       std::vector<size_t> newIndices;
-      CT_PointIterator it1(indices1);
-      while (it1.hasNext()) {
-        newIndices.push_back(it1.next().currentGlobalIndex());
+      CT_PointCloudIndexVector* vec = new CT_PointCloudIndexVector();
+      if (cloud1 != nullptr) {
+        const CT_AbstractPointCloudIndex* indices1 = cloud1->getPointCloudIndex();
+        CT_PointIterator it1(indices1);
+        while (it1.hasNext()) {
+          newIndices.push_back(it1.next().currentGlobalIndex());
+        }
       }
-      CT_PointIterator it2(indices2);
-      while (it2.hasNext()) {
-        newIndices.push_back(it2.next().currentGlobalIndex());
+      if (cloud2 != nullptr) {
+        const CT_AbstractPointCloudIndex* indices2 = cloud2->getPointCloudIndex();
+        CT_PointIterator it2(indices2);
+        while (it2.hasNext()) {
+          newIndices.push_back(it2.next().currentGlobalIndex());
+        }
       }
       std::sort(newIndices.begin(), newIndices.end());
       std::for_each(newIndices.begin(), newIndices.end(), [vec](size_t index) { vec->addIndex(index); });

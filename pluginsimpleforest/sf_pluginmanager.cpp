@@ -17,6 +17,7 @@
 #include "steps/filter/binary/stem_filter/sf_stepStemRANSACFilter.h"
 #include "steps/filter/multiple/euclideanclustering/sf_euclideanClusteringSegmentationStep.h"
 #include "steps/manipulation/merge/sf_stepMergeClouds.h"
+#include "steps/qsm/export/sf_stepExportQSMList.h"
 #include "steps/qsm/modelling/sf_stepQSMAllometricCorrection.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingBasic.h"
@@ -67,6 +68,7 @@ SF_PluginManager::init()
 bool
 SF_PluginManager::loadGenericsStep()
 {
+  addNewExportStep<SF_StepExportQSMList>("QSM");
   addNewPointsStep<SF_StepPrincipalDirection>(CT_StepsMenu::LP_Classify);
   addNewPointsStep<SF_StepStatisticalOutlierRemoval>(CT_StepsMenu::LP_Filter);
   addNewPointsStep<SF_RadiusOutlierFilterStep>(CT_StepsMenu::LP_Filter);

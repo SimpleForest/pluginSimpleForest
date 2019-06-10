@@ -38,23 +38,24 @@ class SF_ModelQSM
   std::shared_ptr<SF_ModelAbstractSegment> m_rootSegment;
   bool m_hasCorrectedParameters = false;
 
-  float m_aGrowthLength = 0;
-  float m_bGrowthLength = 0;
-  float m_cGrowthLength = 0;
+  double m_aGrowthLength = 0;
+  double m_bGrowthLength = 0;
+  double m_cGrowthLength = 0;
 
-  float m_aGrowthVolume = 0;
-  float m_bGrowthVolume = 0;
-  float m_cGrowthVolume = 0;
+  double m_aGrowthVolume = 0;
+  double m_bGrowthVolume = 0;
+  double m_cGrowthVolume = 0;
+  Eigen::Vector3d m_translation;
 
 public:
   SF_ModelQSM(const int ID);
   virtual std::string toString();
   virtual std::string toHeaderString();
 
-  void translate(const Eigen::Vector3f& translation);
-  Eigen::Vector3f translateToOrigin();
-  std::shared_ptr<SF_ModelAbstractSegment> crownStartSegment(float minPercentage);
-  std::shared_ptr<Sf_ModelAbstractBuildingbrick> crownStartBrick(float minPercentage);
+  void translate(const Eigen::Vector3d& translation);
+  Eigen::Vector3d translateToOrigin();
+  std::shared_ptr<SF_ModelAbstractSegment> crownStartSegment(double minPercentage);
+  std::shared_ptr<Sf_ModelAbstractBuildingbrick> crownStartBrick(double minPercentage);
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments();
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getSegments(std::shared_ptr<SF_ModelAbstractSegment> segment);
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> getLeaveSegments();
@@ -65,18 +66,18 @@ public:
   void sort(SF_ModelAbstractSegment::SF_SORTTYPE type);
   bool getHasCorrectedParameters() const;
   void setHasCorrectedParameters(bool hasCorrectedParameters);
-  float getAGrowthLength() const;
-  void setAGrowthLength(float aGrowthLength);
-  float getBGrowthLength() const;
-  void setBGrowthLength(float bGrowthLength);
-  float getCGrowthLength() const;
-  void setCGrowthLength(float cGrowthLength);
-  float getAGrowthVolume() const;
-  void setAGrowthVolume(float aGrowthVolume);
-  float getBGrowthVolume() const;
-  void setBGrowthVolume(float bGrowthVolume);
-  float getCGrowthVolume() const;
-  void setCGrowthVolume(float cGrowthVolume);
+  double getAGrowthLength() const;
+  void setAGrowthLength(double aGrowthLength);
+  double getBGrowthLength() const;
+  void setBGrowthLength(double bGrowthLength);
+  double getCGrowthLength() const;
+  void setCGrowthLength(double cGrowthLength);
+  double getAGrowthVolume() const;
+  void setAGrowthVolume(double aGrowthVolume);
+  double getBGrowthVolume() const;
+  void setBGrowthVolume(double bGrowthVolume);
+  double getCGrowthVolume() const;
+  void setCGrowthVolume(double cGrowthVolume);
   int getID() const;
   void setID(int ID);
 };

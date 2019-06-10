@@ -45,6 +45,17 @@ SF_ModelQSM::setBranchorder()
 {
   m_rootSegment->initializeOrder();
   m_rootSegment->computeBranchOrder(0);
+  auto segments = getSegments();
+  size_t index = 0;
+  for (auto segment : segments) {
+    segment->setID(index++);
+  }
+  index = 0;
+  auto bricks = getBuildingBricks();
+  for (auto brick : bricks) {
+    brick->setID(index++);
+  }
+
   while (m_rootSegment->getReverseBranchOrder() == -1) {
     std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
     std::for_each(
@@ -62,13 +73,23 @@ SF_ModelQSM::setBranchorder()
       leaf->computeReverseSummedBranchOrder(1);
     }
   }
+
+  index = 1;
+  for (auto segment : segments) {
+    if (segment->getBranchOrder() == 0) {
+      auto children = segment->getChildren();
+      for (auto child : children) {
+        child->computeBranchID(index++);
+      }
+    }
+  }
 }
 
 void
 SF_ModelQSM::sort(SF_ModelAbstractSegment::SF_SORTTYPE type)
 {
   m_rootSegment->sort(type);
-  //setBranchorder();
+  setBranchorder();
 }
 
 bool
@@ -83,74 +104,74 @@ SF_ModelQSM::setHasCorrectedParameters(bool hasCorrectedParameters)
   m_hasCorrectedParameters = hasCorrectedParameters;
 }
 
-float
+double
 SF_ModelQSM::getAGrowthLength() const
 {
   return m_aGrowthLength;
 }
 
 void
-SF_ModelQSM::setAGrowthLength(float aGrowthLength)
+SF_ModelQSM::setAGrowthLength(double aGrowthLength)
 {
   m_aGrowthLength = aGrowthLength;
 }
 
-float
+double
 SF_ModelQSM::getBGrowthLength() const
 {
   return m_bGrowthLength;
 }
 
 void
-SF_ModelQSM::setBGrowthLength(float bGrowthLength)
+SF_ModelQSM::setBGrowthLength(double bGrowthLength)
 {
   m_bGrowthLength = bGrowthLength;
 }
 
-float
+double
 SF_ModelQSM::getCGrowthLength() const
 {
   return m_cGrowthLength;
 }
 
 void
-SF_ModelQSM::setCGrowthLength(float cGrowthLength)
+SF_ModelQSM::setCGrowthLength(double cGrowthLength)
 {
   m_cGrowthLength = cGrowthLength;
 }
 
-float
+double
 SF_ModelQSM::getAGrowthVolume() const
 {
   return m_aGrowthVolume;
 }
 
 void
-SF_ModelQSM::setAGrowthVolume(float aGrowthVolume)
+SF_ModelQSM::setAGrowthVolume(double aGrowthVolume)
 {
   m_aGrowthVolume = aGrowthVolume;
 }
 
-float
+double
 SF_ModelQSM::getBGrowthVolume() const
 {
   return m_bGrowthVolume;
 }
 
 void
-SF_ModelQSM::setBGrowthVolume(float bGrowthVolume)
+SF_ModelQSM::setBGrowthVolume(double bGrowthVolume)
 {
   m_bGrowthVolume = bGrowthVolume;
 }
 
-float
+double
 SF_ModelQSM::getCGrowthVolume() const
 {
   return m_cGrowthVolume;
 }
 
 void
-SF_ModelQSM::setCGrowthVolume(float cGrowthVolume)
+SF_ModelQSM::setCGrowthVolume(double cGrowthVolume)
 {
   m_cGrowthVolume = cGrowthVolume;
 }
@@ -176,6 +197,12 @@ SF_ModelQSM::toString()
   str.append(", ");
   str.append(_species);
   str.append(", ");
+  str.append(std::to_string(m_translation.coeff(0)));
+  str.append(", ");
+  str.append(std::to_string(m_translation.coeff(1)));
+  str.append(", ");
+  str.append(std::to_string(m_translation.coeff(2)));
+  str.append(", ");
   str.append(std::to_string(m_aGrowthVolume));
   str.append(", ");
   str.append(std::to_string(m_bGrowthVolume));
@@ -194,24 +221,29 @@ SF_ModelQSM::toString()
 std::string
 SF_ModelQSM::toHeaderString()
 {
-  std::string str("treeID, treeSpecies, gvA, gvB, gvC, glA, glB, glC");
+  std::string str("treeID, treeSpecies, translateX, translateY, translatez, gvA, gvB, gvC, glA, glB, glC");
   str.append("\n");
   return str;
 }
 
 void
-SF_ModelQSM::translate(const Eigen::Vector3f& translation)
+SF_ModelQSM::translate(const Eigen::Vector3d& translation)
 {
+  if (m_translation == -translation) {
+    m_translation = Eigen::Vector3d(0, 0, 0);
+  } else {
+    m_translation = translation;
+  }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = getBuildingBricks();
   for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick : buildingBricks) {
     buildingBrick->translate(translation);
   }
 }
 
-Eigen::Vector3f
+Eigen::Vector3d
 SF_ModelQSM::translateToOrigin()
 {
-  Eigen::Vector3f translation(0, 0, 0);
+  Eigen::Vector3d translation(0, 0, 0);
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = getBuildingBricks();
   if (buildingBricks.empty()) {
     return translation;
@@ -225,20 +257,20 @@ SF_ModelQSM::translateToOrigin()
 }
 
 std::shared_ptr<SF_ModelAbstractSegment>
-SF_ModelQSM::crownStartSegment(float minPercentage)
+SF_ModelQSM::crownStartSegment(double minPercentage)
 {
   auto segment = m_rootSegment;
   while (segment && segment->getChildren().size() > 0) {
     auto children = segment->getChildren();
     if (children.size() >= 2) {
-      float totalLengthStem = 0;
-      float totalLengthBranches = 0;
+      double totalLengthStem = 0;
+      double totalLengthBranches = 0;
       totalLengthStem = children[0]->getBuildingBricks()[0]->getGrowthLength();
       for (size_t i = 1; i < children.size(); i++) {
         totalLengthBranches += children[1]->getBuildingBricks()[0]->getGrowthLength();
       }
-      float totalLengthAll = totalLengthBranches + totalLengthStem;
-      float fraction = 0;
+      double totalLengthAll = totalLengthBranches + totalLengthStem;
+      double fraction = 0;
       if (totalLengthAll > 0) {
         fraction = totalLengthBranches / totalLengthAll;
       }
@@ -254,8 +286,8 @@ SF_ModelQSM::crownStartSegment(float minPercentage)
 
   // TODO extract here subfunction minmax (to qsm model) and rest (to private) in 2 functions:
   auto bricks = getBuildingBricks();
-  float minZ = std::numeric_limits<float>::max();
-  float maxZ = std::numeric_limits<float>::lowest();
+  double minZ = std::numeric_limits<double>::max();
+  double maxZ = std::numeric_limits<double>::lowest();
   std::for_each(bricks.begin(), bricks.end(), [&minZ, &maxZ](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
     auto center = brick->getCenter();
     auto z = center[2];
@@ -280,7 +312,7 @@ SF_ModelQSM::crownStartSegment(float minPercentage)
 }
 
 std::shared_ptr<Sf_ModelAbstractBuildingbrick>
-SF_ModelQSM::crownStartBrick(float minPercentage)
+SF_ModelQSM::crownStartBrick(double minPercentage)
 {
   auto segment = crownStartSegment(minPercentage);
   return segment->getBuildingBricks().back();

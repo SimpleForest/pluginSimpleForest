@@ -107,7 +107,7 @@ SF_BuildQSM::addBuildingBricksToChildSegments(const std::vector<int>& pointIdxNK
                                               std::shared_ptr<SF_ModelAbstractSegment> segment)
 {
   for (size_t i = 0; i < pointIdxNKNSearch.size(); i++) {
-    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = m_buildingBricks[pointIdxNKNSearch[i] + 1]; //TODO why + 1
+    std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick = m_buildingBricks[pointIdxNKNSearch[i] + 1]; // TODO why + 1
     if (buildingBrick->getLength() > _MINLENGTH) {
       std::shared_ptr<SF_ModelAbstractSegment> segmentChild(new SF_ModelAbstractSegment(m_tree));
       segmentChild->addBuildingBrick(buildingBrick);

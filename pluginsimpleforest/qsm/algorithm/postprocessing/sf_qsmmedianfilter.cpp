@@ -36,6 +36,9 @@ void
 SF_QSMMedianFilter::compute(std::shared_ptr<SF_ModelQSM> qsm)
 {
   m_qsm = qsm;
+  if (!qsm) {
+    return;
+  }
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments = m_qsm->getSegments();
   std::for_each(segments.begin(), segments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> segment) {
     if (!segment->isRoot()) {

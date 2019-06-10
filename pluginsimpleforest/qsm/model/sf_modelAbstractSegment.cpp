@@ -72,6 +72,8 @@ SF_ModelAbstractSegment::toString()
   str.append(", ");
   str.append(std::to_string(m_reversePipeBranchOrder));
   str.append(", ");
+  str.append(std::to_string(m_reverseSummedBranchOrder));
+  str.append(", ");
   str.append(std::to_string(m_branchID));
   str.append(", ");
   str.append(getTree()->toString());
@@ -83,32 +85,32 @@ SF_ModelAbstractSegment::toHeaderString()
 {
   std::string str("segmentID, parentSegmentID, segmentMedianRadius, "
                   "segmentGrowthVolume, segmentGrowthLength, branchOrder, "
-                  "reverseBranchOrder, reversePipeBranchorder, branchID, ");
+                  "reverseBranchOrder, reversePipeBranchorder, reverseSummedBranchOrder, branchID, ");
   str.append(getTree()->toHeaderString());
   return str;
 }
 
-Eigen::Vector3f
+Eigen::Vector3d
 SF_ModelAbstractSegment::getStart() const
 {
-  Eigen::Vector3f start;
+  Eigen::Vector3d start;
   if (!m_buildingBricks.empty()) {
     start = m_buildingBricks[0]->getStart();
   }
   return start;
 }
 
-Eigen::Vector3f
+Eigen::Vector3d
 SF_ModelAbstractSegment::getEnd() const
 {
-  Eigen::Vector3f end;
+  Eigen::Vector3d end;
   if (!m_buildingBricks.empty()) {
     end = m_buildingBricks[m_buildingBricks.size() - 1]->getEnd();
   }
   return end;
 }
 
-Eigen::Vector3f
+Eigen::Vector3d
 SF_ModelAbstractSegment::getAxis() const
 {
   return (getEnd() - getStart());
@@ -131,27 +133,27 @@ SF_ModelAbstractSegment::remove()
   }
 }
 
-float
+double
 SF_ModelAbstractSegment::getRadius() const
 {
-  std::vector<float> radii;
+  std::vector<double> radii;
   for (size_t i = 0; i < m_buildingBricks.size(); i++) {
     radii.push_back(m_buildingBricks[i]->getRadius());
   }
-  return SF_Math<float>::getMedian(radii);
+  return SF_Math<double>::getMedian(radii);
 }
 
-float
+double
 SF_ModelAbstractSegment::getVolume() const
 {
-  float volume = 0;
+  double volume = 0;
   for (size_t i = 0; i < m_buildingBricks.size(); i++) {
     volume += m_buildingBricks[i]->getVolume();
   }
   return volume;
 }
 
-float
+double
 SF_ModelAbstractSegment::getGrowthVolume() const
 {
   if (!m_buildingBricks.empty()) {
@@ -161,7 +163,7 @@ SF_ModelAbstractSegment::getGrowthVolume() const
   return 0;
 }
 
-float
+double
 SF_ModelAbstractSegment::getGrowthLength() const
 {
   if (!m_buildingBricks.empty()) {
@@ -171,10 +173,10 @@ SF_ModelAbstractSegment::getGrowthLength() const
   return 0;
 }
 
-float
+double
 SF_ModelAbstractSegment::getLength() const
 {
-  float length = 0;
+  double length = 0;
   for (size_t i = 0; i < m_buildingBricks.size(); i++) {
     length += m_buildingBricks[i]->getLength();
   }
@@ -212,18 +214,24 @@ SF_ModelAbstractSegment::computeBranchOrder(int branchOrder)
 void
 SF_ModelAbstractSegment::computeReverseBranchOrder(int branchOrder)
 {
-  m_reversePipeBranchOrder = branchOrder;
+  m_reverseBranchOrder = branchOrder;
   if (!isRoot()) {
     auto sibilings = getSiblings();
     bool allSibilingsComputed = true;
-    std::for_each(sibilings.begin() + 1, sibilings.end(), [&allSibilingsComputed](std::shared_ptr<SF_ModelAbstractSegment> child) {
-      if (child->getBranchOrder() == -1) {
-        allSibilingsComputed = false;
-      }
-    });
+    int maxBranchOrder = 0;
+    std::for_each(sibilings.begin() + 1,
+                  sibilings.end(),
+                  [&allSibilingsComputed, &maxBranchOrder](std::shared_ptr<SF_ModelAbstractSegment> child) {
+                    if (child->getReverseBranchOrder() == -1) {
+                      allSibilingsComputed = false;
+                    }
+                    if (maxBranchOrder < child->getReverseBranchOrder()) {
+                      maxBranchOrder = child->getReverseBranchOrder();
+                    }
+                  });
     if (allSibilingsComputed) {
       auto parent = getParent();
-      parent->computeReverseBranchOrder(branchOrder + 1);
+      parent->computeReverseBranchOrder(maxBranchOrder + 1);
     }
   }
 }
@@ -231,43 +239,44 @@ SF_ModelAbstractSegment::computeReverseBranchOrder(int branchOrder)
 void
 SF_ModelAbstractSegment::computeReverseSummedBranchOrder(int branchOrder)
 {
-  m_reversePipeBranchOrder = branchOrder;
+  m_reverseSummedBranchOrder = branchOrder;
   if (!isRoot()) {
     auto sibilings = getSiblings();
     bool allSibilingsComputed = true;
     std::for_each(sibilings.begin() + 1, sibilings.end(), [&allSibilingsComputed](std::shared_ptr<SF_ModelAbstractSegment> child) {
-      if (child->getBranchOrder() == -1) {
+      if (child->getReverseSummedBranchOrder() == -1) {
         allSibilingsComputed = false;
       }
     });
     if (allSibilingsComputed) {
-      float sum = std::accumulate(sibilings.begin(), sibilings.end(), 0, [](int sum, std::shared_ptr<SF_ModelAbstractSegment> child) {
+      double sum = std::accumulate(sibilings.begin(), sibilings.end(), 0, [](int sum, std::shared_ptr<SF_ModelAbstractSegment> child) {
         return child->getReverseSummedBranchOrder() + sum;
       });
       auto parent = getParent();
-      parent->computeReverseBranchOrder(++sum);
+      parent->computeReverseSummedBranchOrder(sum);
     }
   }
 }
 
 void
-SF_ModelAbstractSegment::computeReversePipeBranchOrder(int branchOrder)
+SF_ModelAbstractSegment::computeReversePipeBranchOrder(double branchOrder)
 {
   m_reversePipeBranchOrder = branchOrder;
   if (!isRoot()) {
     auto sibilings = getSiblings();
     bool allSibilingsComputed = true;
     std::for_each(sibilings.begin() + 1, sibilings.end(), [&allSibilingsComputed](std::shared_ptr<SF_ModelAbstractSegment> child) {
-      if (child->getBranchOrder() == -1) {
+      if (child->getReversePipeBranchOrder() == -1) {
         allSibilingsComputed = false;
       }
     });
     if (allSibilingsComputed) {
-      float sum = std::accumulate(sibilings.begin(), sibilings.end(), 0, [](int sum, std::shared_ptr<SF_ModelAbstractSegment> child) {
-        return child->getReversePipeBranchOrder() * child->getReversePipeBranchOrder() + sum;
-      });
+      double sum = std::accumulate(
+        sibilings.begin(), sibilings.end(), 0, [](double sum, std::shared_ptr<SF_ModelAbstractSegment> child) -> double {
+          return child->getReversePipeBranchOrder() * child->getReversePipeBranchOrder() + sum;
+        });
       auto parent = getParent();
-      parent->computeReverseBranchOrder(std::sqrt(sum));
+      parent->computeReversePipeBranchOrder(std::sqrt(sum));
     }
   }
 }
@@ -279,6 +288,7 @@ SF_ModelAbstractSegment::initializeOrder()
   m_reverseSummedBranchOrder = -1;
   m_reversePipeBranchOrder = -1;
   m_branchOrder = -1;
+  m_branchID = -1;
   std::for_each(
     m_children.begin(), m_children.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> child) { child->initializeOrder(); });
 }
@@ -354,8 +364,8 @@ SF_ModelAbstractSegment::sort(const SF_ModelAbstractSegment::SF_SORTTYPE sortTyp
                   return (child1->getRadius() > child2->getRadius());
                   break;
                 case SF_SORTTYPE::ANGLE:
-                  return (SF_Math<float>::getAngleBetweenDeg(child1->getAxis(), getAxis()) <
-                          SF_Math<float>::getAngleBetweenDeg(child2->getAxis(), getAxis()));
+                  return (SF_Math<double>::getAngleBetweenDeg(child1->getAxis(), getAxis()) <
+                          SF_Math<double>::getAngleBetweenDeg(child2->getAxis(), getAxis()));
                   break;
                 default:
                   throw("Tree sorting with undefined sort type called.");
@@ -411,6 +421,16 @@ void
 SF_ModelAbstractSegment::setReverseSummedBranchOrder(int reverseSummedBranchOrder)
 {
   m_reverseSummedBranchOrder = reverseSummedBranchOrder;
+}
+
+void
+SF_ModelAbstractSegment::computeBranchID(int branchID)
+{
+  m_branchID = branchID;
+  auto children = getChildren();
+  for (auto child : children) {
+    child->computeBranchID(branchID);
+  }
 }
 
 int

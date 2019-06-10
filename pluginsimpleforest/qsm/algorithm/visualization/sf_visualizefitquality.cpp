@@ -57,10 +57,13 @@ SF_VisualizeFitquality::SF_VisualizeFitquality() {}
 void
 SF_VisualizeFitquality::compute()
 {
+  if (!_qsm) {
+    return;
+  }
   m_colors = new CT_ColorCloudStdVector(m_cloud->points.size());
   m_params._method = SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC;
   Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(_qsm, m_cloud, m_params);
-  std::vector<float> distances = cmd.distances();
+  std::vector<double> distances = cmd.distances();
   float _maxDistance = m_params._inlierDistance;
 
   for (size_t i = 0; i < m_cloud->points.size(); i++) {

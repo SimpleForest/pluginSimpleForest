@@ -23,9 +23,9 @@ SF_QSMRefitCylinder::initialize()
   SF_CloudNormal::Ptr centerCloud(new SF_CloudNormal());
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = m_params._qsm->getBuildingBricks();
   for (size_t i = 0; i < buildingBricks.size(); i++) {
-    Eigen::Vector3f pointEigen = buildingBricks[i]->getCenter();
+    Eigen::Vector3d pointEigen = buildingBricks[i]->getCenter();
     SF_PointNormal point;
-    point.getVector3fMap() = pointEigen;
+    point.getVector3fMap() = pointEigen.cast<float>();
     point.intensity = i;
     centerCloud->push_back(std::move(point));
     SF_CloudNormal::Ptr cloud(new SF_CloudNormal());
@@ -43,7 +43,7 @@ SF_QSMRefitCylinder::initialize()
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
         float angle = SF_Math<float>::getAngleBetweenDeg(neighboringBrick->getAxis(),
-                                                         Eigen::Vector3f(point.normal_x, point.normal_y, point.normal_z));
+                                                         Eigen::Vector3d(point.normal_x, point.normal_y, point.normal_z));
         if (90 - angle < m_params.m_angle) {
           float distance = std::sqrt(pointRadiusSquaredDistance[j]);
           if (distance < minDistance) {
@@ -81,7 +81,7 @@ SF_QSMRefitCylinder::compute()
       if (coefficientsCylinder->values.size() == 7) {
         float angle = SF_Math<float>::getAngleBetweenDeg(
           buildingBricks[index]->getAxis(),
-          Eigen::Vector3f(coefficientsCylinder->values[3], coefficientsCylinder->values[4], coefficientsCylinder->values[5]));
+          Eigen::Vector3d(coefficientsCylinder->values[3], coefficientsCylinder->values[4], coefficientsCylinder->values[5]));
         if (angle < m_params.m_angle) {
           float radius = buildingBricks[index]->getRadius();
           double minRad = std::min(radius - m_params.m_minMaxDistance, radius * (1 - m_params.m_range));

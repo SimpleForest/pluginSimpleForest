@@ -26,41 +26,26 @@
 
 *****************************************************************************/
 
-#ifndef SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
-#define SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
+#include "sf_abstractExport.h"
 
-#include <QThreadPool>
-
-#include "qsm/algorithm/postprocessing/sf_correctbranchjunction.h"
-#include "steps/param/sf_paramAllSteps.h"
-
-class SF_StepCorrectBranchJunctionsAdapter
+void
+SF_AbstractExport::setFirstColor(const SF_ColorFactory::Color firstColor)
 {
-public:
-  std::shared_ptr<QMutex> mMutex;
+  m_firstColor = firstColor;
+}
 
-  SF_StepCorrectBranchJunctionsAdapter(const SF_StepCorrectBranchJunctionsAdapter& obj) { mMutex = obj.mMutex; }
+void
+SF_AbstractExport::setSecondColor(const SF_ColorFactory::Color secondColor)
+{
+  m_secondColor = secondColor;
+}
 
-  SF_StepCorrectBranchJunctionsAdapter() { mMutex.reset(new QMutex); }
+SF_AbstractExport::SF_AbstractExport() {}
 
-  ~SF_StepCorrectBranchJunctionsAdapter() {}
-
-  void operator()(SF_ParamAllometricCorrectionNeighboring& params)
-  {
-    Eigen::Vector3d translation;
-    SF_CorrectBranchJunction ac;
-    {
-      QMutexLocker m1(&*mMutex);
-      translation = params._qsm->getRootSegment()->getBuildingBricks().front()->getCenter();
-      params._qsm->translate(-translation);
-      ac.setParams(params);
-    }
-    ac.compute();
-    {
-      QMutexLocker m1(&*mMutex);
-      params._qsm->translate(translation);
-    }
-  }
-};
-
-#endif // SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
+QString
+SF_AbstractExport::getFullName(QString name, QString extension)
+{
+  name.append(QString::number(m_qsm->getID()));
+  name.append(extension);
+  return name;
+}

@@ -102,31 +102,26 @@ public:
       ec.setSearchMethod(tree);
       ec.setInputCloud(cloudDownscaled);
     }
-
     std::vector<pcl::PointIndices> clusterIndices;
     ec.extract(clusterIndices);
     if (clusterIndices.size() > 0) {
       for (std::vector<int>::const_iterator pit = clusterIndices[0].indices.begin(); pit != clusterIndices[0].indices.end(); ++pit)
         largestCluster->points.push_back(cloudDownscaled->points[*pit]);
     }
-
     SF_SphereFollowingRasterSearch sphereFollowing;
     {
       QMutexLocker m1(&*mMutex);
       sphereFollowing.setParams(params);
       sphereFollowing.setCloud(largestCluster);
     }
-
     sphereFollowing.compute();
     {
       QMutexLocker m1(&*mMutex);
       params = sphereFollowing.getParamVec()[0];
       params._cloudIn = largestCluster;
-
       SF_QSMMedianFilter med;
       med.compute(params._qsm);
     }
-
     SF_VisualizeFitquality vfq;
     {
       QMutexLocker m1(&*mMutex);
@@ -134,14 +129,14 @@ public:
       vfq.setParams(params._distanceParams);
       vfq.setQsm(params._qsm);
     }
-
     vfq.compute();
 
     {
+      if (!params._qsm)
+        return;
       QMutexLocker m1(&*mMutex);
       params._colors = vfq.colors();
-      params._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
-      params._qsm->translate(Eigen::Vector3f(params._translation[0], params._translation[1], params._translation[2]));
+      params._qsm->translate(params._translation);
     }
   }
 };

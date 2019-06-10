@@ -46,7 +46,7 @@ protected:
   int m_branchOrder;
   int m_reverseBranchOrder;
   int m_reverseSummedBranchOrder;
-  int m_reversePipeBranchOrder;
+  double m_reversePipeBranchOrder;
   int m_branchID;
   int getParentID();
   std::shared_ptr<SF_ModelAbstractSegment> getFirstChild();
@@ -64,20 +64,20 @@ public:
   void addBuildingBrick(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
   virtual std::string toString();
   virtual std::string toHeaderString();
-  Eigen::Vector3f getStart() const;
-  Eigen::Vector3f getEnd() const;
-  Eigen::Vector3f getAxis() const;
+  Eigen::Vector3d getStart() const;
+  Eigen::Vector3d getEnd() const;
+  Eigen::Vector3d getAxis() const;
   void remove();
-  float getRadius() const;
-  float getVolume() const;
-  float getGrowthVolume() const;
-  float getGrowthLength() const;
-  float getLength() const;
+  double getRadius() const;
+  double getVolume() const;
+  double getGrowthVolume() const;
+  double getGrowthLength() const;
+  double getLength() const;
   bool isRoot();
   void computeBranchOrder(int branchOrder = 0);
   void computeReverseBranchOrder(int branchOrder = 1);
   void computeReverseSummedBranchOrder(int branchOrder = 1);
-  void computeReversePipeBranchOrder(int branchOrder = 1);
+  void computeReversePipeBranchOrder(double branchOrder = 1);
   void initializeOrder();
   std::shared_ptr<SF_ModelAbstractSegment> getParent();
   void setParent(const std::weak_ptr<SF_ModelAbstractSegment>& parent);
@@ -100,6 +100,7 @@ public:
   void setID(int ID);
   int getReverseSummedBranchOrder() const;
   void setReverseSummedBranchOrder(int reverseSummedBranchOrder);
+  void computeBranchID(int branchID);
 };
 
 #endif // SF_MODEL_ABSTRACT_SEGMENT_H

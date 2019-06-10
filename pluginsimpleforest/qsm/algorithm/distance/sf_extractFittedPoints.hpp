@@ -66,9 +66,9 @@ SF_ExtractFittedPoints<PointType>::compute()
   float inlierDistance = distanceParams._inlierDistance;
   distanceParams._method = SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER;
   Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_tree, m_cloud, distanceParams);
-  std::vector<float> distances = cmd.distances();
+  std::vector<double> distances = cmd.distances();
   size_t index = 0;
-  for (float distance : distances) {
+  for (double distance : distances) {
     if (distance < inlierDistance) {
       m_cloudFitted->points.push_back(m_cloud->points[index]);
     } else {

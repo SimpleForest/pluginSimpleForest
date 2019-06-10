@@ -92,6 +92,14 @@ Sf_ConverterCTToPCL<PointType>::compute()
 
 template<typename PointType>
 void
+Sf_ConverterCTToPCL<PointType>::compute(Eigen::Vector3d translation)
+{
+  m_translation = translation;
+  convert();
+}
+
+template<typename PointType>
+void
 Sf_ConverterCTToPCL<PointType>::convert()
 {
   const CT_AbstractPointCloudIndex* index = m_itemCpyCloudIn->getPointCloudIndex();

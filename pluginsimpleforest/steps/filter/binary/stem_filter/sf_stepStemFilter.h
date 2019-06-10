@@ -60,10 +60,10 @@ private:
   double _x = 0;
   double _y = 0;
   double _z = 1;
-  double _angle = 25;
-  double _radiusGrowthDirection = 0.4;
-  double _radiusNormal = 0.2;
-  double _voxelSize = 0.04;
+  double _angle = 45;
+  double _radiusGrowthDirection = 0.12;
+  double _radiusNormal = 0.05;
+  double _voxelSize = 0.02;
   double _sizeOutput = 2;
   CT_AutoRenameModels m_outCloudItem;
   void writeOutputPerScence(CT_ResultGroup* outResult, size_t i);

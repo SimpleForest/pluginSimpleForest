@@ -43,17 +43,17 @@ const T SF_Math<T>::_DEG_TO_RAD = SF_Math::_PI / 180.0;
 
 template<typename T>
 T
-SF_Math<T>::getAngleBetweenDeg(Eigen::Vector3f axis1, Eigen::Vector3f axis2)
+SF_Math<T>::getAngleBetweenDegf(Eigen::Vector3f axis1, Eigen::Vector3f axis2)
 {
   axis1.normalize();
   axis2.normalize();
   float angleBetween0And180 = acos(axis1.dot(axis2)) * SF_Math::_RAD_TO_DEG;
-  return std::min(angleBetween0And180, (180.0f - angleBetween0And180));
+  return std::min(angleBetween0And180, static_cast<T>(180.0f - angleBetween0And180));
 }
 
 template<typename T>
 T
-SF_Math<T>::distance(const Eigen::Vector3f& pointA, const Eigen::Vector3f& pointB)
+SF_Math<T>::distancef(const Eigen::Vector3f& pointA, const Eigen::Vector3f& pointB)
 {
   T distance = (pointA - pointB).norm();
   return distance;
@@ -61,7 +61,34 @@ SF_Math<T>::distance(const Eigen::Vector3f& pointA, const Eigen::Vector3f& point
 
 template<typename T>
 T
-SF_Math<T>::getAngleBetweenRad(Eigen::Vector3f axis1, Eigen::Vector3f axis2)
+SF_Math<T>::getAngleBetweenRadf(Eigen::Vector3f axis1, Eigen::Vector3f axis2)
+{
+  axis1.normalize();
+  axis2.normalize();
+  return acos(axis1.dot(axis2));
+}
+
+template<typename T>
+T
+SF_Math<T>::getAngleBetweenDeg(Eigen::Vector3d axis1, Eigen::Vector3d axis2)
+{
+  axis1.normalize();
+  axis2.normalize();
+  T angleBetween0And180 = acos(axis1.dot(axis2)) * SF_Math::_RAD_TO_DEG;
+  return std::min(angleBetween0And180, static_cast<T>(180.0 - angleBetween0And180));
+}
+
+template<typename T>
+T
+SF_Math<T>::distance(const Eigen::Vector3d& pointA, const Eigen::Vector3d& pointB)
+{
+  T distance = (pointA - pointB).norm();
+  return distance;
+}
+
+template<typename T>
+T
+SF_Math<T>::getAngleBetweenRad(Eigen::Vector3d axis1, Eigen::Vector3d axis2)
 {
   axis1.normalize();
   axis2.normalize();
@@ -79,6 +106,9 @@ template<typename T>
 T
 SF_Math<T>::getQuantile(std::vector<T>& vec, T quantile)
 {
+  if (vec.size() == 0) {
+    return 0;
+  }
   size_t n = vec.size() * quantile;
   std::nth_element(vec.begin(), vec.begin() + n, vec.end());
   return vec[n];

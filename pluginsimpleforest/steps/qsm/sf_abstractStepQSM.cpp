@@ -82,18 +82,11 @@ SF_AbstractStepQSM::constructBranchRecursively(const CT_AbstractResult* result,
 CT_CylinderData*
 SF_AbstractStepQSM::constructCylinderData(std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick)
 {
-  Eigen::Vector3f start = brick->getStart();
-  Eigen::Vector3f end = brick->getEnd();
+  Eigen::Vector3d start = brick->getStart();
+  Eigen::Vector3d end = brick->getEnd();
   double radius = brick->getRadius();
   double length = brick->getLength();
-  CT_CylinderData* data = new CT_CylinderData(Eigen::Vector3d(static_cast<double>((start[0] + end[0]) / 2),
-                                                              static_cast<double>((start[1] + end[1]) / 2),
-                                                              static_cast<double>((start[2] + end[2]) / 2)),
-                                              Eigen::Vector3d(static_cast<double>(end[0] - start[0]),
-                                                              static_cast<double>(end[1] - start[1]),
-                                                              static_cast<double>(end[2] - start[2])),
-                                              radius,
-                                              length);
+  CT_CylinderData* data = new CT_CylinderData((start + end) / 2, Eigen::Vector3d(end - start), radius, length);
   return data;
 }
 

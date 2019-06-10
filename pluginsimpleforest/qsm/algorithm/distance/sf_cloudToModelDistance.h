@@ -38,11 +38,11 @@ class Sf_CloudToModelDistance
 {
   SF_CLoudToModelDistanceMethod _METHOD;
   int _k;
-  float _cropDistance;
-  float _averageDistance;
-  const float _MIN_GROWTH_LENGTH = 0.001f;
-  std::vector<float> _distances;
-  std::vector<float> _growthLengths;
+  double _cropDistance;
+  double _averageDistance;
+  const double _MIN_GROWTH_LENGTH = 0.001f;
+  std::vector<double> _distances;
+  std::vector<double> _growthLengths;
   std::shared_ptr<SF_ModelQSM> _tree;
   typename pcl::KdTreeFLANN<PointType>::Ptr _kdtreeQSM;
   typename pcl::PointCloud<PointType>::Ptr _cloud;
@@ -50,24 +50,24 @@ class Sf_CloudToModelDistance
   void initializeKdTree();
   void initializeGrowthLength();
   void compute();
-  float getDistance(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
-  float getAngle(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
-  float getNumberInliersNegative(const std::vector<float>& distances);
-  float adaptDistanceToMethod(float distance);
-  std::vector<float> getCloudToModelDistances();
-  float maxError() const;
+  double getDistance(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+  double getAngle(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+  double getNumberInliersNegative(const std::vector<double>& distances);
+  double adaptDistanceToMethod(double distance);
+  std::vector<double> getCloudToModelDistances();
+  double maxError() const;
 
 public:
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                           typename pcl::PointCloud<PointType>::Ptr cloud,
                           SF_CLoudToModelDistanceMethod& method,
-                          float cropDistance,
+                          double cropDistance,
                           int k);
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                           typename pcl::PointCloud<PointType>::Ptr cloud,
                           SF_CloudToModelDistanceParameters& params);
-  float getAverageDistance() const;
-  std::vector<float> distances() const;
+  double getAverageDistance() const;
+  std::vector<double> distances() const;
 };
 
 #include "qsm/algorithm/distance/sf_cloudToModelDistance.hpp"

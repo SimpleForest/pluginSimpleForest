@@ -26,20 +26,25 @@
 
 *****************************************************************************/
 
-#ifndef SF_QSMALLOMETRICCHECK_H
-#define SF_QSMALLOMETRICCHECK_H
+#ifndef SF_STEPEXPORTQSMLIST_H
+#define SF_STEPEXPORTQSMLIST_H
 
 #include "steps/qsm/sf_abstractStepQSM.h"
 
-#include <QString>
+#include <converters/CT_To_PCL/sf_converterCTIDToPCLCloud.h>
+#include <converters/CT_To_PCL/sf_converterCTToPCL.h>
+#include <pcl/ModelCoefficients.h>
+#include <pcl/features/normal_3d.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/kdtree/kdtree.h>
 
-class SF_StepQSMAllometricCorrection : public SF_AbstractStepQSM
+class SF_StepExportQSMList : public SF_AbstractStepQSM
 {
   Q_OBJECT
 
 public:
-  SF_StepQSMAllometricCorrection(CT_StepInitializeData& dataInit);
-  ~SF_StepQSMAllometricCorrection();
+  SF_StepExportQSMList(CT_StepInitializeData& dataInit);
+  ~SF_StepExportQSMList();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;
@@ -50,35 +55,27 @@ protected:
   void createInResultModelListProtected();
   void createOutResultModelListProtected();
   void adaptParametersToExpertLevel() {}
-  void createParamList(CT_ResultGroup* out_result);
   virtual void createPreConfigurationDialog() {}
   virtual void createPostConfigurationDialog();
   void compute();
-  QList<SF_ParamAllometricCorrectionNeighboring> _paramList;
 
 private:
-  CT_AutoRenameModels m_outCloudItem;
-  CT_AutoRenameModels _outCylinderGroup;
-  CT_AutoRenameModels _outCylinders;
-  CT_AutoRenameModels _outSFQSM;
   int toStringSFMethod();
   SF_CLoudToModelDistanceMethod toStringCMDMethod();
 
-  double _range = 0.2;
-  double _minRadius = 0.0025;
-
-  double m_power = 1.0 / 2.49;
-  bool m_useGrowthLength = true;
-  bool m_withIntercept = true;
-  double m_quantile = 0.5;
-  int m_minPts = 10;
-  double m_inlierDistance = 0.3;
-  int m_ransacIterations = 1000;
-  int m_gaussNewtonIterations = 20;
-  bool m_estimateParams = true;
+  bool m_writePlyGrowthVolume = true;
+  bool m_writePlyGrowthLengthPly = true;
+  bool m_writePlyStem = true;
+  bool m_writeCloudRadius = true;
+  bool m_writeCloudGrowthLength = true;
+  bool m_writeCloudFitQuality = true;
+  bool m_writeCloud = true;
+  bool m_downScaleCloud = true;
+  double m_voxelSize = 0.03;
+  QStringList m_filePath;
 
   virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
   virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
 };
 
-#endif // SF_QSMALLOMETRICCHECK_H
+#endif // SF_STEPEXPORTQSMLIST_H

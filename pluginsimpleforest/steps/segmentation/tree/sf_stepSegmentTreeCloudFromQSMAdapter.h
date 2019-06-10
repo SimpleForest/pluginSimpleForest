@@ -66,7 +66,7 @@ public:
     {
       QMutexLocker m1(&*mMutex);
       cloud = converter.cloudTranslated();
-      params._qsm->translate(Eigen::Vector3f(-translation[0], -translation[1], -translation[2]));
+      params._qsm->translate(-translation);
     }
     pcl::NormalEstimation<SF_PointNormal, SF_PointNormal> ne;
     {
@@ -86,7 +86,7 @@ public:
     {
       QMutexLocker m1(&*mMutex);
       params = clustering.params();
-      params._qsm->translate(Eigen::Vector3f(translation[0], translation[1], translation[2]));
+      params._qsm->translate(translation);
     }
   }
 };

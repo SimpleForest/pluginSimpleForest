@@ -24,9 +24,12 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     cloud/filter/unary/maxIntensity/sf_maxintensity.h \
     cloud/filter/unary/sf_abstractUnaryFilter.h \
     cloud/sf_transferfeature.h \
-    cloud/sf_transferfeature.hpp \
     converters/CT_To_PCL/sf_converterCTIDToPCLCloud.h \
     converters/CT_To_PCL/sf_converterCTIDToPCLCloud.hpp \
+    file/export/cloud/sf_exportCloud.h \
+    file/export/ply/sf_exportPly.h \
+    file/export/qsm/sf_exportQSM.h \
+    file/export/sf_abstractExport.h \
     math/fit/line/sf_fitransacline.h \
     math/fit/line/sf_fitransacline.hpp \
     math/fit/power/sf_fitgnpower.h \
@@ -98,6 +101,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/cloud/feature/growth_direction/sf_growthDirection.hpp \
     steps/item/sf_qsm_item.h \
     steps/item/sf_spherefollowing_parameters_item.h \
+    steps/qsm/export/sf_stepExportQSMList.h \
     steps/qsm/modelling/sf_stepQSMAllometricCorrection.h \
     steps/qsm/modelling/sf_stepQSMAllometricCorrectionAdapter.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h \
@@ -179,6 +183,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     tests/factory/sf_qsmfactory.h
 
 SOURCES += \
+    file/export/cloud/sf_exportCloud.cpp \
+    file/export/ply/sf_exportPly.cpp \
+    file/export/qsm/sf_exportQSM.cpp \
+    file/export/sf_abstractExport.cpp \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.cpp \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.cpp \
     qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.cpp \
@@ -201,6 +209,7 @@ SOURCES += \
     pcl/cloud/filter/binary/stem/sf_stemRansacFilter.cpp \
     steps/item/sf_qsm_item.cpp \
     steps/item/sf_spherefollowing_parameters_item.cpp \
+    steps/qsm/export/sf_stepExportQSMList.cpp \
     steps/qsm/modelling/sf_stepQSMAllometricCorrection.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingBasic.cpp \
@@ -227,7 +236,6 @@ SOURCES += \
     steps/dtm/sf_stepDTM.cpp \
     steps/feature/principaldirection/sf_stepprincipaldirection.cpp \
     steps/feature/sf_abstractstepfeature.cpp \
-    cloud/filter/multiple/clusterscaling/sf_testclustertransfer.cpp \
     qsm/model/sf_modelLevelOne.cpp \
     qsm/algorithm/spherefollowing/sf_spherefollowing.cpp \
     qsm/algorithm/optimization/gridsearch/sf_spherefollowingrastersearch.cpp \

@@ -40,11 +40,21 @@ SF_StemFilter<PointType>::transferStem(const SF_ParamStemFilter<PointType>& para
                                        typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction)
 {
   _colors = new CT_ColorCloudStdVector(SF_StemFilter<PointType>::_cloudIn->points.size());
+  float maxZ = -100000;
+  for (size_t i = 0; i < SF_StemFilter<PointType>::_cloudIn->points.size(); i++) {
+    PointType p = SF_StemFilter<PointType>::_cloudIn->points.at(i);
+    if (p.z > maxZ)
+      maxZ = p.z;
+  }
   pcl::KdTreeFLANN<PointType> kdtree;
   kdtree.setInputCloud(cloud_with_growth_direction);
   for (size_t i = 0; i < SF_StemFilter<PointType>::_cloudIn->points.size(); i++) {
     CT_Color& col = _colors->colorAt(i);
     PointType p = SF_StemFilter<PointType>::_cloudIn->points.at(i);
+    if (p.z > maxZ - _params._radiusGrowthDirection) {
+      SF_StemFilter<PointType>::_cloudOutFiltered->points.push_back(p);
+      continue;
+    }
     std::vector<int> pointIdxRadiusSearch;
     std::vector<float> pointRadiusSquaredDistance;
     if (kdtree.nearestKSearch(p, 1, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
@@ -57,11 +67,11 @@ SF_StemFilter<PointType>::transferStem(const SF_ParamStemFilter<PointType>& para
       col.r() = (std::abs((vecNorm[0] * 126) + 127));
       col.g() = (std::abs((vecNorm[1] * 126) + 127));
       col.b() = (std::abs((vecNorm[2] * 250)));
-      Eigen::Vector3f axis1;
+      Eigen::Vector3d axis1;
       axis1[0] = params._x;
       axis1[1] = params._y;
       axis1[2] = params._z;
-      Eigen::Vector3f axis2;
+      Eigen::Vector3d axis2;
       axis2[0] = gd_point.normal_x;
       axis2[1] = gd_point.normal_y;
       axis2[2] = gd_point.normal_z;

@@ -27,8 +27,8 @@ struct SF_QSMDetectionCylinder
 
   SF_QSMDetectionCylinder(float distance, pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB)
   {
-    Eigen::Vector3f pointA(circleA->values[0], circleA->values[1], circleA->values[2]);
-    Eigen::Vector3f pointB(circleB->values[0], circleB->values[1], circleB->values[2]);
+    Eigen::Vector3d pointA(circleA->values[0], circleA->values[1], circleA->values[2]);
+    Eigen::Vector3d pointB(circleB->values[0], circleB->values[1], circleB->values[2]);
     _distance = distance + SF_Math<float>::distance(pointA, pointB);
     _circleA = circleA;
     _circleB = circleB;
@@ -36,16 +36,16 @@ struct SF_QSMDetectionCylinder
 
   void addSecondCircle(pcl::ModelCoefficients::Ptr circleB)
   {
-    Eigen::Vector3f pointA(_circleA->values[0], _circleA->values[1], _circleA->values[2]);
-    Eigen::Vector3f pointB(circleB->values[0], circleB->values[1], circleB->values[2]);
+    Eigen::Vector3d pointA(_circleA->values[0], _circleA->values[1], _circleA->values[2]);
+    Eigen::Vector3d pointB(circleB->values[0], circleB->values[1], circleB->values[2]);
     _distance = _distance + SF_Math<float>::distance(pointA, pointB);
     _circleB = circleB;
   }
 
   void addSecondCircle(pcl::ModelCoefficients circleB)
   {
-    Eigen::Vector3f pointA(_circleA->values[0], _circleA->values[1], _circleA->values[2]);
-    Eigen::Vector3f pointB(circleB.values[0], circleB.values[1], circleB.values[2]);
+    Eigen::Vector3d pointA(_circleA->values[0], _circleA->values[1], _circleA->values[2]);
+    Eigen::Vector3d pointB(circleB.values[0], circleB.values[1], circleB.values[2]);
     _distance = _distance + SF_Math<float>::distance(pointA, pointB);
     _circleB = boost::make_shared<pcl::ModelCoefficients>(circleB);
   }

@@ -118,11 +118,11 @@ SF_DTM<PointType>::isValid(const pcl::ModelCoefficients& parentCoeff,
                            const Eigen::Vector2f& parentHeights,
                            const float gridSize)
 {
-  Eigen::Vector3f normal;
+  Eigen::Vector3d normal;
   normal(0) = childCoeff.values[0];
   normal(1) = childCoeff.values[1];
   normal(2) = childCoeff.values[2];
-  Eigen::Vector3f zAxis;
+  Eigen::Vector3d zAxis;
   zAxis(0) = parentCoeff.values[0];
   zAxis(1) = parentCoeff.values[1];
   zAxis(2) = parentCoeff.values[2];

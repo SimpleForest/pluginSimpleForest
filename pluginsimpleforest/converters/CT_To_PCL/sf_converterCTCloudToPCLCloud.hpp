@@ -29,7 +29,16 @@ template<typename PointType>
 SF_ConverterCTCloudToPCLCloud<PointType>::SF_ConverterCTCloudToPCLCloud(CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn)
 {
   m_itemCpyCloudIn = itemCpyCloudIn;
-  initialize();
+  initialize(true);
+}
+
+template<typename PointType>
+SF_ConverterCTCloudToPCLCloud<PointType>::SF_ConverterCTCloudToPCLCloud(CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn,
+                                                                        Eigen::Vector3d translation)
+{
+  m_itemCpyCloudIn = itemCpyCloudIn;
+  m_translation = translation;
+  initialize(false);
 }
 
 template<typename PointType>
@@ -59,7 +68,7 @@ SF_ConverterCTCloudToPCLCloud<PointType>::compute()
 
 template<typename PointType>
 void
-SF_ConverterCTCloudToPCLCloud<PointType>::initialize()
+SF_ConverterCTCloudToPCLCloud<PointType>::initialize(bool computeTranslation)
 {
   m_cloudOut.reset(new pcl::PointCloud<PointType>());
   size_t size = m_itemCpyCloudIn->getPointCloudIndexSize();
@@ -67,7 +76,9 @@ SF_ConverterCTCloudToPCLCloud<PointType>::initialize()
   m_cloudOut->width = size;
   m_cloudOut->height = 1;
   m_CTIndices.resize(size);
-  computeTranslationToOrigin();
+  if (computeTranslation) {
+    computeTranslationToOrigin();
+  }
 }
 
 #endif // SF_CONVERTERCTCLOUDTOPCLCLOUD_HPP

@@ -76,10 +76,10 @@ void
 SF_ClusterCloudByQSM<PointType>::compute()
 {
   Sf_CloudToModelDistance<PointType> cmd(m_qsm, m_cloud, m_paramsDistance);
-  std::vector<float> growthVolumina = cmd.distances();
-  std::vector<float> growthVoluminaSorted = cmd.distances();
+  std::vector<double> growthVolumina = cmd.distances();
+  std::vector<double> growthVoluminaSorted = cmd.distances();
   std::sort(growthVoluminaSorted.begin(), growthVoluminaSorted.end());
-  std::vector<float> upperGrowthVolumina;
+  std::vector<double> upperGrowthVolumina;
   size_t sizeCluster = m_cloud->points.size() / m_numClstrs;
   size_t upperBorder = 0;
   upperGrowthVolumina.push_back(growthVoluminaSorted[upperBorder]);
@@ -88,8 +88,8 @@ SF_ClusterCloudByQSM<PointType>::compute()
     upperBorder = std::min(upperBorder, std::max(static_cast<size_t>(1), growthVoluminaSorted.size()) - 1);
     upperGrowthVolumina.push_back(growthVoluminaSorted[upperBorder]);
   }
-  float logMin = std::log(-growthVoluminaSorted[growthVoluminaSorted.size() - 1]);
-  float logMax = std::log(-growthVoluminaSorted[0]);
+  double logMin = std::log(-growthVoluminaSorted[growthVoluminaSorted.size() - 1]);
+  double logMax = std::log(-growthVoluminaSorted[0]);
   CT_ColorCloudStdVector* colorsLogGrowthVolume = new CT_ColorCloudStdVector(m_cloud->points.size());
   CT_ColorCloudStdVector* colorsCluster = new CT_ColorCloudStdVector(m_cloud->points.size());
   CT_StandardCloudStdVectorT<int>* clusterID = new CT_StandardCloudStdVectorT<int>(m_cloud->points.size());
@@ -98,8 +98,8 @@ SF_ClusterCloudByQSM<PointType>::compute()
     m_clusters.push_back(typename pcl::PointCloud<PointType>::Ptr(new typename pcl::PointCloud<PointType>));
   }
   for (size_t i = 0; i < m_cloud->points.size(); i++) {
-    float growthVolume = growthVolumina[i];
-    float logGrowthVolume = std::log(-growthVolume);
+    double growthVolume = growthVolumina[i];
+    double logGrowthVolume = std::log(-growthVolume);
     {
       CT_Color& col = colorsLogGrowthVolume->colorAt(i);
       float perc = (logGrowthVolume - logMin) / (logMax - logMin);

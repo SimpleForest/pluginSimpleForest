@@ -29,10 +29,10 @@
 #include "sf_modelAbstractBuildingbrick.h"
 #include "sf_modelAbstractSegment.h"
 
-float
+double
 Sf_ModelAbstractBuildingbrick::getGrowthLength()
 {
-  float growthLength = getLength();
+  double growthLength = getLength();
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> children = getChildren();
   for (size_t i = 0; i < children.size(); i++) {
     std::shared_ptr<Sf_ModelAbstractBuildingbrick> child = children.at(i);
@@ -41,10 +41,10 @@ Sf_ModelAbstractBuildingbrick::getGrowthLength()
   return growthLength;
 }
 
-float
+double
 Sf_ModelAbstractBuildingbrick::getGrowthVolume()
 {
-  float growthVolume = getVolume();
+  double growthVolume = getVolume();
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> children = getChildren();
   for (size_t i = 0; i < children.size(); i++) {
     std::shared_ptr<Sf_ModelAbstractBuildingbrick> child = children.at(i);
@@ -74,17 +74,17 @@ Sf_ModelAbstractBuildingbrick::getIndex() const
   return _indexVector;
 }
 
-float
+double
 Sf_ModelAbstractBuildingbrick::getDistance(const pcl::PointXYZ& point)
 {
-  Eigen::Vector3f p(point.x, point.y, point.z);
+  Eigen::Vector3d p(point.x, point.y, point.z);
   return getDistance(p);
 }
 
-float
+double
 Sf_ModelAbstractBuildingbrick::getDistance(const pcl::PointXYZINormal& point)
 {
-  Eigen::Vector3f p(point.x, point.y, point.z);
+  Eigen::Vector3d p(point.x, point.y, point.z);
   return getDistance(p);
 }
 
@@ -143,13 +143,13 @@ Sf_ModelAbstractBuildingbrick::setID(const size_t& ID)
   _ID = ID;
 }
 
-Eigen::Vector3f
+Eigen::Vector3d
 Sf_ModelAbstractBuildingbrick::getStart() const
 {
   return _start;
 }
 
-Eigen::Vector3f
+Eigen::Vector3d
 Sf_ModelAbstractBuildingbrick::getEnd() const
 {
   return _end;
@@ -175,11 +175,11 @@ Sf_ModelAbstractBuildingbrick::getFittingType() const
   return _fittingType;
 }
 
-float
+double
 Sf_ModelAbstractBuildingbrick::getBoundingSphereRadius()
 {
-  float halfLength = getLength() / 2;
-  float radius = getRadius();
+  double halfLength = getLength() / 2;
+  double radius = getRadius();
   return std::sqrt(halfLength * halfLength + radius * radius);
 }
 

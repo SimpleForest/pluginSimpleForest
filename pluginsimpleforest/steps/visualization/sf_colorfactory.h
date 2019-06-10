@@ -17,7 +17,9 @@ public:
     BRIGHT,
     DARK
   };
-  static CT_Color getColor(Color clr);
+  static CT_Color getColor(Color color);
+  static CT_Color getColor(Color colorOne, Color colorTwo, float frac);
+  static QString getColorString(Color colorOne, Color colorTwo, float frac, QString seperator = QString(" "));
 
 private:
   SF_ColorFactory();

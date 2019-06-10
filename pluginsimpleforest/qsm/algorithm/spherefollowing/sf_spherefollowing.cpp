@@ -54,13 +54,18 @@ SF_SphereFollowing::buildTree()
     SF_BuildQSM qsmBuilder(m_cylinders, 0);
     m_qsm = qsmBuilder.getTree();
   } else {
-    artificialTree();
+    throw std::runtime_error("SphereFollowing did not detect cylinders.");
+    failedComputation = true;
   }
 }
 
 void
 SF_SphereFollowing::compute()
 {
+  if (m_cloud->empty()) {
+    failedComputation = true;
+    throw std::runtime_error("SphereFollowing received an empty cloud.");
+  }
   initialize();
   while (!m_map.empty()) {
     Circle circleStruct = (*m_map.begin()).second;
@@ -78,6 +83,9 @@ SF_SphereFollowing::compute()
 float
 SF_SphereFollowing::error()
 {
+  if (failedComputation) {
+    return std::numeric_limits<float>::max();
+  }
   Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, m_params._distanceParams);
   return cmd.getAverageDistance();
 }
@@ -197,8 +205,8 @@ SF_SphereFollowing::processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINo
                                             pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloud2) {
         Eigen::Vector3f centroid1 = getCentroid(cloud1);
         Eigen::Vector3f centroid2 = getCentroid(cloud2);
-        float angle1 = SF_Math<float>::getAngleBetweenDeg(centroid1 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
-        float angle2 = SF_Math<float>::getAngleBetweenDeg(centroid2 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
+        float angle1 = SF_Math<float>::getAngleBetweenDegf(centroid1 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
+        float angle2 = SF_Math<float>::getAngleBetweenDegf(centroid2 - oldSphereCenter, oldSphereCenter - lastCircle.m_firstSplit);
         return angle1 < angle2;
       });
   }

@@ -46,9 +46,12 @@ SF_QSMAllometryCorrectionNeighboring::compute()
   if (!m_params._qsm) {
     return;
   }
+  if (m_params.m_useGrowthLength) {
+  } else {
+  }
+
   auto translation = m_params._qsm->translateToOrigin();
-  auto root = m_params._qsm->getRootSegment();
-  auto cylinder = root->getBuildingBricks().back();
+  auto cylinder = startBrick();
   correct(cylinder);
   m_params._qsm->translate(-translation);
 }
@@ -57,21 +60,8 @@ void
 SF_QSMAllometryCorrectionNeighboring::correct(std::shared_ptr<Sf_ModelAbstractBuildingbrick> parent,
                                               std::shared_ptr<Sf_ModelAbstractBuildingbrick> child)
 {
-  float xParent = parent->getRadius();
-  float xChild = child->getRadius();
-  float yParent, yChild;
-
-  if (m_params.m_useGrowthLength) {
-    yParent = parent->getGrowthLength();
-    yChild = child->getGrowthLength();
-  } else {
-    yParent = parent->getGrowthVolume();
-    yChild = child->getGrowthVolume();
-  }
-  float xNew = xParent * (std::pow((yChild / yParent), m_params.m_power));
-  float minX = xNew - m_params._range * xNew;
-  float maxX = xNew + m_params._range * xNew;
-  if (xChild < minX || xChild > maxX) {
+  float xNew;
+  if (!isInPipeModelRelation(parent, child, xNew)) {
     if (xNew > m_params._minRadius) {
       if (m_params.m_useGrowthLength) {
         child->setRadius(xNew, FittingType::ALLOMETRICGROWTHLENGTH);
@@ -94,6 +84,47 @@ SF_QSMAllometryCorrectionNeighboring::correct(std::shared_ptr<Sf_ModelAbstractBu
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> children = cylinder->getChildren();
   std::for_each(
     children.begin(), children.end(), [this, &cylinder](std::shared_ptr<Sf_ModelAbstractBuildingbrick> child) { correct(child); });
+}
+
+std::shared_ptr<Sf_ModelAbstractBuildingbrick>
+SF_QSMAllometryCorrectionNeighboring::startBrick()
+{
+  auto root = m_params._qsm->getRootSegment();
+  auto cylinder = root->getBuildingBricks().back();
+  bool found = false;
+  if (root->getBuildingBricks().size() > 2) {
+    cylinder = root->getBuildingBricks()[2];
+    while (!found && cylinder->getChildren().size() > 0) {
+      auto parent = cylinder->getParent();
+      auto grandParent = parent->getParent();
+      float temp;
+      found = isInPipeModelRelation(parent, cylinder, temp) && isInPipeModelRelation(grandParent, parent, temp);
+      cylinder = cylinder->getChildren()[0];
+    }
+  }
+  return cylinder;
+}
+
+bool
+SF_QSMAllometryCorrectionNeighboring::isInPipeModelRelation(std::shared_ptr<Sf_ModelAbstractBuildingbrick> parent,
+                                                            std::shared_ptr<Sf_ModelAbstractBuildingbrick> child,
+                                                            float& xNew)
+{
+  float xParent = parent->getRadius();
+  float xChild = child->getRadius();
+  float yParent, yChild;
+
+  if (m_params.m_useGrowthLength) {
+    yParent = parent->getGrowthLength();
+    yChild = child->getGrowthLength();
+  } else {
+    yParent = parent->getGrowthVolume();
+    yChild = child->getGrowthVolume();
+  }
+  xNew = xParent * (std::pow((yChild / yParent), m_params.m_power));
+  float minX = xNew - m_params._range * xNew;
+  float maxX = xNew + m_params._range * xNew;
+  return (xChild > minX && xChild < maxX) ? true : false;
 }
 
 SF_QSMAllometryCorrectionNeighboring::SF_QSMAllometryCorrectionNeighboring() {}

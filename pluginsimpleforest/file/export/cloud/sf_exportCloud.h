@@ -26,41 +26,41 @@
 
 *****************************************************************************/
 
-#ifndef SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
-#define SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
+#ifndef SF_EXPORTCLOUD_H
+#define SF_EXPORTCLOUD_H
 
-#include <QThreadPool>
+#include "file/export/sf_abstractExport.h"
+#include "pcl/sf_math.h"
+#include "pcl/sf_point.h"
+#include "qsm/algorithm/distance/sf_cloudToModelDistance.h"
 
-#include "qsm/algorithm/postprocessing/sf_correctbranchjunction.h"
-#include "steps/param/sf_paramAllSteps.h"
+#include <pcl/common/common.h>
+#include <pcl/common/transforms.h>
+#include <random>
 
-class SF_StepCorrectBranchJunctionsAdapter
+enum class SF_ExportCloudPolicy
 {
-public:
-  std::shared_ptr<QMutex> mMutex;
-
-  SF_StepCorrectBranchJunctionsAdapter(const SF_StepCorrectBranchJunctionsAdapter& obj) { mMutex = obj.mMutex; }
-
-  SF_StepCorrectBranchJunctionsAdapter() { mMutex.reset(new QMutex); }
-
-  ~SF_StepCorrectBranchJunctionsAdapter() {}
-
-  void operator()(SF_ParamAllometricCorrectionNeighboring& params)
-  {
-    Eigen::Vector3d translation;
-    SF_CorrectBranchJunction ac;
-    {
-      QMutexLocker m1(&*mMutex);
-      translation = params._qsm->getRootSegment()->getBuildingBricks().front()->getCenter();
-      params._qsm->translate(-translation);
-      ac.setParams(params);
-    }
-    ac.compute();
-    {
-      QMutexLocker m1(&*mMutex);
-      params._qsm->translate(translation);
-    }
-  }
+  FIT_QUALITY = 0,
+  RADIUS = 1,
+  GROWTHLENGTH = 2
 };
 
-#endif // SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
+class SF_ExportCloud : public SF_AbstractExport
+{
+  SF_CloudNormal::Ptr m_cloud;
+  SF_ExportCloudPolicy m_exportPolicy = SF_ExportCloudPolicy::FIT_QUALITY;
+  std::vector<double> m_intensities;
+  void getMinMax();
+  std::vector<double> getLogarithm(std::vector<double>& vector);
+  QString getFullPath(QString path);
+
+public:
+  SF_ExportCloud();
+  void exportCloud(QString path,
+                   QString cloudName,
+                   std::shared_ptr<SF_ModelQSM> qsm,
+                   SF_CloudNormal::Ptr cloud,
+                   SF_ExportCloudPolicy exportPolicy);
+};
+
+#endif // SF_EXPORTCLOUD_H

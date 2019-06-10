@@ -26,41 +26,18 @@
 
 *****************************************************************************/
 
-#ifndef SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
-#define SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
+#ifndef SF_EXPORTQSM_H
+#define SF_EXPORTQSM_H
 
-#include <QThreadPool>
+#include "file/export/sf_abstractExport.h"
 
-#include "qsm/algorithm/postprocessing/sf_correctbranchjunction.h"
-#include "steps/param/sf_paramAllSteps.h"
-
-class SF_StepCorrectBranchJunctionsAdapter
+class SF_ExportQSM : public SF_AbstractExport
 {
+  QString getFullPath(QString path);
+
 public:
-  std::shared_ptr<QMutex> mMutex;
-
-  SF_StepCorrectBranchJunctionsAdapter(const SF_StepCorrectBranchJunctionsAdapter& obj) { mMutex = obj.mMutex; }
-
-  SF_StepCorrectBranchJunctionsAdapter() { mMutex.reset(new QMutex); }
-
-  ~SF_StepCorrectBranchJunctionsAdapter() {}
-
-  void operator()(SF_ParamAllometricCorrectionNeighboring& params)
-  {
-    Eigen::Vector3d translation;
-    SF_CorrectBranchJunction ac;
-    {
-      QMutexLocker m1(&*mMutex);
-      translation = params._qsm->getRootSegment()->getBuildingBricks().front()->getCenter();
-      params._qsm->translate(-translation);
-      ac.setParams(params);
-    }
-    ac.compute();
-    {
-      QMutexLocker m1(&*mMutex);
-      params._qsm->translate(translation);
-    }
-  }
+  SF_ExportQSM();
+  void exportQSM(QString path, QString qsmName, std::shared_ptr<SF_ModelQSM> qsm);
 };
 
-#endif // SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
+#endif // SF_EXPORTQSM_H

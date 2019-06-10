@@ -144,7 +144,6 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
                        10,
                        50,
                        m_gaussNewtonIterations);
-  configDialog->addFileChoice(tr("Choose export file"), CT_FileChoiceButton::OneNewFile, "csv (*.csv)", m_filePath);
 
   configDialog->addBool("Estimate [<em><b>power parameter</b></em>] ", "", "automatic search", m_estimateParams);
   createPostConfigurationDialogCitation(configDialog);
@@ -188,27 +187,6 @@ SF_StepQSMAllometricCorrection::compute()
   }
   SF_AbstractStepQSM::addQSM<SF_ParamAllometricCorrectionNeighboring>(
     outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), QString::fromUtf8(DEF_IN_CLOUD_SEED));
-  if (m_filePath.size() > 0) {
-    QFile file(m_filePath.first());
-    if (file.open(QFile::WriteOnly)) {
-      for (int i = 0; i < _paramList.size(); i++) {
-        QTextStream stream(&file);
-        SF_ParamAllometricCorrectionNeighboring param = _paramList[i];
-        auto qsm = param._qsm;
-        qsm->setID(i);
-        auto cylinders = qsm->getBuildingBricks();
-        if (cylinders.size() == 0) {
-          return;
-        }
-        stream << QString::fromStdString(cylinders.at(0)->toHeaderString()) << "\n";
-        for (int j = 0; j < cylinders.size(); j++) {
-          auto cylinder = cylinders[j];
-          stream << QString::fromStdString(cylinder->toString());
-        }
-      }
-    }
-    file.close();
-  }
   _paramList.clear();
 }
 

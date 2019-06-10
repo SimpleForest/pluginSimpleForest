@@ -36,27 +36,27 @@
 class Sf_ModelCylinderBuildingbrick : public Sf_ModelAbstractBuildingbrick
 {
   friend class SF_UnitTestCylinder;
-  float m_radius;
+  double m_radius;
 
 protected:
-  float getDistanceToAxis(const Eigen::Vector3f& point) override;
-  float getProjectedDistanceToSegment(const Eigen::Vector3f& point);
-  float getDistanceToInfinitHull(const Eigen::Vector3f& point);
-  Eigen::Vector3f getProjectionOnAxis(const Eigen::Vector3f& point) override;
+  double getDistanceToAxis(const Eigen::Vector3d& point) override;
+  double getProjectedDistanceToSegment(const Eigen::Vector3d& point);
+  double getDistanceToInfinitHull(const Eigen::Vector3d& point);
+  Eigen::Vector3d getProjectionOnAxis(const Eigen::Vector3d& point) override;
 
 public:
   Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB);
   std::string toString() override;
   std::string toHeaderString() override;
-  float getRadius() override;
-  void setRadius(float radius, FittingType type) override;
-  void translate(Eigen::Vector3f translation) override;
-  float getVolume() override;
-  float getLength() override;
-  float getDistance(const Eigen::Vector3f& point) override;
-  virtual Eigen::Vector3f getCenter() override;
-  virtual Eigen::Vector3f getAxis() override;
-  virtual void setStartEndRadius(const Eigen::Vector3f& start, const Eigen::Vector3f& end, float radius, FittingType type) override;
+  double getRadius() override;
+  void setRadius(double radius, FittingType type) override;
+  void translate(Eigen::Vector3d translation) override;
+  double getVolume() override;
+  double getLength() override;
+  double getDistance(const Eigen::Vector3d& point) override;
+  virtual Eigen::Vector3d getCenter() override;
+  virtual Eigen::Vector3d getAxis() override;
+  virtual void setStartEndRadius(const Eigen::Vector3d& start, const Eigen::Vector3d& end, double radius, FittingType type) override;
   virtual void setCoefficients(pcl::ModelCoefficients::Ptr coefficients) override;
 };
 

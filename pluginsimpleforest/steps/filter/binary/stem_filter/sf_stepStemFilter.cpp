@@ -92,7 +92,7 @@ SF_StepStemFilter::createInResultModelListProtected()
 void
 SF_StepStemFilter::createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog)
 {
-  configDialog->addDouble("First the cloud is downscaled to a voxel size of  ", " (m). ", 0.015, 0.1, 3, _voxelSize);
+  configDialog->addDouble("First the cloud is downscaled to a voxel size of  ", " (m). ", 0.01, 0.1, 3, _voxelSize);
   configDialog->addDouble("For each of the downscaled points its normal is "
                           "computed with a range search of  ",
                           "  (m). ",
@@ -149,34 +149,20 @@ SF_StepStemFilter::adaptParametersToExpertLevel()
 {
   if (!_isExpert) {
     if (_choiceNumberPoints == _few) {
-      _x = 0;
-      _y = 0;
-      _z = 1;
       _angle = 15;
-      _radiusGrowthDirection = 0.45;
-      _radiusNormal = 0.04;
-      _voxelSize = 0.015;
-      _sizeOutput = 2;
     } else if (_choiceNumberPoints == _intermediate) {
-      _x = 0;
-      _y = 0;
-      _z = 1;
       _angle = 30;
-      _radiusGrowthDirection = 0.45;
-      _radiusNormal = 0.04;
-      _voxelSize = 0.015;
-      _sizeOutput = 2;
     } else if (_choiceNumberPoints == _many) {
-      _x = 0;
-      _y = 0;
-      _z = 1;
       _angle = 45;
-      _radiusGrowthDirection = 0.45;
-      _radiusNormal = 0.04;
-      _voxelSize = 0.015;
-      _sizeOutput = 2;
     }
   }
+  _x = 0;
+  _y = 0;
+  _z = 1;
+  _radiusGrowthDirection = 0.12;
+  _radiusNormal = 0.05;
+  _voxelSize = 0.02;
+  _sizeOutput = 2;
 }
 
 void

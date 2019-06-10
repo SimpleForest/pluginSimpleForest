@@ -26,41 +26,36 @@
 
 *****************************************************************************/
 
-#ifndef SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
-#define SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
+#include "sf_exportQSM.h"
 
-#include <QThreadPool>
-
-#include "qsm/algorithm/postprocessing/sf_correctbranchjunction.h"
-#include "steps/param/sf_paramAllSteps.h"
-
-class SF_StepCorrectBranchJunctionsAdapter
+QString
+SF_ExportQSM::getFullPath(QString path)
 {
-public:
-  std::shared_ptr<QMutex> mMutex;
+  path.append("/qsm/detailed/");
+  return path;
+}
 
-  SF_StepCorrectBranchJunctionsAdapter(const SF_StepCorrectBranchJunctionsAdapter& obj) { mMutex = obj.mMutex; }
+SF_ExportQSM::SF_ExportQSM() : SF_AbstractExport() {}
 
-  SF_StepCorrectBranchJunctionsAdapter() { mMutex.reset(new QMutex); }
-
-  ~SF_StepCorrectBranchJunctionsAdapter() {}
-
-  void operator()(SF_ParamAllometricCorrectionNeighboring& params)
-  {
-    Eigen::Vector3d translation;
-    SF_CorrectBranchJunction ac;
-    {
-      QMutexLocker m1(&*mMutex);
-      translation = params._qsm->getRootSegment()->getBuildingBricks().front()->getCenter();
-      params._qsm->translate(-translation);
-      ac.setParams(params);
+void
+SF_ExportQSM::exportQSM(QString path, QString qsmName, std::shared_ptr<SF_ModelQSM> qsm)
+{
+  QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
+  m_qsm = qsm;
+  QString fullPath = getFullPath(path);
+  QDir dir(fullPath);
+  if (!dir.exists())
+    dir.mkpath(".");
+  QString fullName = getFullName(qsmName);
+  fullPath.append(fullName);
+  QFile file(fullPath);
+  if (file.open(QIODevice::WriteOnly)) {
+    QTextStream outStream(&file);
+    auto bricks = m_qsm->getBuildingBricks();
+    outStream << QString::fromStdString(bricks.front()->toHeaderString());
+    for (auto brick : bricks) {
+      outStream << QString::fromStdString(brick->toString());
     }
-    ac.compute();
-    {
-      QMutexLocker m1(&*mMutex);
-      params._qsm->translate(translation);
-    }
+    file.close();
   }
-};
-
-#endif // SF_STEPCORRECTBRANCHJUNCTIONSADAPTER_H
+}

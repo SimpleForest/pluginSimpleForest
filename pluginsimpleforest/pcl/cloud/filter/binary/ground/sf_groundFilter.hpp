@@ -64,11 +64,11 @@ SF_GroundFilter<PointType>::transferNormalAndFilter(const SF_ParamGroundFilter<P
       col.r() = (std::abs((vecNorm[0] * 126) + 127));
       col.g() = (std::abs((vecNorm[1] * 126) + 127));
       col.b() = (std::abs((vecNorm[2] * 250)));
-      Eigen::Vector3f axis1;
+      Eigen::Vector3d axis1;
       axis1[0] = params._x;
       axis1[1] = params._y;
       axis1[2] = params._z;
-      Eigen::Vector3f axis2;
+      Eigen::Vector3d axis2;
       axis2[0] = gd_point.normal_x;
       axis2[1] = gd_point.normal_y;
       axis2[2] = gd_point.normal_z;

@@ -41,6 +41,12 @@ public:
    */
   SF_ConverterCTCloudToPCLCloud(CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn);
   /**
+   * @brief SF_ConverterCTCloudToPCLCloud The constructor receiving a CT cloud
+   * @param itemCpyCloudIn The CT cloud to be converted to \ref m_cloudOut
+   * @param translatíon The translation vector for \ref m_cloudOut
+   */
+  SF_ConverterCTCloudToPCLCloud(CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn, Eigen::Vector3d translation);
+  /**
    * @brief computes first a \ref m_translation of \ref m_itemCpyCloudIn and
    * then converts the translated cloud to \ref m_cloudOut.
    */
@@ -67,7 +73,7 @@ private:
    * @brief initialize Allocates memory for templated \ref m_cloudOut, as well
    * as for \ref m_CTIndices. Computes \ref _translation.
    */
-  void initialize();
+  void initialize(bool computeTranslation);
 };
 
 #include "sf_converterCTCloudToPCLCloud.hpp"

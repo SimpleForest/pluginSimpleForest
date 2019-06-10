@@ -35,18 +35,20 @@
 #include <algorithm>
 
 template<typename PointType>
-float
+double
 Sf_CloudToModelDistance<PointType>::getDistance(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
 {
-  float distance = buildingBrick->getDistance(point.getVector3fMap());
+  Eigen::Vector3f temp = point.getVector3fMap();
+  double distance = buildingBrick->getDistance(temp.cast<double>());
   return adaptDistanceToMethod(distance);
 }
 
 template<typename PointType>
-float
+double
 Sf_CloudToModelDistance<PointType>::getAngle(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
 {
-  return SF_Math<float>::getAngleBetweenDeg(point.getVector3fMap(), buildingBrick->getAxis());
+  Eigen::Vector3f temp = point.getVector3fMap();
+  return SF_Math<double>::getAngleBetweenDeg(temp.cast<double>(), buildingBrick->getAxis());
 }
 
 template<typename PointType>
@@ -57,9 +59,9 @@ Sf_CloudToModelDistance<PointType>::initializeKdTree()
   typename pcl::PointCloud<PointType>::Ptr centerCloud(new typename pcl::PointCloud<PointType>());
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = _tree->getBuildingBricks();
   for (size_t i = 0; i < buildingBricks.size(); i++) {
-    Eigen::Vector3f pointEigen = buildingBricks[i]->getCenter();
+    Eigen::Vector3d pointEigen = buildingBricks[i]->getCenter();
     PointType point;
-    point.getVector3fMap() = pointEigen;
+    point.getVector3fMap() = pointEigen.cast<float>();
     centerCloud->push_back(std::move(point));
   }
   _kdtreeQSM->setInputCloud(centerCloud);
@@ -69,11 +71,11 @@ template<typename PointType>
 Sf_CloudToModelDistance<PointType>::Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                                                             typename pcl::PointCloud<PointType>::Ptr cloud,
                                                             SF_CLoudToModelDistanceMethod& method,
-                                                            float cropDistance,
+                                                            double cropDistance,
                                                             int k)
   : _METHOD(method), _k(k), _cropDistance(cropDistance), _tree(tree), _cloud(cloud)
 {
-  _averageDistance = std::numeric_limits<float>::max();
+  _averageDistance = std::numeric_limits<double>::max();
   initializeKdTree();
   initializeGrowthLength();
   compute();
@@ -87,17 +89,17 @@ Sf_CloudToModelDistance<PointType>::Sf_CloudToModelDistance(std::shared_ptr<SF_M
 {}
 
 template<typename PointType>
-std::vector<float>
+std::vector<double>
 Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
 {
-  std::vector<float> distances;
+  std::vector<double> distances;
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = _tree->getBuildingBricks();
   for (size_t i = 0; i < _cloud->points.size(); i++) {
     PointType point = _cloud->points[i];
     std::vector<int> pointIdxRadiusSearch;
     std::vector<float> pointRadiusSquaredDistance;
     if (_kdtreeQSM->nearestKSearch(point, _k, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
-      float minDistance = maxError();
+      double minDistance = maxError();
       std::shared_ptr<Sf_ModelAbstractBuildingbrick> bestBrick;
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
@@ -113,12 +115,20 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
         } else {
           distances.push_back(-_MIN_GROWTH_LENGTH);
         }
+      } else if (_METHOD == SF_CLoudToModelDistanceMethod::RADIUS) {
+        if (bestBrick != nullptr) {
+          distances.push_back(std::min(bestBrick->getRadius(), 0.0001));
+        } else {
+          distances.push_back(-0.0001);
+        }
       } else {
         distances.push_back(minDistance);
       }
     } else {
       if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
         distances.push_back(_MIN_GROWTH_LENGTH);
+      } else if (_METHOD == SF_CLoudToModelDistanceMethod::RADIUS) {
+        distances.push_back(0.0001);
       } else {
         distances.push_back(maxError());
       }
@@ -143,8 +153,8 @@ Sf_CloudToModelDistance<PointType>::initializeGrowthLength()
 }
 
 template<typename PointType>
-float
-Sf_CloudToModelDistance<PointType>::adaptDistanceToMethod(float distance)
+double
+Sf_CloudToModelDistance<PointType>::adaptDistanceToMethod(double distance)
 {
   switch (_METHOD) {
     case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
@@ -167,19 +177,22 @@ Sf_CloudToModelDistance<PointType>::adaptDistanceToMethod(float distance)
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
       distance = std::abs(distance);
       break;
+    case SF_CLoudToModelDistanceMethod::RADIUS:
+      distance = std::abs(distance);
+      break;
   }
   return distance;
 }
 
 template<typename PointType>
-float
+double
 Sf_CloudToModelDistance<PointType>::getAverageDistance() const
 {
   return _averageDistance;
 }
 
 template<typename PointType>
-std::vector<float>
+std::vector<double>
 Sf_CloudToModelDistance<PointType>::distances() const
 {
   return _distances;
@@ -196,19 +209,22 @@ Sf_CloudToModelDistance<PointType>::compute()
       _averageDistance = getNumberInliersNegative(distancesCopy);
       break;
     case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
-      _averageDistance = SF_Math<float>::getMean(distancesCopy);
+      _averageDistance = SF_Math<double>::getMean(distancesCopy);
       break;
     case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
-      _averageDistance = SF_Math<float>::getMean(distancesCopy);
+      _averageDistance = SF_Math<double>::getMean(distancesCopy);
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
-      _averageDistance = std::sqrt(SF_Math<float>::getMean(distancesCopy));
+      _averageDistance = std::sqrt(SF_Math<double>::getMean(distancesCopy));
       break;
     case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
-      _averageDistance = std::sqrt(SF_Math<float>::getMean(distancesCopy));
+      _averageDistance = std::sqrt(SF_Math<double>::getMean(distancesCopy));
       break;
     case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
-      _averageDistance = std::sqrt(SF_Math<float>::getMedian(distancesCopy));
+      _averageDistance = std::sqrt(SF_Math<double>::getMedian(distancesCopy));
+      break;
+    case SF_CLoudToModelDistanceMethod::RADIUS:
+      _averageDistance = std::sqrt(SF_Math<double>::getMedian(distancesCopy));
       break;
     default:
       break;
@@ -216,17 +232,17 @@ Sf_CloudToModelDistance<PointType>::compute()
 }
 
 template<typename PointType>
-float
+double
 Sf_CloudToModelDistance<PointType>::maxError() const
 {
-  return std::numeric_limits<float>::max();
+  return std::numeric_limits<double>::max();
 }
 
 template<typename PointType>
-float
-Sf_CloudToModelDistance<PointType>::getNumberInliersNegative(const std::vector<float>& distances)
+double
+Sf_CloudToModelDistance<PointType>::getNumberInliersNegative(const std::vector<double>& distances)
 {
-  float sum = std::count_if(distances.begin(), distances.end(), [this](float distance) { return distance < _cropDistance; });
+  double sum = std::count_if(distances.begin(), distances.end(), [this](double distance) { return distance < _cropDistance; });
   return -sum;
 }
 

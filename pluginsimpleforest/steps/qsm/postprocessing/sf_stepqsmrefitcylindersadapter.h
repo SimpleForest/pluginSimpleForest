@@ -72,7 +72,7 @@ public:
     {
       QMutexLocker m1(&*mMutex);
       params._translation = converter.translation();
-      params._qsm->translate(Eigen::Vector3f(-params._translation[0], -params._translation[1], -params._translation[2]));
+      params._qsm->translate(-params._translation);
       cloud = converter.cloudTranslated();
     }
     pcl::VoxelGrid<SF_PointNormal> sor;
@@ -101,7 +101,7 @@ public:
     refit.compute();
     {
       QMutexLocker m1(&*mMutex);
-      params._qsm->translate(Eigen::Vector3f(params._translation[0], params._translation[1], params._translation[2]));
+      params._qsm->translate(params._translation);
     }
   }
 };

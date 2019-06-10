@@ -41,6 +41,7 @@ class Sf_ConverterCTToPCL : public SF_AbstractConverter
 public:
   Sf_ConverterCTToPCL();
   void compute();
+  void compute(Eigen::Vector3d translation);
   void downScale(float range, typename pcl::PointCloud<PointType>::Ptr downscaledCloud);
   typename pcl::PointCloud<PointType>::Ptr cloudTranslated() const;
   typename pcl::PointCloud<PointType>::Ptr getCloudOriginal() const;
