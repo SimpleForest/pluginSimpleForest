@@ -46,16 +46,10 @@ SF_ExportCloud::getMinMax()
     m_intensities = cmd.distances();
   }
   m_intensities = getLogarithm(m_intensities);
-  m_maxIntensity = 0;
-  m_minIntensity = std::numeric_limits<float>::max();
-  for (double intensity : m_intensities) {
-    if (intensity > m_maxIntensity) {
-      m_maxIntensity = intensity;
-    }
-    if (intensity < m_minIntensity) {
-      m_minIntensity = intensity;
-    }
-  }
+  auto copyIntensities = m_intensities;
+  std::sort(copyIntensities.begin(), copyIntensities.end());
+  m_maxIntensity = copyIntensities[0.95*copyIntensities.size()];
+  m_minIntensity = copyIntensities[0.05*copyIntensities.size()];
 }
 
 std::vector<double>
@@ -126,6 +120,14 @@ SF_ExportCloud::exportCloud(QString path,
       outStream << point.z;
       outStream << ", ";
       auto intensity = m_intensities[index++];
+      if(intensity < m_minIntensity)
+      {
+          intensity = m_minIntensity;
+      }
+      else if(intensity > m_maxIntensity)
+      {
+          intensity = m_maxIntensity;
+      }
       intensity = ((m_maxIntensity - m_minIntensity) == 0) ? 1 : (intensity - m_minIntensity) / (m_maxIntensity - m_minIntensity);
       outStream << SF_ColorFactory::getColorString(m_firstColor, m_secondColor, point.intensity, ", ");
       outStream << ", ";
