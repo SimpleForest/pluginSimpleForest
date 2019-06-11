@@ -129,7 +129,7 @@ SF_ExportCloud::exportCloud(QString path,
           intensity = m_maxIntensity;
       }
       intensity = ((m_maxIntensity - m_minIntensity) == 0) ? 1 : (intensity - m_minIntensity) / (m_maxIntensity - m_minIntensity);
-      outStream << SF_ColorFactory::getColorString(m_firstColor, m_secondColor, point.intensity, ", ");
+      outStream << SF_ColorFactory::getColorString(m_firstColor, m_secondColor, intensity, ", ");
       outStream << ", ";
       outStream << intensity;
       outStream << "\n";

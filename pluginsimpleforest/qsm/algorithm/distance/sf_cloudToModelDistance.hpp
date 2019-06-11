@@ -117,9 +117,9 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
         }
       } else if (_METHOD == SF_CLoudToModelDistanceMethod::RADIUS) {
         if (bestBrick != nullptr) {
-          distances.push_back(std::min(bestBrick->getRadius(), 0.0001));
+          distances.push_back(std::max(bestBrick->getRadius(), 0.001));
         } else {
-          distances.push_back(-0.0001);
+          distances.push_back(0.001);
         }
       } else {
         distances.push_back(minDistance);
@@ -128,7 +128,7 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
       if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
         distances.push_back(_MIN_GROWTH_LENGTH);
       } else if (_METHOD == SF_CLoudToModelDistanceMethod::RADIUS) {
-        distances.push_back(0.0001);
+        distances.push_back(0.001);
       } else {
         distances.push_back(maxError());
       }
