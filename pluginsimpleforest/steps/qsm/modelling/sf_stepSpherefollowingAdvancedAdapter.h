@@ -73,7 +73,6 @@ public:
       QMutexLocker m1(&*mMutex);
       params._translation = converter.translation();
       cloud = converter.cloudTranslated();
-      std::cout << "FIII 01" << std::endl;
     }
     pcl::VoxelGrid<SF_PointNormal> sor;
     sor.setInputCloud(cloud);
@@ -94,7 +93,6 @@ public:
       ec.setMaxClusterSize(std::numeric_limits<int>::max());
       ec.setSearchMethod(tree);
       ec.setInputCloud(cloudDownscaled);
-      std::cout << "FIII 02" << std::endl;
     }
 
     std::vector<pcl::PointIndices> clusterIndices;
@@ -108,7 +106,6 @@ public:
     {
       QMutexLocker m1(&*mMutex);
       converterID.setCloudAndID(cloud, params._ctID);
-      std::cout << "FIII 03" << std::endl;
     }
     converterID.compute();
     SF_TransferFeature<SF_PointNormal> tf;
@@ -126,31 +123,26 @@ public:
       tree->setInputCloud(largestCluster);
       ne.setSearchMethod(tree);
       ne.setRadiusSearch(params._voxelSize * 3);
-      std::cout << "FIII 04" << std::endl;
     }
 
     ne.compute(*largestCluster);
     SF_DownHillSimplex downhillSimplex;
     {
       QMutexLocker m1(&*mMutex);
-      params._qsm->translate(-params._translation);
       params.m_cloudSphereFollowing = largestCluster;
       downhillSimplex.setParams(params);
-      std::cout << "FIII 05" << std::endl;
     }
     downhillSimplex.compute();
     {
       QMutexLocker m1(&*mMutex);
       params = downhillSimplex.params();
       params._cloudIn = largestCluster;
-      std::cout << "FIII 06" << std::endl;
     }
     {
       QMutexLocker m1(&*mMutex);
 
       SF_QSMMedianFilter med;
       med.compute(params._qsm);
-      std::cout << "FIII 07" << std::endl;
     }
     SF_VisualizeFitquality vfq;
     {
@@ -158,16 +150,14 @@ public:
       vfq.setCloud(cloud);
       vfq.setParams(params._distanceParams);
       vfq.setQsm(params._qsm);
-      std::cout << "FIII 08" << std::endl;
     }
     vfq.compute();
     {
       QMutexLocker m1(&*mMutex);
       params._colors = vfq.colors();
-      std::cout << "FIII 09" << std::endl;
       params._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
       params._qsm->translate(params._translation);
-      std::cout << "FIII 10" << std::endl;
+      params._qsm->setTranslation(Eigen::Vector3d(0,0,0));
     }
   }
 };
