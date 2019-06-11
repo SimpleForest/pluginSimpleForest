@@ -33,7 +33,7 @@ SF_ExportCloud::getMinMax()
 {
   SF_CLoudToModelDistanceMethod type;
   if (m_exportPolicy == SF_ExportCloudPolicy::FIT_QUALITY) {
-    type = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC;
+    type = SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC;
     Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, type, 0.1, 9);
     m_intensities = cmd.distances();
   } else if (m_exportPolicy == SF_ExportCloudPolicy::GROWTHLENGTH) {
