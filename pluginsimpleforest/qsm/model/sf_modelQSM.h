@@ -80,6 +80,7 @@ public:
   void setCGrowthVolume(double cGrowthVolume);
   int getID() const;
   void setID(int ID);
+  void setTranslation(const Eigen::Vector3d &translation);
 };
 
 #endif // SF_MODEL_TREE_H

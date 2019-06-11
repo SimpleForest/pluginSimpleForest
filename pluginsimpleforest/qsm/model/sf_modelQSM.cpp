@@ -188,6 +188,11 @@ SF_ModelQSM::setID(int ID)
   _ID = ID;
 }
 
+void SF_ModelQSM::setTranslation(const Eigen::Vector3d &translation)
+{
+    m_translation = translation;
+}
+
 SF_ModelQSM::SF_ModelQSM(const int ID) : _ID(ID), _species("unknownSpecies") {}
 
 std::string
