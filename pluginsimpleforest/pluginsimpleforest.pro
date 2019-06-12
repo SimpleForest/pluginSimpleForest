@@ -107,6 +107,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvancedAdapter.h \
     steps/qsm/modelling/sf_stepSpherefollowingBasic.h \
+    steps/qsm/postprocessing/sf_stepQSMMedianFilter.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctionsadapter.h \
     steps/qsm/postprocessing/sf_stepqsmrefitcylinders.h \
@@ -213,6 +214,7 @@ SOURCES += \
     steps/qsm/modelling/sf_stepQSMAllometricCorrection.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingBasic.cpp \
+    steps/qsm/postprocessing/sf_stepQSMMedianFilter.cpp \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.cpp \
     steps/qsm/postprocessing/sf_stepqsmrefitcylinders.cpp \
     steps/qsm/sf_abstractStepQSM.cpp \

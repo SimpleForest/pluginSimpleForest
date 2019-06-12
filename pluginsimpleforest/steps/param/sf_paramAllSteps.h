@@ -422,6 +422,20 @@ struct SF_ParamStemFilter : public SF_ParamFilter<PointType>
 };
 
 template<typename PointType>
+struct SF_ParamQSMedian : public SF_ParamQSM<PointType>
+{
+  float m_percentage = 0.2;
+
+  virtual QString toString()
+  {
+    QString str = "The QSM was filtered with the median method with parameter \n (percentage = ";
+    str.append(QString::number(m_percentage));
+    str.append(").");
+    return str;
+  }
+};
+
+template<typename PointType>
 struct SF_ParamSpherefollowingBasic : public SF_ParamQSM<PointType>
 {
   SF_SphereFollowingParameters _sphereFollowingParams;
