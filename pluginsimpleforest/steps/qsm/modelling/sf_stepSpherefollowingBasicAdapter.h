@@ -137,7 +137,7 @@ public:
       QMutexLocker m1(&*mMutex);
       params._colors = vfq.colors();
       params._qsm->translate(params._translation);
-      params._qsm->setTranslation(Eigen::Vector3d(0,0,0));
+      params._qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
     }
   }
 };
