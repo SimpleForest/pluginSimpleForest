@@ -30,6 +30,12 @@
 
 #include "pcl/sf_math.h"
 
+void
+SF_QSMMedianFilter::setPercentage(float percentage)
+{
+  m_percentage = percentage;
+}
+
 SF_QSMMedianFilter::SF_QSMMedianFilter() {}
 
 void
@@ -51,11 +57,11 @@ SF_QSMMedianFilter::compute(std::shared_ptr<SF_ModelQSM> qsm)
       std::for_each(bricks.begin(), bricks.end(), [median, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
         float radius = brick->getRadius();
         FittingType type = brick->getFittingType();
-        if (radius < median * (1.0 - M_DEVIATIONPERCENTAGE)) {
+        if (radius < median * (1.0 - m_percentage)) {
           radius = median;
           type = FittingType::MEDIAN;
         }
-        if (radius > median * (1.0 + M_DEVIATIONPERCENTAGE)) {
+        if (radius > median * (1.0 + m_percentage)) {
           radius = median;
           type = FittingType::MEDIAN;
         }

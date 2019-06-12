@@ -34,12 +34,13 @@
 
 class SF_QSMMedianFilter
 {
-  const float M_DEVIATIONPERCENTAGE = 0.2f;
+  float m_percentage = 0.2f;
   std::shared_ptr<SF_ModelQSM> m_qsm;
 
 public:
   SF_QSMMedianFilter();
   void compute(std::shared_ptr<SF_ModelQSM> qsm);
+  void setPercentage(float percentage);
 };
 
 #endif // SF_QSMMEDIANFILTER_H
