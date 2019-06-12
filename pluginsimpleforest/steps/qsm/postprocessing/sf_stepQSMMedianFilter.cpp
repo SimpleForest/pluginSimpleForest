@@ -121,7 +121,6 @@ SF_StepQSMMedianFilter::compute()
 {
   const QList<CT_ResultGroup*>& outResultList = getOutResultList();
   CT_ResultGroup* outResult = outResultList.at(0);
-  createParamList(outResult);
   CT_ResultGroupIterator outResItCloud(outResult, this, DEF_IN_GRP_CLUSTER);
   while (!isStopped() && outResItCloud.hasNext()) {
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResItCloud.next();

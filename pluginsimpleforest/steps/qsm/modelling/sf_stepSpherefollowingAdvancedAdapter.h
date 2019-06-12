@@ -40,7 +40,6 @@
 
 #include "cloud/sf_transferfeature.h"
 #include "qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h"
-#include "qsm/algorithm/postprocessing/sf_qsmmedianfilter.h"
 #include "qsm/algorithm/sf_QSMAlgorithm.h"
 #include "qsm/algorithm/sf_QSMCylinder.h"
 #include "qsm/algorithm/visualization/sf_visualizefitquality.h"
@@ -140,21 +139,6 @@ public:
     }
     {
       QMutexLocker m1(&*mMutex);
-
-      SF_QSMMedianFilter med;
-      med.compute(params._qsm);
-    }
-    SF_VisualizeFitquality vfq;
-    {
-      QMutexLocker m1(&*mMutex);
-      vfq.setCloud(cloud);
-      vfq.setParams(params._distanceParams);
-      vfq.setQsm(params._qsm);
-    }
-    vfq.compute();
-    {
-      QMutexLocker m1(&*mMutex);
-      params._colors = vfq.colors();
       params._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
       params._qsm->translate(params._translation);
       params._qsm->setTranslation(Eigen::Vector3d(0, 0, 0));

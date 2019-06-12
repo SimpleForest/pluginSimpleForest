@@ -39,7 +39,6 @@
 
 #include "qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h"
 #include "qsm/algorithm/optimization/gridsearch/sf_spherefollowingrastersearch.h"
-#include "qsm/algorithm/postprocessing/sf_qsmmedianfilter.h"
 #include "qsm/algorithm/sf_QSMAlgorithm.h"
 #include "qsm/algorithm/sf_QSMCylinder.h"
 #include "qsm/algorithm/visualization/sf_visualizefitquality.h"
@@ -119,23 +118,12 @@ public:
       QMutexLocker m1(&*mMutex);
       params = sphereFollowing.getParamVec()[0];
       params._cloudIn = largestCluster;
-      SF_QSMMedianFilter med;
-      med.compute(params._qsm);
     }
-    SF_VisualizeFitquality vfq;
-    {
-      QMutexLocker m1(&*mMutex);
-      vfq.setCloud(cloud);
-      vfq.setParams(params._distanceParams);
-      vfq.setQsm(params._qsm);
-    }
-    vfq.compute();
 
     {
+      QMutexLocker m1(&*mMutex);
       if (!params._qsm)
         return;
-      QMutexLocker m1(&*mMutex);
-      params._colors = vfq.colors();
       params._qsm->translate(params._translation);
       params._qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
     }

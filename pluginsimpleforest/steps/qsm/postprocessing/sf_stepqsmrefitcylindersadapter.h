@@ -39,7 +39,6 @@
 
 #include "qsm/algorithm/optimization/downHillSimplex/sf_downhillsimplex.h"
 #include "qsm/algorithm/optimization/gridsearch/sf_spherefollowingrastersearch.h"
-#include "qsm/algorithm/postprocessing/sf_qsmmedianfilter.h"
 #include "qsm/algorithm/postprocessing/sf_qsmrefitcylinder.h"
 #include "qsm/algorithm/sf_QSMAlgorithm.h"
 #include "qsm/algorithm/sf_QSMCylinder.h"
