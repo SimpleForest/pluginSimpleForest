@@ -61,12 +61,7 @@ SF_ModelQSM::setBranchorder()
     std::for_each(
       leaves.begin(), leaves.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> leaf) { leaf->computeReverseBranchOrder(1); });
   }
-  while (m_rootSegment->getReversePipeBranchOrder() == -1) {
-    std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
-    for (auto leaf : leaves) {
-      leaf->computeReversePipeBranchOrder(1);
-    }
-  }
+
   while (m_rootSegment->getReverseSummedBranchOrder() == -1) {
     std::vector<std::shared_ptr<SF_ModelAbstractSegment>> leaves = getLeaveSegments();
     for (auto leaf : leaves) {
@@ -74,12 +69,15 @@ SF_ModelQSM::setBranchorder()
     }
   }
 
-  index = 1;
+  index = 0;
   for (auto segment : segments) {
     if (segment->getBranchOrder() == 0) {
       auto children = segment->getChildren();
       for (auto child : children) {
-        child->computeBranchID(index++);
+          if(child->getBranchOrder() != 0)
+          {
+              child->computeBranchID(++index);
+          }
       }
     }
   }
@@ -265,15 +263,29 @@ SF_ModelQSM::translateToOrigin()
 std::shared_ptr<SF_ModelAbstractSegment>
 SF_ModelQSM::crownStartSegment(double minPercentage)
 {
+      auto bricks = getBuildingBricks();
+      double minZ = std::numeric_limits<double>::max();
+      double maxZ = std::numeric_limits<double>::lowest();
+      std::for_each(bricks.begin(), bricks.end(), [&minZ, &maxZ](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+        auto center = brick->getCenter();
+        auto z = center[2];
+        if (z < minZ)
+          minZ = z;
+        if (z > maxZ)
+          maxZ = z;
+      });
+      auto centerHeight = minZ + (maxZ - minZ) / 2;
+
   auto segment = m_rootSegment;
   while (segment && segment->getChildren().size() > 0) {
     auto children = segment->getChildren();
+    segment = children[0];
     if (children.size() >= 2) {
       double totalLengthStem = 0;
       double totalLengthBranches = 0;
       totalLengthStem = children[0]->getBuildingBricks()[0]->getGrowthLength();
       for (size_t i = 1; i < children.size(); i++) {
-        totalLengthBranches += children[1]->getBuildingBricks()[0]->getGrowthLength();
+        totalLengthBranches += children[i]->getBuildingBricks()[0]->getGrowthLength();
       }
       double totalLengthAll = totalLengthBranches + totalLengthStem;
       double fraction = 0;
@@ -283,35 +295,9 @@ SF_ModelQSM::crownStartSegment(double minPercentage)
       if (fraction > minPercentage) {
         break;
       }
-    }
-    if (children.size() <= 0) {
-      break;
-    }
-    segment = children[0];
-  }
-
-  // TODO extract here subfunction minmax (to qsm model) and rest (to private) in 2 functions:
-  auto bricks = getBuildingBricks();
-  double minZ = std::numeric_limits<double>::max();
-  double maxZ = std::numeric_limits<double>::lowest();
-  std::for_each(bricks.begin(), bricks.end(), [&minZ, &maxZ](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-    auto center = brick->getCenter();
-    auto z = center[2];
-    if (z < minZ)
-      minZ = z;
-    if (z > maxZ)
-      maxZ = z;
-  });
-  auto centerHeight = minZ + (maxZ - minZ) / 2;
-  if (centerHeight < segment->getEnd()[2]) {
-    segment = m_rootSegment;
-    while (segment && segment->getChildren().size() > 0) {
-      auto children = segment->getChildren();
-      if (segment->getEnd()[2] < centerHeight) {
-        segment = children[0];
-      } else {
-        break;
-      }
+      if(segment->getStart()[2] < centerHeight) {
+          break;
+        }
     }
   }
   return segment;

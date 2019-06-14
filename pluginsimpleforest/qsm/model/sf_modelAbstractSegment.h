@@ -77,7 +77,6 @@ public:
   void computeBranchOrder(int branchOrder = 0);
   void computeReverseBranchOrder(int branchOrder = 1);
   void computeReverseSummedBranchOrder(int branchOrder = 1);
-  void computeReversePipeBranchOrder(double branchOrder = 1);
   void initializeOrder();
   std::shared_ptr<SF_ModelAbstractSegment> getParent();
   void setParent(const std::weak_ptr<SF_ModelAbstractSegment>& parent);
