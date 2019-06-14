@@ -46,7 +46,7 @@ SF_ExportQSM::exportQSM(QString path, QString qsmName, std::shared_ptr<SF_ModelQ
   QDir dir(fullPath);
   if (!dir.exists())
     dir.mkpath(".");
-  QString fullName = getFullName(qsmName);
+  QString fullName = getFullName(qsmName, ".csv");
   fullPath.append(fullName);
   QFile file(fullPath);
   if (file.open(QIODevice::WriteOnly)) {
