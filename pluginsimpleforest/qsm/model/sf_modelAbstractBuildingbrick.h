@@ -58,6 +58,7 @@ protected:
   Eigen::Vector3d _start;
   Eigen::Vector3d _end;
   FittingType _fittingType;
+  double m_minAllometricReturn = 0.00001;
   virtual double getDistanceToAxis(const Eigen::Vector3d& point) = 0;
   virtual Eigen::Vector3d getProjectionOnAxis(const Eigen::Vector3d& point) = 0;
   virtual double getBoundingSphereRadius();

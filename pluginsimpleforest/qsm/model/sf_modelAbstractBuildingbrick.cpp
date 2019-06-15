@@ -38,7 +38,7 @@ Sf_ModelAbstractBuildingbrick::getGrowthLength()
     std::shared_ptr<Sf_ModelAbstractBuildingbrick> child = children.at(i);
     growthLength += child->getGrowthLength();
   }
-  return growthLength;
+  return std::max(m_minAllometricReturn, growthLength);
 }
 
 double
@@ -50,7 +50,7 @@ Sf_ModelAbstractBuildingbrick::getGrowthVolume()
     std::shared_ptr<Sf_ModelAbstractBuildingbrick> child = children.at(i);
     growthVolume += child->getGrowthVolume();
   }
-  return growthVolume;
+  return std::max(m_minAllometricReturn, growthVolume);
 }
 
 void
