@@ -78,14 +78,14 @@ SF_ModelQSM::setBranchorder(float twigPercentage)
   }
 
   index = 1;
-  int indexTwig = -1;
+  int indexTwig = -2;
 
+  auto totalVolume = getVolume();
   for (auto segment : segments) {
     if (segment->getBranchOrder() == 0) {
       auto children = segment->getChildren();
       for (auto child : children) {
         if (child->getBranchOrder() != 0) {
-          auto totalVolume = getVolume();
           auto childVolume = child->getVolume();
           if (totalVolume == 0) {
             throw(std::logic_error("QSM has no Volume in branch ordering causing division by zero."));
