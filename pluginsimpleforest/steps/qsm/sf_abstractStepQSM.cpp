@@ -50,13 +50,13 @@ SF_AbstractStepQSM::constructStemRecursively(const CT_AbstractResult* result,
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> children = segment->getChildren();
   int index = 0;
   for (std::shared_ptr<SF_ModelAbstractSegment> child : children) {
-    if (index == 0 || m_allStem) {
+    if (index == 0 || !m_splitQSM) {
       CT_TNodeGroup* stemChild = new CT_TNodeGroup(_stemNodeGroup.completeName(), result);
       stemNode->addBranch(stemChild);
       setCylindersStem(result, stemChild, child);
       constructStemRecursively(result, stemChild, child);
     } else {
-      if (child->getBranchID() > 0) {
+      if (child->getBranchID() > -2) {
         CT_TNodeGroup* branchChild = new CT_TNodeGroup(_branchNodeGroup.completeName(), result);
         stemNode->addBranch(branchChild);
         setCylindersBranch(result, branchChild, child);
@@ -79,10 +79,10 @@ SF_AbstractStepQSM::constructTwigRecursively(const CT_AbstractResult* result,
 {
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> children = segment->getChildren();
   for (std::shared_ptr<SF_ModelAbstractSegment> child : children) {
-    CT_TNodeGroup* branchChild = new CT_TNodeGroup(_twigNodeGroup.completeName(), result);
-    twigNode->addBranch(branchChild);
-    setCylindersBranch(result, branchChild, child);
-    constructTwigRecursively(result, branchChild, child);
+    CT_TNodeGroup* twigChild = new CT_TNodeGroup(_twigNodeGroup.completeName(), result);
+    twigNode->addBranch(twigChild);
+    setCylindersTwig(result, twigChild, child);
+    constructTwigRecursively(result, twigChild, child);
   }
 }
 
@@ -129,7 +129,7 @@ SF_AbstractStepQSM::setCylindersStem(const CT_AbstractResult* result,
 
 void SF_AbstractStepQSM::addOutputFormat(CT_StepConfigurableDialog *configDialog)
 {
-    configDialog->addBool("Split tree into stem, branches and twigs in output.", "", "", m_allStem);
+    configDialog->addBool("Split tree into stem, branches and twigs in output.", "", "", m_splitQSM);
 }
 
 
