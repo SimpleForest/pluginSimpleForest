@@ -80,6 +80,7 @@ void
 SF_StepQSMMedianFilter::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
+  addOutputFormat(configDialog);
   configDialog->addText("<b>Median filter</b>:");
   configDialog->addDouble("The [<em><b>percentage</b></em>] of the radius a cylinder is allowed to be larger or smaller than the "
                           " median radius within a segment: ",

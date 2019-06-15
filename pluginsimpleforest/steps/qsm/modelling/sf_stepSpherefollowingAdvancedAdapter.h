@@ -139,7 +139,6 @@ public:
     }
     {
       QMutexLocker m1(&*mMutex);
-      params._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
       params._qsm->translate(params._translation);
       params._qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
     }

@@ -78,6 +78,7 @@ void
 SF_StepCorrectBranchJunctions::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
+  addOutputFormat(configDialog);
   createPostConfigurationDialogCitation(configDialog);
 }
 

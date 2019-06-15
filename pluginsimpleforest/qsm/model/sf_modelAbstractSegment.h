@@ -76,6 +76,7 @@ public:
   bool isRoot();
   void computeBranchOrder(int branchOrder = 0);
   void computeReverseBranchOrder(int branchOrder = 1);
+  double getVolume();
   void computeReverseSummedBranchOrder(int branchOrder = 1);
   void initializeOrder();
   std::shared_ptr<SF_ModelAbstractSegment> getParent();
@@ -100,6 +101,7 @@ public:
   int getReverseSummedBranchOrder() const;
   void setReverseSummedBranchOrder(int reverseSummedBranchOrder);
   void computeBranchID(int branchID);
+  int getBranchID() const;
 };
 
 #endif // SF_MODEL_ABSTRACT_SEGMENT_H

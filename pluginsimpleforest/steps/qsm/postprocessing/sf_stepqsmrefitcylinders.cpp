@@ -77,6 +77,7 @@ void
 SF_StepQSMRefitCylinders::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
+  addOutputFormat(configDialog);
   configDialog->addText("<b>Allometric correction</b>:");
   configDialog->addDouble("To even out the distribution and speed things up the cloud is "
                           "downscaled first to [<em><b>voxel size</b></em>] ",

@@ -155,6 +155,7 @@ void
 SF_StepSphereFollowingAdvanced::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
+  addOutputFormat(configDialog);
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
   configDialogAddSphereFollowingNelderMead(configDialog);
 }

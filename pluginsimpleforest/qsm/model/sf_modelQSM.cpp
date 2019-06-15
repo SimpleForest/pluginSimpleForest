@@ -40,8 +40,16 @@ SF_ModelQSM::setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& root
   m_rootSegment = rootSegment;
 }
 
+double
+SF_ModelQSM::getVolume()
+{
+  m_rootSegment->getVolume();
+  auto volumeQSM = m_rootSegment->getBuildingBricks().front()->getGrowthVolume();
+  return volumeQSM + m_volumeCorrection;
+}
+
 void
-SF_ModelQSM::setBranchorder()
+SF_ModelQSM::setBranchorder(float twigPercentage)
 {
   m_rootSegment->initializeOrder();
   m_rootSegment->computeBranchOrder(0);
@@ -69,25 +77,37 @@ SF_ModelQSM::setBranchorder()
     }
   }
 
-  index = 0;
+  index = 1;
+  int indexTwig = -1;
+
   for (auto segment : segments) {
     if (segment->getBranchOrder() == 0) {
       auto children = segment->getChildren();
       for (auto child : children) {
-          if(child->getBranchOrder() != 0)
-          {
+        if (child->getBranchOrder() != 0) {
+          auto totalVolume = getVolume();
+          auto childVolume = child->getVolume();
+          if (totalVolume == 0) {
+            throw(std::logic_error("QSM has no Volume in branch ordering causing division by zero."));
+          } else {
+            auto fraction = childVolume / totalVolume;
+            if (fraction < twigPercentage) {
+              child->computeBranchID(--indexTwig);
+            } else {
               child->computeBranchID(++index);
+            }
           }
+        }
       }
     }
   }
 }
 
 void
-SF_ModelQSM::sort(SF_ModelAbstractSegment::SF_SORTTYPE type)
+SF_ModelQSM::sort(SF_ModelAbstractSegment::SF_SORTTYPE type, float twigPercentage)
 {
   m_rootSegment->sort(type);
-  setBranchorder();
+  setBranchorder(twigPercentage);
 }
 
 bool
@@ -263,18 +283,18 @@ SF_ModelQSM::translateToOrigin()
 std::shared_ptr<SF_ModelAbstractSegment>
 SF_ModelQSM::crownStartSegment(double minPercentage)
 {
-      auto bricks = getBuildingBricks();
-      double minZ = std::numeric_limits<double>::max();
-      double maxZ = std::numeric_limits<double>::lowest();
-      std::for_each(bricks.begin(), bricks.end(), [&minZ, &maxZ](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-        auto center = brick->getCenter();
-        auto z = center[2];
-        if (z < minZ)
-          minZ = z;
-        if (z > maxZ)
-          maxZ = z;
-      });
-      auto centerHeight = minZ + (maxZ - minZ) / 2;
+  auto bricks = getBuildingBricks();
+  double minZ = std::numeric_limits<double>::max();
+  double maxZ = std::numeric_limits<double>::lowest();
+  std::for_each(bricks.begin(), bricks.end(), [&minZ, &maxZ](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+    auto center = brick->getCenter();
+    auto z = center[2];
+    if (z < minZ)
+      minZ = z;
+    if (z > maxZ)
+      maxZ = z;
+  });
+  auto centerHeight = minZ + (maxZ - minZ) / 2;
 
   auto segment = m_rootSegment;
   while (segment && segment->getChildren().size() > 0) {
@@ -295,9 +315,9 @@ SF_ModelQSM::crownStartSegment(double minPercentage)
       if (fraction > minPercentage) {
         break;
       }
-      if(segment->getStart()[2] < centerHeight) {
-          break;
-        }
+      if (segment->getStart()[2] < centerHeight) {
+        break;
+      }
     }
   }
   return segment;

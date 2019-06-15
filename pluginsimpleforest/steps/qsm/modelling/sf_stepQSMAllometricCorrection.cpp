@@ -78,10 +78,13 @@ SF_StepQSMAllometricCorrection::getStepRISCitations() const
   return _risCitationList;
 }
 
+
+
 void
 SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
+  addOutputFormat(configDialog);
   configDialog->addText("<b>Allometric correction</b>:");
   configDialog->addDouble("The lower the correction factor, a number between 0 and 1, the more strict is the check"
                           " with[<em><b>threshold</b></em>] ",
@@ -97,8 +100,6 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
                           0.01,
                           5,
                           _minRadius);
-  configDialog->addBool(
-    "Uses growthLength instead of growthVolume ", "", "growthLength if checked, growthvolume otherwise", m_useGrowthLength);
 
   configDialog->addBool("Estimate 3 parameter equations ", "", "3 parameters with intercept", m_withIntercept);
   configDialog->addDouble("Only use most inner cylinder representing the major branching structure "
@@ -203,7 +204,7 @@ SF_StepQSMAllometricCorrection::createParamList(CT_ResultGroup* outResult)
     params._range = _range;
     params._minRadius = _minRadius;
     params.m_power = m_power;
-    params.m_useGrowthLength = m_useGrowthLength;
+    params.m_useGrowthLength = true;
     params.m_withIntercept = m_withIntercept;
     params.m_quantile = m_quantile;
     params.m_minPts = m_minPts;

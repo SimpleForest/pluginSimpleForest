@@ -168,7 +168,7 @@ SF_StepExportQSMList::compute()
       SF_CloudNormal::Ptr cloud = converter.cloudTranslated();
       qsm->translate(-translation);
       qsm->setID(id++);
-      qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_LENGTH);
+      qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_LENGTH, m_twigPercentage);
       if (m_writeCloud) {
         if (m_downScaleCloud) {
           SF_CloudNormal::Ptr cloudDownscaled(new SF_CloudNormal);

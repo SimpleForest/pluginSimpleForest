@@ -259,6 +259,7 @@ SF_StepSpherefollowingBasic::createPostConfigurationDialog()
   configDialogAddSphereFollowingOptimizableParameters(configDialog);
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
   configDialogAddSphereFollowingHyperParameters(configDialog);
+  addOutputFormat(configDialog);
 }
 
 void

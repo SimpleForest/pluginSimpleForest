@@ -79,7 +79,7 @@ public:
     SF_QSMAllometryCorrectionNeighboring ac;
     {
       QMutexLocker m1(&*mMutex);
-      paramsCpy._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
+      paramsCpy._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME, 0.0001);
       ac.setParams(paramsCpy);
     }
     ac.compute();

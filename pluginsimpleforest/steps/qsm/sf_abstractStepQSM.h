@@ -29,6 +29,7 @@
 #ifndef SF_ABSTRACTSTEPQSM_H
 #define SF_ABSTRACTSTEPQSM_H
 
+#include "ct_itemdrawable/ct_pointsattributesscalartemplated.h"
 #include "steps/sf_abstractStep.h"
 
 class SF_AbstractStepQSM : public SF_AbstractStep
@@ -38,9 +39,13 @@ public:
   SF_AbstractStepQSM(CT_StepInitializeData& dataInit);
 
 protected:
+  void addOutputFormat(CT_StepConfigurableDialog* configDialog);
   CT_TTreeGroup* constructTopology(CT_AbstractResult* result, std::shared_ptr<SF_ModelQSM> qsm);
   void constructStemRecursively(const CT_AbstractResult* result,
                                 CT_TNodeGroup* stemNode,
+                                std::shared_ptr<SF_ModelAbstractSegment> segment);
+  void constructTwigRecursively(const CT_AbstractResult* result,
+                                CT_TNodeGroup* twigNode,
                                 std::shared_ptr<SF_ModelAbstractSegment> segment);
   void constructBranchRecursively(const CT_AbstractResult* result,
                                   CT_TNodeGroup* branchNode,
@@ -50,6 +55,7 @@ protected:
   void setCylindersBranch(const CT_AbstractResult* result,
                           CT_TNodeGroup* branchNode,
                           std::shared_ptr<SF_ModelAbstractSegment> segment);
+  void setCylindersTwig(const CT_AbstractResult* result, CT_TNodeGroup* twigNode, std::shared_ptr<SF_ModelAbstractSegment> segment);
   template<typename T>
   void addQSM(CT_ResultGroup* outResult, QList<T> paramList, QString outResultGrpName, QString outSFQSMName, QString inCloudName);
   template<typename T>
@@ -63,11 +69,38 @@ protected:
 
   CT_AutoRenameModels _treeGroup;
   CT_AutoRenameModels _branchNodeGroup;
+  CT_AutoRenameModels _twigNodeGroup;
   CT_AutoRenameModels _stemNodeGroup;
   CT_AutoRenameModels _branchNodeCylinders;
   CT_AutoRenameModels _stemNodeCylinders;
+  CT_AutoRenameModels _twigNodeCylinders;
   CT_AutoRenameModels _QSMCloud;
   CT_AutoRenameModels _QSMGrp;
+
+  void addAttributesStem(const CT_AbstractResult* result, CT_Cylinder* cylinder, std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick);
+  void addAttributesBranch(const CT_AbstractResult* result,
+                           CT_Cylinder* cylinder,
+                           std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick);
+  void addAttributesTwig(const CT_AbstractResult* result, CT_Cylinder* cylinder, std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick);
+
+  CT_AutoRenameModels m_stemGrowthVolume;
+  CT_AutoRenameModels m_stemGrowthLength;
+  CT_AutoRenameModels m_stemBranchID;
+  CT_AutoRenameModels m_stemReversePipeOrder;
+
+  CT_AutoRenameModels m_branchGrowthVolume;
+  CT_AutoRenameModels m_branchGrowthLength;
+  CT_AutoRenameModels m_branchBranchID;
+  CT_AutoRenameModels m_branchReversePipeOrder;
+
+  CT_AutoRenameModels m_twigGrowthVolume;
+  CT_AutoRenameModels m_twigGrowthLength;
+  CT_AutoRenameModels m_twigBranchID;
+  CT_AutoRenameModels m_twigPipeOrder;
+
+  bool m_allStem = true;
+  double m_twigPercentage = 0.04;
+  double m_stemPercentage = 0.2;
 };
 
 template<typename T>
@@ -90,7 +123,7 @@ SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
       _groupsToBeRemoved.push_back(group);
       continue;
     }
-    qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
+    qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME, m_twigPercentage);
 
     CT_TTreeGroup* tree = constructTopology(outResult, qsm);
     group->addGroup(qsmGrp);
@@ -146,7 +179,7 @@ SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
       _groupsToBeRemoved.push_back(group);
       continue;
     }
-    qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME);
+    qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME, m_twigPercentage);
 
     CT_TTreeGroup* tree = constructTopology(outResult, qsm);
     group->addGroup(qsmGrp);

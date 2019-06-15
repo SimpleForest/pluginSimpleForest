@@ -50,18 +50,39 @@ SF_AbstractStepQSM::constructStemRecursively(const CT_AbstractResult* result,
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> children = segment->getChildren();
   int index = 0;
   for (std::shared_ptr<SF_ModelAbstractSegment> child : children) {
-    if (index == 0) {
+    if (index == 0 || m_allStem) {
       CT_TNodeGroup* stemChild = new CT_TNodeGroup(_stemNodeGroup.completeName(), result);
       stemNode->addBranch(stemChild);
       setCylindersStem(result, stemChild, child);
       constructStemRecursively(result, stemChild, child);
     } else {
-      CT_TNodeGroup* branchChild = new CT_TNodeGroup(_branchNodeGroup.completeName(), result);
-      stemNode->addBranch(branchChild);
-      setCylindersBranch(result, branchChild, child);
-      constructBranchRecursively(result, branchChild, child);
+      if (child->getBranchID() > 0) {
+        CT_TNodeGroup* branchChild = new CT_TNodeGroup(_branchNodeGroup.completeName(), result);
+        stemNode->addBranch(branchChild);
+        setCylindersBranch(result, branchChild, child);
+        constructBranchRecursively(result, branchChild, child);
+      } else {
+        CT_TNodeGroup* twigChild = new CT_TNodeGroup(_twigNodeGroup.completeName(), result);
+        stemNode->addBranch(twigChild);
+        setCylindersTwig(result, twigChild, child);
+        constructTwigRecursively(result, twigChild, child);
+      }
     }
     index++;
+  }
+}
+
+void
+SF_AbstractStepQSM::constructTwigRecursively(const CT_AbstractResult* result,
+                                             CT_TNodeGroup* twigNode,
+                                             std::shared_ptr<SF_ModelAbstractSegment> segment)
+{
+  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> children = segment->getChildren();
+  for (std::shared_ptr<SF_ModelAbstractSegment> child : children) {
+    CT_TNodeGroup* branchChild = new CT_TNodeGroup(_twigNodeGroup.completeName(), result);
+    twigNode->addBranch(branchChild);
+    setCylindersBranch(result, branchChild, child);
+    constructTwigRecursively(result, branchChild, child);
   }
 }
 
@@ -101,6 +122,29 @@ SF_AbstractStepQSM::setCylindersStem(const CT_AbstractResult* result,
     stemNode->addComponent(cylinderGroup);
     CT_CylinderData* data = constructCylinderData(brick);
     CT_Cylinder* cylinder = new CT_Cylinder(_stemNodeCylinders.completeName(), result, data);
+    addAttributesStem(result, cylinder, brick);
+    cylinderGroup->addItemDrawable(cylinder);
+  }
+}
+
+void SF_AbstractStepQSM::addOutputFormat(CT_StepConfigurableDialog *configDialog)
+{
+    configDialog->addBool("Split tree into stem, branches and twigs in output.", "", "", m_allStem);
+}
+
+
+void
+SF_AbstractStepQSM::setCylindersTwig(const CT_AbstractResult* result,
+                                     CT_TNodeGroup* twigNode,
+                                     std::shared_ptr<SF_ModelAbstractSegment> segment)
+{
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks = segment->getBuildingBricks();
+  for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick : bricks) {
+    CT_TNodeGroup* cylinderGroup = new CT_TNodeGroup(_twigNodeGroup.completeName(), result);
+    twigNode->addComponent(cylinderGroup);
+    CT_CylinderData* data = constructCylinderData(brick);
+    CT_Cylinder* cylinder = new CT_Cylinder(_twigNodeCylinders.completeName(), result, data);
+    addAttributesTwig(result, cylinder, brick);
     cylinderGroup->addItemDrawable(cylinder);
   }
 }
@@ -116,6 +160,7 @@ SF_AbstractStepQSM::setCylindersBranch(const CT_AbstractResult* result,
     branchNode->addComponent(cylinderGroup);
     CT_CylinderData* data = constructCylinderData(brick);
     CT_Cylinder* cylinder = new CT_Cylinder(_branchNodeCylinders.completeName(), result, data);
+    addAttributesBranch(result, cylinder, brick);
     cylinderGroup->addItemDrawable(cylinder);
   }
 }
@@ -127,7 +172,121 @@ SF_AbstractStepQSM::addQSMToOutResult(CT_OutResultModelGroupToCopyPossibilities*
   resModelw->addGroupModel(_QSMGrp, _treeGroup, new CT_TTreeGroup(), header);
   resModelw->addGroupModel(_treeGroup, _stemNodeGroup, new CT_TNodeGroup(), tr("QSM Stem"));
   resModelw->addItemModel(_stemNodeGroup, _stemNodeCylinders, new CT_Cylinder(), tr("QSM Stem Cylinder"));
+  resModelw->addItemAttributeModel(
+    _stemNodeCylinders,
+    m_stemGrowthVolume,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("log growthVolume"));
+  resModelw->addItemAttributeModel(
+    _stemNodeCylinders,
+    m_stemGrowthLength,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("log growthLength"));
+  resModelw->addItemAttributeModel(
+    _stemNodeCylinders,
+    m_stemBranchID,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("Branch ID"));
+  resModelw->addItemAttributeModel(
+    _stemNodeCylinders,
+    m_stemReversePipeOrder,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("reversePipeOrder"));
+
   resModelw->addGroupModel(_treeGroup, _branchNodeGroup, new CT_TNodeGroup(), tr("QSM Branch"));
   resModelw->addItemModel(_branchNodeGroup, _branchNodeCylinders, new CT_Cylinder(), tr("QSM Branch Cylinder"));
+  resModelw->addItemAttributeModel(
+    _branchNodeCylinders,
+    m_branchGrowthVolume,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("log growthVolume"));
+  resModelw->addItemAttributeModel(
+    _branchNodeCylinders,
+    m_branchGrowthLength,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("log growthLength"));
+  resModelw->addItemAttributeModel(
+    _branchNodeCylinders,
+    m_branchBranchID,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("Branch ID"));
+  resModelw->addItemAttributeModel(
+    _branchNodeCylinders,
+    m_branchReversePipeOrder,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("reversePipeOrder"));
+
+  resModelw->addGroupModel(_treeGroup, _twigNodeGroup, new CT_TNodeGroup(), tr("QSM Twig"));
+  resModelw->addItemModel(_twigNodeGroup, _twigNodeCylinders, new CT_Cylinder(), tr("QSM Twig Cylinder"));
+  resModelw->addItemAttributeModel(
+    _twigNodeCylinders,
+    m_twigGrowthVolume,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("log growthVolume"));
+  resModelw->addItemAttributeModel(
+    _twigNodeCylinders,
+    m_twigGrowthLength,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("log growthLength"));
+  resModelw->addItemAttributeModel(
+    _twigNodeCylinders,
+    m_twigBranchID,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("Branch ID"));
+  resModelw->addItemAttributeModel(
+    _twigNodeCylinders,
+    m_twigPipeOrder,
+    new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
+    tr("reversePipeOrder"));
+
   resModelw->addItemModel(_QSMGrp, _QSMCloud, new CT_Scene(), tr("QSM Cloud"));
+}
+
+void
+SF_AbstractStepQSM::addAttributesBranch(const CT_AbstractResult* result,
+                                        CT_Cylinder* cylinder,
+                                        std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick)
+{
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_branchGrowthVolume.completeName(), CT_AbstractCategory::DATA_NUMBER, result, std::log(brick->getGrowthVolume())));
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_branchGrowthLength.completeName(), CT_AbstractCategory::DATA_NUMBER, result, std::log(brick->getGrowthLength())));
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_branchBranchID.completeName(), CT_AbstractCategory::DATA_NUMBER, result, brick->getSegment()->getBranchID()));
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(m_branchReversePipeOrder.completeName(),
+                                                             CT_AbstractCategory::DATA_NUMBER,
+                                                             result,
+                                                             brick->getSegment()->getReversePipeBranchOrder()));
+}
+
+void
+SF_AbstractStepQSM::addAttributesTwig(const CT_AbstractResult* result,
+                                      CT_Cylinder* cylinder,
+                                      std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick)
+{
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_twigGrowthVolume.completeName(), CT_AbstractCategory::DATA_NUMBER, result, std::log(brick->getGrowthVolume())));
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_twigGrowthLength.completeName(), CT_AbstractCategory::DATA_NUMBER, result, std::log(brick->getGrowthLength())));
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_twigBranchID.completeName(), CT_AbstractCategory::DATA_NUMBER, result, brick->getSegment()->getBranchID()));
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_twigPipeOrder.completeName(), CT_AbstractCategory::DATA_NUMBER, result, brick->getSegment()->getReversePipeBranchOrder()));
+}
+
+void
+SF_AbstractStepQSM::addAttributesStem(const CT_AbstractResult* result,
+                                      CT_Cylinder* cylinder,
+                                      std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick)
+{
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_stemGrowthVolume.completeName(), CT_AbstractCategory::DATA_NUMBER, result, std::log(brick->getGrowthVolume())));
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_stemGrowthLength.completeName(), CT_AbstractCategory::DATA_NUMBER, result, std::log(brick->getGrowthLength())));
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(
+    m_stemBranchID.completeName(), CT_AbstractCategory::DATA_NUMBER, result, brick->getSegment()->getBranchID()));
+  cylinder->addItemAttribute(new CT_StdItemAttributeT<float>(m_stemReversePipeOrder.completeName(),
+                                                             CT_AbstractCategory::DATA_NUMBER,
+                                                             result,
+                                                             brick->getSegment()->getReversePipeBranchOrder()));
 }

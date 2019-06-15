@@ -47,6 +47,8 @@ class SF_ModelQSM
   double m_cGrowthVolume = 0;
   Eigen::Vector3d m_translation;
 
+  double m_volumeCorrection = 0;
+
 public:
   SF_ModelQSM(const int ID);
   virtual std::string toString();
@@ -62,8 +64,9 @@ public:
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> getBuildingBricks();
   std::shared_ptr<SF_ModelAbstractSegment> getRootSegment() const;
   void setRootSegment(const std::shared_ptr<SF_ModelAbstractSegment>& rootSegment);
-  void setBranchorder();
-  void sort(SF_ModelAbstractSegment::SF_SORTTYPE type);
+  double getVolume();
+  void setBranchorder(float twigPercentage);
+  void sort(SF_ModelAbstractSegment::SF_SORTTYPE type, float twigPercentage);
   bool getHasCorrectedParameters() const;
   void setHasCorrectedParameters(bool hasCorrectedParameters);
   double getAGrowthLength() const;
