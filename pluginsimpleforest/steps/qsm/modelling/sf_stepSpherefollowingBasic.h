@@ -56,7 +56,6 @@ protected:
   void compute();
   QList<SF_ParamSpherefollowingBasic<SF_PointNormal>> _paramList;
 
-private:
   QList<SF_ParamQSM<SF_PointNormal>> paramList();
   CT_AutoRenameModels m_outCloudItem;
   CT_AutoRenameModels _outCylinderGroup;

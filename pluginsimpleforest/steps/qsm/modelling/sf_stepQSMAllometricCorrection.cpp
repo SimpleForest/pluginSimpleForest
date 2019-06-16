@@ -78,8 +78,6 @@ SF_StepQSMAllometricCorrection::getStepRISCitations() const
   return _risCitationList;
 }
 
-
-
 void
 SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
 {
@@ -187,7 +185,7 @@ SF_StepQSMAllometricCorrection::compute()
     setProgressByCounter(10.0f, 85.0f);
   }
   SF_AbstractStepQSM::addQSM<SF_ParamAllometricCorrectionNeighboring>(
-    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), QString::fromUtf8(DEF_IN_CLOUD_SEED));
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), "");
   _paramList.clear();
 }
 

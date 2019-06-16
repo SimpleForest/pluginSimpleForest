@@ -32,6 +32,7 @@
 #include <Eigen/Core>
 #include <memory.h>
 #include <pcl/ModelCoefficients.h>
+#include <pcl/common/transforms.h>
 #include <pcl/point_types.h>
 
 enum FittingType
@@ -78,6 +79,8 @@ public:
   virtual void setCoefficients(pcl::ModelCoefficients::Ptr coefficients) = 0;
   virtual double getDistance(const Eigen::Vector3d& point) = 0;
   virtual void translate(Eigen::Vector3d translation) = 0;
+  virtual void transform(const Eigen::Affine3f& transform) = 0;
+
   void remove();
   double getDistance(const pcl::PointXYZ& point);
   double getDistance(const pcl::PointXYZINormal& point);

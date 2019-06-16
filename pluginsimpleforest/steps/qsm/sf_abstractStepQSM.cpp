@@ -127,11 +127,11 @@ SF_AbstractStepQSM::setCylindersStem(const CT_AbstractResult* result,
   }
 }
 
-void SF_AbstractStepQSM::addOutputFormat(CT_StepConfigurableDialog *configDialog)
+void
+SF_AbstractStepQSM::addOutputFormat(CT_StepConfigurableDialog* configDialog)
 {
-    configDialog->addBool("Split tree into stem, branches and twigs in output.", "", "", m_splitQSM);
+  configDialog->addBool("Split tree into stem, branches and twigs in output.", "", "", m_splitQSM);
 }
-
 
 void
 SF_AbstractStepQSM::setCylindersTwig(const CT_AbstractResult* result,

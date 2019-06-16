@@ -30,6 +30,7 @@
 #define SF_MODEL_TREE_H
 
 #include "sf_modelAbstractSegment.h"
+#include <pcl/common/transforms.h>
 
 class SF_ModelQSM
 {
@@ -55,6 +56,8 @@ public:
   virtual std::string toHeaderString();
 
   void translate(const Eigen::Vector3d& translation);
+  void transform(const Eigen::Affine3f& transform);
+
   Eigen::Vector3d translateToOrigin();
   std::shared_ptr<SF_ModelAbstractSegment> crownStartSegment(double minPercentage);
   std::shared_ptr<Sf_ModelAbstractBuildingbrick> crownStartBrick(double minPercentage);

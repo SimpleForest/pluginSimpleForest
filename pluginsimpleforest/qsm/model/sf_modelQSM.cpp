@@ -264,6 +264,15 @@ SF_ModelQSM::translate(const Eigen::Vector3d& translation)
   }
 }
 
+void
+SF_ModelQSM::transform(const Eigen::Affine3f& transform)
+{
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = getBuildingBricks();
+  for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick : buildingBricks) {
+    buildingBrick->transform(transform);
+  }
+}
+
 Eigen::Vector3d
 SF_ModelQSM::translateToOrigin()
 {

@@ -36,6 +36,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     math/fit/power/sf_fitgnpower.hpp \
     qsm/algorithm/distance/sf_extractFittedPoints.h \
     qsm/algorithm/distance/sf_extractFittedPoints.hpp \
+    qsm/algorithm/optimization/recursion/sf_spherefollowingRecursive.h \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.h \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.h \
     qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.h \
@@ -107,6 +108,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvancedAdapter.h \
     steps/qsm/modelling/sf_stepSpherefollowingBasic.h \
+    steps/qsm/modelling/sf_stepSpherefollowingRecursive.h \
+    steps/qsm/modelling/sf_stepSpherefollowingRecursiveAdapter.h \
     steps/qsm/postprocessing/sf_stepQSMMedianFilter.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctionsadapter.h \
@@ -188,6 +191,7 @@ SOURCES += \
     file/export/ply/sf_exportPly.cpp \
     file/export/qsm/sf_exportQSM.cpp \
     file/export/sf_abstractExport.cpp \
+    qsm/algorithm/optimization/recursion/sf_spherefollowingRecursive.cpp \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.cpp \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.cpp \
     qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.cpp \
@@ -214,6 +218,7 @@ SOURCES += \
     steps/qsm/modelling/sf_stepQSMAllometricCorrection.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingBasic.cpp \
+    steps/qsm/modelling/sf_stepSpherefollowingRecursive.cpp \
     steps/qsm/postprocessing/sf_stepQSMMedianFilter.cpp \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.cpp \
     steps/qsm/postprocessing/sf_stepqsmrefitcylinders.cpp \

@@ -21,6 +21,7 @@
 #include "steps/qsm/modelling/sf_stepQSMAllometricCorrection.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingBasic.h"
+#include "steps/qsm/modelling/sf_stepSpherefollowingRecursive.h"
 #include "steps/qsm/postprocessing/sf_stepQSMMedianFilter.h"
 #include "steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h"
 #include "steps/qsm/postprocessing/sf_stepqsmrefitcylinders.h"
@@ -85,6 +86,7 @@ SF_PluginManager::loadGenericsStep()
   addNewPointsStep<SF_StepSegmentTreeCloudFromQSM>(CT_StepsMenu::LP_Clusters);
   addNewGeometricalShapesStep<SF_StepSpherefollowingBasic>("QSM");
   addNewGeometricalShapesStep<SF_StepSphereFollowingAdvanced>("QSM");
+  addNewGeometricalShapesStep<SF_StepSphereFollowingRecursive>("QSM");
   addNewGeometricalShapesStep<SF_StepQSMAllometricCorrection>("QSM");
   addNewGeometricalShapesStep<SF_StepCorrectBranchJunctions>("QSM");
   addNewGeometricalShapesStep<SF_StepQSMRefitCylinders>("QSM");

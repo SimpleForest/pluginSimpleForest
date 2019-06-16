@@ -524,6 +524,14 @@ struct SF_ParamSpherefollowingBasic : public SF_ParamQSM<PointType>
 };
 
 template<typename PointType>
+struct SF_ParamSpherefollowingRecursive : public SF_ParamSpherefollowingBasic<PointType>
+{
+  double m_clusteringDistance = 0.05;
+  double m_unfittedDistance = 0.05;
+  double m_minPercentage = 0.01;
+};
+
+template<typename PointType>
 struct SF_ParamStatisticalOutlierFilter : public SF_ParamFilter<PointType>
 {
   int _k = 25;

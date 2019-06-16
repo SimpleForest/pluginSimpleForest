@@ -137,6 +137,11 @@ SF_StepQSMMedianFilter::compute()
   }
   writeLogger();
   SF_AbstractStepQSM::addQSM<SF_ParamQSMedian<SF_PointNormal>>(
-    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), QString::fromUtf8(DEF_IN_CLOUD_SEED));
+    // outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), QString::fromUtf8(DEF_IN_CLOUD_SEED));
+    outResult,
+    _paramList,
+    QString::fromUtf8(DEF_IN_GRP_CLUSTER),
+    _outSFQSM.completeName(),
+    "");
   _paramList.clear();
 }

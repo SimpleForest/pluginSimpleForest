@@ -31,6 +31,7 @@
 
 #include "sf_modelAbstractBuildingbrick.h"
 #include <pcl/ModelCoefficients.h>
+#include <pcl/common/transforms.h>
 #include <pcl/point_types.h>
 
 class Sf_ModelCylinderBuildingbrick : public Sf_ModelAbstractBuildingbrick
@@ -46,9 +47,11 @@ protected:
 
 public:
   Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficients::Ptr circleA, pcl::ModelCoefficients::Ptr circleB);
+  Sf_ModelCylinderBuildingbrick(Eigen::Vector3d start, Eigen::Vector3d end, double radius);
   std::string toString() override;
   std::string toHeaderString() override;
   double getRadius() override;
+  void transform(const Eigen::Affine3f& transform) override;
   void setRadius(double radius, FittingType type) override;
   void translate(Eigen::Vector3d translation) override;
   double getVolume() override;

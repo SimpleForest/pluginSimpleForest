@@ -218,13 +218,10 @@ SF_SphereFollowing::processClusters(std::vector<pcl::PointCloud<pcl::PointXYZINo
       if (coeff.values.size() == 4) {
         float clusterDistance = std::round(intensity - lastCircle.m_clusterIndex);
         float heapDistance;
-        if (clusterDistance > 1)
-        {
-            heapDistance = lastCircle.m_distance + getDistance(coeff, lastCircle) + std::pow(10.0, clusterDistance);
-        }
-        else
-        {
-            heapDistance = lastCircle.m_distance + getDistance(coeff, lastCircle);
+        if (clusterDistance > 1) {
+          heapDistance = lastCircle.m_distance + getDistance(coeff, lastCircle) + std::pow(10.0, clusterDistance);
+        } else {
+          heapDistance = lastCircle.m_distance + getDistance(coeff, lastCircle);
         }
         if (cluster != *clusters.begin()) {
           heapDistance += params._sphereFollowingParams._heapDelta;

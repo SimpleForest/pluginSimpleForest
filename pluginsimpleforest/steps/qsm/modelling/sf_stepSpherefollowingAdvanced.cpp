@@ -61,7 +61,7 @@ SF_StepSphereFollowingAdvanced::getStepDetailledDescription() const
 QString
 SF_StepSphereFollowingAdvanced::getStepURL() const
 {
-  return tr("");
+  return tr("http://simpleforest.org/");
 }
 
 CT_VirtualAbstractStep*

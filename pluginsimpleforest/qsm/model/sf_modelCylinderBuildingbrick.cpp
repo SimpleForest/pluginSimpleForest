@@ -41,6 +41,34 @@ Sf_ModelCylinderBuildingbrick::getRadius()
 }
 
 void
+Sf_ModelCylinderBuildingbrick::transform(const Eigen::Affine3f& transform)
+{
+  pcl::PointCloud<pcl::PointXYZ> cloud;
+  pcl::PointXYZ p1;
+  p1.x = _start[0];
+  p1.y = _start[1];
+  p1.z = _start[2];
+  pcl::PointXYZ p2;
+  p2.x = _end[0];
+  p2.y = _end[1];
+  p2.z = _end[2];
+  cloud.points.push_back(p1);
+  cloud.points.push_back(p2);
+
+  pcl::PointCloud<pcl::PointXYZ> transformed;
+  pcl::transformPointCloud(cloud, transformed, transform);
+  p1 = transformed.points.at(0);
+  p2 = transformed.points.at(1);
+
+  _start[0] = p1.x;
+  _start[1] = p1.y;
+  _start[2] = p1.z;
+  _end[0] = p2.x;
+  _end[1] = p2.y;
+  _end[2] = p2.z;
+}
+
+void
 Sf_ModelCylinderBuildingbrick::setRadius(double radius, FittingType type)
 {
   _fittingType = type;
@@ -167,6 +195,13 @@ Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(pcl::ModelCoefficie
   _end[2] = circleB->values[2];
   m_radius = circleB->values[3];
   _fittingType = FittingType::SPHEREFOLLOWING;
+}
+
+Sf_ModelCylinderBuildingbrick::Sf_ModelCylinderBuildingbrick(Eigen::Vector3d start, Eigen::Vector3d end, double radius)
+{
+  _start = start;
+  _end = end;
+  m_radius = radius;
 }
 
 std::string
