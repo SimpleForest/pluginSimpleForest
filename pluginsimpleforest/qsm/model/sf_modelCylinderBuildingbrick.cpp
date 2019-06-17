@@ -109,11 +109,8 @@ Sf_ModelCylinderBuildingbrick::getDistance(const Eigen::Vector3d& point)
 double
 Sf_ModelCylinderBuildingbrick::getDistanceToAxis(const Eigen::Vector3d& point)
 {
-  Eigen::Vector3d a = point - _start;
-  Eigen::Vector3d b = point - _end;
-  Eigen::Vector3d c = _end - _start;
-  Eigen::Vector3d d = a.cross(b);
-  return d.norm() / c.norm();
+  auto projection = getProjectionOnAxis(point);
+  return (point - projection).norm();
 }
 
 double
