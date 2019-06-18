@@ -247,8 +247,20 @@ SF_StepSpherefollowingBasic::createPreConfigurationDialog()
   configDialog->addStringChoice("In beginner mode select point cloud quality", "", _pointDensities, _choicePointDensity);
   configDialog->addBool(
     "You can let Simple Forest choose method parameters", " select if you want auto parameters", "", _SF_parameterAutoSearch);
+  configDialog->addText(QObject::tr("For this step please cite in addition the paper presenting the spherefollowing routine:"),
+                        "Hackenberg, J.; Morhart, C.; Sheppard, J.; Spiecker, H.; Disney, M.");
+  configDialog->addText("(section 4.3. Cylinder Model Creation)",
+                        "<em>Highly Accurate Tree Models Derived from Terrestrial Laser Scan "
+                        "Data: A Method Description.</em>");
+  configDialog->addText("", "Forests <b>2014</b>, 5, 1069-1105.");
+  configDialog->addText(QObject::tr("And this inventing the automatic parameter search for QSM modeling:"),
+                        "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
+  configDialog->addText("(section 2.2. Tree Modeling - Parameter Optimization)",
+                        "<em>SimpleTree - An Efficient Open Source Tool to "
+                        "Build Tree Models from TLS Clouds.</em>");
+  configDialog->addText("", "Forests <b>2015</b>, 6, 4245-4294.");
+  configDialog->addText("", "Forests <b>2014</b>, 5, 1069-1105.");
   createPostConfigurationDialogCitation(configDialog);
-  addCitationPCL(configDialog);
 }
 
 void
