@@ -80,16 +80,25 @@ SF_StepSegmentTreeCloudFromQSM::getStepRISCitations() const
 void
 SF_StepSegmentTreeCloudFromQSM::createInResultModelListProtected()
 {
-  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Result"));
+  CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Result Tree Cloud"));
   resModel->setZeroOrMoreRootGroup();
   resModel->addGroupModel("",
                           DEF_IN_GRP_CLUSTER,
                           CT_AbstractItemGroup::staticGetType(),
-                          tr("Tree Group"),
+                          tr("Tree Cloud Group"),
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Tree Cloud"));
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("QSM"));
+
+  CT_InResultModelGroup* resModel2 = createNewInResultModel(DEF_IN_RESULT2, tr("Input Result QSM"));
+  resModel2->setZeroOrMoreRootGroup();
+  resModel2->addGroupModel("",
+                          DEF_IN_GRP_CLUSTER2,
+                          CT_AbstractItemGroup::staticGetType(),
+                          tr("QSM Group"),
+                          "",
+                          CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+  resModel2->addItemModel(DEF_IN_GRP_CLUSTER2, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("QSM"));
 }
 
 void
@@ -150,7 +159,6 @@ SF_StepSegmentTreeCloudFromQSM::createParamList(CT_ResultGroup* outResult)
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
     const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
       this, DEF_IN_CLOUD_SEED);
-    const SF_QSM_Item* sf_qsmItem = (const SF_QSM_Item*)group->firstItemByINModelName(this, DEF_IN_QSM);
     SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal> param;
     param._stepProgress = _stepProgress;
     param._distanceParams = distanceParams;
@@ -158,7 +166,22 @@ SF_StepSegmentTreeCloudFromQSM::createParamList(CT_ResultGroup* outResult)
     param._log = PS_LOG;
     param._itemCpyCloudIn = ctCloud;
     param._grpCpyGrp = group;
-    param._qsm = sf_qsmItem->getQsm();
     _paramList.append(param);
+  }
+
+  CT_ResultGroup* outResult2 = getInputResults().at(1);
+  CT_ResultGroupIterator outResIt2(outResult2, this, DEF_IN_GRP_CLUSTER2);
+  size_t index = 0;
+  while (!isStopped() && outResIt2.hasNext()) {
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt2.next();
+    if (index > static_cast<size_t>(_paramList.size())) {
+      std::cout << "SF_StepQSMRefitCylinders More trees than clouds" << std::endl;
+      return;
+    }
+    index = std::min(index, static_cast<size_t>(_paramList.size()));
+    SF_ParamSegmentTreeFromQSM<pcl::PointXYZINormal>& param = _paramList[index];
+    index++;
+    const SF_QSM_Item* sf_qsmItem = (const SF_QSM_Item*)group->firstItemByINModelName(this, DEF_IN_QSM);
+    param._qsm = sf_qsmItem->getQsm();
   }
 }

@@ -52,6 +52,7 @@
 
 #define DEF_IN_RESULT "ires"
 #define DEF_IN_RESULT2 "ires2"
+#define DEF_IN_RESULT3 "ires3"
 #define DEF_IN_GRP_CLUSTER "igrp"
 #define DEF_IN_GRP_CLUSTER2 "igrp2"
 #define DEF_IN_GRP_CLUSTER3 "igrp3"
