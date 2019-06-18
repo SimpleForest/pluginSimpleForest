@@ -88,7 +88,7 @@ SF_PluginManager::loadGenericsStep()
   addNewGeometricalShapesStep<SF_StepSphereFollowingAdvanced>("QSM");
   addNewGeometricalShapesStep<SF_StepSphereFollowingRecursive>("QSM");
   addNewGeometricalShapesStep<SF_StepQSMAllometricCorrection>("QSM");
-  addNewGeometricalShapesStep<SF_StepCorrectBranchJunctions>("QSM");
+  addNewGeometricalShapesStep<SF_StepQSMCorrectBranchJunctions>("QSM");
   addNewGeometricalShapesStep<SF_StepQSMRefitCylinders>("QSM");
   addNewGeometricalShapesStep<SF_StepQSMMedianFilter>("QSM");
   return true;

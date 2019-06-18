@@ -48,7 +48,7 @@ QString
 SF_StepQSMCorrectBranchJunctions::getStepDetailledDescription() const
 {
   return tr("Often the first buildingbrick inside a segment is spatially badly alligned due to Spherefollowing routine."
-            " Here we extrpolate the axis of the second cylinder towards the first cylinders direction. The first cylinder"
+            " Here we extrapolate the axis of the second cylinder towards the first cylinders direction. The first cylinder"
             " receives a new start point on this axis to be better alligned. We choose the intersection of the axis with"
             " the parent building brick as this start point.");
 }
@@ -56,7 +56,7 @@ SF_StepQSMCorrectBranchJunctions::getStepDetailledDescription() const
 QString
 SF_StepQSMCorrectBranchJunctions::getStepURL() const
 {
-  return tr("");
+  return tr("http://simpleforest.org/");
 }
 
 CT_VirtualAbstractStep*
@@ -94,7 +94,6 @@ SF_StepQSMCorrectBranchJunctions::createInResultModelListProtected()
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("QSM item"));
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Tree Cloud"));
 }
 
 void
