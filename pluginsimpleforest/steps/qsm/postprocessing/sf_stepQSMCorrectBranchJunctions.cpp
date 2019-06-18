@@ -26,9 +26,9 @@
 
 *****************************************************************************/
 
-#include "sf_stepcorrectbranchjunctions.h"
+#include "sf_stepQSMCorrectBranchJunctions.h"
 
-#include "steps/qsm/postprocessing/sf_stepcorrectbranchjunctionsadapter.h"
+#include "steps/qsm/postprocessing/sf_stepQSMCorrectBranchJunctionsAdapter.h"
 
 #include <ct_itemdrawable/ct_cylinder.h>
 
