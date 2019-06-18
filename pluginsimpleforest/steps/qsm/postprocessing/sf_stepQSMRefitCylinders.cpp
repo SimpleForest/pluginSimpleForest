@@ -26,7 +26,7 @@
 
 *****************************************************************************/
 
-#include "sf_stepqsmrefitcylinders.h"
+#include "sf_stepQSMRefitCylinders.h"
 
 #include "steps/item/sf_spherefollowing_parameters_item.h"
 #include "steps/qsm/postprocessing/sf_stepqsmrefitcylindersadapter.h"

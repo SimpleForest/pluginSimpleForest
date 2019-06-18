@@ -111,10 +111,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/qsm/modelling/sf_stepSpherefollowingRecursive.h \
     steps/qsm/modelling/sf_stepSpherefollowingRecursiveAdapter.h \
     steps/qsm/postprocessing/sf_stepQSMMedianFilter.h \
+    steps/qsm/postprocessing/sf_stepQSMRefitCylinders.h \
+    steps/qsm/postprocessing/sf_stepQSMRefitCylindersAdapter.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctionsadapter.h \
-    steps/qsm/postprocessing/sf_stepqsmrefitcylinders.h \
-    steps/qsm/postprocessing/sf_stepqsmrefitcylindersadapter.h \
     steps/qsm/sf_abstractStepQSM.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSMAdapter.h \
@@ -220,8 +220,8 @@ SOURCES += \
     steps/qsm/modelling/sf_stepSpherefollowingBasic.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingRecursive.cpp \
     steps/qsm/postprocessing/sf_stepQSMMedianFilter.cpp \
+    steps/qsm/postprocessing/sf_stepQSMRefitCylinders.cpp \
     steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.cpp \
-    steps/qsm/postprocessing/sf_stepqsmrefitcylinders.cpp \
     steps/qsm/sf_abstractStepQSM.cpp \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.cpp \
     steps/sf_abstractStep.cpp \

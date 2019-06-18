@@ -24,7 +24,7 @@
 #include "steps/qsm/modelling/sf_stepSpherefollowingRecursive.h"
 #include "steps/qsm/postprocessing/sf_stepQSMMedianFilter.h"
 #include "steps/qsm/postprocessing/sf_stepcorrectbranchjunctions.h"
-#include "steps/qsm/postprocessing/sf_stepqsmrefitcylinders.h"
+#include "steps/qsm/postprocessing/sf_stepQSMRefitCylinders.h"
 #include "steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h"
 #include "steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h"
 #include "steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h"
