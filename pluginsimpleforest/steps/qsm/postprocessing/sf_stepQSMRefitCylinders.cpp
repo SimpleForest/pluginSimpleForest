@@ -29,7 +29,7 @@
 #include "sf_stepQSMRefitCylinders.h"
 
 #include "steps/item/sf_spherefollowing_parameters_item.h"
-#include "steps/qsm/postprocessing/sf_stepqsmrefitcylindersadapter.h"
+#include "steps/qsm/postprocessing/sf_stepQSMRefitCylindersAdapter.h"
 
 #include <QtConcurrent/QtConcurrent>
 
@@ -48,13 +48,15 @@ SF_StepQSMRefitCylinders::getStepDescription() const
 QString
 SF_StepQSMRefitCylinders::getStepDetailledDescription() const
 {
-  return tr("TODO ");
+  return tr("The steps imports a QSM and a cloud. Each cylinder of the QSM gets a point cluster. Each point of the input cloud is stored"
+            " in the cluster of its nearest cylinder. For each QSM cylinder a cylinder refit is performed. If the new fitted cylinder does"
+            " not deviate too much from the old one it is accepted as a replacement.");
 }
 
 QString
 SF_StepQSMRefitCylinders::getStepURL() const
 {
-  return tr("");
+  return tr("http://simpleforest.org/");
 }
 
 CT_VirtualAbstractStep*
@@ -78,7 +80,7 @@ SF_StepQSMRefitCylinders::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
   addOutputFormat(configDialog);
-  configDialog->addText("<b>Allometric correction</b>:");
+  configDialog->addText("<b>Cylinder refitting</b>:");
   configDialog->addDouble("To even out the distribution and speed things up the cloud is "
                           "downscaled first to [<em><b>voxel size</b></em>] ",
                           " (m). ",
@@ -86,9 +88,9 @@ SF_StepQSMRefitCylinders::createPostConfigurationDialog()
                           0.03,
                           3,
                           _PP_voxelSize);
-  configDialog->addDouble("For a fitted cylinder the angle between normal and cylinder axis has to be 90 -   "
-                          " [<em><b>degree</b></em>] ",
-                          " of cylinders. ",
+  configDialog->addDouble("For a fitted cylinder the angle between normal and cylinder axis has to be smaller than 90 -   "
+                          " [<em><b>degrees</b></em>] ",
+                          "°.",
                           1,
                           45,
                           1,
@@ -100,9 +102,9 @@ SF_StepQSMRefitCylinders::createPostConfigurationDialog()
                           2.0,
                           2,
                           m_inlierDistance);
-  configDialog->addDouble("Use as percentage of radii deviation this inlier distance  "
-                          " [<em><b>perc  inlierDistance</b></em>] ",
-                          " . ",
+  configDialog->addDouble("Use this percentage of the old cylinder radius as allowed deviation for the new radius from the old one: "
+                          " [<em><b>percentage radius</b></em>] ",
+                          "%.",
                           0.01,
                           1.0,
                           2,
