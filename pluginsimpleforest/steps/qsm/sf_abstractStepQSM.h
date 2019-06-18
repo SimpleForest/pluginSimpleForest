@@ -57,14 +57,13 @@ protected:
                           std::shared_ptr<SF_ModelAbstractSegment> segment);
   void setCylindersTwig(const CT_AbstractResult* result, CT_TNodeGroup* twigNode, std::shared_ptr<SF_ModelAbstractSegment> segment);
   template<typename T>
-  void addQSM(CT_ResultGroup* outResult, QList<T> paramList, QString outResultGrpName, QString outSFQSMName, QString inCloudName);
+  void addQSM(CT_ResultGroup* outResult, QList<T> paramList, QString outResultGrpName, QString outSFQSMName);
   template<typename T>
   void addQSM(CT_ResultGroup* outResult,
               QList<T> paramList,
               QString outResultGrpName,
               QString outSFQSMName,
-              QString outParamName,
-              QString inCloudName);
+              QString outParamName);
   void addQSMToOutResult(CT_OutResultModelGroupToCopyPossibilities* resModelw, QString header, QString group);
 
   CT_AutoRenameModels _treeGroup;
@@ -108,8 +107,7 @@ void
 SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
                            QList<T> paramList,
                            QString outResultGrpName,
-                           QString outSFQSMName,
-                           QString inCloudName)
+                           QString outSFQSMName)
 {
   CT_ResultGroupIterator outResIt(outResult, this, outResultGrpName);
   size_t index = 0;
@@ -128,29 +126,6 @@ SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
     CT_TTreeGroup* tree = constructTopology(outResult, qsm);
     group->addGroup(qsmGrp);
     qsmGrp->addGroup(tree);
-
-    if (inCloudName != "") {
-      const CT_AbstractItemDrawableWithPointCloud* ctCloud =
-        (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, inCloudName);
-      CT_PointCloudIndexVector* pointCloudIndexVector = new CT_PointCloudIndexVector();
-      pointCloudIndexVector->setSortType(CT_AbstractCloudIndex::NotSorted);
-      CT_PointIterator iter(ctCloud->getPointCloudIndex());
-      std::vector<size_t> indices;
-      while (iter.hasNext() && !isStopped()) {
-        iter.next();
-        size_t index = iter.currentGlobalIndex();
-        indices.push_back(index);
-      }
-      std::sort(indices.begin(), indices.end());
-      for (size_t i = 0; i < indices.size(); i++) {
-        pointCloudIndexVector->addIndex(indices.at(i));
-      }
-      pointCloudIndexVector->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
-      CT_Scene* outScene = new CT_Scene(
-        _QSMCloud.completeName(), outResult, PS_REPOSITORY->registerPointCloudIndex(pointCloudIndexVector));
-      outScene->updateBoundingBox();
-      qsmGrp->addItemDrawable(outScene);
-    }
 
     SF_QSM_Item* qsmItem = new SF_QSM_Item(outSFQSMName, outResult, qsm);
     qsmGrp->addItemDrawable(qsmItem);
@@ -165,8 +140,7 @@ SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
                            QList<T> paramList,
                            QString outResultGrpName,
                            QString outSFQSMName,
-                           QString outParamName,
-                           QString inCloudName)
+                           QString outParamName)
 {
   CT_ResultGroupIterator outResIt(outResult, this, outResultGrpName);
   size_t index = 0;
@@ -184,28 +158,6 @@ SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
     CT_TTreeGroup* tree = constructTopology(outResult, qsm);
     group->addGroup(qsmGrp);
     qsmGrp->addGroup(tree);
-    if (inCloudName != "") {
-      const CT_AbstractItemDrawableWithPointCloud* ctCloud =
-        (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, inCloudName);
-      CT_PointCloudIndexVector* pointCloudIndexVector = new CT_PointCloudIndexVector();
-      pointCloudIndexVector->setSortType(CT_AbstractCloudIndex::NotSorted);
-      CT_PointIterator iter(ctCloud->getPointCloudIndex());
-      std::vector<size_t> indices;
-      while (iter.hasNext() && !isStopped()) {
-        iter.next();
-        size_t index = iter.currentGlobalIndex();
-        indices.push_back(index);
-      }
-      std::sort(indices.begin(), indices.end());
-      for (size_t i = 0; i < indices.size(); i++) {
-        pointCloudIndexVector->addIndex(indices.at(i));
-      }
-      pointCloudIndexVector->setSortType(CT_PointCloudIndexVector::SortedInAscendingOrder);
-      CT_Scene* outScene = new CT_Scene(
-        _QSMCloud.completeName(), outResult, PS_REPOSITORY->registerPointCloudIndex(pointCloudIndexVector));
-      outScene->updateBoundingBox();
-      qsmGrp->addItemDrawable(outScene);
-    }
     if (outParamName != "") {
       SF_SphereFollowing_Parameters_Item* paramItem = new SF_SphereFollowing_Parameters_Item(outParamName, outResult, params);
       qsmGrp->addItemDrawable(paramItem);

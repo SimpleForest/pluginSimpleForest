@@ -238,8 +238,6 @@ SF_AbstractStepQSM::addQSMToOutResult(CT_OutResultModelGroupToCopyPossibilities*
     m_twigPipeOrder,
     new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
     tr("reversePipeOrder"));
-
-  resModelw->addItemModel(_QSMGrp, _QSMCloud, new CT_Scene(), tr("QSM Cloud"));
 }
 
 void
