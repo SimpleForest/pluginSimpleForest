@@ -117,6 +117,13 @@ SF_StepQSMRefitCylinders::createPostConfigurationDialog()
                        99,
                        m_minPts);
   configDialog->addInt("Use [<em><b>ransac iterations</b></em>] ", "", 10, 10000, m_ransacIterations);
+  configDialog->addText(QObject::tr("For this step please cite in addition :"),
+                        "Hackenberg, J.; Morhart, C.; Sheppard, J.; Spiecker, H.; Disney, M.");
+  configDialog->addText("(section 4.7. Cylinder Fitting)",
+                        "<em>Highly Accurate Tree Models Derived from Terrestrial Laser Scan "
+                        "Data: A Method Description.</em>");
+  configDialog->addText("", "Forests <b>2014</b>, 5, 1069-1105.");
+  configDialog->addEmpty();
   createPostConfigurationDialogCitation(configDialog);
 }
 

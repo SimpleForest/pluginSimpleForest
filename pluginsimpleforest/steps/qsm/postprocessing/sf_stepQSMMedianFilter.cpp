@@ -89,6 +89,14 @@ SF_StepQSMMedianFilter::createPostConfigurationDialog()
                           0.99,
                           2,
                           m_percentage);
+  configDialog->addText(QObject::tr("For invention of this step please cite  "
+                                    "the following:"),
+                        "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
+  configDialog->addText("(section D.1. Post Processing)",
+                        "<em>SimpleTree - An Efficient Open Source Tool to "
+                        "Build Tree Models from TLS Clouds.</em>");
+  configDialog->addText("", "Forests <b>2015</b>, 6, 4245-4294.");
+  configDialog->addEmpty();
   createPostConfigurationDialogCitation(configDialog);
 }
 
