@@ -103,8 +103,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/item/sf_qsm_item.h \
     steps/item/sf_spherefollowing_parameters_item.h \
     steps/qsm/export/sf_stepExportQSMList.h \
-    steps/qsm/modelling/sf_stepQSMAllometricCorrection.h \
-    steps/qsm/modelling/sf_stepQSMAllometricCorrectionAdapter.h \
+    steps/qsm/postprocessing/sf_stepQSMAllometricCorrection.h \
+    steps/qsm/postprocessing/sf_stepQSMAllometricCorrectionAdapter.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvancedAdapter.h \
     steps/qsm/modelling/sf_stepSpherefollowingBasic.h \
@@ -215,7 +215,7 @@ SOURCES += \
     steps/item/sf_qsm_item.cpp \
     steps/item/sf_spherefollowing_parameters_item.cpp \
     steps/qsm/export/sf_stepExportQSMList.cpp \
-    steps/qsm/modelling/sf_stepQSMAllometricCorrection.cpp \
+    steps/qsm/postprocessing/sf_stepQSMAllometricCorrection.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingBasic.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingRecursive.cpp \

@@ -29,7 +29,7 @@
 #include "sf_stepQSMAllometricCorrection.h"
 
 #include "steps/item/sf_spherefollowing_parameters_item.h"
-#include "steps/qsm/modelling/sf_stepQSMAllometricCorrectionAdapter.h"
+#include "steps/qsm/postprocessing/sf_stepQSMAllometricCorrectionAdapter.h"
 
 #include <QtConcurrent/QtConcurrent>
 
