@@ -186,6 +186,16 @@ SF_StepSphereFollowingAdvanced::createInResultModelListProtected()
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_ID, CT_PointsAttributesScalarTemplated<int>::staticGetType(), tr("Cluster ID"));
   resModel->addItemModel(
     DEF_IN_GRP_CLUSTER, DEF_IN_PARAMS, SF_SphereFollowing_Parameters_Item::staticGetType(), tr("SphereFollowing parameters"));
+
+  CT_InResultModelGroup* resModel2 = createNewInResultModel(DEF_IN_RESULT2, tr("Input Cluster ID"));
+  resModel2->setZeroOrMoreRootGroup();
+  resModel2->addGroupModel("",
+                          DEF_IN_GRP_CLUSTER2,
+                          CT_AbstractItemGroup::staticGetType(),
+                          tr("Cluster ID Group"),
+                          "",
+                          CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+  resModel2->addItemModel(DEF_IN_GRP_CLUSTER2, DEF_IN_ID, CT_PointsAttributesScalarTemplated<int>::staticGetType(), tr("Cluster ID"));
 }
 
 void
@@ -232,8 +242,7 @@ SF_StepSphereFollowingAdvanced::compute()
                                                                               _paramList,
                                                                               QString::fromUtf8(DEF_IN_GRP_CLUSTER),
                                                                               _outSFQSM.completeName(),
-                                                                              _outParams.completeName(),
-                                                                              QString::fromUtf8(DEF_IN_CLOUD_SEED));
+                                                                              _outParams.completeName());
   _paramList.clear();
 }
 
@@ -323,14 +332,11 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResItCloud.next();
     const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
       this, DEF_IN_CLOUD_SEED);
-    CT_PointsAttributesScalarTemplated<int>* ctID = (CT_PointsAttributesScalarTemplated<int>*)group->firstItemByINModelName(this,
-                                                                                                                            DEF_IN_ID);
     const SF_SphereFollowing_Parameters_Item* ctParameters = (const SF_SphereFollowing_Parameters_Item*)group->firstItemByINModelName(
       this, DEF_IN_PARAMS);
     SF_ParamSpherefollowingBasic<SF_PointNormal> param = ctParameters->getParams();
     SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramAdvanced;
     paramAdvanced._sphereFollowingParams = param._sphereFollowingParams;
-    paramAdvanced.m_numClstrs = getNumberOfClusters(ctID);
     paramAdvanced._sphereFollowingParams.m_optimizationParams.clear();
     for (size_t m = 0; m < paramAdvanced.m_numClstrs; m++) {
       paramAdvanced._sphereFollowingParams.m_optimizationParams.push_back(param._sphereFollowingParams.m_optimizationParams[0]);
@@ -343,13 +349,31 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
     paramAdvanced._fittedGeometries = 0;
     paramAdvanced._log = PS_LOG;
     paramAdvanced._itemCpyCloudIn = ctCloud;
-    paramAdvanced._ctID = ctID;
     paramAdvanced._grpCpyGrp = group;
     paramAdvanced._iterations = _NM_iterations;
     numberComputationsPerCloud = (_NM_iterations + 27) * (paramAdvanced.m_numClstrs + 1);
     paramAdvanced._fitQuality = _NM_minSize;
     _paramList.append(paramAdvanced);
   }
+
+  CT_ResultGroup* outResult2 = getInputResults().at(1);
+  CT_ResultGroupIterator outResIt2(outResult2, this, DEF_IN_GRP_CLUSTER2);
+  size_t index = 0;
+  while (!isStopped() && outResIt2.hasNext()) {
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt2.next();
+    if (index > static_cast<size_t>(_paramList.size())) {
+      std::cout << "SF_StepSphereFollowingAdvanced More trees than clouds" << std::endl;
+      return;
+    }
+    index = std::min(index, static_cast<size_t>(_paramList.size()));
+    SF_ParamSpherefollowingAdvanced<SF_PointNormal>& param = _paramList[index];
+    index++;
+    CT_PointsAttributesScalarTemplated<int>* ctID = (CT_PointsAttributesScalarTemplated<int>*)group->firstItemByINModelName(this,
+                                                                                                                            DEF_IN_ID);
+    param._ctID = ctID;
+    param.m_numClstrs = getNumberOfClusters(ctID);
+  }
+
   int numberClouds = _paramList.size();
   m_computationsTotal = numberClouds * numberComputationsPerCloud;
 }

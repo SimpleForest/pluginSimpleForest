@@ -193,7 +193,7 @@ SF_StepSphereFollowingRecursive::compute()
     setProgressByCounter(10.0f, 85.0f);
   }
   SF_AbstractStepQSM::addQSM<SF_ParamSpherefollowingRecursive<SF_PointNormal>>(
-    getOutResultList().front(), _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER2), _outSFQSM.completeName(), "", "");
+    getOutResultList().front(), _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER2), _outSFQSM.completeName(), "");
   _paramList.clear();
 }
 

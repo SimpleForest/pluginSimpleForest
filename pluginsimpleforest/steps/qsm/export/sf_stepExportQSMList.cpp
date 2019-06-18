@@ -32,7 +32,7 @@
 #include "file/export/ply/sf_exportPly.h"
 #include "file/export/qsm/sf_exportQSM.h"
 #include "steps/item/sf_spherefollowing_parameters_item.h"
-#include "steps/qsm/modelling/sf_stepQSMAllometricCorrectionAdapter.h"
+#include "steps/qsm/postprocessing//sf_stepQSMAllometricCorrectionAdapter.h"
 
 #include <ct_itemdrawable/ct_cylinder.h>
 #include <ct_itemdrawable/ct_fileheader.h>
