@@ -57,7 +57,7 @@ SF_StepQSMMedianFilter::getStepDetailledDescription() const
 QString
 SF_StepQSMMedianFilter::getStepURL() const
 {
-  return tr("");
+  return tr("http://simpleforest.org/");
 }
 
 CT_VirtualAbstractStep*
@@ -104,7 +104,6 @@ SF_StepQSMMedianFilter::createInResultModelListProtected()
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("internal QSM"));
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("QSM cloud"));
 }
 
 void
@@ -137,11 +136,9 @@ SF_StepQSMMedianFilter::compute()
   }
   writeLogger();
   SF_AbstractStepQSM::addQSM<SF_ParamQSMedian<SF_PointNormal>>(
-    // outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), QString::fromUtf8(DEF_IN_CLOUD_SEED));
     outResult,
     _paramList,
     QString::fromUtf8(DEF_IN_GRP_CLUSTER),
-    _outSFQSM.completeName(),
-    "");
+    _outSFQSM.completeName());
   _paramList.clear();
 }
