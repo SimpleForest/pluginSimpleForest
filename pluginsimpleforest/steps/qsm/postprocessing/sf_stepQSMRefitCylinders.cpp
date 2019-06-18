@@ -132,7 +132,16 @@ SF_StepQSMRefitCylinders::createInResultModelListProtected()
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("QSM item"));
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Tree Cloud"));
+
+  CT_InResultModelGroup* resModel2 = createNewInResultModel(DEF_IN_RESULT2, tr("Input Result Cloud"));
+  resModel2->setZeroOrMoreRootGroup();
+  resModel2->addGroupModel("",
+                          DEF_IN_GRP_CLUSTER2,
+                          CT_AbstractItemGroup::staticGetType(),
+                          tr("Tree Group"),
+                          "",
+                          CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+  resModel2->addItemModel(DEF_IN_GRP_CLUSTER2, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Tree Cloud"));
 }
 
 void
@@ -157,7 +166,7 @@ SF_StepQSMRefitCylinders::compute()
     setProgressByCounter(10.0f, 85.0f);
   }
   SF_AbstractStepQSM::addQSM<SF_ParamRefitCylinders>(
-    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), QString::fromUtf8(DEF_IN_CLOUD_SEED));
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName());
   _paramList.clear();
 }
 
@@ -168,10 +177,7 @@ SF_StepQSMRefitCylinders::createParamList(CT_ResultGroup* outResult)
   while (!isStopped() && outResItCloud.hasNext()) {
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResItCloud.next();
     const SF_QSM_Item* QSM_Item = (const SF_QSM_Item*)group->firstItemByINModelName(this, DEF_IN_QSM);
-    const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
-      this, DEF_IN_CLOUD_SEED);
     SF_ParamRefitCylinders params;
-    params._itemCpyCloudIn = ctCloud;
     auto qsm = QSM_Item->getQsm();
     params._qsm = qsm;
     params.m_minPts = m_minPts;
@@ -181,6 +187,22 @@ SF_StepQSMRefitCylinders::createParamList(CT_ResultGroup* outResult)
     params.m_ransacIterations = m_ransacIterations;
     params.m_angle = m_angle;
     _paramList.append(std::move(params));
+  }
+  CT_ResultGroup* outResult2 = getInputResults().at(1);
+  CT_ResultGroupIterator outResIt2(outResult2, this, DEF_IN_GRP_CLUSTER2);
+  size_t index = 0;
+  while (!isStopped() && outResIt2.hasNext()) {
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt2.next();
+    if (index > static_cast<size_t>(_paramList.size())) {
+      std::cout << "SF_StepQSMRefitCylinders More trees than clouds" << std::endl;
+      return;
+    }
+    index = std::min(index, static_cast<size_t>(_paramList.size()));
+    SF_ParamRefitCylinders& param = _paramList[index];
+    index++;
+    const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
+      this, DEF_IN_CLOUD_SEED);
+    param._itemCpyCloudIn = ctCloud;
   }
   m_computationsTotal = _paramList.size();
 }
