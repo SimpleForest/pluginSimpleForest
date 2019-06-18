@@ -34,16 +34,16 @@
 #include "qsm/algorithm/postprocessing/sf_correctbranchjunction.h"
 #include "steps/param/sf_paramAllSteps.h"
 
-class SF_StepCorrectBranchJunctionsAdapter
+class SF_StepQSMCorrectBranchJunctionsAdapter
 {
 public:
   std::shared_ptr<QMutex> mMutex;
 
-  SF_StepCorrectBranchJunctionsAdapter(const SF_StepCorrectBranchJunctionsAdapter& obj) { mMutex = obj.mMutex; }
+  SF_StepQSMCorrectBranchJunctionsAdapter(const SF_StepQSMCorrectBranchJunctionsAdapter& obj) { mMutex = obj.mMutex; }
 
-  SF_StepCorrectBranchJunctionsAdapter() { mMutex.reset(new QMutex); }
+  SF_StepQSMCorrectBranchJunctionsAdapter() { mMutex.reset(new QMutex); }
 
-  ~SF_StepCorrectBranchJunctionsAdapter() {}
+  ~SF_StepQSMCorrectBranchJunctionsAdapter() {}
 
   void operator()(SF_ParamAllometricCorrectionNeighboring& params)
   {

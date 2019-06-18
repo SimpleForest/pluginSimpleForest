@@ -31,13 +31,13 @@
 
 #include "steps/qsm/sf_abstractStepQSM.h"
 
-class SF_StepCorrectBranchJunctions : public SF_AbstractStepQSM
+class SF_StepQSMCorrectBranchJunctions : public SF_AbstractStepQSM
 {
   Q_OBJECT
 
 public:
-  SF_StepCorrectBranchJunctions(CT_StepInitializeData& dataInit);
-  ~SF_StepCorrectBranchJunctions();
+  SF_StepQSMCorrectBranchJunctions(CT_StepInitializeData& dataInit);
+  ~SF_StepQSMCorrectBranchJunctions();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;

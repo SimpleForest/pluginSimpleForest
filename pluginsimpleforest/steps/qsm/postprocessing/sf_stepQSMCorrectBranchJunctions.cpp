@@ -34,18 +34,18 @@
 
 #include <QtConcurrent/QtConcurrent>
 
-SF_StepCorrectBranchJunctions::SF_StepCorrectBranchJunctions(CT_StepInitializeData& dataInit) : SF_AbstractStepQSM(dataInit) {}
+SF_StepQSMCorrectBranchJunctions::SF_StepQSMCorrectBranchJunctions(CT_StepInitializeData& dataInit) : SF_AbstractStepQSM(dataInit) {}
 
-SF_StepCorrectBranchJunctions::~SF_StepCorrectBranchJunctions() {}
+SF_StepQSMCorrectBranchJunctions::~SF_StepQSMCorrectBranchJunctions() {}
 
 QString
-SF_StepCorrectBranchJunctions::getStepDescription() const
+SF_StepQSMCorrectBranchJunctions::getStepDescription() const
 {
   return tr("Correct branch junctions");
 }
 
 QString
-SF_StepCorrectBranchJunctions::getStepDetailledDescription() const
+SF_StepQSMCorrectBranchJunctions::getStepDetailledDescription() const
 {
   return tr("Often the first buildingbrick inside a segment is spatially badly alligned due to Spherefollowing routine."
             " Here we extrpolate the axis of the second cylinder towards the first cylinders direction. The first cylinder"
@@ -54,19 +54,19 @@ SF_StepCorrectBranchJunctions::getStepDetailledDescription() const
 }
 
 QString
-SF_StepCorrectBranchJunctions::getStepURL() const
+SF_StepQSMCorrectBranchJunctions::getStepURL() const
 {
   return tr("");
 }
 
 CT_VirtualAbstractStep*
-SF_StepCorrectBranchJunctions::createNewInstance(CT_StepInitializeData& dataInit)
+SF_StepQSMCorrectBranchJunctions::createNewInstance(CT_StepInitializeData& dataInit)
 {
-  return new SF_StepCorrectBranchJunctions(dataInit);
+  return new SF_StepQSMCorrectBranchJunctions(dataInit);
 }
 
 QStringList
-SF_StepCorrectBranchJunctions::getStepRISCitations() const
+SF_StepQSMCorrectBranchJunctions::getStepRISCitations() const
 {
   QStringList _risCitationList;
   _risCitationList.append(getRISCitationSimpleTree());
@@ -75,7 +75,7 @@ SF_StepCorrectBranchJunctions::getStepRISCitations() const
 }
 
 void
-SF_StepCorrectBranchJunctions::createPostConfigurationDialog()
+SF_StepQSMCorrectBranchJunctions::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
   addOutputFormat(configDialog);
@@ -83,7 +83,7 @@ SF_StepCorrectBranchJunctions::createPostConfigurationDialog()
 }
 
 void
-SF_StepCorrectBranchJunctions::createInResultModelListProtected()
+SF_StepQSMCorrectBranchJunctions::createInResultModelListProtected()
 {
   CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Result"));
   resModel->setZeroOrMoreRootGroup();
@@ -98,7 +98,7 @@ SF_StepCorrectBranchJunctions::createInResultModelListProtected()
 }
 
 void
-SF_StepCorrectBranchJunctions::createOutResultModelListProtected()
+SF_StepQSMCorrectBranchJunctions::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
@@ -108,13 +108,13 @@ SF_StepCorrectBranchJunctions::createOutResultModelListProtected()
 }
 
 void
-SF_StepCorrectBranchJunctions::compute()
+SF_StepQSMCorrectBranchJunctions::compute()
 {
   const QList<CT_ResultGroup*>& out_result_list = getOutResultList();
   CT_ResultGroup* outResult = out_result_list.at(0);
   createParamList(outResult);
   writeLogger();
-  QFuture<void> future = QtConcurrent::map(_paramList, SF_StepCorrectBranchJunctionsAdapter());
+  QFuture<void> future = QtConcurrent::map(_paramList, SF_StepQSMCorrectBranchJunctionsAdapter());
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
@@ -124,7 +124,7 @@ SF_StepCorrectBranchJunctions::compute()
 }
 
 void
-SF_StepCorrectBranchJunctions::createParamList(CT_ResultGroup* outResult)
+SF_StepQSMCorrectBranchJunctions::createParamList(CT_ResultGroup* outResult)
 {
   CT_ResultGroupIterator outResItCloud(outResult, this, DEF_IN_GRP_CLUSTER);
   while (!isStopped() && outResItCloud.hasNext()) {
