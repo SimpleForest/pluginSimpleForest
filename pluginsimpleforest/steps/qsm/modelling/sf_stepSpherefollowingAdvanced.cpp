@@ -158,6 +158,17 @@ SF_StepSphereFollowingAdvanced::createPostConfigurationDialog()
   addOutputFormat(configDialog);
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
   configDialogAddSphereFollowingNelderMead(configDialog);
+  configDialog->addText(QObject::tr("For this step please cite in addition the paper presenting the spherefollowing routine:"),
+                        "Hackenberg, J.; Morhart, C.; Sheppard, J.; Spiecker, H.; Disney, M.");
+  configDialog->addText("(section 4.3. Cylinder Model Creation)",
+                        "<em>Highly Accurate Tree Models Derived from Terrestrial Laser Scan "
+                        "Data: A Method Description.</em>");
+  configDialog->addText("", "Forests <b>2014</b>, 5, 1069-1105.");
+  configDialog->addText(QObject::tr("And this inventing the automatic parameter search for QSM modeling:"),
+                        "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
+  configDialog->addText("(section 2.2. Tree Modeling - Parameter Optimization)",
+                        "<em>SimpleTree - An Efficient Open Source Tool to "
+                        "Build Tree Models from TLS Clouds.</em>");
 }
 
 void

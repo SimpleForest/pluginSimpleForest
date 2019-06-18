@@ -294,7 +294,7 @@ SF_StepSpherefollowingBasic::createInResultModelListProtected()
   resModel->addGroupModel("",
                           DEF_IN_GRP_CLUSTER,
                           CT_AbstractItemGroup::staticGetType(),
-                          tr("Tree Group"),
+                          tr("Cloud Group"),
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Input Cloud QSM SphereFollowing"));
@@ -357,8 +357,7 @@ SF_StepSpherefollowingBasic::compute()
                                                                            _paramList,
                                                                            QString::fromUtf8(DEF_IN_GRP_CLUSTER),
                                                                            _outSFQSM.completeName(),
-                                                                           _outParams.completeName(),
-                                                                           QString::fromUtf8(DEF_IN_CLOUD_SEED));
+                                                                           _outParams.completeName());
   _paramList.clear();
 }
 
