@@ -55,6 +55,7 @@ protected:
   virtual void createPostConfigurationDialog();
   void compute();
   QList<SF_ParamAllometricCorrectionNeighboring> _paramList;
+  void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog);
 
 private:
   CT_AutoRenameModels m_outCloudItem;

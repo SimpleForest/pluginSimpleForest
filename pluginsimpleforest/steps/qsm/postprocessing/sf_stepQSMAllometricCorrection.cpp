@@ -49,17 +49,19 @@ QString
 SF_StepQSMAllometricCorrection::getStepDetailledDescription() const
 {
   return tr(
-    "This step utilizes a relation between the growthlength or growthvolume between and the radius of a cylinder in form"
-    " of the two parameter equation (radius = a*growthlength^b) or the three parameter equation (radius = a*growthlength^b +c)."
-    " See PhD Hackenberg et al 2016 and following for the invention of those two parameters."
-    " According to Xu et al(2006) the original function utilizing length instead of growth length is in agreement with."
-    " the metabolic scaling theory.");
+              "In Xu et al 2007 an early QSM radius predicting method using based on metabolic scaling theory is presented."
+    "There the radius is predicted from the length to the tip. During the devlopment of Simpletree much more powerful parameters"
+    " than traditional volume or length were invented. See Hackenberg 2015 for the recursive definition of the volume named growthvolume."
+              "The two parameter equation (radius = a*growthlength^b) or the three parameter equation (radius = a*growthlength^b +c)."
+    " showed more accuracy with the invented recusive defined parameters applied as independent variable in the power model."
+    "Here we will apply the forumla of 2007 with the new parameter growthlength for QSM radius correction. We as well esimtate the"
+    " utilized power parameter from the stable part of the QSM itself as propsed in the phd of Hackenberg.");
 }
 
 QString
 SF_StepQSMAllometricCorrection::getStepURL() const
 {
-  return tr("");
+  return tr("http://simpleforest.org/");
 }
 
 CT_VirtualAbstractStep*
@@ -115,7 +117,7 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
                           2,
                           m_inlierDistance);
 
-  configDialog->addDouble("Use as power parameter  "
+  configDialog->addDouble("Use as power parameter if auto seach fails"
                           " [<em><b>power parameter</b></em>] ",
                           " . ",
                           0.333,
@@ -146,6 +148,7 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
 
   configDialog->addBool("Estimate [<em><b>power parameter</b></em>] ", "", "automatic search", m_estimateParams);
   createPostConfigurationDialogCitation(configDialog);
+  createPostConfigurationDialogCitationSecond(configDialog);
 }
 
 void
@@ -160,7 +163,6 @@ SF_StepQSMAllometricCorrection::createInResultModelListProtected()
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("internal QSM"));
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("QSM cloud"));
 }
 
 void
@@ -185,8 +187,24 @@ SF_StepQSMAllometricCorrection::compute()
     setProgressByCounter(10.0f, 85.0f);
   }
   SF_AbstractStepQSM::addQSM<SF_ParamAllometricCorrectionNeighboring>(
-    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), "");
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName());
   _paramList.clear();
+}
+
+void SF_StepQSMAllometricCorrection::createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog *configDialog)
+{
+    configDialog->addText(QObject::tr("For this step please cite in addition an early method using allometric correction with length and radius:"),
+                          "Xu, H.; Gossett, N.; Chen B.");
+    configDialog->addText("(section 5.1 Tree Allometry)",
+                          "<em>Knowledge and heuristic-based modeling of laser-scanned trees.</em>");
+    configDialog->addText("", "ACM Transactions on Graphics <b>2007</b>, 19-es.");
+    configDialog->addEmpty();
+    configDialog->addText(QObject::tr("For For the introduction of using defined parameters in such correction and autoestimating the power parameter cite also"),
+                          "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
+    configDialog->addText(" (2.2. Tree Modeling - Allometric improvement)",
+                          "<em>SimpleTree - An Efficient Open Source Tool to "
+                          "Build Tree Models from TLS Clouds.</em>");
+    configDialog->addText("", "Forests <b>2015</b>, 6, 4245-4294.");
 }
 
 void
