@@ -185,7 +185,6 @@ void
 SF_StepSphereFollowingRecursive::compute()
 {
   CT_ResultGroup* outResult = getInputResults().at(1);
-  identifyAndRemoveCorruptedScenes(outResult);
   createParamList(outResult);
   writeLogger();
   QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingRecursiveAdapter());

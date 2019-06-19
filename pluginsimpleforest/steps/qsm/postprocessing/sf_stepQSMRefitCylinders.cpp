@@ -157,7 +157,7 @@ SF_StepQSMRefitCylinders::createOutResultModelListProtected()
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
     addQSMToOutResult(resModelw, QString("QSM refit cylinders"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders refit cylinders"));
+    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders refit cylinders"));
   }
 }
 
