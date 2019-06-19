@@ -257,7 +257,13 @@ SF_DownHillSimplex::compute()
   SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramCpy = m_params;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudCpy = m_params.m_cloudSphereFollowing;
   for (size_t numClusters = 1; numClusters <= size; numClusters++) {
+    SF_MaxIntensityFilter<SF_PointNormal> maxIntensity;
+    maxIntensity.setCloudIn(cloudCpy);
+    maxIntensity.setMaxIntensity(numClusters - 1);
+    maxIntensity.compute();
+    auto cloud = maxIntensity.cloudOut();
     paramCpy = m_params;
+    paramCpy.m_cloudSphereFollowing = cloud;
     paramCpy.m_numClstrs = numClusters;
     computeDHS(paramCpy, numClusters);
   }
