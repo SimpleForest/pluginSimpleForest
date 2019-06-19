@@ -241,9 +241,7 @@ SF_DownHillSimplex::transferOptimizationParams(SF_ParamSpherefollowingAdvanced<S
                                                SF_SphereFollowingOptimizationParameters optimParams)
 {
   size_t firstCopyIndex = static_cast<size_t>(std::max(0, static_cast<int>(numClusters) - 1));
-  for (size_t index = firstCopyIndex; index < params._sphereFollowingParams.m_optimizationParams.size(); ++index) {
-    params._sphereFollowingParams.m_optimizationParams[index] = optimParams;
-  }
+  params._sphereFollowingParams.m_optimizationParams[firstCopyIndex] = optimParams;
 }
 
 void
