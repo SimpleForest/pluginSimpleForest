@@ -120,9 +120,9 @@ SF_StepQSMMedianFilter::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-      QString name = tr("QSM sphereFollowing median filtered ");
-      QString sfCylinders = name;
-      sfCylinders.append(tr("SF QSM plugin internal"));
+    QString name = tr("QSM sphereFollowing median filtered ");
+    QString sfCylinders = name;
+    sfCylinders.append(tr("SF QSM plugin internal"));
     addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER));
     resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), sfCylinders);
   }
@@ -148,9 +148,6 @@ SF_StepQSMMedianFilter::compute()
   }
   writeLogger();
   SF_AbstractStepQSM::addQSM<SF_ParamQSMedian<SF_PointNormal>>(
-    outResult,
-    _paramList,
-    QString::fromUtf8(DEF_IN_GRP_CLUSTER),
-    _outSFQSM.completeName());
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName());
   _paramList.clear();
 }

@@ -93,11 +93,11 @@ SF_StepSegmentTreeCloudFromQSM::createInResultModelListProtected()
   CT_InResultModelGroup* resModel2 = createNewInResultModel(DEF_IN_RESULT2, tr("Input Result QSM"));
   resModel2->setZeroOrMoreRootGroup();
   resModel2->addGroupModel("",
-                          DEF_IN_GRP_CLUSTER2,
-                          CT_AbstractItemGroup::staticGetType(),
-                          tr("QSM Group"),
-                          "",
-                          CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+                           DEF_IN_GRP_CLUSTER2,
+                           CT_AbstractItemGroup::staticGetType(),
+                           tr("QSM Group"),
+                           "",
+                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel2->addItemModel(DEF_IN_GRP_CLUSTER2, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("QSM"));
 }
 

@@ -109,9 +109,9 @@ SF_StepQSMCorrectBranchJunctions::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-      QString name = tr("QSM sphereFollowing corrected branch junctions ");
-      QString sfCylinders = name;
-      sfCylinders.append(tr("SF QSM plugin internal"));
+    QString name = tr("QSM sphereFollowing corrected branch junctions ");
+    QString sfCylinders = name;
+    sfCylinders.append(tr("SF QSM plugin internal"));
     addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER));
     resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), sfCylinders);
   }

@@ -107,7 +107,8 @@ SF_AbstractStep::addCitationRaumonen(CT_StepConfigurableDialog* configDialog)
 void
 SF_AbstractStep::addCitationPCL(CT_StepConfigurableDialog* configDialog)
 {
-  configDialog->addText(QObject::tr("A majority of implementations are based on PCL library:"), "Rusu, Radu Bogdan and Cousins, Steve");
+  configDialog->addText(QObject::tr("A majority of implementations are based on PCL library:"),
+                        "Rusu, Radu Bogdan and Cousins, Steve");
   configDialog->addText("", "<em>3d is here: Point cloud library (pcl).</em>");
   configDialog->addText("", "Robotics and Automation (ICRA)<b>2011</b>, IEEE International.");
   configDialog->addEmpty();

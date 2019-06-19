@@ -137,9 +137,9 @@ SF_StepSphereFollowingRecursive::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT2);
   if (resModelw != NULL) {
-      QString name = tr("QSM sphereFollowing recursion ");
-      QString sfCylinders = name;
-      sfCylinders.append(tr("SF QSM plugin internal"));
+    QString name = tr("QSM sphereFollowing recursion ");
+    QString sfCylinders = name;
+    sfCylinders.append(tr("SF QSM plugin internal"));
     addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER2));
     resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), sfCylinders);
   }

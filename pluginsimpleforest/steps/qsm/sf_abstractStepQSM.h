@@ -59,11 +59,7 @@ protected:
   template<typename T>
   void addQSM(CT_ResultGroup* outResult, QList<T> paramList, QString outResultGrpName, QString outSFQSMName);
   template<typename T>
-  void addQSM(CT_ResultGroup* outResult,
-              QList<T> paramList,
-              QString outResultGrpName,
-              QString outSFQSMName,
-              QString outParamName);
+  void addQSM(CT_ResultGroup* outResult, QList<T> paramList, QString outResultGrpName, QString outSFQSMName, QString outParamName);
   void addQSMToOutResult(CT_OutResultModelGroupToCopyPossibilities* resModelw, QString header, QString group);
 
   CT_AutoRenameModels _treeGroup;
@@ -104,10 +100,7 @@ protected:
 
 template<typename T>
 void
-SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult,
-                           QList<T> paramList,
-                           QString outResultGrpName,
-                           QString outSFQSMName)
+SF_AbstractStepQSM::addQSM(CT_ResultGroup* outResult, QList<T> paramList, QString outResultGrpName, QString outSFQSMName)
 {
   CT_ResultGroupIterator outResIt(outResult, this, outResultGrpName);
   size_t index = 0;

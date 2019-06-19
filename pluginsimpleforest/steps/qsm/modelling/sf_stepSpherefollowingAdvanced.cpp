@@ -176,21 +176,21 @@ SF_StepSphereFollowingAdvanced::createInResultModelListProtected()
   CT_InResultModelGroup* resModel2 = createNewInResultModel(DEF_IN_RESULT2, tr("Input Cluster ID"));
   resModel2->setZeroOrMoreRootGroup();
   resModel2->addGroupModel("",
-                          DEF_IN_GRP_CLUSTER2,
-                          CT_AbstractItemGroup::staticGetType(),
-                          tr("Cluster ID Group"),
-                          "",
-                          CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+                           DEF_IN_GRP_CLUSTER2,
+                           CT_AbstractItemGroup::staticGetType(),
+                           tr("Cluster ID Group"),
+                           "",
+                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel2->addItemModel(DEF_IN_GRP_CLUSTER2, DEF_IN_ID, CT_PointsAttributesScalarTemplated<int>::staticGetType(), tr("Cluster ID"));
 
   CT_InResultModelGroup* resModel3 = createNewInResultModel(DEF_IN_RESULT3, tr("Input Cloud"));
   resModel3->setZeroOrMoreRootGroup();
   resModel3->addGroupModel("",
-                          DEF_IN_GRP_CLUSTER3,
-                          CT_AbstractItemGroup::staticGetType(),
-                          tr("Cloud Group"),
-                          "",
-                          CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+                           DEF_IN_GRP_CLUSTER3,
+                           CT_AbstractItemGroup::staticGetType(),
+                           tr("Cloud Group"),
+                           "",
+                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel3->addItemModel(DEF_IN_GRP_CLUSTER3, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Tree Cloud"));
 }
 
@@ -199,11 +199,11 @@ SF_StepSphereFollowingAdvanced::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-      QString name = tr("QSM sphereFollowing clustered ");
-      QString sfCylinders = name;
-      sfCylinders.append(tr("SF QSM plugin internal"));
-      QString sfParameters = name;
-      sfParameters.append(tr("SF parameters plugin internal"));
+    QString name = tr("QSM sphereFollowing clustered ");
+    QString sfCylinders = name;
+    sfCylinders.append(tr("SF QSM plugin internal"));
+    QString sfParameters = name;
+    sfParameters.append(tr("SF parameters plugin internal"));
     addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER));
     resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), sfCylinders);
     resModelw->addItemModel(_QSMGrp, _outParams, new SF_SphereFollowing_Parameters_Item(), sfParameters);
@@ -225,8 +225,9 @@ SF_StepSphereFollowingAdvanced::createPostConfigurationDialogCitationSecond(CT_S
                         "Data: A Method Description.</em>");
   configDialog->addText("", "Forests <b>2014</b>, 5, 1069-1105.");
   configDialog->addEmpty();
-  configDialog->addText(QObject::tr("And this presenting the automatic parameter search by using cloud to model distance for QSM modeling:"),
-                        "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
+  configDialog->addText(
+    QObject::tr("And this presenting the automatic parameter search by using cloud to model distance for QSM modeling:"),
+    "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
   configDialog->addText("(section 2.2. Tree Modeling - Parameter Optimization)",
                         "<em>SimpleTree - An Efficient Open Source Tool to "
                         "Build Tree Models from TLS Clouds.</em>");
@@ -245,11 +246,8 @@ SF_StepSphereFollowingAdvanced::compute()
     setProgressByCounter(10.0f, 85.0f);
   }
 
-  SF_AbstractStepQSM::addQSM<SF_ParamSpherefollowingAdvanced<SF_PointNormal>>(outResult,
-                                                                              _paramList,
-                                                                              QString::fromUtf8(DEF_IN_GRP_CLUSTER),
-                                                                              _outSFQSM.completeName(),
-                                                                              _outParams.completeName());
+  SF_AbstractStepQSM::addQSM<SF_ParamSpherefollowingAdvanced<SF_PointNormal>>(
+    outResult, _paramList, QString::fromUtf8(DEF_IN_GRP_CLUSTER), _outSFQSM.completeName(), _outParams.completeName());
   _paramList.clear();
 }
 
@@ -332,7 +330,7 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
   distanceParams._k = _CMD_k;
   distanceParams._cropDistance = _CMD_cropDistance;
   distanceParams._inlierDistance = _CMD_inlierDistance;
-_paramList.clear();
+  _paramList.clear();
   CT_ResultGroupIterator outResItCloud(outResult, this, DEF_IN_GRP_CLUSTER);
   int numberComputationsPerCloud = 300;
   while (!isStopped() && outResItCloud.hasNext()) {
@@ -373,7 +371,7 @@ _paramList.clear();
     param.m_numClstrs = getNumberOfClusters(ctID);
     int x = param._sphereFollowingParams.m_optimizationParams.size();
     for (size_t m = 0; m < param.m_numClstrs - x; m++) {
-        param._sphereFollowingParams.m_optimizationParams.push_back(param._sphereFollowingParams.m_optimizationParams[0]);
+      param._sphereFollowingParams.m_optimizationParams.push_back(param._sphereFollowingParams.m_optimizationParams[0]);
     }
     numberComputationsPerCloud = (_NM_iterations + 27) * (param.m_numClstrs + 1);
     _paramList[index] = param;

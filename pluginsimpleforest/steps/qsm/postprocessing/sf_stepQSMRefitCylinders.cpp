@@ -48,9 +48,10 @@ SF_StepQSMRefitCylinders::getStepDescription() const
 QString
 SF_StepQSMRefitCylinders::getStepDetailledDescription() const
 {
-  return tr("The steps imports a QSM and a cloud. Each cylinder of the QSM gets a point cluster. Each point of the input cloud is stored"
-            " in the cluster of its nearest cylinder. For each QSM cylinder a cylinder refit is performed. If the new fitted cylinder does"
-            " not deviate too much from the old one it is accepted as a replacement.");
+  return tr(
+    "The steps imports a QSM and a cloud. Each cylinder of the QSM gets a point cluster. Each point of the input cloud is stored"
+    " in the cluster of its nearest cylinder. For each QSM cylinder a cylinder refit is performed. If the new fitted cylinder does"
+    " not deviate too much from the old one it is accepted as a replacement.");
 }
 
 QString
@@ -144,11 +145,11 @@ SF_StepQSMRefitCylinders::createInResultModelListProtected()
   CT_InResultModelGroup* resModel2 = createNewInResultModel(DEF_IN_RESULT2, tr("Input Result Cloud"));
   resModel2->setZeroOrMoreRootGroup();
   resModel2->addGroupModel("",
-                          DEF_IN_GRP_CLUSTER2,
-                          CT_AbstractItemGroup::staticGetType(),
-                          tr("Tree Group"),
-                          "",
-                          CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+                           DEF_IN_GRP_CLUSTER2,
+                           CT_AbstractItemGroup::staticGetType(),
+                           tr("Tree Group"),
+                           "",
+                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel2->addItemModel(DEF_IN_GRP_CLUSTER2, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Tree Cloud"));
 }
 
@@ -157,9 +158,9 @@ SF_StepQSMRefitCylinders::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-      QString name = tr("QSM sphereFollowing  refitted cylinders ");
-      QString sfCylinders = name;
-      sfCylinders.append(tr("SF QSM plugin internal"));
+    QString name = tr("QSM sphereFollowing  refitted cylinders ");
+    QString sfCylinders = name;
+    sfCylinders.append(tr("SF QSM plugin internal"));
     addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER));
     resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), sfCylinders);
   }
