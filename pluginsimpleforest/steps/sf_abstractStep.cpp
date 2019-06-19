@@ -269,7 +269,7 @@ SF_AbstractStep::createPostConfigurationDialogCitation(CT_StepConfigurableDialog
   configDialog->addText("", "Forests <b>2015</b>, 6, 4245-4294.");
   configDialog->addEmpty();
   addCitationPCL(configDialog);
-  configDialog->addEmpty();
+  configDialog->addText("------------------------------------------------------------------------------");
   createPostConfigurationDialogCitationSecond(configDialog);
 }
 
