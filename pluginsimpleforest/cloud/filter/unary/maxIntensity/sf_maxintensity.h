@@ -52,8 +52,6 @@ private:
   typename pcl::PointCloud<PointType>::Ptr m_cloudIn;
 };
 
-#endif // SF_MAXINTENSITY_H
-
 template<typename PointType>
 SF_MaxIntensityFilter<PointType>::SF_MaxIntensityFilter()
 {}
@@ -70,14 +68,12 @@ void
 SF_MaxIntensityFilter<PointType>::compute()
 {
   SF_AbstractUnaryFilter<PointType>::m_cloudOut.reset(new pcl::PointCloud<PointType>());
-  std::cout << " foo 01" << std::endl;
   for (size_t i = 0; i < m_cloudIn->points.size(); i++) {
     PointType& p = m_cloudIn->points[i];
     if (p.intensity <= m_maxIntensity) {
       SF_AbstractUnaryFilter<PointType>::m_cloudOut->points.push_back(p);
     }
   }
-  std::cout << " foo 03" << std::endl;
 }
 
 template<typename PointType>
@@ -86,3 +82,5 @@ SF_MaxIntensityFilter<PointType>::setCloudIn(const typename pcl::PointCloud<Poin
 {
   m_cloudIn = cloudIn;
 }
+
+#endif // SF_MAXINTENSITY_H
