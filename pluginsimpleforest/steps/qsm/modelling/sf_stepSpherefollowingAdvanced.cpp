@@ -238,7 +238,6 @@ SF_StepSphereFollowingAdvanced::compute()
 {
   const QList<CT_ResultGroup*>& out_result_list = getOutResultList();
   CT_ResultGroup* outResult = out_result_list.at(0);
-  identifyAndRemoveCorruptedScenes(outResult);
   createParamList(outResult);
   writeLogger();
   QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingAdvancedAdapter());
@@ -334,7 +333,6 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
   distanceParams._cropDistance = _CMD_cropDistance;
   distanceParams._inlierDistance = _CMD_inlierDistance;
 _paramList.clear();
-  outResult = getInputResults().at(0);
   CT_ResultGroupIterator outResItCloud(outResult, this, DEF_IN_GRP_CLUSTER);
   int numberComputationsPerCloud = 300;
   while (!isStopped() && outResItCloud.hasNext()) {
