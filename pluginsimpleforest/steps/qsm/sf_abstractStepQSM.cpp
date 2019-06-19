@@ -168,8 +168,12 @@ SF_AbstractStepQSM::setCylindersBranch(const CT_AbstractResult* result,
 void
 SF_AbstractStepQSM::addQSMToOutResult(CT_OutResultModelGroupToCopyPossibilities* resModelw, QString header, QString group)
 {
-  resModelw->addGroupModel(group, _QSMGrp, new CT_StandardItemGroup(), tr("QSM Group"));
-  resModelw->addGroupModel(_QSMGrp, _treeGroup, new CT_TTreeGroup(), header);
+    QString groupName = header;
+    groupName.append(tr("result group"));
+  resModelw->addGroupModel(group, _QSMGrp, new CT_StandardItemGroup(), groupName);
+  QString ctTreeGroup = header;
+  ctTreeGroup.append(tr("CT QSM structure group"));
+  resModelw->addGroupModel(_QSMGrp, _treeGroup, new CT_TTreeGroup(), ctTreeGroup);
   resModelw->addGroupModel(_treeGroup, _stemNodeGroup, new CT_TNodeGroup(), tr("QSM Stem"));
   resModelw->addItemModel(_stemNodeGroup, _stemNodeCylinders, new CT_Cylinder(), tr("QSM Stem Cylinder"));
   resModelw->addItemAttributeModel(

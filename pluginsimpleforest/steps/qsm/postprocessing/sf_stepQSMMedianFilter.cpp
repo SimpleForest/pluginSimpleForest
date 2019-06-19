@@ -89,6 +89,7 @@ SF_StepQSMMedianFilter::createPostConfigurationDialog()
                           0.99,
                           2,
                           m_percentage);
+  configDialog->addEmpty();
   configDialog->addText(QObject::tr("For invention of this step please cite  "
                                     "the following:"),
                         "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
@@ -119,8 +120,11 @@ SF_StepQSMMedianFilter::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    addQSMToOutResult(resModelw, QString("QSM median filtered"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), tr("QSM  median filtered"));
+      QString name = tr("QSM sphereFollowing median filtered ");
+      QString sfCylinders = name;
+      sfCylinders.append(tr("SF QSM plugin internal"));
+    addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER));
+    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), sfCylinders);
   }
 }
 

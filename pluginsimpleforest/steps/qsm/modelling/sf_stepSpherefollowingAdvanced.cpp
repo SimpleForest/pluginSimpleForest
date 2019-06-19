@@ -50,12 +50,12 @@ SF_StepSphereFollowingAdvanced::getStepDetailledDescription() const
 {
   return tr("This implementation of the SphereFollowing method utilizes an "
             "segmented tree cloud and preestimated parameters."
-            "  We initialize our routine with the cluster containing the root of the tree."
+            "  We initialize our routine with the cluster containing the stem and major branch structure of the tree."
             " On that cluster we perform a Nelder and Mead parameter search. Then we"
-            " extend the cluster by adding its closest neighboring cluster, e.g. most likely"
-            " at this stage we will add major branching structure to the previously optimized stem."
-            " A new parameter search with the extended cloud is performed and we proceed after each fit"
-            " to add cluster by cluster until the whole cloud is processed.");
+            " extend the cluster by adding its closest neighboring cluster. With adding a cluster, we add"
+            " also another cluster related parameterset which extends the dimensionality of the search space by 3."
+            " On accumulated clusters with extended parameter space Nelder and Mead is repeated."
+            " We add iteratively more clusters until we reach the last cluster at the tip of the branches.");
 }
 
 QString
@@ -148,7 +148,6 @@ SF_StepSphereFollowingAdvanced::createPreConfigurationDialog()
   CT_StepConfigurableDialog* configDialog = newStandardPreConfigurationDialog();
   configDialogGuruAddPreProcessing(configDialog);
   createPostConfigurationDialogCitation(configDialog);
-  addCitationPCL(configDialog);
 }
 
 void
@@ -158,17 +157,6 @@ SF_StepSphereFollowingAdvanced::createPostConfigurationDialog()
   addOutputFormat(configDialog);
   configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
   configDialogAddSphereFollowingNelderMead(configDialog);
-  configDialog->addText(QObject::tr("For this step please cite in addition the paper presenting the spherefollowing routine:"),
-                        "Hackenberg, J.; Morhart, C.; Sheppard, J.; Spiecker, H.; Disney, M.");
-  configDialog->addText("(section 4.3. Cylinder Model Creation)",
-                        "<em>Highly Accurate Tree Models Derived from Terrestrial Laser Scan "
-                        "Data: A Method Description.</em>");
-  configDialog->addText("", "Forests <b>2014</b>, 5, 1069-1105.");
-  configDialog->addText(QObject::tr("And this inventing the automatic parameter search for QSM modeling:"),
-                        "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
-  configDialog->addText("(section 2.2. Tree Modeling - Parameter Optimization)",
-                        "<em>SimpleTree - An Efficient Open Source Tool to "
-                        "Build Tree Models from TLS Clouds.</em>");
 }
 
 void
@@ -211,9 +199,14 @@ SF_StepSphereFollowingAdvanced::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    addQSMToOutResult(resModelw, QString("QSM SphereFollowing clustered"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders clustered spherefollowing"));
-    resModelw->addItemModel(_QSMGrp, _outParams, new SF_SphereFollowing_Parameters_Item(), tr("SphereFollowing parameters"));
+      QString name = tr("QSM sphereFollowing clustered ");
+      QString sfCylinders = name;
+      sfCylinders.append(tr("SF QSM plugin internal"));
+      QString sfParameters = name;
+      sfParameters.append(tr("SF parameters plugin internal"));
+    addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER));
+    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), sfCylinders);
+    resModelw->addItemModel(_QSMGrp, _outParams, new SF_SphereFollowing_Parameters_Item(), sfParameters);
   }
 }
 
@@ -224,12 +217,19 @@ SF_StepSphereFollowingAdvanced::adaptParametersToExpertLevel()
 void
 SF_StepSphereFollowingAdvanced::createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog)
 {
-  configDialog->addText(QObject::tr("For this step please cite in addition:"),
+  configDialog->addEmpty();
+  configDialog->addText(QObject::tr("For this step please cite in addition the paper presenting the spherefollowing routine:"),
                         "Hackenberg, J.; Morhart, C.; Sheppard, J.; Spiecker, H.; Disney, M.");
-  configDialog->addText("",
+  configDialog->addText("(section 4.3. Cylinder Model Creation)",
                         "<em>Highly Accurate Tree Models Derived from Terrestrial Laser Scan "
                         "Data: A Method Description.</em>");
   configDialog->addText("", "Forests <b>2014</b>, 5, 1069-1105.");
+  configDialog->addEmpty();
+  configDialog->addText(QObject::tr("And this presenting the automatic parameter search by using cloud to model distance for QSM modeling:"),
+                        "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
+  configDialog->addText("(section 2.2. Tree Modeling - Parameter Optimization)",
+                        "<em>SimpleTree - An Efficient Open Source Tool to "
+                        "Build Tree Models from TLS Clouds.</em>");
   configDialog->addEmpty();
 }
 

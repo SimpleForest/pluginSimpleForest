@@ -91,7 +91,6 @@ SF_StepSphereFollowingRecursive::createPreConfigurationDialog()
   configDialog->addBool(
     "You can let Simple Forest choose method parameters", " select if you want auto parameters", "", _SF_parameterAutoSearch);
   createPostConfigurationDialogCitation(configDialog);
-  addCitationPCL(configDialog);
 }
 
 void
@@ -138,10 +137,11 @@ SF_StepSphereFollowingRecursive::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT2);
   if (resModelw != NULL) {
-    addQSMToOutResult(resModelw, QString("QSM SphereFollowing recursion"), QString::fromUtf8(DEF_IN_GRP_CLUSTER2));
-    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), tr("Internal QSM SphereFollowing"));
-    resModelw->addItemModel(
-      _QSMGrp, _outParams, new SF_SphereFollowing_Parameters_Item(), tr(" Internal parameters QSM SphereFollowing"));
+      QString name = tr("QSM sphereFollowing recursion ");
+      QString sfCylinders = name;
+      sfCylinders.append(tr("SF QSM plugin internal"));
+    addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER2));
+    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), sfCylinders);
   }
 }
 
@@ -172,6 +172,7 @@ SF_StepSphereFollowingRecursive::createInResultModelListProtected()
 void
 SF_StepSphereFollowingRecursive::createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog)
 {
+  configDialog->addEmpty();
   configDialog->addText(QObject::tr("For this step please cite in addition (section 4.5. Imperfect Point Clouds):"),
                         "Hackenberg, J.; Morhart, C.; Sheppard, J.; Spiecker, H.; Disney, M.");
   configDialog->addText("",

@@ -148,7 +148,6 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
 
   configDialog->addBool("Estimate [<em><b>power parameter</b></em>] ", "", "automatic search", m_estimateParams);
   createPostConfigurationDialogCitation(configDialog);
-  createPostConfigurationDialogCitationSecond(configDialog);
 }
 
 void
@@ -170,8 +169,11 @@ SF_StepQSMAllometricCorrection::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    addQSMToOutResult(resModelw, QString("QSM Allometric correction"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders allometric corrected"));
+      QString name = tr("QSM sphereFollowing allometric corrected ");
+      QString sfCylinders = name;
+      sfCylinders.append(tr("SF QSM plugin internal"));
+    addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER));
+    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), sfCylinders);
   }
 }
 

@@ -107,7 +107,7 @@ SF_AbstractStep::addCitationRaumonen(CT_StepConfigurableDialog* configDialog)
 void
 SF_AbstractStep::addCitationPCL(CT_StepConfigurableDialog* configDialog)
 {
-  configDialog->addText(QObject::tr("For this step please cite in addition:"), "Rusu, Radu Bogdan and Cousins, Steve");
+  configDialog->addText(QObject::tr("A majority of implementations are based on PCL library:"), "Rusu, Radu Bogdan and Cousins, Steve");
   configDialog->addText("", "<em>3d is here: Point cloud library (pcl).</em>");
   configDialog->addText("", "Robotics and Automation (ICRA)<b>2011</b>, IEEE International.");
   configDialog->addEmpty();
@@ -259,13 +259,15 @@ void
 SF_AbstractStep::createPostConfigurationDialogCitation(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addEmpty();
-  configDialog->addText(QObject::tr("For general usage of the SimpleForest plugin please cite "
-                                    "the following:"),
+  configDialog->addText("Please excuse potential double citation with the step related citation for the");
+  configDialog->addText(QObject::tr(" following general citation for SimpleForest (work on updated citable resource ongoing):"),
                         "Hackenberg, J.; Spiecker, H.; Calders, K.; Disney, M.; Raumonen, P.");
   configDialog->addText("",
                         "<em>SimpleTree - An Efficient Open Source Tool to "
                         "Build Tree Models from TLS Clouds.</em>");
   configDialog->addText("", "Forests <b>2015</b>, 6, 4245-4294.");
+  configDialog->addEmpty();
+  addCitationPCL(configDialog);
   configDialog->addEmpty();
   createPostConfigurationDialogCitationSecond(configDialog);
 }

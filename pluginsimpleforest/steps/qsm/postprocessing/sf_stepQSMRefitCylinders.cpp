@@ -117,6 +117,7 @@ SF_StepQSMRefitCylinders::createPostConfigurationDialog()
                        99,
                        m_minPts);
   configDialog->addInt("Use [<em><b>ransac iterations</b></em>] ", "", 10, 10000, m_ransacIterations);
+  configDialog->addEmpty();
   configDialog->addText(QObject::tr("For this step please cite in addition :"),
                         "Hackenberg, J.; Morhart, C.; Sheppard, J.; Spiecker, H.; Disney, M.");
   configDialog->addText("(section 4.7. Cylinder Fitting)",
@@ -156,8 +157,11 @@ SF_StepQSMRefitCylinders::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    addQSMToOutResult(resModelw, QString("QSM refit cylinders"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), tr("QSM cylinders refit cylinders"));
+      QString name = tr("QSM sphereFollowing  refitted cylinders ");
+      QString sfCylinders = name;
+      sfCylinders.append(tr("SF QSM plugin internal"));
+    addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER));
+    resModelw->addItemModel(_QSMGrp, _outSFQSM, new SF_QSM_Item(), sfCylinders);
   }
 }
 

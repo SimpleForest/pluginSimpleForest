@@ -41,7 +41,7 @@ SF_StepQSMCorrectBranchJunctions::~SF_StepQSMCorrectBranchJunctions() {}
 QString
 SF_StepQSMCorrectBranchJunctions::getStepDescription() const
 {
-  return tr("Correct branch junctions");
+  return tr("QSM Correct branch junctions - not recommended");
 }
 
 QString
@@ -109,8 +109,11 @@ SF_StepQSMCorrectBranchJunctions::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT);
   if (resModelw != NULL) {
-    addQSMToOutResult(resModelw, QString("QSM corrected branch junctions"), QString::fromUtf8(DEF_IN_GRP_CLUSTER));
-    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), tr("QSM internal QSM"));
+      QString name = tr("QSM sphereFollowing corrected branch junctions ");
+      QString sfCylinders = name;
+      sfCylinders.append(tr("SF QSM plugin internal"));
+    addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER));
+    resModelw->addItemModel(DEF_IN_GRP_CLUSTER, _outSFQSM, new SF_QSM_Item(), sfCylinders);
   }
 }
 
