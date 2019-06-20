@@ -136,6 +136,13 @@ SF_SpherefollowingRecursive::processClusters(const std::vector<SF_CloudNormal::P
     SF_CloudNormal::Ptr transformed(new SF_CloudNormal);
     pcl::transformPointCloud(*cluster, *transformed, transform);
 
+    bool inverted = false;
+    if (transformed->points[maxIndex].z < transformed->points[minIndex].z) {
+      inverted = true;
+      for (auto point : transformed->points) {
+        point.z = -point.z;
+      }
+    }
     SF_SphereFollowingRasterSearch sphereFollowing;
     SF_ParamSpherefollowingRecursive<SF_PointNormal> params = m_params;
     sphereFollowing.setParams(params);
@@ -144,6 +151,16 @@ SF_SpherefollowingRecursive::processClusters(const std::vector<SF_CloudNormal::P
     auto qsm = sphereFollowing.getParamVec()[0]._qsm;
     if (!qsm) {
       continue;
+    }
+    if (inverted) {
+      auto bricks = qsm->getBuildingBricks();
+      for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick : bricks) {
+        auto start = brick->getStart();
+        auto end = brick->getEnd();
+        start[2] = -start[2];
+        end[2] = -end[2];
+        brick->setStartEndRadius(start, end, brick->getRadius(), brick->getFittingType());
+      }
     }
     qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME, 0.0001);
     Eigen::Affine3f transform2 = Eigen::Affine3f::Identity();
@@ -178,6 +195,7 @@ SF_SpherefollowingRecursive::connectQSM(std::shared_ptr<SF_ModelQSM> childQSM)
   } else {
     auto radius = childQSM->getRootSegment()->getBuildingBricks().front()->getRadius();
     std::shared_ptr<Sf_ModelCylinderBuildingbrick> brickConnect(new Sf_ModelCylinderBuildingbrick(start, startChild, radius));
+    brickConnect->setFittingType(FittingType::CONNECTQSM);
     std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks;
     bricks.push_back(brickConnect);
     std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> oldBricks = childQSM->getRootSegment()->getBuildingBricks();
