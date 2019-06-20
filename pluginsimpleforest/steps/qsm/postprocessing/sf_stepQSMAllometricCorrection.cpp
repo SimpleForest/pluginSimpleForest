@@ -135,14 +135,14 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
 
   configDialog->addInt("Use "
                        " [<em><b>ransac iterations</b></em>] ",
-                       "",
+                       " for intitial log transformed power fit",
                        100,
                        10000,
                        m_ransacIterations);
 
   configDialog->addInt("Use "
                        " [<em><b>gauss newton iterations</b></em>] ",
-                       "",
+                       " for follow up non linear fit",
                        10,
                        50,
                        m_gaussNewtonIterations);
