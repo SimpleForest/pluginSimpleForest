@@ -39,12 +39,12 @@ class SF_ModelQSM
   std::shared_ptr<SF_ModelAbstractSegment> m_rootSegment;
   bool m_hasCorrectedParameters = false;
 
-  double m_aGrowthLength = 0;
-  double m_bGrowthLength = 0;
+  double m_aGrowthLength = 0.01;
+  double m_bGrowthLength = 1/2.49;
   double m_cGrowthLength = 0;
 
-  double m_aGrowthVolume = 0;
-  double m_bGrowthVolume = 0;
+  double m_aGrowthVolume = 0.01;
+  double m_bGrowthVolume = 1/2.49;
   double m_cGrowthVolume = 0;
   Eigen::Vector3d m_translation;
 
@@ -73,11 +73,11 @@ public:
   bool getHasCorrectedParameters() const;
   void setHasCorrectedParameters(bool hasCorrectedParameters);
   double getAGrowthLength() const;
-  void setAGrowthLength(double aGrowthLength);
+  void setA(double aGrowthLength);
   double getBGrowthLength() const;
-  void setBGrowthLength(double bGrowthLength);
+  void setB(double bGrowthLength);
   double getCGrowthLength() const;
-  void setCGrowthLength(double cGrowthLength);
+  void setC(double cGrowthLength);
   double getAGrowthVolume() const;
   void setAGrowthVolume(double aGrowthVolume);
   double getBGrowthVolume() const;

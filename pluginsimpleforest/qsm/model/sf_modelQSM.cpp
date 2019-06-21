@@ -129,7 +129,7 @@ SF_ModelQSM::getAGrowthLength() const
 }
 
 void
-SF_ModelQSM::setAGrowthLength(double aGrowthLength)
+SF_ModelQSM::setA(double aGrowthLength)
 {
   m_aGrowthLength = aGrowthLength;
 }
@@ -141,7 +141,7 @@ SF_ModelQSM::getBGrowthLength() const
 }
 
 void
-SF_ModelQSM::setBGrowthLength(double bGrowthLength)
+SF_ModelQSM::setB(double bGrowthLength)
 {
   m_bGrowthLength = bGrowthLength;
 }
@@ -153,7 +153,7 @@ SF_ModelQSM::getCGrowthLength() const
 }
 
 void
-SF_ModelQSM::setCGrowthLength(double cGrowthLength)
+SF_ModelQSM::setC(double cGrowthLength)
 {
   m_cGrowthLength = cGrowthLength;
 }
