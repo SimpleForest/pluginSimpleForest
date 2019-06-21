@@ -82,7 +82,9 @@ SF_FitRansacLine<T>::compute()
     }
     auto equation = getEquation(index1, index2);
     size_t currentNumberInliers = numberInliers(equation);
-    if (currentNumberInliers > currentMaxNumberInliers && equation.first > 0.2 && equation.second < 0.8) {
+    if (currentNumberInliers > currentMaxNumberInliers &&
+            equation.first > 0.2 &&
+            equation.first < 0.8) {
       currentMaxNumberInliers = currentNumberInliers;
       m_equation = equation;
     }
