@@ -5,11 +5,42 @@
 
 #include <pcl/search/kdtree.h>
 
-SF_Dijkstra::SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
-                         const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
-                         float range)
+SF_Dijkstra::SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds, float range)
   : _cloudIn(cloudIn), _cloudInSeeds(cloudInSeeds), _range(range)
 {
+  initialize();
+  compute();
+}
+
+SF_Dijkstra::SF_Dijkstra(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudIn,
+                         pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudInSeeds,
+                         float range)
+{
+  _range = range;
+  {
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInCpy(new pcl::PointCloud<pcl::PointXYZI>);
+    for (pcl::PointXYZINormal point : cloudInSeeds->points) {
+      pcl::PointXYZI pCpy;
+      pCpy.x = point.x;
+      pCpy.y = point.y;
+      pCpy.z = point.z;
+      pCpy.intensity = point.intensity;
+      cloudInCpy->push_back(pCpy);
+    }
+    _cloudInSeeds = cloudInCpy;
+  }
+  {
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInCpy(new pcl::PointCloud<pcl::PointXYZI>);
+    for (pcl::PointXYZINormal point : cloudIn->points) {
+      pcl::PointXYZI pCpy;
+      pCpy.x = point.x;
+      pCpy.y = point.y;
+      pCpy.z = point.z;
+      pCpy.intensity = point.intensity;
+      cloudInCpy->push_back(pCpy);
+    }
+    _cloudIn = cloudInCpy;
+  }
   initialize();
   compute();
 }
@@ -76,6 +107,8 @@ SF_Dijkstra::initializeKDTree()
 void
 SF_Dijkstra::initialize()
 {
+  _parentIndices.resize(_cloudIn->points.size());
+  std::fill(_parentIndices.begin(), _parentIndices.end(), -1);
   transferIntensity();
   initializeHeap();
   initializeKDTree();
@@ -104,6 +137,12 @@ SF_Dijkstra::getNeighbors(const pcl::PointXYZI& point)
     }
   }
   return result;
+}
+
+std::vector<int>
+SF_Dijkstra::getParentIndices() const
+{
+  return _parentIndices;
 }
 
 float
@@ -137,6 +176,7 @@ SF_Dijkstra::compute()
         Point neighbor = (*_handle[indexNeighbor])._point;
         float distBetween = getDistance(point, neighbor._point);
         if (pointStruct._distance + distBetween < neighbor._distance) {
+          _parentIndices[indexNeighbor] = index;
           float d = pointStruct._distance + distBetween;
           if (_maxDistance < d && d != 1000) {
             _maxDistance = d;

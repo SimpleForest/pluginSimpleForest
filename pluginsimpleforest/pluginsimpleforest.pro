@@ -58,7 +58,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pcl/geometry/DTM/sf_dtm.hpp \
     math/interpolation/sf_interpolation.h \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.h \
-    pcl/cloud/segmentation/dijkstra/sf_dijkstra.hpp \
     qsm/algorithm/detection/sf_idetection.h \
     qsm/model/sf_modelAbstractBuildingbrick.h \
     qsm/model/sf_modelCylinderBuildingbrick.h \
@@ -191,6 +190,7 @@ SOURCES += \
     file/export/ply/sf_exportPly.cpp \
     file/export/qsm/sf_exportQSM.cpp \
     file/export/sf_abstractExport.cpp \
+    pcl/cloud/segmentation/dijkstra/sf_dijkstra.cpp \
     qsm/algorithm/optimization/recursion/sf_spherefollowingRecursive.cpp \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.cpp \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.cpp \

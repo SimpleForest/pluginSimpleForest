@@ -47,91 +47,87 @@ SF_QSMAllometricCorrectionParameterEstimation::SF_QSMAllometricCorrectionParamet
 bool
 SF_QSMAllometricCorrectionParameterEstimation::isUnCorrectedRadiusFit(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
 {
-  return ((buildingBrick->getFittingType() == SPHEREFOLLOWING ||
-           buildingBrick->getFittingType() == CYLINDERCORRECTION ||
+  return ((buildingBrick->getFittingType() == SPHEREFOLLOWING || buildingBrick->getFittingType() == CYLINDERCORRECTION ||
            buildingBrick->getFittingType() == TRUNCATEDCONECORRECTION));
 }
 
 std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
 SF_QSMAllometricCorrectionParameterEstimation::chooseBestBricks(std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks)
 {
-    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bestBricks;
-    float minRadius = std::numeric_limits<float>::max();
-    float maxRadius = 0;
-    float minY = std::numeric_limits<float>::max();
-    float maxY = 0;
-    float radiusAtMaxY = 0;
-    for(std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick: bricks)
-    {
-        float y;
-        if (m_params.m_useGrowthLength) {
-            y = brick->getGrowthLength();
-        } else {
-            y = brick->getGrowthVolume();
-        }
-        float radius = brick->getRadius();
-        if(radius < minRadius)
-        {
-            minRadius = radius;
-        }
-        if(radius > maxRadius)
-        {
-            maxRadius = radius;
-        }
-
-        if(y < minY)
-        {
-            minY = y;
-        }
-
-        if(y > maxY)
-        {
-            maxY = y;
-            radiusAtMaxY = radius;
-        }
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bestBricks;
+  float minRadius = std::numeric_limits<float>::max();
+  float maxRadius = 0;
+  float minY = std::numeric_limits<float>::max();
+  float maxY = 0;
+  float radiusAtMaxY = 0;
+  for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick : bricks) {
+    float y;
+    if (m_params.m_useGrowthLength) {
+      y = brick->getGrowthLength();
+    } else {
+      y = brick->getGrowthVolume();
     }
-    for(std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick: bricks)
-    {
-        float y;
-        if (m_params.m_useGrowthLength) {
-            y = brick->getGrowthLength();
-        } else {
-            y = brick->getGrowthVolume();
-        }
-        float radius = brick->getRadius();
-
-        if(radius > radiusAtMaxY) continue;
-        if(y < maxY* 0.01) continue;
-        if(y > maxY* 0.33) continue;
-        bestBricks.push_back(brick);
+    float radius = brick->getRadius();
+    if (radius < minRadius) {
+      minRadius = radius;
+    }
+    if (radius > maxRadius) {
+      maxRadius = radius;
     }
 
-//  std::vector<float> y;
-//  if (m_params.m_useGrowthLength) {
-//    std::transform(bricks.begin(), bricks.end(), std::back_inserter(y), [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-//      return brick->getGrowthLength();
-//    });
+    if (y < minY) {
+      minY = y;
+    }
 
-//  } else {
-//    std::transform(bricks.begin(), bricks.end(), std::back_inserter(y), [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-//      return brick->getGrowthVolume();
-//    });
-//  }
-//  std::sort(y.begin(), y.end());
-//  float min = SF_Math<float>::getQuantile(y, (1 - m_params.m_quantile));
-//  std::for_each(bricks.begin(), bricks.end(), [&min, &bestBricks, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-//    if (m_params.m_useGrowthLength) {
-//      float growthLength = brick->getGrowthLength();
-//      if (growthLength > min) {
-//        bestBricks.push_back(brick);
-//      }
-//    } else {
-//      float growthVolume = brick->getGrowthVolume();
-//      if (growthVolume > min) {
-//        bestBricks.push_back(brick);
-//      }
-//    }
-//  });
+    if (y > maxY) {
+      maxY = y;
+      radiusAtMaxY = radius;
+    }
+  }
+  for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick : bricks) {
+    float y;
+    if (m_params.m_useGrowthLength) {
+      y = brick->getGrowthLength();
+    } else {
+      y = brick->getGrowthVolume();
+    }
+    float radius = brick->getRadius();
+
+    if (radius > radiusAtMaxY)
+      continue;
+    if (y < maxY * 0.01)
+      continue;
+    if (y > maxY * 0.33)
+      continue;
+    bestBricks.push_back(brick);
+  }
+
+  //  std::vector<float> y;
+  //  if (m_params.m_useGrowthLength) {
+  //    std::transform(bricks.begin(), bricks.end(), std::back_inserter(y), [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+  //      return brick->getGrowthLength();
+  //    });
+
+  //  } else {
+  //    std::transform(bricks.begin(), bricks.end(), std::back_inserter(y), [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+  //      return brick->getGrowthVolume();
+  //    });
+  //  }
+  //  std::sort(y.begin(), y.end());
+  //  float min = SF_Math<float>::getQuantile(y, (1 - m_params.m_quantile));
+  //  std::for_each(bricks.begin(), bricks.end(), [&min, &bestBricks, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+  //    if (m_params.m_useGrowthLength) {
+  //      float growthLength = brick->getGrowthLength();
+  //      if (growthLength > min) {
+  //        bestBricks.push_back(brick);
+  //      }
+  //    } else {
+  //      float growthVolume = brick->getGrowthVolume();
+  //      if (growthVolume > min) {
+  //        bestBricks.push_back(brick);
+  //      }
+  //    }
+  //  });
   return bestBricks;
 }
 
@@ -147,8 +143,8 @@ SF_QSMAllometricCorrectionParameterEstimation::unCorrectedBuildingBricks()
         if (segmentsBuildingBricks.size() > 2) {
           int median = segmentsBuildingBricks.size() / 2;
           std::shared_ptr<Sf_ModelAbstractBuildingbrick> medianBrick = segmentsBuildingBricks[median];
-          if (isUnCorrectedRadiusFit(medianBrick)) {              
-              buildingbricks.push_back(medianBrick);
+          if (isUnCorrectedRadiusFit(medianBrick)) {
+            buildingbricks.push_back(medianBrick);
           }
         }
       } else {
@@ -156,14 +152,15 @@ SF_QSMAllometricCorrectionParameterEstimation::unCorrectedBuildingBricks()
                       segmentsBuildingBricks.end(),
                       [this, &buildingbricks](std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick) {
                         if (isUnCorrectedRadiusFit(buildingBrick)) {
-                            buildingbricks.push_back(buildingBrick);
+                          buildingbricks.push_back(buildingBrick);
                         }
                       });
       }
     }
   });
   std::cout << "SF_QSMAllometricCorrectionParameterEstimation unCorrectedBuildingBricks SegmentSize " << segments.size() << std::endl;
-  std::cout << "SF_QSMAllometricCorrectionParameterEstimation unCorrectedBuildingBricks buildingbricks Size " << buildingbricks.size() << std::endl;
+  std::cout << "SF_QSMAllometricCorrectionParameterEstimation unCorrectedBuildingBricks buildingbricks Size " << buildingbricks.size()
+            << std::endl;
   return buildingbricks;
 }
 
@@ -193,16 +190,16 @@ SF_QSMAllometricCorrectionParameterEstimation::compute()
 
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> uncorrectedBricks = unCorrectedBuildingBricks();
   if (uncorrectedBricks.size() < 5) {
-        std::cout << "fooo 1" << std::endl;
+    std::cout << "fooo 1" << std::endl;
     return;
   }
-//  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> noStemBricks = removeStem(uncorrectedBricks);
-//  if (noStemBricks.size() < 5) {
-//    return;
-//  }
+  //  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> noStemBricks = removeStem(uncorrectedBricks);
+  //  if (noStemBricks.size() < 5) {
+  //    return;
+  //  }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bestBricks = chooseBestBricks(uncorrectedBricks);
   if (bestBricks.size() < 5) {
-      std::cout << "fooo 2" << std::endl;
+    std::cout << "fooo 2" << std::endl;
     return;
   }
   std::transform(bestBricks.begin(),
@@ -221,9 +218,8 @@ SF_QSMAllometricCorrectionParameterEstimation::compute()
                    [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) { return brick->getGrowthVolume(); });
   }
   std::cout << "growthvolume, radius" << std::endl;
-  for(int i = 0; i < x.size(); i++)
-  {
-        std::cout << x[i] << ", " << y[i] << std::endl;
+  for (int i = 0; i < x.size(); i++) {
+    std::cout << x[i] << ", " << y[i] << std::endl;
   }
   SF_FitGNPower<float> powerFit;
   powerFit.setX(x);
@@ -235,36 +231,32 @@ SF_QSMAllometricCorrectionParameterEstimation::compute()
   powerFit.setFitWithIntercept(m_params.m_withIntercept);
   try {
     powerFit.compute();
-    if(powerFit.b() > 0.2 && powerFit.b() < 0.8)
-    {
-        m_params.m_power = powerFit.a();
-        if (m_params.m_useGrowthLength) {
-            std::cout << "POWER GRWOTHJLENGTH" << std::endl;
-          m_params._qsm->setA(powerFit.a());
-          m_params._qsm->setB(powerFit.b());
-          m_params._qsm->setC(powerFit.c());
+    if (powerFit.b() > 0.2 && powerFit.b() < 0.8) {
+      m_params.m_power = powerFit.a();
+      if (m_params.m_useGrowthLength) {
+        std::cout << "POWER GRWOTHJLENGTH" << std::endl;
+        m_params._qsm->setA(powerFit.a());
+        m_params._qsm->setB(powerFit.b());
+        m_params._qsm->setC(powerFit.c());
 
-
-        } else {
-            std::cout << "POWER setAGrowthVolume" << std::endl;
-          m_params._qsm->setAGrowthVolume(powerFit.a());
-          m_params._qsm->setBGrowthVolume(powerFit.b());
-          m_params._qsm->setCGrowthVolume(powerFit.c());
-        }
-    }
-    else
-    {
-        m_params.m_power = 1/2.49;
-        m_params._qsm->setA(0.01);
-        m_params._qsm->setB(1/2.49);
-        m_params._qsm->setC(0);
+      } else {
+        std::cout << "POWER setAGrowthVolume" << std::endl;
+        m_params._qsm->setAGrowthVolume(powerFit.a());
+        m_params._qsm->setBGrowthVolume(powerFit.b());
+        m_params._qsm->setCGrowthVolume(powerFit.c());
+      }
+    } else {
+      m_params.m_power = 1 / 2.49;
+      m_params._qsm->setA(0.01);
+      m_params._qsm->setB(1 / 2.49);
+      m_params._qsm->setC(0);
     }
     double a = m_params._qsm->getAGrowthLength();
     double b = m_params._qsm->getBGrowthLength();
     double c = m_params._qsm->getCGrowthLength();
     std::cout << "ab q2 c " << a << " ; " << b << " ; " << c << std::endl;
     double minR = 0.005;
-    double minGrowthLength = std::pow((minR-c)/a,1/b);
+    double minGrowthLength = std::pow((minR - c) / a, 1 / b);
     std::cout << "minGrowthLength " << minGrowthLength << " ; " << c << std::endl;
 
   } catch (const std::exception& e) {

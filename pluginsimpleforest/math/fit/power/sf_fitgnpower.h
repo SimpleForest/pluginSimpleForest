@@ -38,7 +38,7 @@ class SF_FitGNPower
   bool m_fitWithIntercept;
   const double EULER = std::exp(1.0);
   T m_a = 0.01;
-  T m_b = 1/2.49;
+  T m_b = 1 / 2.49;
   T m_c = 0;
   T m_inlierDistance;
   size_t m_ransacIterations;

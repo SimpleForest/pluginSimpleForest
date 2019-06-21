@@ -46,6 +46,9 @@ class SF_ClusterCloudByQSM
   void initializeKdTree();
   typename pcl::KdTreeFLANN<PointType>::Ptr _kdtreeQSM;
   SF_ParamSegmentTreeFromQSM<PointType> m_params;
+  typename pcl::PointCloud<PointType>::Ptr seedCloud();
+
+  std::vector<double> filteredDistances(const std::vector<double>& distances, const std::vector<int>& parentIndices);
 
 public:
   SF_ClusterCloudByQSM();

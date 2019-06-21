@@ -28,6 +28,7 @@
 
 #include "qsm/algorithm/cloudQSM/sf_clustercloudbyqsm.h"
 
+#include "pcl/cloud/segmentation/dijkstra/sf_dijkstra.h"
 #include "steps/visualization/sf_colorfactory.h"
 #include <cmath>
 
@@ -72,12 +73,65 @@ SF_ClusterCloudByQSM<PointType>::params() const
 }
 
 template<typename PointType>
+std::vector<double>
+SF_ClusterCloudByQSM<PointType>::filteredDistances(const std::vector<double>& distances, const std::vector<int>& parentIndices)
+{
+  std::vector<double> distancesFiltered = distances;
+  std::vector<bool> isLeave(parentIndices.size(), true);
+  for (const auto index : parentIndices) {
+    if (index > -1) {
+      isLeave[index] = false;
+    }
+  }
+  std::vector<int> leaveIndices;
+  for (int i = 0; i < isLeave.size(); i++) {
+    if (isLeave[i]) {
+      leaveIndices.push_back(i);
+    }
+  }
+  std::cout << "leaveIndices size " << leaveIndices.size() << " , " << distances.size() << std::endl;
+  for (int leave : leaveIndices) {
+    int currentIndex = leave;
+    double minDistance = distancesFiltered[leave];
+    while (currentIndex != -1) {
+      if (distances[currentIndex] > minDistance) {
+        distancesFiltered[currentIndex] = minDistance;
+      }
+      minDistance = distancesFiltered[currentIndex];
+      currentIndex = parentIndices[currentIndex];
+    }
+  }
+  return distancesFiltered;
+}
+
+template<typename PointType>
+typename pcl::PointCloud<PointType>::Ptr
+SF_ClusterCloudByQSM<PointType>::seedCloud()
+{
+  PointType min;
+  float minZ = std::numeric_limits<float>::max();
+  for (PointType point : m_cloud->points) {
+    if (minZ > point.z) {
+      minZ = point.z;
+      min = point;
+    }
+  }
+  typename pcl::PointCloud<PointType>::Ptr seed(new typename pcl::PointCloud<PointType>);
+  seed->push_back(min);
+  return seed;
+}
+
+template<typename PointType>
 void
 SF_ClusterCloudByQSM<PointType>::compute()
 {
   Sf_CloudToModelDistance<PointType> cmd(m_qsm, m_cloud, m_paramsDistance);
   std::vector<double> growthVolumina = cmd.distances();
-  std::vector<double> growthVoluminaSorted = cmd.distances();
+  typename pcl::PointCloud<PointType>::Ptr seed = seedCloud();
+  SF_Dijkstra dijkstra(m_cloud, seed, 0.03);
+  std::vector<int> parentIndices = dijkstra.getParentIndices();
+  growthVolumina = filteredDistances(growthVolumina, parentIndices);
+  std::vector<double> growthVoluminaSorted = growthVolumina;
   std::sort(growthVoluminaSorted.begin(), growthVoluminaSorted.end());
   std::vector<double> upperGrowthVolumina;
   size_t sizeCluster = m_cloud->points.size() / m_numClstrs;

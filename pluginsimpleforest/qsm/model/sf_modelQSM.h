@@ -40,11 +40,11 @@ class SF_ModelQSM
   bool m_hasCorrectedParameters = false;
 
   double m_aGrowthLength = 0.01;
-  double m_bGrowthLength = 1/2.49;
+  double m_bGrowthLength = 1 / 2.49;
   double m_cGrowthLength = 0;
 
   double m_aGrowthVolume = 0.01;
-  double m_bGrowthVolume = 1/2.49;
+  double m_bGrowthVolume = 1 / 2.49;
   double m_cGrowthVolume = 0;
   Eigen::Vector3d m_translation;
 

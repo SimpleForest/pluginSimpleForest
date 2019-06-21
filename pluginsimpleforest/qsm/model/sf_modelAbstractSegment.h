@@ -102,7 +102,7 @@ public:
   void setReverseSummedBranchOrder(int reverseSummedBranchOrder);
   void computeBranchID(int branchID);
   int getBranchID() const;
-  void setTree(const std::weak_ptr<SF_ModelQSM> &tree);
+  void setTree(const std::weak_ptr<SF_ModelQSM>& tree);
 };
 
 #endif // SF_MODEL_ABSTRACT_SEGMENT_H

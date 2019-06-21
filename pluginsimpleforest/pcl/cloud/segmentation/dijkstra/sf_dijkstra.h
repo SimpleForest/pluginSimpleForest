@@ -70,11 +70,12 @@ private:
   Heap _priorityQueue;
   std::vector<Heap::handle_type> _handle;
   std::vector<Point> _points;
-  typename pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudIn;
-  const typename pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudInSeeds;
-  typename pcl::KdTreeFLANN<pcl::PointXYZI>::Ptr _kdtree;
+  pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudIn;
+  pcl::PointCloud<pcl::PointXYZI>::Ptr _cloudInSeeds;
+  pcl::KdTreeFLANN<pcl::PointXYZI>::Ptr _kdtree;
   float _range;
   std::vector<float> _distances;
+  std::vector<int> _parentIndices;
 
   void initialize();
   void initializeHeap();
@@ -86,13 +87,13 @@ private:
   void compute();
 
 public:
-  SF_Dijkstra(typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
-              const typename pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
+  SF_Dijkstra(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudIn,
+              pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudInSeeds,
               float range);
+  SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds, float range);
   std::vector<float> getDistances() const;
   float getMaxDistance() const;
+  std::vector<int> getParentIndices() const;
 };
-
-#include "sf_dijkstra.hpp"
 
 #endif // SF_DIJKSTRA_H
