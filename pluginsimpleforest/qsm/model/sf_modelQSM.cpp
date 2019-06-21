@@ -324,7 +324,7 @@ SF_ModelQSM::crownStartSegment(double minPercentage)
       if (fraction > minPercentage) {
         break;
       }
-      if (segment->getStart()[2] < centerHeight) {
+      if (segment->getStart()[2] > centerHeight) {
         break;
       }
     }
