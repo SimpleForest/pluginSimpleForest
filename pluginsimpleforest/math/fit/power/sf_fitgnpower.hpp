@@ -201,7 +201,6 @@ SF_FitGNPower<T>::getResiduals(const std::vector<T>& xVec, const std::vector<T>&
     for (size_t index = 0; index < xVec.size(); index++) {
       T x = xVec.at(index);
       T y = yVec.at(index);
-      //      residuals(index, 0) = -((m_a * std::pow((1 - std::pow(EULER, (-m_b * x))), m_c)) - y);
       residuals(index, 0) = -((m_a * std::pow(x, m_b)) + m_c - y);
     }
   } else {

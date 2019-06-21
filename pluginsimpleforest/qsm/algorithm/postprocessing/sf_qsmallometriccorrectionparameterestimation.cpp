@@ -101,33 +101,6 @@ SF_QSMAllometricCorrectionParameterEstimation::chooseBestBricks(std::vector<std:
       continue;
     bestBricks.push_back(brick);
   }
-
-  //  std::vector<float> y;
-  //  if (m_params.m_useGrowthLength) {
-  //    std::transform(bricks.begin(), bricks.end(), std::back_inserter(y), [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-  //      return brick->getGrowthLength();
-  //    });
-
-  //  } else {
-  //    std::transform(bricks.begin(), bricks.end(), std::back_inserter(y), [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-  //      return brick->getGrowthVolume();
-  //    });
-  //  }
-  //  std::sort(y.begin(), y.end());
-  //  float min = SF_Math<float>::getQuantile(y, (1 - m_params.m_quantile));
-  //  std::for_each(bricks.begin(), bricks.end(), [&min, &bestBricks, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-  //    if (m_params.m_useGrowthLength) {
-  //      float growthLength = brick->getGrowthLength();
-  //      if (growthLength > min) {
-  //        bestBricks.push_back(brick);
-  //      }
-  //    } else {
-  //      float growthVolume = brick->getGrowthVolume();
-  //      if (growthVolume > min) {
-  //        bestBricks.push_back(brick);
-  //      }
-  //    }
-  //  });
   return bestBricks;
 }
 
@@ -158,9 +131,6 @@ SF_QSMAllometricCorrectionParameterEstimation::unCorrectedBuildingBricks()
       }
     }
   });
-  std::cout << "SF_QSMAllometricCorrectionParameterEstimation unCorrectedBuildingBricks SegmentSize " << segments.size() << std::endl;
-  std::cout << "SF_QSMAllometricCorrectionParameterEstimation unCorrectedBuildingBricks buildingbricks Size " << buildingbricks.size()
-            << std::endl;
   return buildingbricks;
 }
 
@@ -177,8 +147,6 @@ SF_QSMAllometricCorrectionParameterEstimation::removeStem(std::vector<std::share
       noStemBricks.push_back(brick);
     }
   });
-  std::cout << "SF_QSMAllometricCorrectionParameterEstimation removeStem bricks Size " << bricks.size() << std::endl;
-  std::cout << "SF_QSMAllometricCorrectionParameterEstimation removeStem noStemBricks Size " << noStemBricks.size() << std::endl;
   return noStemBricks;
 }
 
@@ -190,16 +158,10 @@ SF_QSMAllometricCorrectionParameterEstimation::compute()
 
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> uncorrectedBricks = unCorrectedBuildingBricks();
   if (uncorrectedBricks.size() < 5) {
-    std::cout << "fooo 1" << std::endl;
     return;
   }
-  //  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> noStemBricks = removeStem(uncorrectedBricks);
-  //  if (noStemBricks.size() < 5) {
-  //    return;
-  //  }
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bestBricks = chooseBestBricks(uncorrectedBricks);
   if (bestBricks.size() < 5) {
-    std::cout << "fooo 2" << std::endl;
     return;
   }
   std::transform(bestBricks.begin(),
@@ -217,10 +179,6 @@ SF_QSMAllometricCorrectionParameterEstimation::compute()
                    std::back_inserter(x),
                    [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) { return brick->getGrowthVolume(); });
   }
-  std::cout << "growthvolume, radius" << std::endl;
-  for (int i = 0; i < x.size(); i++) {
-    std::cout << x[i] << ", " << y[i] << std::endl;
-  }
   SF_FitGNPower<float> powerFit;
   powerFit.setX(x);
   powerFit.setY(y);
@@ -234,13 +192,11 @@ SF_QSMAllometricCorrectionParameterEstimation::compute()
     if (powerFit.b() > 0.2 && powerFit.b() < 0.8) {
       m_params.m_power = powerFit.a();
       if (m_params.m_useGrowthLength) {
-        std::cout << "POWER GRWOTHJLENGTH" << std::endl;
         m_params._qsm->setA(powerFit.a());
         m_params._qsm->setB(powerFit.b());
         m_params._qsm->setC(powerFit.c());
 
       } else {
-        std::cout << "POWER setAGrowthVolume" << std::endl;
         m_params._qsm->setAGrowthVolume(powerFit.a());
         m_params._qsm->setBGrowthVolume(powerFit.b());
         m_params._qsm->setCGrowthVolume(powerFit.c());
@@ -251,14 +207,6 @@ SF_QSMAllometricCorrectionParameterEstimation::compute()
       m_params._qsm->setB(1 / 2.49);
       m_params._qsm->setC(0);
     }
-    double a = m_params._qsm->getAGrowthLength();
-    double b = m_params._qsm->getBGrowthLength();
-    double c = m_params._qsm->getCGrowthLength();
-    std::cout << "ab q2 c " << a << " ; " << b << " ; " << c << std::endl;
-    double minR = 0.005;
-    double minGrowthLength = std::pow((minR - c) / a, 1 / b);
-    std::cout << "minGrowthLength " << minGrowthLength << " ; " << c << std::endl;
-
   } catch (const std::exception& e) {
     std::string eStr = std::string(e.what());
     eStr.append("Could not fit allometric parameters.");
