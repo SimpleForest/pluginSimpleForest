@@ -436,6 +436,11 @@ SF_ModelAbstractSegment::getBranchID() const
   return m_branchID;
 }
 
+void SF_ModelAbstractSegment::setTree(const std::weak_ptr<SF_ModelQSM> &tree)
+{
+    m_tree = tree;
+}
+
 int
 SF_ModelAbstractSegment::getParentID()
 {
