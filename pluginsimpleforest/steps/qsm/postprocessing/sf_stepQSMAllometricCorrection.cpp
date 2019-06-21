@@ -87,6 +87,9 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
   addOutputFormat(configDialog);
   configDialog->addText("<b>Allometric correction</b>:");
+
+  configDialog->addBool("Estimate [<em><b>power parameter</b></em>] ", "", "automatic search", m_estimateParams);
+
   configDialog->addDouble("The lower the correction factor, a number between 0 and 1, the more strict is the check"
                           " with[<em><b>threshold</b></em>] ",
                           " (m). ",
@@ -94,6 +97,7 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
                           0.999,
                           3,
                           _range);
+
   configDialog->addDouble("Each cylinder has a "
                           " [<em><b>min Radius</b></em>] ",
                           " (m). ",
@@ -102,20 +106,12 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
                           5,
                           _minRadius);
 
-  configDialog->addBool("Estimate 3 parameter equations ", "", "3 parameters with intercept", m_withIntercept);
-  configDialog->addDouble("Only use most inner cylinder representing the major branching structure "
-                          " [<em><b>percentage of cylinders</b></em>] ",
-                          " .",
-                          0.1,
-                          1.0,
-                          2,
-                          m_quantile);
-  configDialog->addDouble("Use as inlier distance  "
+  configDialog->addDouble("Use as inlier distance on log scaled radii "
                           " [<em><b>inlierDistance</b></em>] ",
                           " (m). ",
                           0.01,
-                          2.0,
-                          2,
+                          0.03,
+                          3,
                           m_inlierDistance);
 
   configDialog->addDouble("Use as power parameter if auto seach fails"
@@ -133,21 +129,6 @@ SF_StepQSMAllometricCorrection::createPostConfigurationDialog()
                        99,
                        m_minPts);
 
-  configDialog->addInt("Use "
-                       " [<em><b>ransac iterations</b></em>] ",
-                       " for intitial log transformed power fit",
-                       100,
-                       10000,
-                       m_ransacIterations);
-
-  configDialog->addInt("Use "
-                       " [<em><b>gauss newton iterations</b></em>] ",
-                       " for follow up non linear fit",
-                       10,
-                       50,
-                       m_gaussNewtonIterations);
-
-  configDialog->addBool("Estimate [<em><b>power parameter</b></em>] ", "", "automatic search", m_estimateParams);
   createPostConfigurationDialogCitation(configDialog);
 }
 

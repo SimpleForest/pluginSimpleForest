@@ -70,10 +70,10 @@ private:
 
   double m_power = 1.0 / 2.49;
   bool m_useGrowthLength = true;
-  bool m_withIntercept = true;
+  bool m_withIntercept = false;
   double m_quantile = 0.5;
-  int m_minPts = 10;
-  double m_inlierDistance = 0.3;
+  int m_minPts = 5;
+  double m_inlierDistance = 0.02;
   int m_ransacIterations = 1000;
   int m_gaussNewtonIterations = 20;
   bool m_estimateParams = true;
