@@ -188,6 +188,11 @@ SF_SpherefollowingRecursive::connectQSM(std::shared_ptr<SF_ModelQSM> childQSM)
       segment = brick->getSegment();
     }
   }
+  auto allChildSegments = childQSM->getSegments();
+  for(auto segment: allChildSegments)
+  {
+      segment->setTree(m_qsm);
+  }
   if (start == startChild) {
     std::cout << "SF_SpherefollowingRecursive::connectQSM(std::shared_ptr<SF_ModelQSM> childQSM) no cylinder to connect found"
               << std::endl;
