@@ -89,7 +89,6 @@ SF_ClusterCloudByQSM<PointType>::filteredDistances(const std::vector<double>& di
       leaveIndices.push_back(i);
     }
   }
-  std::cout << "leaveIndices size " << leaveIndices.size() << " , " << distances.size() << std::endl;
   for (int leave : leaveIndices) {
     int currentIndex = leave;
     double minDistance = distancesFiltered[leave];

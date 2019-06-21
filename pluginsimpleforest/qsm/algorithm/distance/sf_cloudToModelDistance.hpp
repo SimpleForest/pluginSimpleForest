@@ -105,8 +105,8 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
         auto distance = getDistance(point, neighboringBrick);
         if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
-          distance = -_growthLengths[neighboringBrick->getID()];
-        }
+              distance = (std::min(-_growthLengths[neighboringBrick->getID()], -_MIN_GROWTH_LENGTH));
+            }
         if (distance < minDistance) {
           bestBrick = neighboringBrick;
           minDistance = distance;
