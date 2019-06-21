@@ -28,6 +28,7 @@
 
 #include "sf_modelAbstractBuildingbrick.h"
 #include "sf_modelAbstractSegment.h"
+#include "sf_modelQSM.h"
 
 double
 Sf_ModelAbstractBuildingbrick::getGrowthLength()
@@ -37,6 +38,16 @@ Sf_ModelAbstractBuildingbrick::getGrowthLength()
   for (size_t i = 0; i < children.size(); i++) {
     std::shared_ptr<Sf_ModelAbstractBuildingbrick> child = children.at(i);
     growthLength += child->getGrowthLength();
+  }
+  if(children.empty())
+  {
+      std::shared_ptr<SF_ModelQSM> qsm = getSegment()->getTree();
+      double a = qsm->getAGrowthLength();
+      double b = qsm->getBGrowthLength();
+      double c = qsm->getCGrowthLength();
+      double minR = 0.005;
+      double minGrowthLength = std::pow((minR-c)/a,1/b);
+      growthLength += minGrowthLength;
   }
   return std::max(m_minAllometricReturn, growthLength);
 }
