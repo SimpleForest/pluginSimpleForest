@@ -141,6 +141,13 @@ SF_FitGNPower<T>::initializeParameters()
   rl.setMinPts(m_minPts);
   try {
     rl.compute();
+    std::pair<T, T> line = rl.equation();
+    std::pair<std::vector<T>, std::vector<T>> inliers = rl.inliers();
+    m_a = std::exp(line.second);
+    m_b = line.first;
+    m_c = 0;
+    m_x = exp(inliers.first);
+    m_y = exp(inliers.second);
   } catch (const std::exception& e) {
     std::string eStr = std::string(e.what());
     eStr.append("RANSAC line fit failed for powerfit parameter initialization.");
@@ -148,13 +155,6 @@ SF_FitGNPower<T>::initializeParameters()
   } catch (...) {
     throw("RANSAC line fit failed for powerfit parameter initialization.");
   }
-  std::pair<T, T> line = rl.equation();
-  std::pair<std::vector<T>, std::vector<T>> inliers = rl.inliers();
-  m_a = std::exp(line.second);
-  m_b = line.first;
-  m_c = 0;
-  m_x = exp(inliers.first);
-  m_y = exp(inliers.second);
 }
 
 template<typename T>
