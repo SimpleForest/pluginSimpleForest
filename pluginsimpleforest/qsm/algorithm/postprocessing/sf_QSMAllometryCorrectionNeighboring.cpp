@@ -91,16 +91,11 @@ SF_QSMAllometryCorrectionNeighboring::startBrick()
 {
   auto root = m_params._qsm->getRootSegment();
   auto cylinder = root->getBuildingBricks().back();
-  bool found = false;
-  if (root->getBuildingBricks().size() > 2) {
-    cylinder = root->getBuildingBricks()[2];
-    while (!found && cylinder->getChildren().size() > 0) {
-      auto parent = cylinder->getParent();
-      auto grandParent = parent->getParent();
-      float temp;
-      found = isInPipeModelRelation(parent, cylinder, temp) && isInPipeModelRelation(grandParent, parent, temp);
-      cylinder = cylinder->getChildren()[0];
-    }
+  if (root->getBuildingBricks().size() > 5) {
+    cylinder = root->getBuildingBricks()[5];
+  }
+  if (root->getBuildingBricks().size() > 10) {
+    cylinder = root->getBuildingBricks()[10];
   }
   return cylinder;
 }
