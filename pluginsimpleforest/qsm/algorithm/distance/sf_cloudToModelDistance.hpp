@@ -255,29 +255,29 @@ template<typename PointType>
 double
 Sf_CloudToModelDistance<PointType>::maxError() const
 {
-    switch (_METHOD) {
-      case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
-        return 1;
-        break;
-      case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
-        return 1;
-        break;
-      case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
-        return _cropDistance;
-        break;
-      case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
-        return 1;
-        break;
-      case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
-        return _cropDistance;
-        break;
-      case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
-        return _cropDistance;
-        break;
-      case SF_CLoudToModelDistanceMethod::RADIUS:
-        return _cropDistance;
-        break;
-    }
+  switch (_METHOD) {
+    case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
+      return 1;
+      break;
+    case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
+      return 1;
+      break;
+    case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
+      return _cropDistance;
+      break;
+    case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
+      return 1;
+      break;
+    case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
+      return _cropDistance;
+      break;
+    case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
+      return _cropDistance;
+      break;
+    case SF_CLoudToModelDistanceMethod::RADIUS:
+      return _cropDistance;
+      break;
+  }
   return 1;
 }
 
