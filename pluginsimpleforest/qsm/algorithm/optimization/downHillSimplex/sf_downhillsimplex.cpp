@@ -84,6 +84,8 @@ SF_DownHillSimplex::serializeVec(gsl_vector* x,
 void
 SF_DownHillSimplex::computeDHS(SF_ParamSpherefollowingAdvanced<SF_PointNormal>& params, size_t numClusters)
 {
+  params._modelCloudError = std::numeric_limits<double>::max();
+  m_params._modelCloudError = std::numeric_limits<double>::max();
   adjustParameters(params, numClusters);
   std::uintptr_t par[1] = { reinterpret_cast<std::uintptr_t>(new SF_ParamSpherefollowingAdvanced<SF_PointNormal>(params)) };
   const gsl_multimin_fminimizer_type* T = gsl_multimin_fminimizer_nmsimplex2;

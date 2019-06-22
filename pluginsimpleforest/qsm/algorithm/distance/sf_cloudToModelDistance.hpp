@@ -127,7 +127,7 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
         minDistance = minDistanceWithAngle;
       } // TODO else
       else {
-        minDistance = minDistance * 4;
+        minDistance = std::min(maxError(), minDistance * 4);
       }
       if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
         if (bestBrick != nullptr) {
@@ -255,7 +255,30 @@ template<typename PointType>
 double
 Sf_CloudToModelDistance<PointType>::maxError() const
 {
-  return 0.2;
+    switch (_METHOD) {
+      case SF_CLoudToModelDistanceMethod::ZEROMOMENTUMORDER:
+        return 1;
+        break;
+      case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDER:
+        return 1;
+        break;
+      case SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC:
+        return _cropDistance;
+        break;
+      case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER:
+        return 1;
+        break;
+      case SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDERMSAC:
+        return _cropDistance;
+        break;
+      case SF_CLoudToModelDistanceMethod::GROWTHDISTANCE:
+        return _cropDistance;
+        break;
+      case SF_CLoudToModelDistanceMethod::RADIUS:
+        return _cropDistance;
+        break;
+    }
+  return 1;
 }
 
 template<typename PointType>
