@@ -36,6 +36,7 @@ class SF_QSMMedianFilter
 {
   float m_percentage = 0.2f;
   std::shared_ptr<SF_ModelQSM> m_qsm;
+  int m_filterSize = 3;
 
 public:
   SF_QSMMedianFilter();

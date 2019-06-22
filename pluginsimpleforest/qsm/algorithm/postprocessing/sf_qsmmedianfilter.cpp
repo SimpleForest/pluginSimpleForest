@@ -45,28 +45,44 @@ SF_QSMMedianFilter::compute(std::shared_ptr<SF_ModelQSM> qsm)
   if (!qsm) {
     return;
   }
-  std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments = m_qsm->getSegments();
-  std::for_each(segments.begin(), segments.end(), [this](std::shared_ptr<SF_ModelAbstractSegment> segment) {
-    if (!segment->isRoot()) {
-      std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks = segment->getBuildingBricks();
-      std::vector<float> radii;
-      std::for_each(bricks.begin(), bricks.end(), [&radii, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-        radii.push_back(brick->getRadius());
-      });
-      float median = SF_Math<float>::getMedian(radii);
-      std::for_each(bricks.begin(), bricks.end(), [median, this](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
-        float radius = brick->getRadius();
-        FittingType type = brick->getFittingType();
-        if (radius < median * (1.0 - m_percentage)) {
-          radius = median;
-          type = FittingType::MEDIAN;
-        }
-        if (radius > median * (1.0 + m_percentage)) {
-          radius = median;
-          type = FittingType::MEDIAN;
-        }
-        brick->setRadius(radius, type);
-      });
-    }
-  });
+
+  auto bricks = m_qsm->getBuildingBricks();
+  for(auto brick: bricks)
+  {
+      std::vector<double> radii;
+      radii.push_back(brick->getRadius());
+      auto current = brick;
+      for(int i = 0; i < m_filterSize; i++)
+      {
+          if(brick->getParent())
+          {
+              current = brick->getParent();
+              radii.push_back(current->getRadius());
+          }
+      }
+      current = brick;
+      for(int i = 0; i < m_filterSize; i++)
+      {
+          if(!brick->getChildren().empty())
+          {
+              current = brick->getChildren().front();
+              radii.push_back(current->getRadius());
+          }
+      }
+      if(radii.size() == 2* m_filterSize + 1)
+      {
+          auto median = SF_Math<double>::getMedian(radii);
+          float radius = brick->getRadius();
+          FittingType type = brick->getFittingType();
+          if (radius < median * (1.0 - m_percentage)) {
+            radius = median;
+            type = FittingType::MEDIAN;
+          }
+          if (radius > median * (1.0 + m_percentage)) {
+            radius = median;
+            type = FittingType::MEDIAN;
+          }
+          brick->setRadius(radius, type);
+      }
+  }
 }
