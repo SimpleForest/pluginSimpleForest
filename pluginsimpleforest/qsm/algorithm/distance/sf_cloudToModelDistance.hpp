@@ -47,7 +47,8 @@ template<typename PointType>
 double
 Sf_CloudToModelDistance<PointType>::getAngle(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
 {
-  Eigen::Vector3d normal (static_cast<double>(point.normal_x), static_cast<double>(point.normal_y), static_cast<double>(point.normal_z));
+  Eigen::Vector3d normal(
+    static_cast<double>(point.normal_x), static_cast<double>(point.normal_y), static_cast<double>(point.normal_z));
   return SF_Math<double>::getAngleBetweenDeg(normal, buildingBrick->getAxis());
 }
 
@@ -72,7 +73,8 @@ Sf_CloudToModelDistance<PointType>::Sf_CloudToModelDistance(std::shared_ptr<SF_M
                                                             typename pcl::PointCloud<PointType>::Ptr cloud,
                                                             SF_CLoudToModelDistanceMethod& method,
                                                             double cropDistance,
-                                                            int k, double angle)
+                                                            int k,
+                                                            double angle)
   : _METHOD(method), _k(k), _cropDistance(cropDistance), _tree(tree), _cloud(cloud), m_angle(angle)
 {
   _averageDistance = std::numeric_limits<double>::max();
@@ -107,27 +109,25 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
         auto distance = getDistance(point, neighboringBrick);
         if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
-              distance = (std::min(-_growthLengths[neighboringBrick->getID()], -_MIN_GROWTH_LENGTH));
-            }
+          distance = (std::min(-_growthLengths[neighboringBrick->getID()], -_MIN_GROWTH_LENGTH));
+        }
         if (distance < minDistance) {
           bestBrick = neighboringBrick;
           minDistance = distance;
         }
         auto angle = getAngle(point, neighboringBrick);
-        if(angle>m_angle && distance < minDistanceWithAngle) // TODO
+        if (angle > m_angle && distance < minDistanceWithAngle) // TODO
         {
-            minDistanceWithAngle = distance;
-            bestBrickWithAngle = neighboringBrick;
+          minDistanceWithAngle = distance;
+          bestBrickWithAngle = neighboringBrick;
         }
       }
-      if(bestBrickWithAngle)
-      {
-          bestBrick = bestBrickWithAngle;
-          minDistance = minDistanceWithAngle;
+      if (bestBrickWithAngle) {
+        bestBrick = bestBrickWithAngle;
+        minDistance = minDistanceWithAngle;
       } // TODO else
-      else
-      {
-          minDistance = minDistance * 4;
+      else {
+        minDistance = minDistance * 4;
       }
       if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
         if (bestBrick != nullptr) {

@@ -252,7 +252,7 @@ SF_StepSphereFollowingRecursive::createParamList(CT_ResultGroup* outResult)
     param._stepProgress = _stepProgress;
     param._distanceParams = distanceParams;
     param._sphereFollowingParams = sphereFollowingParams;
-    param._voxelSize = m_clusteringDistance/3;
+    param._voxelSize = m_clusteringDistance / 3;
     param._clusteringDistance = _PP_euclideanClusteringDistance;
     param.m_numClstrs = _CMD_numClstrs;
     param._modelCloudError = 1337;

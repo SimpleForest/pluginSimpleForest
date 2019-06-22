@@ -94,7 +94,7 @@ public:
     sor.setInputCloud(cloud);
     {
       QMutexLocker m1(&*mMutex);
-      sor.setLeafSize(params.m_clusteringDistance/3, params.m_clusteringDistance/3, params.m_clusteringDistance/3);
+      sor.setLeafSize(params.m_clusteringDistance / 3, params.m_clusteringDistance / 3, params.m_clusteringDistance / 3);
     }
     sor.filter(*cloudDownscaled);
     pcl::NormalEstimation<SF_PointNormal, SF_PointNormal> ne;

@@ -90,8 +90,12 @@ private:
 public:
   SF_Dijkstra(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudIn,
               pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudInSeeds,
-              float range, bool useFixedDistance = false);
-  SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds, float range, bool useFixedDistance = false);
+              float range,
+              bool useFixedDistance = false);
+  SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
+              pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
+              float range,
+              bool useFixedDistance = false);
   std::vector<float> getDistances() const;
   float getMaxDistance() const;
   std::vector<int> getParentIndices() const;

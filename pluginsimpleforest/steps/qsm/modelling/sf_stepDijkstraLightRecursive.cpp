@@ -35,8 +35,7 @@
 
 #include <ct_itemdrawable/ct_cylinder.h>
 
-SF_StepDijkstraLightRecursive::SF_StepDijkstraLightRecursive(CT_StepInitializeData& dataInit)
-  : SF_StepSpherefollowingBasic(dataInit)
+SF_StepDijkstraLightRecursive::SF_StepDijkstraLightRecursive(CT_StepInitializeData& dataInit) : SF_StepSpherefollowingBasic(dataInit)
 {}
 
 SF_StepDijkstraLightRecursive::~SF_StepDijkstraLightRecursive() {}

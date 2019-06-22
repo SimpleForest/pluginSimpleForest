@@ -5,7 +5,10 @@
 
 #include <pcl/search/kdtree.h>
 
-SF_Dijkstra::SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds, float range, bool useFixedDistance)
+SF_Dijkstra::SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn,
+                         pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds,
+                         float range,
+                         bool useFixedDistance)
   : _cloudIn(cloudIn), _cloudInSeeds(cloudInSeeds), _range(range), m_useFixDistance(useFixedDistance)
 {
   initialize();
@@ -14,9 +17,10 @@ SF_Dijkstra::SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn, pcl::Poin
 
 SF_Dijkstra::SF_Dijkstra(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudIn,
                          pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudInSeeds,
-                         float range, bool useFixedDistance)
+                         float range,
+                         bool useFixedDistance)
 {
-    m_useFixDistance = useFixedDistance;
+  m_useFixDistance = useFixedDistance;
   _range = range;
   {
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInCpy(new pcl::PointCloud<pcl::PointXYZI>);
@@ -58,7 +62,7 @@ SF_Dijkstra::transferIntensity()
   pcl::search::KdTree<pcl::PointXYZI>::Ptr kdtree(new pcl::search::KdTree<pcl::PointXYZI>);
   kdtree->setInputCloud(_cloudInSeeds);
   size_t size = _cloudIn->points.size();
-  float sqrdRange = (m_useFixDistance) ? 0.0000001 :_range * _range * 0.1f;
+  float sqrdRange = (m_useFixDistance) ? 0.0000001 : _range * _range * 0.1f;
   for (size_t i = 0; i < size; i++) {
     pcl::PointXYZI point = _cloudIn->points[i];
     std::vector<int> pointIdxNKNSearch(1);

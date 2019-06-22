@@ -60,11 +60,10 @@ protected:
   double m_unfittedDistance = 0.1;
   double m_minPercentage = 0.001;
   double m_maxPercentage = 0.02;
-  double m_clusterDownScale = 0.05; //TODO
+  double m_clusterDownScale = 0.05; // TODO
 
   virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
   virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
 };
-
 
 #endif // SF_STEPDIJKSTRALIGHTRECURSIVE_H

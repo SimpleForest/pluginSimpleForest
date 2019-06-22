@@ -47,42 +47,36 @@ SF_QSMMedianFilter::compute(std::shared_ptr<SF_ModelQSM> qsm)
   }
 
   auto bricks = m_qsm->getBuildingBricks();
-  for(auto brick: bricks)
-  {
-      std::vector<double> radii;
-      radii.push_back(brick->getRadius());
-      auto current = brick;
-      for(int i = 0; i < m_filterSize; i++)
-      {
-          if(brick->getParent())
-          {
-              current = brick->getParent();
-              radii.push_back(current->getRadius());
-          }
+  for (auto brick : bricks) {
+    std::vector<double> radii;
+    radii.push_back(brick->getRadius());
+    auto current = brick;
+    for (int i = 0; i < m_filterSize; i++) {
+      if (brick->getParent()) {
+        current = brick->getParent();
+        radii.push_back(current->getRadius());
       }
-      current = brick;
-      for(int i = 0; i < m_filterSize; i++)
-      {
-          if(!brick->getChildren().empty())
-          {
-              current = brick->getChildren().front();
-              radii.push_back(current->getRadius());
-          }
+    }
+    current = brick;
+    for (int i = 0; i < m_filterSize; i++) {
+      if (!brick->getChildren().empty()) {
+        current = brick->getChildren().front();
+        radii.push_back(current->getRadius());
       }
-      if(radii.size() == 2* m_filterSize + 1)
-      {
-          auto median = SF_Math<double>::getMedian(radii);
-          float radius = brick->getRadius();
-          FittingType type = brick->getFittingType();
-          if (radius < median * (1.0 - m_percentage)) {
-            radius = median;
-            type = FittingType::MEDIAN;
-          }
-          if (radius > median * (1.0 + m_percentage)) {
-            radius = median;
-            type = FittingType::MEDIAN;
-          }
-          brick->setRadius(radius, type);
+    }
+    if (radii.size() == 2 * m_filterSize + 1) {
+      auto median = SF_Math<double>::getMedian(radii);
+      float radius = brick->getRadius();
+      FittingType type = brick->getFittingType();
+      if (radius < median * (1.0 - m_percentage)) {
+        radius = median;
+        type = FittingType::MEDIAN;
       }
+      if (radius > median * (1.0 + m_percentage)) {
+        radius = median;
+        type = FittingType::MEDIAN;
+      }
+      brick->setRadius(radius, type);
+    }
   }
 }
