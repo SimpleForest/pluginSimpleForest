@@ -93,7 +93,7 @@ protected:
   CT_AutoRenameModels m_twigBranchID;
   CT_AutoRenameModels m_twigPipeOrder;
 
-  bool m_splitQSM = true;
+  bool m_splitQSM = false;
   double m_twigPercentage = 0.04;
   double m_stemPercentage = 0.2;
 };
