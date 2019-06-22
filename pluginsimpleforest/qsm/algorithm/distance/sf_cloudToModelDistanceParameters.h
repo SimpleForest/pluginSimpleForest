@@ -45,6 +45,7 @@ struct SF_CloudToModelDistanceParameters
   SF_CLoudToModelDistanceMethod _method = SF_CLoudToModelDistanceMethod::SECONDMOMENTUMORDER;
   float _cropDistance = 0.15f;
   float _inlierDistance = 0.05f;
+  float m_minAngle = 30;
   int _k = 5;
   SF_CloudToModelDistanceParameters() {}
   SF_CloudToModelDistanceParameters(SF_CLoudToModelDistanceMethod& method, float cropDistance, float inlierDistance, int k)

@@ -47,8 +47,8 @@ template<typename PointType>
 double
 Sf_CloudToModelDistance<PointType>::getAngle(const PointType& point, std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
 {
-  Eigen::Vector3f temp = point.getVector3fMap();
-  return SF_Math<double>::getAngleBetweenDeg(temp.cast<double>(), buildingBrick->getAxis());
+  Eigen::Vector3d normal (static_cast<double>(point.normal_x), static_cast<double>(point.normal_y), static_cast<double>(point.normal_z));
+  return SF_Math<double>::getAngleBetweenDeg(normal, buildingBrick->getAxis());
 }
 
 template<typename PointType>
@@ -72,8 +72,8 @@ Sf_CloudToModelDistance<PointType>::Sf_CloudToModelDistance(std::shared_ptr<SF_M
                                                             typename pcl::PointCloud<PointType>::Ptr cloud,
                                                             SF_CLoudToModelDistanceMethod& method,
                                                             double cropDistance,
-                                                            int k)
-  : _METHOD(method), _k(k), _cropDistance(cropDistance), _tree(tree), _cloud(cloud)
+                                                            int k, double angle)
+  : _METHOD(method), _k(k), _cropDistance(cropDistance), _tree(tree), _cloud(cloud), m_angle(angle)
 {
   _averageDistance = std::numeric_limits<double>::max();
   initializeKdTree();
@@ -85,7 +85,7 @@ template<typename PointType>
 Sf_CloudToModelDistance<PointType>::Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                                                             typename pcl::PointCloud<PointType>::Ptr cloud,
                                                             SF_CloudToModelDistanceParameters& params)
-  : Sf_CloudToModelDistance(tree, cloud, params._method, params._cropDistance, params._k)
+  : Sf_CloudToModelDistance(tree, cloud, params._method, params._cropDistance, params._k, params.m_minAngle)
 {}
 
 template<typename PointType>
@@ -100,7 +100,9 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
     std::vector<float> pointRadiusSquaredDistance;
     if (_kdtreeQSM->nearestKSearch(point, _k, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0) {
       double minDistance = maxError();
+      double minDistanceWithAngle = maxError();
       std::shared_ptr<Sf_ModelAbstractBuildingbrick> bestBrick;
+      std::shared_ptr<Sf_ModelAbstractBuildingbrick> bestBrickWithAngle;
       for (size_t j = 0; j < pointIdxRadiusSearch.size(); ++j) {
         std::shared_ptr<Sf_ModelAbstractBuildingbrick> neighboringBrick = buildingBricks[pointIdxRadiusSearch[j]];
         auto distance = getDistance(point, neighboringBrick);
@@ -111,6 +113,22 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
           bestBrick = neighboringBrick;
           minDistance = distance;
         }
+        auto angle = getAngle(point, neighboringBrick);
+        if(angle>m_angle && distance < minDistanceWithAngle) // TODO
+        {
+            minDistanceWithAngle = distance;
+            bestBrickWithAngle = neighboringBrick;
+        }
+      }
+      if(bestBrickWithAngle)
+      {
+          bestBrick = bestBrickWithAngle;
+          minDistance = minDistanceWithAngle;
+      } // TODO else
+      else
+      {
+          bestBrick = nullptr;
+          minDistance = minDistance * 2;
       }
       if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
         if (bestBrick != nullptr) {
@@ -238,7 +256,7 @@ template<typename PointType>
 double
 Sf_CloudToModelDistance<PointType>::maxError() const
 {
-  return std::numeric_limits<double>::max();
+  return 0.2;
 }
 
 template<typename PointType>

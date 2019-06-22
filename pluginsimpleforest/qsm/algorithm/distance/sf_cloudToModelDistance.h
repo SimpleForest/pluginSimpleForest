@@ -40,6 +40,7 @@ class Sf_CloudToModelDistance
   int _k;
   double _cropDistance;
   double _averageDistance;
+  double m_angle;
   const double _MIN_GROWTH_LENGTH = 0.001f;
   std::vector<double> _distances;
   std::vector<double> _growthLengths;
@@ -62,7 +63,8 @@ public:
                           typename pcl::PointCloud<PointType>::Ptr cloud,
                           SF_CLoudToModelDistanceMethod& method,
                           double cropDistance,
-                          int k);
+                          int k,
+                          double angle);
   Sf_CloudToModelDistance(std::shared_ptr<SF_ModelQSM> tree,
                           typename pcl::PointCloud<PointType>::Ptr cloud,
                           SF_CloudToModelDistanceParameters& params);

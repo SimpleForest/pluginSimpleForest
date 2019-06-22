@@ -34,15 +34,15 @@ SF_ExportCloud::getMinMax()
   SF_CLoudToModelDistanceMethod type;
   if (m_exportPolicy == SF_ExportCloudPolicy::FIT_QUALITY) {
     type = SF_CLoudToModelDistanceMethod::FIRSTMOMENTUMORDERMSAC;
-    Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, type, 0.1, 9);
+    Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, type, 0.1, 9, 30);
     m_intensities = cmd.distances();
   } else if (m_exportPolicy == SF_ExportCloudPolicy::GROWTHLENGTH) {
     type = SF_CLoudToModelDistanceMethod::GROWTHDISTANCE;
-    Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, type, 0.1, 9);
+    Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, type, 0.1, 9, 30);
     m_intensities = cmd.distances();
   } else if (m_exportPolicy == SF_ExportCloudPolicy::RADIUS) {
     type = SF_CLoudToModelDistanceMethod::RADIUS;
-    Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, type, 0.1, 9);
+    Sf_CloudToModelDistance<pcl::PointXYZINormal> cmd(m_qsm, m_cloud, type, 0.1, 9, 30);
     m_intensities = cmd.distances();
   }
   m_intensities = getLogarithm(m_intensities);
