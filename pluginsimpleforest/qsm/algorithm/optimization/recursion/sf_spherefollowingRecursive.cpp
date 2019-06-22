@@ -52,6 +52,8 @@ SF_SpherefollowingRecursive::setQsm(const std::shared_ptr<SF_ModelQSM>& qsm)
 {
   m_qsm = qsm;
   m_axis = stemAxis();
+  m_bricks = m_qsm->getBuildingBricks();
+  initializeKdTree();
 }
 
 std::shared_ptr<SF_ModelQSM>
@@ -216,15 +218,30 @@ SF_SpherefollowingRecursive::getMinMax(size_t& min, size_t& max, SF_CloudNormal:
 {
   double minDistance = std::numeric_limits<double>::max();
   double maxDistance = 0;
-  std::shared_ptr<Sf_ModelCylinderBuildingbrick> axis = m_axis;
+  Eigen::Vector3d closestQSM;
   size_t index = 0;
   for (SF_PointNormal point : cluster->points) {
-    Eigen::Vector3f temp = point.getVector3fMap();
-    double distance = axis->getDistance(temp.cast<double>());
-    if (distance < minDistance) {
-      minDistance = distance;
-      min = index;
-    }
+    int K = 1;
+     std::vector<int> pointIdxNKNSearch(K);
+     std::vector<float> pointNKNSquaredDistance(K);
+     if ( _kdtreeQSM->nearestKSearch (point, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0 )
+     {
+         auto distance = std::sqrt(pointNKNSquaredDistance.front());
+         if (distance < minDistance) {
+           minDistance = distance;
+           min = index;
+           closestQSM = m_bricks[pointIdxNKNSearch.front()]->getCenter();
+         }
+     }
+     ++index;
+  }
+  index = 0;
+  for (SF_PointNormal point : cluster->points) {
+    Eigen::Vector3d pointVec;
+    pointVec[0] = point.x;
+    pointVec[1] = point.y;
+    pointVec[2] = point.z;
+    auto distance = SF_Math<double>::distance(pointVec,closestQSM);
     if (distance > maxDistance) {
       maxDistance = distance;
       max = index;
@@ -265,4 +282,18 @@ SF_SpherefollowingRecursive::translateCloud(SF_CloudNormal::Ptr& cloud, const si
     point.z = point.z - pointMin.z;
   }
   return translation;
+}
+
+void SF_SpherefollowingRecursive::initializeKdTree()
+{
+    _kdtreeQSM.reset(new pcl::KdTreeFLANN<SF_PointNormal>());
+    pcl::PointCloud<SF_PointNormal>::Ptr centerCloud(new typename pcl::PointCloud<SF_PointNormal>());
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingBricks = m_qsm->getBuildingBricks();
+    for (size_t i = 0; i < buildingBricks.size(); i++) {
+      Eigen::Vector3d pointEigen = buildingBricks[i]->getCenter();
+      SF_PointNormal point;
+      point.getVector3fMap() = pointEigen.cast<float>();
+      centerCloud->push_back(std::move(point));
+    }
+    _kdtreeQSM->setInputCloud(centerCloud);
 }

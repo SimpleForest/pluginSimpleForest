@@ -32,12 +32,16 @@
 #include "qsm/algorithm/optimization/gridsearch/sf_spherefollowingrastersearch.h"
 #include "qsm/model/sf_modelCylinderBuildingbrick.h"
 
+#include <pcl/kdtree/kdtree_flann.h>
+
 class SF_SpherefollowingRecursive
 {
   SF_ParamSpherefollowingRecursive<SF_PointNormal> m_params;
   SF_CloudNormal::Ptr m_cloud;
   std::shared_ptr<SF_ModelQSM> m_qsm;
   std::shared_ptr<Sf_ModelCylinderBuildingbrick> m_axis;
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> m_bricks;
+  pcl::KdTreeFLANN<SF_PointNormal>::Ptr _kdtreeQSM;
   SF_CloudNormal::Ptr extractUnfittedPoints();
   std::vector<SF_CloudNormal::Ptr> clusters(SF_CloudNormal::Ptr cloud);
   std::vector<SF_CloudNormal::Ptr> sortClusters(const std::vector<SF_CloudNormal::Ptr>& clusters);
@@ -47,6 +51,7 @@ class SF_SpherefollowingRecursive
   std::shared_ptr<Sf_ModelCylinderBuildingbrick> stemAxis();
   Eigen::Vector3f cloudVector(SF_CloudNormal::Ptr& cloud, const size_t minIndex, const size_t maxIndex);
   Eigen::Vector3d translateCloud(SF_CloudNormal::Ptr& cloud, const size_t index);
+  void initializeKdTree();
 
 public:
   SF_SpherefollowingRecursive();

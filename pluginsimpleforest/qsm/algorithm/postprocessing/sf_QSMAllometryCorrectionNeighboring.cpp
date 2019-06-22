@@ -118,7 +118,7 @@ SF_QSMAllometryCorrectionNeighboring::isInPipeModelRelation(std::shared_ptr<Sf_M
   }
   xNew = xParent * (std::pow((yChild / yParent), m_params.m_power));
   float minX = xNew - m_params._range * xNew;
-  float maxX = xNew + m_params._range * xNew;
+  float maxX = xNew + (m_params._range / 2) * xNew;
   return (xChild > minX && xChild < maxX) ? true : false;
 }
 

@@ -127,8 +127,7 @@ Sf_CloudToModelDistance<PointType>::getCloudToModelDistances()
       } // TODO else
       else
       {
-          bestBrick = nullptr;
-          minDistance = minDistance * 2;
+          minDistance = minDistance * 4;
       }
       if (_METHOD == SF_CLoudToModelDistanceMethod::GROWTHDISTANCE) {
         if (bestBrick != nullptr) {
