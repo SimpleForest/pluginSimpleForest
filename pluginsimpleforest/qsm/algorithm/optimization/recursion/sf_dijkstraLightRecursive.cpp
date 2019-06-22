@@ -112,7 +112,7 @@ pcl::ModelCoefficients::Ptr SF_DijkstraLightRecursive::coefficients(SF_PointNorm
     coeff2->values.push_back(p.x);
     coeff2->values.push_back(p.y);
     coeff2->values.push_back(p.z);
-    coeff2->values.push_back(0.1f);
+    coeff2->values.push_back(0.015f);
     return coeff2;
 }
 
@@ -154,7 +154,10 @@ SF_DijkstraLightRecursive::processClusters(const std::vector<SF_CloudNormal::Ptr
     SF_CloudNormal::Ptr seed(new SF_CloudNormal);
     seed->push_back(cluster->points.at(minIndex));
     SF_Dijkstra dijkstra(cluster, seed, m_params.m_clusterDownScale* 2, true);
-    std::vector<int> parentIndices = dijkstra.getParentIndices();
+    auto distances = dijkstra.getDistances();
+    std::vector<SF_CloudNormal::Ptr> distanceClustered = distanceClusters(cluster, distances);
+    std::vector<std::vector<SF_CloudNormal::Ptr>> clusterSquared = clusterClusters(distanceClustered);
+    std::vector<std::vector<SF_PointNormal> > coms =  centerOfMass(clusterSquared);
 
     std::vector<SF_QSMDetectionCylinder> cylinders;
     pcl::ModelCoefficients::Ptr coeffStart (new pcl::ModelCoefficients);
@@ -165,17 +168,46 @@ SF_DijkstraLightRecursive::processClusters(const std::vector<SF_CloudNormal::Ptr
     pcl::ModelCoefficients::Ptr coeffEnd = coefficients(cluster->points.at(minIndex));
     SF_QSMDetectionCylinder cylinder(0.f, coeffStart, coeffEnd);
     cylinders.push_back(cylinder);
-    int index = 0;
-    for(auto parentIndex: parentIndices)
+    std::vector<SF_PointNormal> inner = coms[0];
+    for(auto innerNode :inner)
     {
-        if(parentIndex > -1)
+        pcl::ModelCoefficients::Ptr coeffEnd2 = coefficients(innerNode);
+        SF_QSMDetectionCylinder cylinder(0.f, coeffEnd, coeffEnd2);
+        cylinders.push_back(cylinder);
+    }
+    for(int i = coms.size()- 1; i > 0; i--)
+    {
+        std::vector<SF_PointNormal> outer = coms[i];
+        std::vector<SF_PointNormal> inner = coms[i-1];
+        for(auto pointOuter: outer)
         {
-            pcl::ModelCoefficients::Ptr coeffStart= coefficients(cluster->points.at(parentIndex));
-            pcl::ModelCoefficients::Ptr coeffEnd = coefficients(cluster->points.at(index));
+            int minIndex = -1;
+            float minDistance = std::numeric_limits<float>::max();
+            int currentIndex = 0;
+            for(auto pointInner: inner)
+            {
+                float distance = SF_Math<float>::distancef(Eigen::Vector3f(pointOuter.x, pointOuter.y, pointOuter.z),
+                                                           Eigen::Vector3f(pointInner.x, pointInner.y, pointInner.z));
+                if(distance < minDistance)
+                {
+                    minDistance = distance;
+                    minIndex = currentIndex;
+                }
+                currentIndex++;
+            }
+            if(minIndex == -1)
+            {
+                std::cout << "MEGAAAA  FOOOO" << std::endl;
+                continue;
+            }
+            SF_PointNormal p2 = inner[minIndex];
+            pcl::ModelCoefficients::Ptr coeffStart= coefficients(p2);
+            pcl::ModelCoefficients::Ptr coeffEnd = coefficients(pointOuter);
             SF_QSMDetectionCylinder cylinder(0, coeffStart, coeffEnd);
             cylinders.push_back(cylinder);
+
         }
-        index++;
+
     }
     SF_BuildQSM builder(cylinders, 1000);
     auto childQSM = builder.getTree();
@@ -293,4 +325,98 @@ void SF_DijkstraLightRecursive::initializeKdTree()
       centerCloud->push_back(std::move(point));
     }
     _kdtreeQSM->setInputCloud(centerCloud);
+}
+
+std::vector<SF_CloudNormal::Ptr> SF_DijkstraLightRecursive::distanceClusters(SF_CloudNormal::Ptr cloud, std::vector<float> distances)
+{
+    float minDistance = std::numeric_limits<float>::max();
+    float maxDistance = 0;
+    for(auto distance : distances)
+    {
+        if(distance < minDistance )
+            minDistance = distance;
+        if(distance < 100 && distance > maxDistance)
+            maxDistance = distance;
+    }
+    int numberSlices = std::ceil(maxDistance / m_params.m_slice);
+    std::vector<SF_CloudNormal::Ptr> clusters;
+    for(int i = 0; i < numberSlices; i++)
+    {
+        SF_CloudNormal::Ptr cluster(new SF_CloudNormal);
+        clusters.push_back(cluster);
+    }
+    int index = 0;
+    for(auto distance : distances)
+    {
+        if(distance < 100)
+        {
+            int indexCluster = std::max(0,(int)std::ceil(distance / m_params.m_slice)-1);
+            clusters[indexCluster]->push_back(cloud->points[index]);
+            maxDistance = distance;
+        }
+        index++;
+    }
+    return clusters;
+}
+
+std::vector<std::vector<SF_CloudNormal::Ptr> > SF_DijkstraLightRecursive::clusterClusters(std::vector<SF_CloudNormal::Ptr> &clusters)
+{
+    std::vector<std::vector<SF_CloudNormal::Ptr> > clusterClusters;
+    for(auto cluster: clusters)
+    {
+        pcl::search::KdTree<SF_PointNormal>::Ptr tree (new pcl::search::KdTree<SF_PointNormal>);
+        tree->setInputCloud (cluster);
+
+        std::vector<pcl::PointIndices> clusterIndices;
+        pcl::EuclideanClusterExtraction<SF_PointNormal> ec;
+        ec.setClusterTolerance (m_params.m_clusterSlize);
+        ec.setMinClusterSize (1);
+        ec.setMaxClusterSize (25000);
+        ec.setSearchMethod (tree);
+        ec.setInputCloud (cluster);
+        ec.extract (clusterIndices);
+        std::vector<SF_CloudNormal::Ptr> subClusters;
+          for (std::vector<pcl::PointIndices>::const_iterator it = clusterIndices.begin (); it != clusterIndices.end (); ++it)
+          {
+            SF_CloudNormal::Ptr cloudCluster (new SF_CloudNormal);
+            for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); ++pit)
+              cloudCluster->points.push_back (cluster->points[*pit]); //*
+            cloudCluster->width = cloudCluster->points.size ();
+            cloudCluster->height = 1;
+            cloudCluster->is_dense = true;
+            subClusters.push_back(cloudCluster);
+          }
+          clusterClusters.push_back(subClusters);
+
+    }
+    return clusterClusters;
+}
+
+std::vector<std::vector<SF_PointNormal> > SF_DijkstraLightRecursive::centerOfMass(std::vector<std::vector<SF_CloudNormal::Ptr> > &clusterClusters)
+{
+    std::vector<std::vector<SF_PointNormal> > result;
+    for(int i = 0; i < clusterClusters.size(); i++)
+    {
+        std::vector<SF_CloudNormal::Ptr> clusters = clusterClusters[i];
+        std::vector<SF_PointNormal> coms;
+        for(auto cloud :clusters)
+        {
+            SF_PointNormal com;
+            com.x = 0;
+            com.y = 0;
+            com.z = 0;
+            for(auto point : cloud->points)
+            {
+                com.x = com.x + point.x;
+                com.y = com.y + point.y;
+                com.z = com.z + point.z;
+            }
+            com.x = com.x/cloud->points.size();
+            com.y = com.y/cloud->points.size();
+            com.z = com.z/cloud->points.size();
+            coms.push_back(com);
+        }
+        result.push_back(coms);
+    }
+    return result;
 }

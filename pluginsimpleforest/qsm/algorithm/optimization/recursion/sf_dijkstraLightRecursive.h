@@ -52,6 +52,9 @@ class SF_DijkstraLightRecursive
     Eigen::Vector3f cloudVector(SF_CloudNormal::Ptr& cloud, const size_t minIndex, const size_t maxIndex);
     Eigen::Vector3d translateCloud(SF_CloudNormal::Ptr& cloud, const size_t index);
     void initializeKdTree();
+    std::vector<SF_CloudNormal::Ptr> distanceClusters(SF_CloudNormal::Ptr cloud, std::vector<float> distances);
+    std::vector<std::vector<SF_CloudNormal::Ptr>> clusterClusters(std::vector<SF_CloudNormal::Ptr> & clusters);
+    std::vector<std::vector<SF_PointNormal>> centerOfMass(std::vector<std::vector<SF_CloudNormal::Ptr> > &clusterClusters);
 
   public:
     SF_DijkstraLightRecursive();

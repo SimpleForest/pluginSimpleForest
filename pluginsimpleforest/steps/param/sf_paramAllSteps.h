@@ -531,6 +531,8 @@ struct SF_ParamSpherefollowingRecursive : public SF_ParamSpherefollowingBasic<Po
   double m_minPercentage = 0.01;
   double m_maxPercentage = 1;
   double m_clusterDownScale = 0.05;
+  double m_slice = 0.1;
+  double m_clusterSlize = 0.1;
 };
 
 template<typename PointType>
