@@ -66,6 +66,7 @@ class SF_Dijkstra
 {
 private:
   float _maxDistance;
+  bool m_useFixDistance = false;
 
   Heap _priorityQueue;
   std::vector<Heap::handle_type> _handle;
@@ -89,8 +90,8 @@ private:
 public:
   SF_Dijkstra(pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudIn,
               pcl::PointCloud<pcl::PointXYZINormal>::Ptr cloudInSeeds,
-              float range);
-  SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds, float range);
+              float range, bool useFixedDistance = false);
+  SF_Dijkstra(pcl::PointCloud<pcl::PointXYZI>::Ptr cloudIn, pcl::PointCloud<pcl::PointXYZI>::Ptr cloudInSeeds, float range, bool useFixedDistance = false);
   std::vector<float> getDistances() const;
   float getMaxDistance() const;
   std::vector<int> getParentIndices() const;

@@ -26,50 +26,50 @@
 
 *****************************************************************************/
 
-#include "sf_stepSpherefollowingRecursive.h"
+#include "sf_stepDijkstraLightRecursive.h"
 
-#include "sf_stepSpherefollowingRecursiveAdapter.h"
+#include "sf_stepDijkstraLightRecursiveAdapter.h"
 #include "steps/item/sf_spherefollowing_parameters_item.h"
 
 #include <QtConcurrent/QtConcurrent>
 
 #include <ct_itemdrawable/ct_cylinder.h>
 
-SF_StepSphereFollowingRecursive::SF_StepSphereFollowingRecursive(CT_StepInitializeData& dataInit)
+SF_StepDijkstraLightRecursive::SF_StepDijkstraLightRecursive(CT_StepInitializeData& dataInit)
   : SF_StepSpherefollowingBasic(dataInit)
 {}
 
-SF_StepSphereFollowingRecursive::~SF_StepSphereFollowingRecursive() {}
+SF_StepDijkstraLightRecursive::~SF_StepDijkstraLightRecursive() {}
 
 QString
-SF_StepSphereFollowingRecursive::getStepDescription() const
+SF_StepDijkstraLightRecursive::getStepDescription() const
 {
-  return tr("SphereFollowing Recursive");
+  return tr("SphereFollowing Dijkstra light Recursive");
 }
 
 QString
-SF_StepSphereFollowingRecursive::getStepDetailledDescription() const
+SF_StepDijkstraLightRecursive::getStepDetailledDescription() const
 {
   return tr("First from an input cloud and an input qsm unfitted points are estimated."
             " Those points are clustered. Each cluster large enough gets processed with the"
-            " Spherefollowing routine. This produces a sub qsm representing a before not fitted"
-            " branch. This subqsm is attached to the input qsm.");
+            " dijkstra algorthim routine after being downscaled. The Dijkstra pathes are"
+            " used as tree skeleton with an hardcoded diameter.");
 }
 
 QString
-SF_StepSphereFollowingRecursive::getStepURL() const
+SF_StepDijkstraLightRecursive::getStepURL() const
 {
   return tr("http://simpleforest.org/");
 }
 
 CT_VirtualAbstractStep*
-SF_StepSphereFollowingRecursive::createNewInstance(CT_StepInitializeData& dataInit)
+SF_StepDijkstraLightRecursive::createNewInstance(CT_StepInitializeData& dataInit)
 {
-  return new SF_StepSphereFollowingRecursive(dataInit);
+  return new SF_StepDijkstraLightRecursive(dataInit);
 }
 
 QStringList
-SF_StepSphereFollowingRecursive::getStepRISCitations() const
+SF_StepDijkstraLightRecursive::getStepRISCitations() const
 {
   QStringList _risCitationList;
   _risCitationList.append(getRISCitationSimpleTree());
@@ -79,7 +79,7 @@ SF_StepSphereFollowingRecursive::getStepRISCitations() const
 }
 
 void
-SF_StepSphereFollowingRecursive::createPreConfigurationDialog()
+SF_StepDijkstraLightRecursive::createPreConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPreConfigurationDialog();
   configDialog->addBool("Uncheck to deactivate parameterization possibilities "
@@ -94,7 +94,7 @@ SF_StepSphereFollowingRecursive::createPreConfigurationDialog()
 }
 
 void
-SF_StepSphereFollowingRecursive::configRecursion(CT_StepConfigurableDialog* configDialog)
+SF_StepDijkstraLightRecursive::configRecursion(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addText("<b>Recusion, see (Hackenberg et al <b>2014</b> - section 4.5. Imperfect Point Clouds):");
   configDialog->addDouble("All points of the input cloud with a [<em><b>point to model distance</b></em>] larger ",
@@ -111,33 +111,44 @@ SF_StepSphereFollowingRecursive::configRecursion(CT_StepConfigurableDialog* conf
                           2,
                           m_clusteringDistance);
   configDialog->addDouble("Each cluster larger than a "
-                          "[<em><b>percentage</b></em>]  ",
+                          "[<em><b>min percentage</b></em>]  ",
                           " (%) of the input cloud is further processed. ",
                           0.001,
                           1.0,
                           3,
                           m_minPercentage);
+  configDialog->addDouble("Each cluster smaller than a "
+                          "[<em><b>max percentage</b></em>]  ",
+                          " (%) of the input cloud is further processed. ",
+                          0.001,
+                          1.0,
+                          3,
+                          m_maxPercentage);
+  configDialog->addDouble("Each cluster is then downscaled with a "
+                          "[<em><b>cell width</b></em>]  ",
+                          " (m). ",
+                          0.01,
+                          0.2,
+                          2,
+                          m_clusterDownScale);
   configDialog->addEmpty();
 }
 
 void
-SF_StepSphereFollowingRecursive::createPostConfigurationDialog()
+SF_StepDijkstraLightRecursive::createPostConfigurationDialog()
 {
   CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
   addOutputFormat(configDialog);
   configRecursion(configDialog);
   configDialogGuruAddPreProcessing(configDialog);
-  configDialogAddSphereFollowingOptimizableParameters(configDialog);
-  configDialogGuruAddGridSearchCloudToModelDistance(configDialog);
-  configDialogAddSphereFollowingHyperParameters(configDialog);
 }
 
 void
-SF_StepSphereFollowingRecursive::createOutResultModelListProtected()
+SF_StepDijkstraLightRecursive::createOutResultModelListProtected()
 {
   CT_OutResultModelGroupToCopyPossibilities* resModelw = createNewOutResultModelToCopy(DEF_IN_RESULT2);
   if (resModelw != NULL) {
-    QString name = tr("QSM sphereFollowing recursion ");
+    QString name = tr("QSM dijkstra light recursion ");
     QString sfCylinders = name;
     sfCylinders.append(tr("SF QSM plugin internal"));
     addQSMToOutResult(resModelw, name, QString::fromUtf8(DEF_IN_GRP_CLUSTER2));
@@ -146,7 +157,7 @@ SF_StepSphereFollowingRecursive::createOutResultModelListProtected()
 }
 
 void
-SF_StepSphereFollowingRecursive::createInResultModelListProtected()
+SF_StepDijkstraLightRecursive::createInResultModelListProtected()
 {
   CT_InResultModelGroupToCopy* resModel2 = createNewInResultModelForCopy(DEF_IN_RESULT2, tr("Second group result"));
   resModel2->setZeroOrMoreRootGroup();
@@ -158,7 +169,7 @@ SF_StepSphereFollowingRecursive::createInResultModelListProtected()
                            CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel2->addItemModel(DEF_IN_GRP_CLUSTER2, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("internal QSM"));
 
-  CT_InResultModelGroup* resModel = createNewInResultModel(DEF_IN_RESULT, tr("Input Result QSM SphereFollowing"));
+  CT_InResultModelGroup* resModel = createNewInResultModel(DEF_IN_RESULT, tr("Input Result QSM"));
   resModel->setZeroOrMoreRootGroup();
   resModel->addGroupModel("",
                           DEF_IN_GRP_CLUSTER,
@@ -166,29 +177,29 @@ SF_StepSphereFollowingRecursive::createInResultModelListProtected()
                           tr("Tree Group"),
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Input Cloud QSM SphereFollowing"));
+  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Input Cloud QSM"));
 }
 
 void
-SF_StepSphereFollowingRecursive::createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog)
+SF_StepDijkstraLightRecursive::createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog)
 {
   configDialog->addEmpty();
-  configDialog->addText(QObject::tr("For this step please cite in addition (section 4.5. Imperfect Point Clouds):"),
-                        "Hackenberg, J.; Morhart, C.; Sheppard, J.; Spiecker, H.; Disney, M.");
-  configDialog->addText("",
-                        "<em>Highly Accurate Tree Models Derived from Terrestrial Laser Scan "
-                        "Data: A Method Description.</em>");
-  configDialog->addText("", "Forests <b>2014</b>, 5, 1069-1105.");
+  configDialog->addText(
+    QObject::tr("For this step please cite in addition the early method using Dijkstra for predicting tree skeleton:"),
+    "Xu, H.; Gossett, N.; Chen B.");
+  configDialog->addText("(section 5.1 Tree Allometry)", "<em>Knowledge and heuristic-based modeling of laser-scanned trees.</em>");
+  configDialog->addText("", "ACM Transactions on Graphics <b>2007</b>, 19-es.");
+  configDialog->addEmpty();
   configDialog->addEmpty();
 }
 
 void
-SF_StepSphereFollowingRecursive::compute()
+SF_StepDijkstraLightRecursive::compute()
 {
   CT_ResultGroup* outResult = getInputResults().at(1);
   createParamList(outResult);
   writeLogger();
-  QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingRecursiveAdapter());
+  QFuture<void> future = QtConcurrent::map(_paramList, SF_SpherefollowingDijkstraLightRecursiveAdapter());
   while (!future.isFinished()) {
     setProgressByCounter(10.0f, 85.0f);
   }
@@ -197,22 +208,8 @@ SF_StepSphereFollowingRecursive::compute()
   _paramList.clear();
 }
 
-QList<SF_ParamQSM<SF_PointNormal>>
-SF_StepSphereFollowingRecursive::paramList()
-{
-  QList<SF_ParamQSM<SF_PointNormal>> paramList;
-  std::for_each(_paramList.begin(), _paramList.end(), [&paramList](SF_ParamSpherefollowingRecursive<SF_PointNormal>& params) {
-    SF_ParamQSM<SF_PointNormal> param;
-    param._qsm = params._qsm;
-    param._translation = params._translation;
-    param._colors = params._colors;
-    paramList.push_back(param);
-  });
-  return paramList;
-}
-
 void
-SF_StepSphereFollowingRecursive::createParamList(CT_ResultGroup* outResult)
+SF_StepDijkstraLightRecursive::createParamList(CT_ResultGroup* outResult)
 {
   SF_SphereFollowingParameters sphereFollowingParams;
   SF_SphereFollowingOptimizationParameters sfOptimizationParameters;
@@ -246,13 +243,15 @@ SF_StepSphereFollowingRecursive::createParamList(CT_ResultGroup* outResult)
     const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
       this, DEF_IN_CLOUD_SEED);
     SF_ParamSpherefollowingRecursive<SF_PointNormal> param;
+    param.m_maxPercentage = m_maxPercentage;
+    param.m_clusterDownScale = m_clusterDownScale;
     param.m_clusteringDistance = m_clusteringDistance;
     param.m_minPercentage = m_minPercentage;
     param.m_unfittedDistance = m_unfittedDistance;
     param._stepProgress = _stepProgress;
     param._distanceParams = distanceParams;
     param._sphereFollowingParams = sphereFollowingParams;
-    param._voxelSize = m_clusteringDistance/3;
+    param._voxelSize = m_clusteringDistance;
     param._clusteringDistance = _PP_euclideanClusteringDistance;
     param.m_numClstrs = _CMD_numClstrs;
     param._modelCloudError = 1337;
@@ -262,17 +261,13 @@ SF_StepSphereFollowingRecursive::createParamList(CT_ResultGroup* outResult)
     param._grpCpyGrp = group;
     _paramList.append(param);
   }
-  if (paramList().empty()) {
-    std::cout << "SF_StepSphereFollowingRecursive No cloud received" << std::endl;
-    return;
-  }
   CT_ResultGroup* outResult2 = getInputResults().at(0);
   CT_ResultGroupIterator outResIt2(outResult2, this, DEF_IN_GRP_CLUSTER2);
   size_t index = 0;
   while (!isStopped() && outResIt2.hasNext()) {
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt2.next();
     if (index > static_cast<size_t>(_paramList.size())) {
-      std::cout << "SF_StepSphereFollowingRecursive More trees than clouds" << std::endl;
+      std::cout << "SF_StepDijkstraLightRecursive More trees than clouds" << std::endl;
       return;
     }
     index = std::min(index, static_cast<size_t>(_paramList.size()));

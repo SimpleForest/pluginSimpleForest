@@ -26,20 +26,17 @@
 
 *****************************************************************************/
 
-#ifndef SF_STEPQSMMEDIANFILTER_H
-#define SF_STEPQSMMEDIANFILTER_H
+#ifndef SF_STEPDIJKSTRALIGHTRECURSIVE_H
+#define SF_STEPDIJKSTRALIGHTRECURSIVE_H
 
-#include "steps/qsm/sf_abstractStepQSM.h"
+#include "steps/qsm/modelling/sf_stepSpherefollowingBasic.h"
 
-#include <QString>
-
-class SF_StepQSMMedianFilter : public SF_AbstractStepQSM
+class SF_StepDijkstraLightRecursive : public SF_StepSpherefollowingBasic
 {
   Q_OBJECT
-
 public:
-  SF_StepQSMMedianFilter(CT_StepInitializeData& dataInit);
-  ~SF_StepQSMMedianFilter();
+  SF_StepDijkstraLightRecursive(CT_StepInitializeData& dataInit);
+  ~SF_StepDijkstraLightRecursive();
   QString getStepDescription() const;
   QString getStepDetailledDescription() const;
   QString getStepURL() const;
@@ -49,22 +46,25 @@ public:
 protected:
   void createInResultModelListProtected();
   void createOutResultModelListProtected();
-  void adaptParametersToExpertLevel() {}
-  virtual void createPreConfigurationDialog() {}
+  void createPostConfigurationDialogCitationSecond(CT_StepConfigurableDialog* configDialog);
+  void createParamList(CT_ResultGroup* out_result);
+  virtual void createPreConfigurationDialog();
   virtual void createPostConfigurationDialog();
+
+  void configRecursion(CT_StepConfigurableDialog* configDialog);
+
   void compute();
-  QList<SF_ParamQSMedian<SF_PointNormal>> _paramList;
+  QList<SF_ParamSpherefollowingRecursive<SF_PointNormal>> _paramList;
 
-private:
-  CT_AutoRenameModels m_outCloudItem;
-  CT_AutoRenameModels _outCylinderGroup;
-  CT_AutoRenameModels _outCylinders;
-  CT_AutoRenameModels _outSFQSM;
-
-  double m_percentage = 0.15;
+  double m_clusteringDistance = 0.03;
+  double m_unfittedDistance = 0.1;
+  double m_minPercentage = 0.001;
+  double m_maxPercentage = 0.02;
+  double m_clusterDownScale = 0.05; //TODO
 
   virtual void createPostConfigurationDialogBeginner(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
   virtual void createPostConfigurationDialogExpert(CT_StepConfigurableDialog* configDialog) { configDialog = nullptr; }
 };
 
-#endif // SF_STEPQSMMEDIANFILTER_H
+
+#endif // SF_STEPDIJKSTRALIGHTRECURSIVE_H

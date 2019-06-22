@@ -36,6 +36,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     math/fit/power/sf_fitgnpower.hpp \
     qsm/algorithm/distance/sf_extractFittedPoints.h \
     qsm/algorithm/distance/sf_extractFittedPoints.hpp \
+    qsm/algorithm/optimization/recursion/sf_dijkstraLightRecursive.h \
     qsm/algorithm/optimization/recursion/sf_spherefollowingRecursive.h \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.h \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.h \
@@ -102,6 +103,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/item/sf_qsm_item.h \
     steps/item/sf_spherefollowing_parameters_item.h \
     steps/qsm/export/sf_stepExportQSMList.h \
+    steps/qsm/modelling/sf_stepDijkstraLightRecursive.h \
+    steps/qsm/modelling/sf_stepDijkstraLightRecursiveAdapter.h \
     steps/qsm/postprocessing/sf_stepQSMAllometricCorrection.h \
     steps/qsm/postprocessing/sf_stepQSMAllometricCorrectionAdapter.h \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h \
@@ -191,6 +194,7 @@ SOURCES += \
     file/export/qsm/sf_exportQSM.cpp \
     file/export/sf_abstractExport.cpp \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.cpp \
+    qsm/algorithm/optimization/recursion/sf_dijkstraLightRecursive.cpp \
     qsm/algorithm/optimization/recursion/sf_spherefollowingRecursive.cpp \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.cpp \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.cpp \
@@ -215,6 +219,7 @@ SOURCES += \
     steps/item/sf_qsm_item.cpp \
     steps/item/sf_spherefollowing_parameters_item.cpp \
     steps/qsm/export/sf_stepExportQSMList.cpp \
+    steps/qsm/modelling/sf_stepDijkstraLightRecursive.cpp \
     steps/qsm/postprocessing/sf_stepQSMAllometricCorrection.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingAdvanced.cpp \
     steps/qsm/modelling/sf_stepSpherefollowingBasic.cpp \

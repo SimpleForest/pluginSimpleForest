@@ -46,7 +46,8 @@ enum FittingType
   ALLOMETRICGROWTHLENGTH,
   CORRECTBRANCHJUNCTIONS,
   MINRADIUS,
-  CONNECTQSM
+  CONNECTQSM,
+  DIJKSTRALIGHT
 };
 
 class SF_ModelAbstractSegment;
@@ -55,7 +56,7 @@ class Sf_ModelAbstractBuildingbrick : public std::enable_shared_from_this<Sf_Mod
 {
 protected:
   size_t _ID;
-  size_t _indexVector;
+  size_t _indexVector; //TODO solve this
   std::weak_ptr<SF_ModelAbstractSegment> _segment;
   Eigen::Vector3d _start;
   Eigen::Vector3d _end;

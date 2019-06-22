@@ -352,6 +352,7 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
     paramAdvanced._grpCpyGrp = group;
     paramAdvanced._iterations = _NM_iterations;
     paramAdvanced._fitQuality = _NM_minSize;
+    paramAdvanced._distanceParams.m_minAngle = 35;
     _paramList.push_back(paramAdvanced);
   }
   CT_ResultGroup* outResult2 = getInputResults().at(1);

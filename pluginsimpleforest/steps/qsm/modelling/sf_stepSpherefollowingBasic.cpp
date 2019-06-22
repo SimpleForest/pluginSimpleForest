@@ -489,6 +489,7 @@ SF_StepSpherefollowingBasic::createParamList(CT_ResultGroup* outResult)
   distanceParams._k = _CMD_k;
   distanceParams._cropDistance = _CMD_cropDistance;
   distanceParams._inlierDistance = _CMD_inlierDistance;
+  distanceParams.m_minAngle = 90;
 
   adaptParametersToExpertLevel();
   CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);

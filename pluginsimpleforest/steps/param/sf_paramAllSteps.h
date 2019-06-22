@@ -529,6 +529,8 @@ struct SF_ParamSpherefollowingRecursive : public SF_ParamSpherefollowingBasic<Po
   double m_clusteringDistance = 0.05;
   double m_unfittedDistance = 0.05;
   double m_minPercentage = 0.01;
+  double m_maxPercentage = 1;
+  double m_clusterDownScale = 0.05;
 };
 
 template<typename PointType>

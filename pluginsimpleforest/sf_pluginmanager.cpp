@@ -21,6 +21,7 @@
 #include "steps/qsm/modelling/sf_stepSpherefollowingAdvanced.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingBasic.h"
 #include "steps/qsm/modelling/sf_stepSpherefollowingRecursive.h"
+#include "steps/qsm/modelling/sf_stepDijkstraLightRecursive.h"
 #include "steps/qsm/postprocessing/sf_stepQSMAllometricCorrection.h"
 #include "steps/qsm/postprocessing/sf_stepQSMCorrectBranchJunctions.h"
 #include "steps/qsm/postprocessing/sf_stepQSMMedianFilter.h"
@@ -91,6 +92,7 @@ SF_PluginManager::loadGenericsStep()
   addNewGeometricalShapesStep<SF_StepQSMCorrectBranchJunctions>("QSM");
   addNewGeometricalShapesStep<SF_StepQSMRefitCylinders>("QSM");
   addNewGeometricalShapesStep<SF_StepQSMMedianFilter>("QSM");
+  addNewGeometricalShapesStep<SF_StepDijkstraLightRecursive>("QSM");
   return true;
 }
 
