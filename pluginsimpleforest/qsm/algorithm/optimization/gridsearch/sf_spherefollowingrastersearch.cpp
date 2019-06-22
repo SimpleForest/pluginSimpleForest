@@ -23,7 +23,10 @@ SF_SphereFollowingRasterSearch::compute()
       params._qsm = sphereFollowing.getQSM();
       params._modelCloudError = std::numeric_limits<float>::max();
     }
-    m_params._stepProgress->fireComputation();
+    if(m_fire)
+    {
+        m_params._stepProgress->fireComputation();
+    }
   });
   std::sort(paramVec.begin(),
             paramVec.end(),
@@ -49,6 +52,11 @@ std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>>
 SF_SphereFollowingRasterSearch::getParamVec() const
 {
   return m_paramVec;
+}
+
+void SF_SphereFollowingRasterSearch::setFire(bool fire)
+{
+    m_fire = fire;
 }
 
 std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>>

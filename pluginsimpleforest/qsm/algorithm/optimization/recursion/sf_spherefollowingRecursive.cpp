@@ -148,8 +148,10 @@ SF_SpherefollowingRecursive::processClusters(const std::vector<SF_CloudNormal::P
     SF_SphereFollowingRasterSearch sphereFollowing;
     SF_ParamSpherefollowingRecursive<SF_PointNormal> params = m_params;
     sphereFollowing.setParams(params);
+    sphereFollowing.setFire(false);
     sphereFollowing.setCloud(transformed);
     sphereFollowing.compute();
+    m_params._stepProgress->fireComputation();
     auto qsm = sphereFollowing.getParamVec()[0]._qsm;
     if (!qsm) {
       continue;

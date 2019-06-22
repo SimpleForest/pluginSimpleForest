@@ -41,8 +41,10 @@ public:
   void setParams(const SF_ParamSpherefollowingBasic<SF_PointNormal>& params);
   void setCloud(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr& cloud);
   std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> getParamVec() const;
+  void setFire(bool fire);
 
 private:
+  bool m_fire = true;
   SF_ParamSpherefollowingBasic<SF_PointNormal> m_params;
   pcl::PointCloud<pcl::PointXYZINormal>::Ptr m_cloud;
   std::vector<SF_ParamSpherefollowingBasic<SF_PointNormal>> m_paramVec;
