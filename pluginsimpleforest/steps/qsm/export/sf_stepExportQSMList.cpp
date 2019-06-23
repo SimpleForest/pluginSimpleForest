@@ -108,12 +108,16 @@ SF_StepExportQSMList::createInResultModelListProtected()
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
   resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_QSM, SF_QSM_Item::staticGetType(), tr("internal QSM"));
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("QSM cloud"));
 
   CT_InResultModelGroup* resModelName = createNewInResultModel(DEF_IN_RESULT2, tr("Input for name"), "", true);
   resModelName->setZeroOrMoreRootGroup();
   resModelName->addGroupModel("", DEF_IN_GRP_CLUSTER3, CT_AbstractItemGroup::staticGetType(), tr("Name Group"));
   resModelName->addItemModel(DEF_IN_GRP_CLUSTER3, DEF_IN_NAME, CT_FileHeader::staticGetType(), tr("Name"));
+
+  CT_InResultModelGroup* resModelName2 = createNewInResultModel(DEF_IN_RESULT3, tr("Input for name"), "", true);
+  resModelName2->setZeroOrMoreRootGroup();
+  resModelName2->addGroupModel("", DEF_IN_GRP_CLUSTER2, CT_AbstractItemGroup::staticGetType(), tr("Name Group"));
+  resModelName2->addItemModel(DEF_IN_GRP_CLUSTER2, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("QSM cloud"));
 }
 
 void
@@ -137,6 +141,17 @@ SF_StepExportQSMList::compute()
     cropedFilename.append("_");
     names.push_back(cropedFilename);
   }
+
+  std::vector<const CT_AbstractItemDrawableWithPointCloud*> cloudCTs;
+  CT_ResultGroup* outResultCloud = getInputResults().at(2);
+  CT_ResultGroupIterator outResItCloud2(outResultCloud, this, DEF_IN_GRP_CLUSTER2);
+  while (!isStopped() && outResItCloud2.hasNext()) {
+    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResItCloud2.next();
+    const CT_AbstractItemDrawableWithPointCloud* ctCloud = (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(
+      this, DEF_IN_CLOUD_SEED);
+    cloudCTs.push_back(ctCloud);
+  }
+
   CT_ResultGroup* outResult = outResultList.at(0);
 
   CT_ResultGroupIterator outResItCloud(outResult, this, DEF_IN_GRP_CLUSTER);
@@ -148,14 +163,14 @@ SF_StepExportQSMList::compute()
   size_t index = 0;
   if (m_filePath.size() > 0) {
     while (!isStopped() && outResItCloud.hasNext()) {
+      CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResItCloud.next();
       index = std::min(index, names.size() - 1);
       QString name = names.at(index);
+      const CT_AbstractItemDrawableWithPointCloud* ctCloud = cloudCTs[index];
       index++;
-      CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResItCloud.next();
       const SF_QSM_Item* QSM_Item = (const SF_QSM_Item*)group->firstItemByINModelName(this, DEF_IN_QSM);
       auto qsm = QSM_Item->getQsm();
-      const CT_AbstractItemDrawableWithPointCloud* ctCloud =
-        (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
+
       Sf_ConverterCTToPCL<SF_PointNormal> converter;
       converter.setItemCpyCloudInDeprecated(ctCloud);
       if (hasTranslation) {

@@ -99,10 +99,13 @@ public:
       recursion.setCloud(cloudDownscaled);
       recursion.setQsm(params._qsm);
     }
-    recursion.compute();
-    {
-      QMutexLocker m1(&*mMutex);
-      params._qsm = recursion.getQsm();
+    try {
+      recursion.compute();
+      {
+        QMutexLocker m1(&*mMutex);
+        params._qsm = recursion.getQsm();
+      }
+    } catch (...) {
     }
 
     {

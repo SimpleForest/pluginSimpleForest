@@ -145,6 +145,12 @@ SF_DijkstraLightRecursive::processClusters(const std::vector<SF_CloudNormal::Ptr
     sor.filter(*downScaled);
     cluster = downScaled;
 
+    bool found = false;
+    if (cluster->points.size() < 5) {
+      found = true;
+      continue;
+    }
+
     size_t minIndex = 0;
     size_t maxIndex = 0;
     Eigen::Vector3d closestQSMPoint;

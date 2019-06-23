@@ -31,13 +31,9 @@
 #include "pcl/cloud/segmentation/dijkstra/sf_dijkstra.h"
 #include "steps/visualization/sf_colorfactory.h"
 #include <cmath>
-
-template<typename PointType>
-std::vector<typename pcl::PointCloud<PointType>::Ptr>
-SF_ClusterCloudByQSM<PointType>::clusters() const
-{
-  return m_clusters;
-}
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/kdtree/kdtree.h>
+#include <pcl/segmentation/extract_clusters.h>
 
 template<typename PointType>
 SF_ClusterCloudByQSM<PointType>::SF_ClusterCloudByQSM()
@@ -124,81 +120,95 @@ template<typename PointType>
 void
 SF_ClusterCloudByQSM<PointType>::compute()
 {
-  Sf_CloudToModelDistance<PointType> cmd(m_qsm, m_cloud, m_paramsDistance);
-  std::vector<double> growthVolumina = cmd.distances();
-  typename pcl::PointCloud<PointType>::Ptr seed = seedCloud();
-  SF_Dijkstra dijkstra(m_cloud, seed, 0.03);
-  std::vector<int> parentIndices = dijkstra.getParentIndices();
-  growthVolumina = filteredDistances(growthVolumina, parentIndices);
-  std::vector<double> growthVoluminaSorted = growthVolumina;
-  std::sort(growthVoluminaSorted.begin(), growthVoluminaSorted.end());
-  std::vector<double> upperGrowthVolumina;
-  size_t sizeCluster = m_cloud->points.size() / m_numClstrs;
-  size_t upperBorder = 0;
-  upperGrowthVolumina.push_back(growthVoluminaSorted[upperBorder]);
-  for (size_t i = 0; i < m_numClstrs - 1; i++) {
-    upperBorder += sizeCluster;
-    upperBorder = std::min(upperBorder, std::max(static_cast<size_t>(1), growthVoluminaSorted.size()) - 1);
-    upperGrowthVolumina.push_back(growthVoluminaSorted[upperBorder]);
-  }
-  double logMin = std::log(-growthVoluminaSorted[growthVoluminaSorted.size() - 1]);
-  double logMax = std::log(-growthVoluminaSorted[0]);
-  CT_ColorCloudStdVector* colorsLogGrowthVolume = new CT_ColorCloudStdVector(m_cloud->points.size());
-  CT_ColorCloudStdVector* colorsCluster = new CT_ColorCloudStdVector(m_cloud->points.size());
   CT_StandardCloudStdVectorT<int>* clusterID = new CT_StandardCloudStdVectorT<int>(m_cloud->points.size());
-  m_clusters.clear();
-  for (size_t i = 0; i < m_numClstrs; i++) {
-    m_clusters.push_back(typename pcl::PointCloud<PointType>::Ptr(new typename pcl::PointCloud<PointType>));
-  }
-  for (size_t i = 0; i < m_cloud->points.size(); i++) {
-    double growthVolume = growthVolumina[i];
-    double logGrowthVolume = std::log(-growthVolume);
+
+  auto cloudCpy = m_cloud;
+  try {
+    typename pcl::PointCloud<PointType>::Ptr cloudDownscaled(new pcl::PointCloud<PointType>);
+    pcl::VoxelGrid<PointType> sor;
+    sor.setInputCloud(m_cloud);
     {
-      CT_Color& col = colorsLogGrowthVolume->colorAt(i);
-      float perc = (logGrowthVolume - logMin) / (logMax - logMin);
-      col.r() = (std::abs(255 * perc));
-      col.g() = (std::abs(255 - 255 * perc));
-      col.b() = (0);
+      sor.setLeafSize(0.02, 0.02, 0.02);
     }
-    {
-      CT_Color& col = colorsCluster->colorAt(i);
-      for (size_t j = m_numClstrs - 1; j >= 0; j--) {
-        if (growthVolume >= upperGrowthVolumina[j]) {
-          switch (j) {
-            case 0:
-              col = SF_ColorFactory::getColor(SF_ColorFactory::Color::GREEN);
-              (*clusterID)[i] = m_numClstrs - 1 - 0;
-              break;
-            case 1:
-              col = SF_ColorFactory::getColor(SF_ColorFactory::Color::YELLOW);
-              (*clusterID)[i] = m_numClstrs - 1 - 1;
-              break;
-            case 2:
-              col = SF_ColorFactory::getColor(SF_ColorFactory::Color::BLUE);
-              (*clusterID)[i] = m_numClstrs - 1 - 2;
-              break;
-            case 3:
-              col = SF_ColorFactory::getColor(SF_ColorFactory::Color::CYAN);
-              (*clusterID)[i] = m_numClstrs - 1 - 3;
-              break;
-            case 4:
-              col = SF_ColorFactory::getColor(SF_ColorFactory::Color::VIOLET);
-              (*clusterID)[i] = m_numClstrs - 1 - 4;
-              break;
-            case 5:
-              col = SF_ColorFactory::getColor(SF_ColorFactory::Color::RED);
-              (*clusterID)[i] = m_numClstrs - 1 - 5;
-              break;
-            default:
-              break;
+    sor.filter(*cloudDownscaled);
+    m_cloud = cloudDownscaled;
+
+    Sf_CloudToModelDistance<PointType> cmd(m_qsm, m_cloud, m_paramsDistance);
+    std::vector<double> growthVolumina = cmd.distances();
+
+    try {
+      typename pcl::PointCloud<PointType>::Ptr seed = seedCloud();
+      SF_Dijkstra dijkstra(m_cloud, seed, 0.03);
+      std::vector<int> parentIndices = dijkstra.getParentIndices();
+      growthVolumina = filteredDistances(growthVolumina, parentIndices);
+    } catch (...) {
+      std::cout << "DIJKSTRA FAILED" << std::endl;
+      std::cout << "growthVolumina size " << growthVolumina.size() << std::endl;
+    }
+
+    pcl::KdTreeFLANN<PointType> kdtree;
+    kdtree.setInputCloud(cloudDownscaled);
+    std::vector<double> growthVoluminaTransfered;
+    for (auto searchPoint : cloudCpy->points) {
+      int K = 1;
+      std::vector<int> pointIdxNKNSearch(K);
+      std::vector<float> pointNKNSquaredDistance(K);
+      if (kdtree.nearestKSearch(searchPoint, K, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
+        growthVoluminaTransfered.push_back(growthVolumina[pointIdxNKNSearch[0]]);
+      } else {
+        growthVoluminaTransfered.push_back(0.001);
+      }
+    }
+    m_cloud = cloudCpy;
+    growthVolumina = growthVoluminaTransfered;
+    std::vector<double> growthVoluminaSorted = growthVolumina;
+    std::sort(growthVoluminaSorted.begin(), growthVoluminaSorted.end());
+    std::vector<double> upperGrowthVolumina;
+    size_t sizeCluster = m_cloud->points.size() / m_numClstrs;
+    size_t upperBorder = 0;
+    upperGrowthVolumina.push_back(growthVoluminaSorted[upperBorder]);
+    for (size_t i = 0; i < m_numClstrs - 1; i++) {
+      upperBorder += sizeCluster;
+      upperBorder = std::min(upperBorder, std::max(static_cast<size_t>(1), growthVoluminaSorted.size()) - 1);
+      upperGrowthVolumina.push_back(growthVoluminaSorted[upperBorder]);
+    }
+    for (size_t i = 0; i < m_cloud->points.size(); i++) {
+      double growthVolume = growthVolumina[i];
+      {
+        for (size_t j = m_numClstrs - 1; j >= 0; j--) {
+          if (growthVolume >= upperGrowthVolumina[j]) {
+            switch (j) {
+              case 0:
+                (*clusterID)[i] = m_numClstrs - 1 - 0;
+                break;
+              case 1:
+                (*clusterID)[i] = m_numClstrs - 1 - 1;
+                break;
+              case 2:
+                (*clusterID)[i] = m_numClstrs - 1 - 2;
+                break;
+              case 3:
+                (*clusterID)[i] = m_numClstrs - 1 - 3;
+                break;
+              case 4:
+                (*clusterID)[i] = m_numClstrs - 1 - 4;
+                break;
+              case 5:
+                (*clusterID)[i] = m_numClstrs - 1 - 5;
+                break;
+              default:
+                break;
+            }
+            break;
           }
-          m_clusters[j]->points.push_back(m_cloud->points[i]);
-          break;
         }
       }
     }
+  } catch (...) {
+    m_cloud = cloudCpy;
+    for (size_t i = 0; i < m_cloud->points.size(); i++) {
+      (*clusterID)[i] = 0;
+    }
   }
-  m_params._colorsClusters = colorsCluster;
-  m_params._colorsGrowthVolume = colorsLogGrowthVolume;
   m_params._clusterIDs = clusterID;
 }

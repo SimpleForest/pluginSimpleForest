@@ -68,15 +68,6 @@ public:
       cloud = converter.cloudTranslated();
       params._qsm->translate(-translation);
     }
-    pcl::NormalEstimation<SF_PointNormal, SF_PointNormal> ne;
-    {
-      QMutexLocker m1(&*mMutex);
-      ne.setInputCloud(cloud);
-      pcl::search::KdTree<SF_PointNormal>::Ptr tree(new pcl::search::KdTree<SF_PointNormal>());
-      ne.setSearchMethod(tree);
-      ne.setRadiusSearch(0.03f);
-    }
-    ne.compute(*cloud);
     {
       QMutexLocker m1(&*mMutex);
       params._cloudIn = cloud;

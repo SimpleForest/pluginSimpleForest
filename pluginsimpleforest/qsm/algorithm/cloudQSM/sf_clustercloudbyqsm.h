@@ -41,7 +41,6 @@ class SF_ClusterCloudByQSM
   typename pcl::PointCloud<PointType>::Ptr m_cloud;
   typename pcl::PointCloud<PointType>::Ptr m_clustersCloud;
   size_t m_numClstrs;
-  std::vector<typename pcl::PointCloud<PointType>::Ptr> m_clusters;
   typename pcl::PointCloud<PointType>::Ptr m_cloudUnfitted;
   void initializeKdTree();
   typename pcl::KdTreeFLANN<PointType>::Ptr _kdtreeQSM;
@@ -53,7 +52,7 @@ class SF_ClusterCloudByQSM
 public:
   SF_ClusterCloudByQSM();
   void compute();
-  std::vector<typename pcl::PointCloud<PointType>::Ptr> clusters() const;
+  //  std::vector<typename pcl::PointCloud<PointType>::Ptr> clusters() const;
   void setParams(const SF_ParamSegmentTreeFromQSM<PointType>& params);
   SF_ParamSegmentTreeFromQSM<PointType> params() const;
 };

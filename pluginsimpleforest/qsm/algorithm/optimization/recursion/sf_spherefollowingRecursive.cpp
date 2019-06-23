@@ -121,58 +121,64 @@ void
 SF_SpherefollowingRecursive::processClusters(const std::vector<SF_CloudNormal::Ptr>& clusters)
 {
   for (SF_CloudNormal::Ptr cluster : clusters) {
-    size_t minIndex = 0;
-    size_t maxIndex = 0;
-    getMinMax(minIndex, maxIndex, cluster);
-    auto translation = translateCloud(cluster, minIndex);
-
-    Eigen::Vector3f zAxis(0, 0, 1);
-    Eigen::Vector3f cylinderAxisF = cloudVector(cluster, minIndex, maxIndex);
-    cylinderAxisF = cylinderAxisF.normalized();
-    Eigen::Vector3f rotationAxis = zAxis.cross(cylinderAxisF);
-    rotationAxis = rotationAxis.normalized();
-    float angle = std::acos(zAxis.dot(cylinderAxisF));
-
-    Eigen::Affine3f transform = Eigen::Affine3f::Identity();
-    transform.rotate(Eigen::AngleAxisf(angle, rotationAxis));
-    SF_CloudNormal::Ptr transformed(new SF_CloudNormal);
-    pcl::transformPointCloud(*cluster, *transformed, transform);
-
-    bool inverted = false;
-    if (transformed->points[maxIndex].z < transformed->points[minIndex].z) {
-      inverted = true;
-      for (auto point : transformed->points) {
-        point.z = -point.z;
-      }
-    }
-    SF_SphereFollowingRasterSearch sphereFollowing;
-    SF_ParamSpherefollowingRecursive<SF_PointNormal> params = m_params;
-    sphereFollowing.setParams(params);
-    sphereFollowing.setFire(false);
-    sphereFollowing.setCloud(transformed);
-    sphereFollowing.compute();
-    m_params._stepProgress->fireComputation();
-    auto qsm = sphereFollowing.getParamVec()[0]._qsm;
-    if (!qsm) {
+    if (cluster->points.size() < 10) {
       continue;
     }
-    if (inverted) {
-      auto bricks = qsm->getBuildingBricks();
-      for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick : bricks) {
-        auto start = brick->getStart();
-        auto end = brick->getEnd();
-        start[2] = -start[2];
-        end[2] = -end[2];
-        brick->setStartEndRadius(start, end, brick->getRadius(), brick->getFittingType());
+    try {
+      size_t minIndex = 0;
+      size_t maxIndex = 0;
+      getMinMax(minIndex, maxIndex, cluster);
+      auto translation = translateCloud(cluster, minIndex);
+
+      Eigen::Vector3f zAxis(0, 0, 1);
+      Eigen::Vector3f cylinderAxisF = cloudVector(cluster, minIndex, maxIndex);
+      cylinderAxisF = cylinderAxisF.normalized();
+      Eigen::Vector3f rotationAxis = zAxis.cross(cylinderAxisF);
+      rotationAxis = rotationAxis.normalized();
+      float angle = std::acos(zAxis.dot(cylinderAxisF));
+
+      Eigen::Affine3f transform = Eigen::Affine3f::Identity();
+      transform.rotate(Eigen::AngleAxisf(angle, rotationAxis));
+      SF_CloudNormal::Ptr transformed(new SF_CloudNormal);
+      pcl::transformPointCloud(*cluster, *transformed, transform);
+
+      bool inverted = false;
+      if (transformed->points[maxIndex].z < transformed->points[minIndex].z) {
+        inverted = true;
+        for (auto point : transformed->points) {
+          point.z = -point.z;
+        }
       }
+      SF_SphereFollowingRasterSearch sphereFollowing;
+      SF_ParamSpherefollowingRecursive<SF_PointNormal> params = m_params;
+      sphereFollowing.setParams(params);
+      sphereFollowing.setFire(false);
+      sphereFollowing.setCloud(transformed);
+      sphereFollowing.compute();
+      m_params._stepProgress->fireComputation();
+      auto qsm = sphereFollowing.getParamVec()[0]._qsm;
+      if (!qsm) {
+        continue;
+      }
+      if (inverted) {
+        auto bricks = qsm->getBuildingBricks();
+        for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick : bricks) {
+          auto start = brick->getStart();
+          auto end = brick->getEnd();
+          start[2] = -start[2];
+          end[2] = -end[2];
+          brick->setStartEndRadius(start, end, brick->getRadius(), brick->getFittingType());
+        }
+      }
+      qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME, 0.0001);
+      Eigen::Affine3f transform2 = Eigen::Affine3f::Identity();
+      transform2.rotate(Eigen::AngleAxisf(-angle, rotationAxis));
+      qsm->transform(transform2);
+      qsm->translate(translation);
+      qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
+      connectQSM(qsm);
+    } catch (...) {
     }
-    qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME, 0.0001);
-    Eigen::Affine3f transform2 = Eigen::Affine3f::Identity();
-    transform2.rotate(Eigen::AngleAxisf(-angle, rotationAxis));
-    qsm->transform(transform2);
-    qsm->translate(translation);
-    qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
-    connectQSM(qsm);
   }
 }
 

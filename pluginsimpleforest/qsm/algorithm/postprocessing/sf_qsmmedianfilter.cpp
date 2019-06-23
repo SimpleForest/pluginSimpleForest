@@ -52,17 +52,22 @@ SF_QSMMedianFilter::compute(std::shared_ptr<SF_ModelQSM> qsm)
     radii.push_back(brick->getRadius());
     auto current = brick;
     for (int i = 0; i < m_filterSize; i++) {
-      if (brick->getParent()) {
-        current = brick->getParent();
-        radii.push_back(current->getRadius());
+      auto parent = brick->getParent();
+      if (parent && parent->getFittingType() != FittingType::DIJKSTRALIGHT && parent->getFittingType() != FittingType::CONNECTQSM) {
+        current = parent;
       }
+      radii.push_back(current->getRadius());
     }
     current = brick;
     for (int i = 0; i < m_filterSize; i++) {
       if (!brick->getChildren().empty()) {
-        current = brick->getChildren().front();
-        radii.push_back(current->getRadius());
+        auto child = brick->getChildren().front();
+        if (child && child->getFittingType() != FittingType::DIJKSTRALIGHT && child->getFittingType() != FittingType::CONNECTQSM) {
+          current = child;
+        }
       }
+
+      radii.push_back(current->getRadius());
     }
     if (radii.size() == 2 * m_filterSize + 1) {
       auto median = SF_Math<double>::getMedian(radii);
