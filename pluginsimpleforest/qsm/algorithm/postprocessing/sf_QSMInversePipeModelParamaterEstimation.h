@@ -26,42 +26,31 @@
 
 *****************************************************************************/
 
-#ifndef SF_FITRANSACLINE_H
-#define SF_FITRANSACLINE_H
+#ifndef SF_QSMINVERSEPIPEMODELPARAMATERESTIMATION_H
+#define SF_QSMINVERSEPIPEMODELPARAMATERESTIMATION_H
 
-#include "pcl/sf_math.h"
-#include <random>
+#include "qsm/algorithm/sf_QSMCylinder.h"
+#include "qsm/model/sf_modelQSM.h"
+#include "steps/param/sf_paramAllSteps.h"
 
-template<typename T>
-class SF_FitRansacLine
+class SF_QSMInversePipeModelParamaterEstimation
 {
-  std::pair<T, T> m_equation;
-  std::pair<T, T> m_errorEquation = std::make_pair<T, T>(0, std::numeric_limits<T>::min());
-  std::vector<T> m_x;
-  std::vector<T> m_y;
-  T m_inlierDistance;
-  size_t m_iterations;
-  size_t m_minPts;
+    SF_ParamInversePipeModelCorrection m_params;
 
-  std::pair<T, T> getEquation(size_t index1, size_t index2);
-  std::pair<std::vector<T>, std::vector<T>> inliers(const std::pair<T, T>& equation);
-  size_t numberInliers(const std::pair<T, T>& equation);
-  void initializeParams();
+    std::pair<T, T> m_equation;
 
-public:
-  SF_FitRansacLine();
-  std::vector<T> x() const;
-  std::vector<T> y() const;
-  void setY(const std::vector<T>& y);
-  void setX(const std::vector<T>& x);
-  void compute();
-  std::pair<std::vector<T>, std::vector<T>> inliers();
-  void setIterations(const size_t& iterations);
-  void setInlierDistance(const T& inlierDistance);
-  std::pair<T, T> equation();
-  void setMinPts(const size_t& minPts);
+  public:
+    SF_QSMInversePipeModelParamaterEstimation();
+    void setParams(const SF_ParamInversePipeModelCorrection& params);
+    SF_ParamInversePipeModelCorrection params() const;
+    void compute();
+    bool isUnCorrectedRadiusFit(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> unCorrectedBuildingBricks();
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> removeStem(
+      std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks);
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> chooseBestBricks(
+      std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks);
 };
 
-#include "math/fit/line/sf_fitransacline.hpp"
-
-#endif // SF_FITRANSACLINE_H
+#endif // SF_QSMINVERSEPIPEMODELPARAMATERESTIMATION_H

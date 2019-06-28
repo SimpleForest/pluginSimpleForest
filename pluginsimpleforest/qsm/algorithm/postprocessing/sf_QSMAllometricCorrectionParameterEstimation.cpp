@@ -26,7 +26,7 @@
 
 *****************************************************************************/
 
-#include "sf_qsmallometriccorrectionparameterestimation.h"
+#include "sf_QSMAllometricCorrectionParameterEstimation.h"
 
 #include "math/fit/power/sf_fitgnpower.h"
 

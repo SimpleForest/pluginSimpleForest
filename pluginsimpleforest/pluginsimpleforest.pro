@@ -30,6 +30,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     file/export/ply/sf_exportPly.h \
     file/export/qsm/sf_exportQSM.h \
     file/export/sf_abstractExport.h \
+    math/fit/line/sf_fitline.h \
+    math/fit/line/sf_fitline.hpp \
     math/fit/line/sf_fitransacline.h \
     math/fit/line/sf_fitransacline.hpp \
     math/fit/power/sf_fitgnpower.h \
@@ -38,9 +40,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     qsm/algorithm/distance/sf_extractFittedPoints.hpp \
     qsm/algorithm/optimization/recursion/sf_dijkstraLightRecursive.h \
     qsm/algorithm/optimization/recursion/sf_spherefollowingRecursive.h \
+    qsm/algorithm/postprocessing/sf_QSMAllometricCorrectionParameterEstimation.h \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.h \
+    qsm/algorithm/postprocessing/sf_QSMInversePipeModelParamaterEstimation.h \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.h \
-    qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.h \
     qsm/algorithm/postprocessing/sf_qsmrefitcylinder.h \
     qsm/algorithm/visualization/sf_visualizefitquality.h \
     sf_pluginentry.h \
@@ -196,9 +199,10 @@ SOURCES += \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.cpp \
     qsm/algorithm/optimization/recursion/sf_dijkstraLightRecursive.cpp \
     qsm/algorithm/optimization/recursion/sf_spherefollowingRecursive.cpp \
+    qsm/algorithm/postprocessing/sf_QSMAllometricCorrectionParameterEstimation.cpp \
     qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.cpp \
+    qsm/algorithm/postprocessing/sf_QSMInversePipeModelParamaterEstimation.cpp \
     qsm/algorithm/postprocessing/sf_correctbranchjunction.cpp \
-    qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.cpp \
     qsm/algorithm/postprocessing/sf_qsmrefitcylinder.cpp \
     qsm/algorithm/visualization/sf_visualizefitquality.cpp \
     sf_pluginentry.cpp \

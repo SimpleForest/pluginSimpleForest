@@ -32,7 +32,7 @@
 #include <QThreadPool>
 
 #include "qsm/algorithm/postprocessing/sf_QSMAllometryCorrectionNeighboring.h"
-#include "qsm/algorithm/postprocessing/sf_qsmallometriccorrectionparameterestimation.h"
+#include "qsm/algorithm/postprocessing/sf_QSMAllometricCorrectionParameterEstimation.h"
 #include "steps/param/sf_paramAllSteps.h"
 
 class SF_QSMAllometricCheckAdapter

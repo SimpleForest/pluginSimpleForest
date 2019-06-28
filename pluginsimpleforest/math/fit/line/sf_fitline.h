@@ -26,27 +26,19 @@
 
 *****************************************************************************/
 
-#ifndef SF_FITRANSACLINE_H
-#define SF_FITRANSACLINE_H
+#ifndef SF_FITLINE_H
+#define SF_FITLINE_H
 
 #include "pcl/sf_math.h"
 #include <random>
 
 template<typename T>
-class SF_FitRansacLine
+class SF_FitLine
 {
   std::pair<T, T> m_equation;
   std::pair<T, T> m_errorEquation = std::make_pair<T, T>(0, std::numeric_limits<T>::min());
   std::vector<T> m_x;
   std::vector<T> m_y;
-  T m_inlierDistance;
-  size_t m_iterations;
-  size_t m_minPts;
-
-  std::pair<T, T> getEquation(size_t index1, size_t index2);
-  std::pair<std::vector<T>, std::vector<T>> inliers(const std::pair<T, T>& equation);
-  size_t numberInliers(const std::pair<T, T>& equation);
-  void initializeParams();
 
 public:
   SF_FitRansacLine();
@@ -55,13 +47,10 @@ public:
   void setY(const std::vector<T>& y);
   void setX(const std::vector<T>& x);
   void compute();
-  std::pair<std::vector<T>, std::vector<T>> inliers();
-  void setIterations(const size_t& iterations);
-  void setInlierDistance(const T& inlierDistance);
   std::pair<T, T> equation();
   void setMinPts(const size_t& minPts);
 };
 
-#include "math/fit/line/sf_fitransacline.hpp"
+#include "math/fit/line/sf_fitline.hpp"
 
-#endif // SF_FITRANSACLINE_H
+#endif // SF_FITLINE_H
