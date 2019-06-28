@@ -144,7 +144,6 @@ struct SF_ParamQSM : public SF_ParamFilter<PointType>
   virtual void reset()
   {
     SF_ParamFilter<PointType>::reset();
-    _qsm = nullptr;
     _colors = nullptr;
   }
 };
@@ -533,6 +532,7 @@ struct SF_ParamSpherefollowingRecursive : public SF_ParamSpherefollowingBasic<Po
   double m_clusterDownScale = 0.05;
   double m_slice = 0.1;
   double m_clusterSlize = 0.1;
+  int m_id = 0;
 };
 
 template<typename PointType>
@@ -614,6 +614,7 @@ struct SF_ParamSpherefollowingAdvanced : public SF_ParamSpherefollowingBasic<Poi
   typename pcl::PointCloud<PointType>::Ptr m_cloudSphereFollowing;
   double _fitQuality;
   int _iterations;
+  int m_ID = 0;
 };
 
 template<typename PointType>

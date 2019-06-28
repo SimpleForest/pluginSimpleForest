@@ -44,7 +44,7 @@ Sf_ModelAbstractBuildingbrick::getGrowthLength()
     double a = qsm->getAGrowthLength();
     double b = qsm->getBGrowthLength();
     double c = qsm->getCGrowthLength();
-    double minR = 0.005;
+    double minR = 0.01;
     double minGrowthLength = std::pow((minR - c) / a, 1 / b);
     growthLength += minGrowthLength;
   }

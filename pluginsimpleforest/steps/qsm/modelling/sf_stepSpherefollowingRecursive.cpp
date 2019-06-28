@@ -238,7 +238,7 @@ SF_StepSphereFollowingRecursive::createParamList(CT_ResultGroup* outResult)
   distanceParams._k = _CMD_k;
   distanceParams._cropDistance = _CMD_cropDistance;
   distanceParams._inlierDistance = _CMD_inlierDistance;
-
+  int id = 0;
   adaptParametersToExpertLevel();
   CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
   while (!isStopped() && outResIt.hasNext()) {
@@ -260,6 +260,7 @@ SF_StepSphereFollowingRecursive::createParamList(CT_ResultGroup* outResult)
     param._log = PS_LOG;
     param._itemCpyCloudIn = ctCloud;
     param._grpCpyGrp = group;
+    param.m_id = id++;
     _paramList.append(param);
   }
   if (paramList().empty()) {

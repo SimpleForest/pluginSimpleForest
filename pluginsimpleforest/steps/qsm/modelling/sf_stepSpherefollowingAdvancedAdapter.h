@@ -74,9 +74,11 @@ public:
       cloud = converter.cloudTranslated();
     }
     pcl::VoxelGrid<SF_PointNormal> sor;
+    SF_ParamSpherefollowingAdvanced<SF_PointNormal> paramCpy;
     sor.setInputCloud(cloud);
     {
       QMutexLocker m1(&*mMutex);
+      paramCpy = params;
       sor.setLeafSize(params._voxelSize, params._voxelSize, params._voxelSize);
     }
     sor.filter(*cloudDownscaled);
@@ -131,14 +133,42 @@ public:
       params.m_cloudSphereFollowing = largestCluster;
       downhillSimplex.setParams(params);
     }
-    downhillSimplex.compute();
-    {
-      QMutexLocker m1(&*mMutex);
+    try {
+      downhillSimplex.compute();
+      std::cout << "HAPPENED AGAIN JPT" << std::endl;
       params = downhillSimplex.params();
-      params._cloudIn = largestCluster;
+    } catch (...) {
+      QMutexLocker m1(&*mMutex);
+      std::cout << "HAPPENED AGAIN " << std::endl;
+      if(paramCpy._qsm)
+      {
+          params = paramCpy;
+      }
+      else
+      {
+          for (SF_PointNormal& point : params.m_cloudSphereFollowing->points)
+          {
+            point.intensity = 0;
+          }
+          paramCpy.m_numClstrs = 1;
+          SF_SphereFollowing sphereFollowing;
+          sphereFollowing.setParams(paramCpy);
+          sphereFollowing.setCloud(largestCluster);
+          sphereFollowing.compute();
+          params = paramCpy;
+          params._qsm = sphereFollowing.getQSM();
+
+      }
     }
     {
+
+    } {
       QMutexLocker m1(&*mMutex);
+      if (params._qsm) {
+        std::cout << "cloud good 2" << std::endl;
+      } else {
+        std::cout << "cloud bad 2" << std::endl;
+      }
       params._qsm->translate(params._translation);
       params._qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
     }

@@ -51,7 +51,6 @@ void
 SF_SpherefollowingRecursive::setQsm(const std::shared_ptr<SF_ModelQSM>& qsm)
 {
   m_qsm = qsm;
-  m_axis = stemAxis();
   m_bricks = m_qsm->getBuildingBricks();
   initializeKdTree();
 }
@@ -155,7 +154,6 @@ SF_SpherefollowingRecursive::processClusters(const std::vector<SF_CloudNormal::P
       sphereFollowing.setFire(false);
       sphereFollowing.setCloud(transformed);
       sphereFollowing.compute();
-      m_params._stepProgress->fireComputation();
       auto qsm = sphereFollowing.getParamVec()[0]._qsm;
       if (!qsm) {
         continue;
@@ -173,13 +171,19 @@ SF_SpherefollowingRecursive::processClusters(const std::vector<SF_CloudNormal::P
       qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME, 0.0001);
       Eigen::Affine3f transform2 = Eigen::Affine3f::Identity();
       transform2.rotate(Eigen::AngleAxisf(-angle, rotationAxis));
-      qsm->transform(transform2);
-      qsm->translate(translation);
-      qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
-      connectQSM(qsm);
+      try {
+        qsm->transform(transform2);
+        qsm->translate(translation);
+        qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
+        connectQSM(qsm);
+      } catch (...) {
+        std::cout << " transform2" << std::endl;
+        std::cout << "---------------" << std::endl;
+      }
     } catch (...) {
     }
   }
+  m_params._stepProgress->fireComputation();
 }
 
 void

@@ -83,10 +83,12 @@ public:
     }
     SF_CloudNormal::Ptr cloud;
     SF_CloudNormal::Ptr cloudDownscaled(new SF_CloudNormal());
+    std::shared_ptr<SF_ModelQSM> qsmCpy;
     converter.compute();
     {
       QMutexLocker m1(&*mMutex);
       params._translation = converter.translation();
+      qsmCpy = params._qsm;
       params._qsm->translate(-params._translation);
       cloud = converter.cloudTranslated();
     }
@@ -127,8 +129,9 @@ public:
 
     {
       QMutexLocker m1(&*mMutex);
-      if (!params._qsm)
-        return;
+      if (!params._qsm) {
+        params._qsm = qsmCpy;
+      }
       params._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_LENGTH, 0.0001);
       params._qsm->translate(params._translation);
       params._qsm->setTranslation(Eigen::Vector3d(0, 0, 0));

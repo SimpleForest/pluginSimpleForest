@@ -207,7 +207,7 @@ SF_ClusterCloudByQSM<PointType>::compute()
   } catch (...) {
     m_cloud = cloudCpy;
     for (size_t i = 0; i < m_cloud->points.size(); i++) {
-      (*clusterID)[i] = 0;
+      (*clusterID)[i] = m_numClstrs - 1;
     }
   }
   m_params._clusterIDs = clusterID;

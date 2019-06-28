@@ -333,6 +333,7 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
   _paramList.clear();
   CT_ResultGroupIterator outResItCloud(outResult, this, DEF_IN_GRP_CLUSTER);
   int numberComputationsPerCloud = 300;
+  int id = 0;
   while (!isStopped() && outResItCloud.hasNext()) {
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResItCloud.next();
 
@@ -353,6 +354,7 @@ SF_StepSphereFollowingAdvanced::createParamList(CT_ResultGroup* outResult)
     paramAdvanced._iterations = _NM_iterations;
     paramAdvanced._fitQuality = _NM_minSize;
     paramAdvanced._distanceParams.m_minAngle = 35;
+    paramAdvanced.m_ID = id++;
     _paramList.push_back(paramAdvanced);
   }
   CT_ResultGroup* outResult2 = getInputResults().at(1);

@@ -111,7 +111,7 @@ SF_StepDijkstraLightRecursive::configRecursion(CT_StepConfigurableDialog* config
                           m_clusteringDistance);
   configDialog->addDouble("Each cluster larger than a "
                           "[<em><b>min percentage</b></em>]  ",
-                          " (%) of the input cloud is further processed. ",
+                          " e-2(%) of the input cloud is further processed. ",
                           0.001,
                           1.0,
                           3,
@@ -245,7 +245,7 @@ SF_StepDijkstraLightRecursive::createParamList(CT_ResultGroup* outResult)
     param.m_maxPercentage = m_maxPercentage;
     param.m_clusterDownScale = m_clusterDownScale;
     param.m_clusteringDistance = m_clusteringDistance;
-    param.m_minPercentage = m_minPercentage;
+    param.m_minPercentage = m_minPercentage / 100;
     param.m_unfittedDistance = m_unfittedDistance;
     param._stepProgress = _stepProgress;
     param._distanceParams = distanceParams;

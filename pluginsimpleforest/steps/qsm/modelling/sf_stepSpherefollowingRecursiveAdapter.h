@@ -66,11 +66,13 @@ public:
     }
     SF_CloudNormal::Ptr cloud;
     SF_CloudNormal::Ptr cloudDownscaled(new SF_CloudNormal());
+    std::shared_ptr<SF_ModelQSM> qsmCpy;
     converter.compute();
     {
       QMutexLocker m1(&*mMutex);
       params._translation = converter.translation();
       params._qsm->translate(-params._translation);
+      qsmCpy = params._qsm;
       cloud = converter.cloudTranslated();
     }
     pcl::VoxelGrid<SF_PointNormal> sor;
@@ -104,17 +106,17 @@ public:
       {
         QMutexLocker m1(&*mMutex);
         params._qsm = recursion.getQsm();
+        if (!params._qsm) {
+          params._qsm = qsmCpy;
+        }
+        params._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME, 0.0001);
+        params._qsm->translate(params._translation);
+        params._qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
       }
     } catch (...) {
-    }
-
-    {
       QMutexLocker m1(&*mMutex);
-      if (!params._qsm)
-        return;
-      params._qsm->sort(SF_ModelAbstractSegment::SF_SORTTYPE::GROWTH_VOLUME, 0.0001);
+      params._qsm = qsmCpy;
       params._qsm->translate(params._translation);
-      params._qsm->setTranslation(Eigen::Vector3d(0, 0, 0));
     }
   }
 };
