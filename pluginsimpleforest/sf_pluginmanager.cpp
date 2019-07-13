@@ -26,6 +26,7 @@
 #include "steps/qsm/postprocessing/sf_stepQSMCorrectBranchJunctions.h"
 #include "steps/qsm/postprocessing/sf_stepQSMMedianFilter.h"
 #include "steps/qsm/postprocessing/sf_stepQSMRefitCylinders.h"
+#include "steps/qsm/postprocessing/sf_stepReversePipeModelCorrection.h".h "
 #include "steps/segmentation/dijkstra/sf_stepSegemtationDijkstra.h"
 #include "steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h"
 #include "steps/segmentation/voronoi/sf_stepSegmentationVoronoi.h"
@@ -93,6 +94,7 @@ SF_PluginManager::loadGenericsStep()
   addNewGeometricalShapesStep<SF_StepQSMRefitCylinders>("QSM");
   addNewGeometricalShapesStep<SF_StepQSMMedianFilter>("QSM");
   addNewGeometricalShapesStep<SF_StepDijkstraLightRecursive>("QSM");
+  addNewGeometricalShapesStep<SF_StepReversePipeModelCorrection>("QSM");
   return true;
 }
 

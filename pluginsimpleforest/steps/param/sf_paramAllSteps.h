@@ -589,10 +589,9 @@ struct SF_ParamRefitCylinders : public SF_ParamCT
   std::shared_ptr<SF_ModelQSM> _qsm;
 };
 
-struct SF_ParamInversePipeModelCorrection : public SF_ParamCT
+struct SF_ParamReversePipeModelCorrection : public SF_ParamCT
 {
   double _crownStartFraction = 0.33;
-  double _scalingFactor = 2.5;
   double m_slope;
   double m_intercept;
   size_t m_minPts = 10;

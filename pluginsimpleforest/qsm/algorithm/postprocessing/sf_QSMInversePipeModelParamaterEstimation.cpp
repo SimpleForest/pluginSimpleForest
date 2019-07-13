@@ -55,33 +55,39 @@
 
 *****************************************************************************/
 
-#include "sf_QSMInversePipeModelParamaterEstimation.h"
 #include "math/fit/line/sf_fitline.h"
 #include "math/fit/line/sf_fitransacline.h"
+#include "sf_QSMInversePipeModelParamaterEstimation.h"
 
 void
-SF_QSMInversePipeModelParamaterEstimation::setParams(const SF_ParamInversePipeModelCorrection &params)
+SF_QSMReversePipeModelParamaterEstimation::setParams(const SF_ParamReversePipeModelCorrection& params)
 {
   m_params = params;
 }
 
-SF_ParamInversePipeModelCorrection
-SF_QSMInversePipeModelParamaterEstimation::params() const
+SF_ParamReversePipeModelCorrection
+SF_QSMReversePipeModelParamaterEstimation::params() const
 {
   return m_params;
 }
 
-SF_QSMInversePipeModelParamaterEstimation::SF_QSMInversePipeModelParamaterEstimation() {}
+std::pair<float, float>
+SF_QSMReversePipeModelParamaterEstimation::equation() const
+{
+  return m_equation;
+}
+
+SF_QSMReversePipeModelParamaterEstimation::SF_QSMReversePipeModelParamaterEstimation() {}
 
 bool
-SF_QSMInversePipeModelParamaterEstimation::isUnCorrectedRadiusFit(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
+SF_QSMReversePipeModelParamaterEstimation::isUnCorrectedRadiusFit(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick)
 {
   return ((buildingBrick->getFittingType() == SPHEREFOLLOWING || buildingBrick->getFittingType() == CYLINDERCORRECTION ||
            buildingBrick->getFittingType() == TRUNCATEDCONECORRECTION));
 }
 
 std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
-SF_QSMInversePipeModelParamaterEstimation::chooseBestBricks(std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks)
+SF_QSMReversePipeModelParamaterEstimation::chooseBestBricks(std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks)
 {
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bestBricks;
   float minRadius = std::numeric_limits<float>::max();
@@ -90,12 +96,7 @@ SF_QSMInversePipeModelParamaterEstimation::chooseBestBricks(std::vector<std::sha
   float maxY = 0;
   float radiusAtMaxY = 0;
   for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick : bricks) {
-    float y;
-    if (m_params.m_useGrowthLength) {
-      y = brick->getGrowthLength();
-    } else {
-      y = brick->getGrowthVolume();
-    }
+    float y = brick->getSegment()->getReversePipeBranchOrder();
     float radius = brick->getRadius();
     if (radius < minRadius) {
       minRadius = radius;
@@ -114,19 +115,13 @@ SF_QSMInversePipeModelParamaterEstimation::chooseBestBricks(std::vector<std::sha
     }
   }
   for (std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick : bricks) {
-    float y;
-    if (m_params.m_useGrowthLength) {
-      y = brick->getGrowthLength();
-    } else {
-      y = brick->getGrowthVolume();
-    }
+    float y = brick->getSegment()->getReversePipeBranchOrder();
     float radius = brick->getRadius();
-
     if (radius > radiusAtMaxY)
       continue;
-    if (y < maxY * 0.01)
+    if (y < maxY * 0.05)
       continue;
-    if (y > maxY * 0.33)
+    if (y > maxY * 0.77)
       continue;
     bestBricks.push_back(brick);
   }
@@ -134,7 +129,7 @@ SF_QSMInversePipeModelParamaterEstimation::chooseBestBricks(std::vector<std::sha
 }
 
 std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
-SF_QSMInversePipeModelParamaterEstimation::unCorrectedBuildingBricks()
+SF_QSMReversePipeModelParamaterEstimation::unCorrectedBuildingBricks()
 {
   std::vector<std::shared_ptr<SF_ModelAbstractSegment>> segments = m_params._qsm->getSegments();
   std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> buildingbricks;
@@ -148,13 +143,13 @@ SF_QSMInversePipeModelParamaterEstimation::unCorrectedBuildingBricks()
           buildingbricks.push_back(medianBrick);
         }
       }
-      }
-    });
+    }
+  });
   return buildingbricks;
 }
 
 std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>>
-SF_QSMInversePipeModelParamaterEstimation::removeStem(std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks)
+SF_QSMReversePipeModelParamaterEstimation::removeStem(std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks)
 {
   auto crownStart = m_params._qsm->crownStartBrick(m_params._crownStartFraction);
   float height = crownStart->getCenter()[2];
@@ -170,7 +165,7 @@ SF_QSMInversePipeModelParamaterEstimation::removeStem(std::vector<std::shared_pt
 }
 
 void
-SF_QSMInversePipeModelParamaterEstimation::compute()
+SF_QSMReversePipeModelParamaterEstimation::compute()
 {
   std::vector<float> y;
   std::vector<float> x;
@@ -188,17 +183,17 @@ SF_QSMInversePipeModelParamaterEstimation::compute()
                  bestBricks.end(),
                  std::back_inserter(y),
                  [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) { return brick->getRadius(); });
-  std::transform(bestBricks.begin(),
-                 bestBricks.end(),
-                 std::back_inserter(x),
-                 [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) { return brick->getSegment()->getReversePipeBranchOrder(); });
-SF_FitRansacLine<float> lineFitRANSAC;
-lineFitRANSAC.setX(x);
-lineFitRANSAC.setY(y);
-lineFitRANSAC.setInlierDistance(m_params.m_inlierDistance);
-lineFitRANSAC.setIterations(m_params.m_ransacIterations);
-lineFitRANSAC.setMinPts(m_params.m_minPts);
-try {
+  std::transform(
+    bestBricks.begin(), bestBricks.end(), std::back_inserter(x), [](std::shared_ptr<Sf_ModelAbstractBuildingbrick> brick) {
+      return brick->getSegment()->getReversePipeBranchOrder();
+    });
+  SF_FitRansacLine<float> lineFitRANSAC;
+  lineFitRANSAC.setX(x);
+  lineFitRANSAC.setY(y);
+  lineFitRANSAC.setInlierDistance(m_params.m_inlierDistance);
+  lineFitRANSAC.setIterations(m_params.m_ransacIterations);
+  lineFitRANSAC.setMinPts(m_params.m_minPts);
+  try {
     lineFitRANSAC.compute();
     auto inliers = lineFitRANSAC.inliers();
     SF_FitLine<float> lineFit;

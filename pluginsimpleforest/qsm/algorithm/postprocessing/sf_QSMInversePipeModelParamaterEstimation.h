@@ -33,24 +33,25 @@
 #include "qsm/model/sf_modelQSM.h"
 #include "steps/param/sf_paramAllSteps.h"
 
-class SF_QSMInversePipeModelParamaterEstimation
+class SF_QSMReversePipeModelParamaterEstimation
 {
-    SF_ParamInversePipeModelCorrection m_params;
+  SF_ParamReversePipeModelCorrection m_params;
 
-    std::pair<T, T> m_equation;
+  std::pair<float, float> m_equation;
 
-  public:
-    SF_QSMInversePipeModelParamaterEstimation();
-    void setParams(const SF_ParamInversePipeModelCorrection& params);
-    SF_ParamInversePipeModelCorrection params() const;
-    void compute();
-    bool isUnCorrectedRadiusFit(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
+public:
+  SF_QSMReversePipeModelParamaterEstimation();
+  void setParams(const SF_ParamReversePipeModelCorrection& params);
+  SF_ParamReversePipeModelCorrection params() const;
+  void compute();
+  bool isUnCorrectedRadiusFit(std::shared_ptr<Sf_ModelAbstractBuildingbrick> buildingBrick);
 
-    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> unCorrectedBuildingBricks();
-    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> removeStem(
-      std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks);
-    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> chooseBestBricks(
-      std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks);
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> unCorrectedBuildingBricks();
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> removeStem(
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks);
+  std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> chooseBestBricks(
+    std::vector<std::shared_ptr<Sf_ModelAbstractBuildingbrick>> bricks);
+  std::pair<float, float> equation() const;
 };
 
 #endif // SF_QSMINVERSEPIPEMODELPARAMATERESTIMATION_H

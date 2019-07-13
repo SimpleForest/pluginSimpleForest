@@ -41,7 +41,7 @@ class SF_FitLine
   std::vector<T> m_y;
 
 public:
-  SF_FitRansacLine();
+  SF_FitLine();
   std::vector<T> x() const;
   std::vector<T> y() const;
   void setY(const std::vector<T>& y);

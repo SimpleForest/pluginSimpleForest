@@ -138,7 +138,7 @@ SF_StepExportQSMList::compute()
     CT_FileHeader* header = (CT_FileHeader*)group->firstItemByINModelName(this, DEF_IN_NAME);
     QString str = header->getFileName();
     QString cropedFilename = str.split(".", QString::SkipEmptyParts).at(0);
-    cropedFilename.append("_");
+//    cropedFilename.append("_");
     names.push_back(cropedFilename);
   }
 

@@ -140,24 +140,19 @@ public:
     } catch (...) {
       QMutexLocker m1(&*mMutex);
       std::cout << "HAPPENED AGAIN " << std::endl;
-      if(paramCpy._qsm)
-      {
-          params = paramCpy;
-      }
-      else
-      {
-          for (SF_PointNormal& point : params.m_cloudSphereFollowing->points)
-          {
-            point.intensity = 0;
-          }
-          paramCpy.m_numClstrs = 1;
-          SF_SphereFollowing sphereFollowing;
-          sphereFollowing.setParams(paramCpy);
-          sphereFollowing.setCloud(largestCluster);
-          sphereFollowing.compute();
-          params = paramCpy;
-          params._qsm = sphereFollowing.getQSM();
-
+      if (paramCpy._qsm) {
+        params = paramCpy;
+      } else {
+        for (SF_PointNormal& point : params.m_cloudSphereFollowing->points) {
+          point.intensity = 0;
+        }
+        paramCpy.m_numClstrs = 1;
+        SF_SphereFollowing sphereFollowing;
+        sphereFollowing.setParams(paramCpy);
+        sphereFollowing.setCloud(largestCluster);
+        sphereFollowing.compute();
+        params = paramCpy;
+        params._qsm = sphereFollowing.getQSM();
       }
     }
     {

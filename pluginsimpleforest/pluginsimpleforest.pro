@@ -36,6 +36,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     math/fit/line/sf_fitransacline.hpp \
     math/fit/power/sf_fitgnpower.h \
     math/fit/power/sf_fitgnpower.hpp \
+    pcl/cloud/feature/djikstra/sf_djikstra.h \
     qsm/algorithm/distance/sf_extractFittedPoints.h \
     qsm/algorithm/distance/sf_extractFittedPoints.hpp \
     qsm/algorithm/optimization/recursion/sf_dijkstraLightRecursive.h \
@@ -120,6 +121,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     steps/qsm/postprocessing/sf_stepQSMMedianFilter.h \
     steps/qsm/postprocessing/sf_stepQSMRefitCylinders.h \
     steps/qsm/postprocessing/sf_stepQSMRefitCylindersAdapter.h \
+    steps/qsm/postprocessing/sf_stepReversePipeModelCorrection.h \
+    steps/qsm/postprocessing/sf_stepreversepipemodelcorrectionadapter.h \
     steps/qsm/sf_abstractStepQSM.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.h \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSMAdapter.h \
@@ -196,6 +199,7 @@ SOURCES += \
     file/export/ply/sf_exportPly.cpp \
     file/export/qsm/sf_exportQSM.cpp \
     file/export/sf_abstractExport.cpp \
+    pcl/cloud/feature/djikstra/sf_djikstra.cpp \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.cpp \
     qsm/algorithm/optimization/recursion/sf_dijkstraLightRecursive.cpp \
     qsm/algorithm/optimization/recursion/sf_spherefollowingRecursive.cpp \
@@ -231,6 +235,7 @@ SOURCES += \
     steps/qsm/postprocessing/sf_stepQSMCorrectBranchJunctions.cpp \
     steps/qsm/postprocessing/sf_stepQSMMedianFilter.cpp \
     steps/qsm/postprocessing/sf_stepQSMRefitCylinders.cpp \
+    steps/qsm/postprocessing/sf_stepReversePipeModelCorrection.cpp \
     steps/qsm/sf_abstractStepQSM.cpp \
     steps/segmentation/tree/sf_stepSegmentTreeCloudFromQSM.cpp \
     steps/sf_abstractStep.cpp \

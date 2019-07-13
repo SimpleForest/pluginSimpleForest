@@ -72,12 +72,12 @@ SF_FitLine<T>::compute()
     throw("Point vectors not well formated in Ransac line fit.");
   }
   int nPoints = m_y.size();
-  if( nPoints < 2 ) {
+  if (nPoints < 2) {
     // Fail: infinitely many lines passing through this single point
     return;
   }
-  double sumX=0, sumY=0, sumXY=0, sumX2=0;
-  for(int i=0; i<nPoints; i++) {
+  double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+  for (int i = 0; i < nPoints; i++) {
     sumX += m_x[i];
     sumY += m_y[i];
     sumXY += m_x[i] * m_y[i];
@@ -87,7 +87,7 @@ SF_FitLine<T>::compute()
   double yMean = sumY / nPoints;
   double denominator = sumX2 - sumX * xMean;
   // You can tune the eps (1e-7) below for your specific task
-  if( std::fabs(denominator) < 1e-7 ) {
+  if (std::fabs(denominator) < 1e-7) {
     // Fail: it seems a vertical line
     return;
   }
@@ -101,6 +101,5 @@ SF_FitLine<T>::equation()
 {
   return m_equation;
 }
-
 
 #endif // SF_FITLINE_HPP

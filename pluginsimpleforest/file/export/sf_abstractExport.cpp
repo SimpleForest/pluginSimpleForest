@@ -45,7 +45,6 @@ SF_AbstractExport::SF_AbstractExport() {}
 QString
 SF_AbstractExport::getFullName(QString name, QString extension)
 {
-  name.append(QString::number(m_qsm->getID()));
   name.append(extension);
   return name;
 }
