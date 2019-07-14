@@ -37,6 +37,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     math/fit/power/sf_fitgnpower.h \
     math/fit/power/sf_fitgnpower.hpp \
     pcl/cloud/feature/djikstra/sf_djikstra.h \
+    pcl/cloud/feature/djikstra/sf_djikstraVisitor.h \
     qsm/algorithm/distance/sf_extractFittedPoints.h \
     qsm/algorithm/distance/sf_extractFittedPoints.hpp \
     qsm/algorithm/optimization/recursion/sf_dijkstraLightRecursive.h \
@@ -200,6 +201,7 @@ SOURCES += \
     file/export/qsm/sf_exportQSM.cpp \
     file/export/sf_abstractExport.cpp \
     pcl/cloud/feature/djikstra/sf_djikstra.cpp \
+    pcl/cloud/feature/djikstra/sf_djikstraVisitor.cpp \
     pcl/cloud/segmentation/dijkstra/sf_dijkstra.cpp \
     qsm/algorithm/optimization/recursion/sf_dijkstraLightRecursive.cpp \
     qsm/algorithm/optimization/recursion/sf_spherefollowingRecursive.cpp \

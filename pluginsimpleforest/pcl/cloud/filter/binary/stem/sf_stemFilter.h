@@ -41,9 +41,7 @@ template<typename PointType>
 class SF_StemFilter : public Sf_AbstractBinaryFilter<PointType>
 {
   SF_ParamStemFilter<PointType> _params;
-  void transferStem(const SF_ParamStemFilter<PointType>& params,
-                    typename pcl::PointCloud<PointType>::Ptr down_scaled_cloud,
-                    typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction);
+  void transferStem(const SF_ParamStemFilter<PointType>& params, typename pcl::PointCloud<PointType>::Ptr cloud_with_growth_direction);
   CT_ColorCloudStdVector* _colors;
 
 public:

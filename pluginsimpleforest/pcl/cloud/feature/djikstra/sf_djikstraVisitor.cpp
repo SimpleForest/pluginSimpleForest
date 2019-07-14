@@ -26,33 +26,8 @@
 
 *****************************************************************************/
 
-#ifndef SF_DJIKSTRA_H
-#define SF_DJIKSTRA_H
-
-#include <pcl/search/kdtree.h>
-
 #include "sf_djikstraVisitor.h"
 
-class SF_Djikstra
-{
-  float m_range;
-  size_t m_startIndex = 0;
-  SF_CloudNormal::Ptr m_cloud;
-  SF_CloudNormal::Ptr m_cluster;
-  SF_CloudNormal::Ptr m_cloudProcessed;
-  pcl::search::KdTree<SF_PointNormal>::Ptr m_kdTree;
-  void computeStartIndex();
-  void initialize();
-  void initializeKDTree();
-  void computeCluster();
-
-public:
-  SF_Djikstra();
-  void compute();
-
-  void setCloud(const SF_CloudNormal::Ptr& cloud);
-  SF_CloudNormal::Ptr cloud() const;
-  void setRange(float range);
-};
-
-#endif // SF_DJIKSTRA_H
+SF_DjikstraVisitor::SF_DjikstraVisitor(std::vector<std::string> vertexNames, SF_CloudNormal::Ptr cloud)
+  : m_vertexNames(vertexNames), m_cloud(cloud)
+{}
