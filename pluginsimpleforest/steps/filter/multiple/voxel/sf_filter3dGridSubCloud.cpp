@@ -76,7 +76,8 @@ SF_Filter3dGridSubCloud::createInResultModelListProtected()
   CT_InResultModelGroupToCopy* resModel = createNewInResultModelForCopy(DEF_IN_RESULT, tr("Point Cloud"));
   resModel->setZeroOrMoreRootGroup();
   resModel->addGroupModel("", DEF_IN_GRP_CLUSTER);
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Point Cloud"));
+  resModel->addItemModel(
+    DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_AbstractItemDrawableWithPointCloud::staticGetType(), tr("Point Cloud"));
 }
 
 void

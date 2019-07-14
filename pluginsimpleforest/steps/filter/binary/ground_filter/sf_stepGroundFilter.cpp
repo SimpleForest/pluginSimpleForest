@@ -84,7 +84,8 @@ SF_StepGroundFilter::createInResultModelListProtected()
                           tr("Group to be denoised"),
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-  resModel->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Cloud to be denoised"));
+  resModel->addItemModel(
+    DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_AbstractItemDrawableWithPointCloud::staticGetType(), tr("Cloud to be denoised"));
 }
 
 void
@@ -156,7 +157,6 @@ SF_StepGroundFilter::writeOutputPerScence(CT_ResultGroup* outResult, size_t i)
   std::vector<CT_PointCloudIndexVector*> outputIndexList = createOutputVectors(param._sizeOutput);
   createOutputIndices(outputIndexList, param._outputIndices, param._itemCpyCloudIn);
   CT_StandardItemGroup* filterGrp = new CT_StandardItemGroup(_outGrp.completeName(), outResult);
-
   param._grpCpyGrp->addGroup(filterGrp);
   addSceneToFilterGrp(filterGrp, outResult, outputIndexList[0], _outCloud.completeName());
   addSceneToFilterGrp(filterGrp, outResult, outputIndexList[1], _outNoise.completeName());
@@ -182,17 +182,6 @@ SF_StepGroundFilter::compute()
   setProgressByFuture(future, 10, 85);
   writeOutput(outResult);
   writeLogger();
-  size_t index = 0;
-  CT_ResultGroupIterator outResIt(outResult, this, DEF_IN_GRP_CLUSTER);
-  while (!isStopped() && outResIt.hasNext()) {
-    CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt.next();
-    const CT_AbstractItemDrawableWithPointCloud* ct_cloud =
-      (const CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, DEF_IN_CLOUD_SEED);
-    SF_ParamGroundFilter<SF_PointNormal> param = _paramList[index++];
-    CT_PointsAttributesColor* colorAttribute = new CT_PointsAttributesColor(
-      m_outCloudItem.completeName(), outResult, ct_cloud->getPointCloudIndexRegistered(), param._colors);
-    group->addItemDrawable(colorAttribute);
-  }
   _paramList.clear();
 }
 

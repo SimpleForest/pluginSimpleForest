@@ -88,7 +88,7 @@ SF_EuclideanClusteringSegmentationStep::createInResultModelListProtected()
                           tr("Input Scene Group"),
                           "",
                           CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-  resModel->addItemModel(DEF_IN_SCENE, DEF_IN_SCENE_CLOUD, CT_Scene::staticGetType(), tr("Input Scene"));
+  resModel->addItemModel(DEF_IN_SCENE, DEF_IN_SCENE_CLOUD, CT_AbstractItemDrawableWithPointCloud::staticGetType(), tr("Input Scene"));
 }
 
 void

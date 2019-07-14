@@ -382,7 +382,7 @@ SF_AbstractStep::getRISCitationSphereFollowing() const
 }
 
 void
-SF_AbstractStep::createOutputIndex(std::vector<CT_PointCloudIndexVector*>& indexVectors,
+SF_AbstractStep::createOutputIndex(std::vector<std::vector<int>>& indexVectors,
                                    const std::vector<int>& indices,
                                    size_t counter,
                                    CT_PointIterator& pointIt)
@@ -392,7 +392,7 @@ SF_AbstractStep::createOutputIndex(std::vector<CT_PointCloudIndexVector*>& index
   if (counter < indices.size()) {
     size_t indexCloud = indices.at(counter);
     if (indexCloud < indexVectors.size()) {
-      indexVectors[indexCloud]->addIndex(indexCt);
+      indexVectors[indexCloud].push_back(indexCt);
     } else {
       throw std::runtime_error("SF_AbstractStep::createOutputIndex(std::vector<"
                                "CT_PointCloudIndexVector *> &indexVectors,"
@@ -414,11 +414,23 @@ SF_AbstractStep::createOutputIndices(std::vector<CT_PointCloudIndexVector*>& ind
                                      const std::vector<int>& indices,
                                      const CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn)
 {
+  std::vector<std::vector<int>> intIndexVectors;
+  for (int i = 0; i < indexVectors.size(); i++) {
+    std::vector<int> temp;
+    intIndexVectors.push_back(temp);
+  }
   const CT_AbstractPointCloudIndex* pointCloudIndex = itemCpyCloudIn->getPointCloudIndex();
   CT_PointIterator pointIt(pointCloudIndex);
   size_t counter = 0;
   while (pointIt.hasNext()) {
-    createOutputIndex(indexVectors, indices, counter++, pointIt);
+    createOutputIndex(intIndexVectors, indices, counter++, pointIt);
+  }
+  for (int i = 0; i < indexVectors.size(); i++) {
+    std::vector<int> temp = intIndexVectors[i];
+    std::sort(temp.begin(), temp.end());
+    for (int index : temp) {
+      indexVectors[i]->addIndex(index);
+    }
   }
 }
 

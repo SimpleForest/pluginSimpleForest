@@ -84,7 +84,8 @@ SF_RadiusOutlierFilterStep::createInResultModelListProtected()
                            tr("Group to be denoised"),
                            "",
                            CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-  res_model->addItemModel(DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_Scene::staticGetType(), tr("Cloud to be denoised"));
+  res_model->addItemModel(
+    DEF_IN_GRP_CLUSTER, DEF_IN_CLOUD_SEED, CT_AbstractItemDrawableWithPointCloud::staticGetType(), tr("Cloud to be denoised"));
 }
 
 void

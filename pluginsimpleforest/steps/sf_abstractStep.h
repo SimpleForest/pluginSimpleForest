@@ -106,7 +106,7 @@ protected:
                            const std::vector<int>& indices,
                            const CT_AbstractItemDrawableWithPointCloud* itemCpyCloudIn);
   void identifyAndRemoveCorruptedScenes(CT_ResultGroup* out_result);
-  void createOutputIndex(std::vector<CT_PointCloudIndexVector*>& indexVectors,
+  void createOutputIndex(std::vector<std::vector<int>>& indexVectors,
                          const std::vector<int>& indices,
                          size_t counter,
                          CT_PointIterator& pointIt);
