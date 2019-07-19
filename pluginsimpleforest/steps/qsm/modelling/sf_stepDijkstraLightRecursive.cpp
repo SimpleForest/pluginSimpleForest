@@ -32,6 +32,7 @@
 #include "steps/item/sf_spherefollowing_parameters_item.h"
 
 #include <QtConcurrent/QtConcurrent>
+#include <QString>
 
 #include <ct_itemdrawable/ct_cylinder.h>
 
@@ -265,8 +266,9 @@ SF_StepDijkstraLightRecursive::createParamList(CT_ResultGroup* outResult)
   size_t index = 0;
   while (!isStopped() && outResIt2.hasNext()) {
     CT_StandardItemGroup* group = (CT_StandardItemGroup*)outResIt2.next();
-    if (index > static_cast<size_t>(_paramList.size())) {
-      std::cout << "SF_StepDijkstraLightRecursive More trees than clouds" << std::endl;
+    if (index >= static_cast<size_t>(_paramList.size())) {
+      QString errorMsg = "SF_StepDijkstraLightRecursive More trees than clouds - Please reconfigure this step";
+      PS_LOG->addMessage(LogInterface::info, LogInterface::step, errorMsg);
       return;
     }
     index = std::min(index, static_cast<size_t>(_paramList.size()));
