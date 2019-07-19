@@ -39,15 +39,6 @@ Sf_ModelAbstractBuildingbrick::getGrowthLength()
     std::shared_ptr<Sf_ModelAbstractBuildingbrick> child = children.at(i);
     growthLength += child->getGrowthLength();
   }
-  if (children.empty()) {
-    std::shared_ptr<SF_ModelQSM> qsm = getSegment()->getTree();
-    double a = qsm->getAGrowthLength();
-    double b = qsm->getBGrowthLength();
-    double c = qsm->getCGrowthLength();
-    double minR = 0.01;
-    double minGrowthLength = std::pow((minR - c) / a, 1 / b);
-    growthLength += minGrowthLength;
-  }
   return std::max(m_minAllometricReturn, growthLength);
 }
 
