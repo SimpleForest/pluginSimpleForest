@@ -196,7 +196,7 @@ SF_DijkstraLightRecursive::processClusters(const std::vector<SF_CloudNormal::Ptr
           currentIndex++;
         }
         if (minIndex == -1) {
-          std::cout << "MEGAAAA  FOOOO" << std::endl;
+          std::cout << "SF_DijkstraLightRecursive::processClusters index failure" << std::endl;
           continue;
         }
         SF_PointNormal p2 = inner[minIndex];
